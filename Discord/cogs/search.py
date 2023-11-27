@@ -19,6 +19,7 @@ FANDOM_WIKIS = {
     "Disney": "https://disney.fandom.com/",
     "Foundation": "https://foundation.fandom.com/",
     "Genshin Impact": "https://genshin-impact.fandom.com/",
+    "Marvel Cinematic Universe": "https://marvelcinematicuniverse.fandom.com/",
     "Memory Alpha": "https://memory-alpha.fandom.com/",
     "Pixar": "https://pixar.fandom.com/",
     "Redwall": "https://redwall.fandom.com/",
@@ -606,9 +607,10 @@ class Search(commands.GroupCog, group_name = "search"):
     async def search_fandom(
         self, ctx,
         wiki: Literal[
-            "Disney", "Foundation", "Genshin Impact", "Memory Alpha", "Pixar",
-            "Redwall", "Seinfeld", "Suits", "The Hunger Games",
-            "The Lord of the Rings", "Transformers", "Transformers Movie"
+            "Disney", "Foundation", "Genshin Impact",
+            "Marvel Cinematic Universe", "Memory Alpha", "Pixar", "Redwall",
+            "Seinfeld", "Suits", "The Hunger Games", "The Lord of the Rings",
+            "Transformers", "Transformers Movie"
         ],
         *, query: str
     ):
@@ -646,9 +648,10 @@ class Search(commands.GroupCog, group_name = "search"):
     async def slash_search_fandom(
         self, interaction,
         wiki: Literal[
-            "Disney", "Foundation", "Genshin Impact", "Memory Alpha", "Pixar",
-            "Redwall", "Seinfeld", "Suits", "The Hunger Games",
-            "The Lord of the Rings", "Transformers", "Transformers Movie"
+            "Disney", "Foundation", "Genshin Impact",
+            "Marvel Cinematic Universe", "Memory Alpha", "Pixar", "Redwall",
+            "Seinfeld", "Suits", "The Hunger Games", "The Lord of the Rings",
+            "Transformers", "Transformers Movie"
         ],
         *, query: str
     ):
@@ -677,9 +680,10 @@ class Search(commands.GroupCog, group_name = "search"):
     async def fandom(
         self, ctx,
         wiki: Literal[
-            "Disney", "Foundation", "Genshin Impact", "Memory Alpha", "Pixar",
-            "Redwall", "Seinfeld", "Suits", "The Hunger Games",
-            "The Lord of the Rings", "Transformers", "Transformers Movie"
+            "Disney", "Foundation", "Genshin Impact",
+            "Marvel Cinematic Universe", "Memory Alpha", "Pixar", "Redwall",
+            "Seinfeld", "Suits", "The Hunger Games", "The Lord of the Rings",
+            "Transformers", "Transformers Movie"
         ],
         *, query: str
     ):
