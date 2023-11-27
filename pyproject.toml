@@ -4,7 +4,7 @@ dynamic = ["version"]
 requires-python = "~=3.10.11"
 
 [build-system]
-requires = ["setuptools==68.2.2"]
+requires = ["setuptools==68.2.2", "setuptools-scm==8.0.4"]
 build-backend = "setuptools.build_meta"
 
 [tool.mypy]
@@ -35,3 +35,5 @@ target-version = "py310"
 
 [tool.setuptools]
 packages = ["units"]
+
+[tool.setuptools_scm]
