@@ -2,6 +2,8 @@
 from discord import app_commands
 from discord.ext import commands
 
+from typing import Optional
+
 from units.cache import async_cache
 from utilities import checks
 from utilities.converters import SteamID64
@@ -99,7 +101,10 @@ class Brawlhalla(commands.Cog):
         return legends
 
     @brawlhalla.command()
-    async def player(self, ctx, name: SteamID64, legend: str | None = None):
+    async def player(
+        self, ctx, name: SteamID64,
+        legend: Optional[str] = None  # noqa: UP007 (non-pep604-annotation)
+    ):
         """
         Show information about a Brawlhalla player
 
