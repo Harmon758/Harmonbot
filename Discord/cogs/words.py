@@ -4,6 +4,7 @@ from discord.ext import commands, menus
 
 import io
 import textwrap
+from typing import Optional
 import urllib.error
 
 from bs4 import BeautifulSoup
@@ -269,7 +270,10 @@ class Words(commands.Cog):
         )
 
     @commands.group(case_insensitive = True, invoke_without_command = True)
-    async def translate(self, ctx, *, text: str | None):
+    async def translate(
+        self, ctx, *,
+        text: Optional[str]  # noqa: UP007 (non-pep604-annotation)
+    ):
         '''Translate to English'''
         # TODO: From and to language code options?
         if not text:
