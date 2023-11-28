@@ -63,7 +63,10 @@ class Images(commands.Cog):
         )
 
     @image.command(name = "color", aliases = ["colour"])
-    async def image_color(self, ctx, image_url: Optional[str]):
+    async def image_color(
+        self, ctx,
+        image_url: Optional[str]  # noqa: UP007 (non-pep604-annotation)
+    ):
         '''
         Image color density values
         and the closest W3C color name for each identified color
