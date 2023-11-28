@@ -147,7 +147,10 @@ class User(commands.Cog):
             )
 
     @user.command(name = "discriminator", with_app_command = False)
-    async def user_discriminator(self, ctx, *, user: Optional[discord.Member]):
+    async def user_discriminator(
+        self, ctx, *,
+        user: Optional[discord.Member]  # noqa: UP007 (non-pep604-annotation)
+    ):
         '''
         Get a discriminator
         Your own or someone else's discriminator
