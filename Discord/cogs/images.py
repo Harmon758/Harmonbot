@@ -253,7 +253,10 @@ class Images(commands.Cog):
         )
 
     @image.command(name = "recognition")
-    async def image_recognition(self, ctx, image_url: Optional[str]):
+    async def image_recognition(
+        self, ctx,
+        image_url: Optional[str]  # noqa: UP007 (non-pep604-annotation)
+    ):
         '''Image recognition'''
         if not image_url:
             if not ctx.message.attachments:
