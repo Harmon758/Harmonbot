@@ -349,7 +349,10 @@ class Words(commands.Cog):
         return response.languages
 
     @translate.command(name = "to")
-    async def translate_to(self, ctx, language_code: str, *, text: str | None):
+    async def translate_to(
+        self, ctx, language_code: str, *,
+        text: Optional[str]  # noqa: UP007 (non-pep604-annotation)
+    ):
         '''Translate to a specific language'''
         if not text:
             if ctx.message.reference:
