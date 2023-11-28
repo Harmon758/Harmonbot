@@ -445,7 +445,11 @@ class Random(commands.Cog):
             )
 
     @commands.group(case_insensitive = True, invoke_without_command = True)
-    async def dog(self, ctx, breed: str | None, sub_breed: str | None):
+    async def dog(
+        self, ctx,
+        breed: Optional[str],  # noqa: UP007 (non-pep604-annotation)
+        sub_breed: Optional[str]  # noqa: UP007 (non-pep604-annotation)
+    ):
         """
         Random image of a dog
 
