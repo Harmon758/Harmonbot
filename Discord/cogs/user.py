@@ -216,7 +216,12 @@ class User(commands.Cog):
             User to show ID of
             (Defaults to command invoker)
         """
-        await ctx.invoke(self.user_id, user = user)
+        if command := ctx.bot.get_command("user id"):
+            await ctx.invoke(command, user = user)
+        else:
+            raise RuntimeError(
+                "user id command not found when id command invoked"
+            )
 
     @user.command(aliases = ["info"], with_app_command = False)
     async def information(
