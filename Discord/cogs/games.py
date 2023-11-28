@@ -111,7 +111,9 @@ class Games(commands.Cog):
 	@commands.group(case_insensitive = True, invoke_without_command = True)
 	@checks.not_forbidden()
 	async def guess(
-		self, ctx, max_value: int | None = 10, tries: int | None = 1
+		self, ctx,
+		max_value: Optional[int] = 10,  # noqa: UP007 (non-pep604-annotation)
+		tries: Optional[int] = 1  # noqa: UP007 (non-pep604-annotation)
 	):
 		'''Guessing game'''
 		correct_number = random.randint(1, max_value)
