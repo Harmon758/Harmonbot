@@ -286,7 +286,10 @@ class Images(commands.Cog):
         )
 
     @commands.command()
-    async def nsfw(self, ctx, image_url: Optional[str]):
+    async def nsfw(
+        self, ctx,
+        image_url: Optional[str]  # noqa: UP007 (non-pep604-annotation)
+    ):
         '''NSFW recognition'''
         if not image_url:
             if not ctx.message.attachments:
