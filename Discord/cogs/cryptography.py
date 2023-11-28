@@ -3,7 +3,7 @@ import discord
 from discord.ext import commands
 
 import hashlib
-from typing import Literal
+from typing import Literal, Optional
 import zlib
 
 from Cryptodome.Hash import MD2, MD4, RIPEMD160
@@ -178,7 +178,9 @@ class Cryptography(commands.Cog):
 
     @decode.command(name = "qr")
     async def decode_qr(
-        self, ctx, image: discord.Attachment | None, image_url: str | None
+        self, ctx,
+        image: Optional[discord.Attachment],  # noqa: UP007 (non-pep604-annotation)
+        image_url: Optional[str]  # noqa: UP007 (non-pep604-annotation)
     ):
         """
         Decode QR code
