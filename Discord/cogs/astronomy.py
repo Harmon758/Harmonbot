@@ -515,7 +515,10 @@ class Astronomy(commands.Cog):
 								timestamp = dateutil.parser.parse(data["date"]) if data["date"] else None)
 	
 	@astronomy.command(aliases = ["instrument"])
-	async def telescope(self, ctx, *, telescope: Optional[str]):
+	async def telescope(
+		self, ctx, *,
+		telescope: Optional[str]  # noqa: UP007 (non-pep604-annotation)
+	):
 		'''
 		Telescopes and instruments
 		At observing sites on Earth
