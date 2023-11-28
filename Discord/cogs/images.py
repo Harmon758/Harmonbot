@@ -1,4 +1,5 @@
 
+import discord
 from discord.ext import commands
 
 import inspect
@@ -65,19 +66,20 @@ class Images(commands.Cog):
     @image.command(name = "color", aliases = ["colour"])
     async def image_color(
         self, ctx,
+        image: Optional[discord.Attachment],  # noqa: UP007 (non-pep604-annotation)
         image_url: Optional[str]  # noqa: UP007 (non-pep604-annotation)
     ):
         '''
         Image color density values
         and the closest W3C color name for each identified color
         '''
-        if not image_url:
-            if not ctx.message.attachments:
-                await ctx.embed_reply(
-                    f"{ctx.bot.error_emoji} Please input an image and/or url"
-                )
-                return
-            image_url = ctx.message.attachments[0].url
+        if image:
+            image_url = image.url
+        elif not image_url:
+            await ctx.embed_reply(
+                f"{ctx.bot.error_emoji} Please input an image and/or url"
+            )
+            return
 
         try:
             colors = clarifai.image_color(image_url)
