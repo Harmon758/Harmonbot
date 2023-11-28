@@ -106,7 +106,10 @@ class Random(commands.Cog):
             )
 
     @random.group(name = "cat", fallback = "image", case_insensitive = True)
-    async def random_cat(self, ctx, category: str | None):
+    async def random_cat(
+        self, ctx,
+        category: Optional[str]  # noqa: UP007 (non-pep604-annotation)
+    ):
         """Random image of a cat"""
         # Note: cat command invokes this command
         await ctx.defer()
