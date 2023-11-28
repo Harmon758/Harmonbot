@@ -288,16 +288,17 @@ class Images(commands.Cog):
     @commands.command()
     async def nsfw(
         self, ctx,
+        image: Optional[discord.Attachment],  # noqa: UP007 (non-pep604-annotation)
         image_url: Optional[str]  # noqa: UP007 (non-pep604-annotation)
     ):
         '''NSFW recognition'''
-        if not image_url:
-            if not ctx.message.attachments:
-                await ctx.embed_reply(
-                    f"{ctx.bot.error_emoji} Please input an image and/or url"
-                )
-                return
-            image_url = ctx.message.attachments[0].url
+        if image:
+            image_url = image.url
+        elif not image_url:
+            await ctx.embed_reply(
+                f"{ctx.bot.error_emoji} Please input an image and/or url"
+            )
+            return
 
         try:
             percentage = clarifai.image_nsfw(image_url) * 100
