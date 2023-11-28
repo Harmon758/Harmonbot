@@ -208,15 +208,18 @@ class Images(commands.Cog):
             await ctx.embed_reply(image_url = result.link)
 
     @imgur.command(name = "upload")
-    async def imgur_upload(self, ctx, image_url: str = ""):
+    async def imgur_upload(self, ctx,
+        image: Optional[discord.Attachment],  # noqa: UP007 (non-pep604-annotation)
+        image_url: Optional[str]  # noqa: UP007 (non-pep604-annotation)
+    ):
         '''Upload images to Imgur'''
-        if not (image_url or ctx.message.attachments):
+        if image:
+            image_url = image.url
+        elif not image_url:
             await ctx.embed_reply(
                 f"{ctx.bot.error_emoji} Please input an image and/or url"
             )
             return
-
-        image_url = image_url or ctx.message.attachments[0].url
 
         try:
             await ctx.embed_reply(
