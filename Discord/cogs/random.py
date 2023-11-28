@@ -399,7 +399,9 @@ class Random(commands.Cog):
     @random.group(name = "dog", fallback = "image", case_insensitive = True)
     @app_commands.rename(sub_breed = "sub-breed")
     async def random_dog(
-        self, ctx, breed: str | None, sub_breed: str | None
+        self, ctx,
+        breed: Optional[str],  # noqa: UP007 (non-pep604-annotation)
+        sub_breed: Optional[str]  # noqa: UP007 (non-pep604-annotation)
     ):
         """
         Random image of a dog
