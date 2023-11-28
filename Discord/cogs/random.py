@@ -1019,7 +1019,10 @@ class Random(commands.Cog):
         )
 
     @commands.command()
-    async def quote(self, ctx, message: discord.Message | None):
+    async def quote(
+        self, ctx,
+        message: Optional[discord.Message]  # noqa: UP007 (non-pep604-annotation)
+    ):
         """Random quote or quote a message"""
         # TODO: other options to quote by?
         if message:
