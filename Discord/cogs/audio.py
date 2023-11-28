@@ -210,7 +210,7 @@ class Audio(commands.Cog):
     )
     async def audio_join(
         self, ctx, *,
-        channel: Optional[
+        channel: Optional[  # noqa: UP007 (non-pep604-annotation)
             discord.VoiceChannel
         ] = parameters.CurrentVoiceChannel
     ):
