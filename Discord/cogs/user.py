@@ -137,9 +137,14 @@ class User(commands.Cog):
             User to show avatar of
             (Defaults to command invoker)
         """
-        await ctx.invoke(
-            self.user_avatar, flip = flip, mirror = mirror, user = user
-        )
+        if command := ctx.bot.get_command("user avatar"):
+            await ctx.invoke(
+                command, flip = flip, mirror = mirror, user = user
+            )
+        else:
+            raise RuntimeError(
+                "user avatar command not found when avatar command invoked"
+            )
 
     @user.command(name = "discriminator", with_app_command = False)
     async def user_discriminator(self, ctx, *, user: Optional[discord.Member]):
