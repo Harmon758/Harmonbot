@@ -773,7 +773,7 @@ class Random(commands.Cog):
     async def random_joke_dad(
         self, ctx,
         image: Optional[bool] = False,  # noqa: UP007 (non-pep604-annotation)
-        joke_id: str | None = None
+        joke_id: Optional[str] = None  # noqa: UP007 (non-pep604-annotation)
     ):
         '''Random dad joke'''
         # Note: joke dad command invokes this command
