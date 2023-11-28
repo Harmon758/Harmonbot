@@ -91,7 +91,10 @@ class Games(commands.Cog):
 		name = "8-ball", aliases = ["8ball", "eightball", '\N{BILLIARDS}']
 	)
 	@checks.not_forbidden()
-	async def eightball(self, ctx, *, question: Optional[str] = ""):
+	async def eightball(
+		self, ctx, *,
+		question: Optional[str] = ""  # noqa: UP007 (non-pep604-annotation)
+	):
 		"""
 		Ask 8-ball a yes or no question
 		
