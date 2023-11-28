@@ -240,6 +240,7 @@ class User(commands.Cog):
     @user.command(name = "name", with_app_command = False)
     async def user_name(self, ctx, *, user: Optional[discord.Member]):
         '''The name of a user'''
+        # Note: name command invokes this command
         if not user:
             await ctx.embed_reply(ctx.author.mention)
         else:
@@ -252,7 +253,12 @@ class User(commands.Cog):
     @commands.command()
     async def name(self, ctx, *, user: Optional[discord.Member]):
         """The name of a user"""
-        await ctx.invoke(self.user_name, user = user)
+        if command := ctx.bot.get_command("user name"):
+            await ctx.invoke(command, user = user)
+        else:
+            raise RuntimeError(
+                "user name command not found when name command invoked"
+            )
 
     @user.command(with_app_command = False)
     async def random(self, ctx):
