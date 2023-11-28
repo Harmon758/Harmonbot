@@ -152,6 +152,7 @@ class User(commands.Cog):
         Get a discriminator
         Your own or someone else's discriminator
         '''
+        # Note: discriminator command invokes this command
         if not user:
             await ctx.embed_reply(
                 f"Your discriminator: #{ctx.author.discriminator}"
@@ -169,7 +170,13 @@ class User(commands.Cog):
         Get a discriminator
         Your own or someone else's discriminator
         """
-        await ctx.invoke(self.user_discriminator, user = user)
+        if command := ctx.bot.get_command("user discriminator"):
+            await ctx.invoke(command, user = user)
+        else:
+            raise RuntimeError(
+                "user discriminator command not found "
+                "when discriminator command invoked"
+            )
 
     @user.command(name = "id")
     async def user_id(
