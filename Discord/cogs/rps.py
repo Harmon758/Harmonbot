@@ -8,7 +8,7 @@ from typing import Literal, Optional
 from utilities import checks
 
 
-EMOJI = {
+HAND_EMOJI = {
     "rock": '\N{RAISED FIST}',
     "paper": '\N{RAISED HAND}',
     "scissors": '\N{VICTORY HAND}',
@@ -20,13 +20,25 @@ EMOJI = {
     "Glock": '\N{WHITE LEFT POINTING BACKHAND INDEX}'
 }
 
+EMOJI = {
+    "RPS": HAND_EMOJI, "RPSLS": HAND_EMOJI, "RPSLSSBWG": HAND_EMOJI,
+    "CFN": {
+        "cockroach": ":bug:", "foot": ":footprints:", "nuclear bomb": ":bomb:"
+    }
+}
+
 RPS_OBJECTS = ("rock", "paper", "scissors")
 RPSLS_OBJECTS = RPS_OBJECTS + ("lizard", "Spock")
 RPSLSSBWG_OBJECTS = RPSLS_OBJECTS + ("Spider-Man", "Batman", "wizard", "Glock")
 
+CFN_OBJECTS = ("cockroach", "foot", "nuclear bomb")
+
 OBJECTS = {
-    "RPS": RPS_OBJECTS, "RPSLS": RPSLS_OBJECTS, "RPSLSSBWG": RPSLSSBWG_OBJECTS
+    "RPS": RPS_OBJECTS, "RPSLS": RPSLS_OBJECTS, "RPSLSSBWG": RPSLSSBWG_OBJECTS,
+    "CFN": CFN_OBJECTS
 }
+
+OBJECT_ALIASES = {"nuke": "nuclear bomb"}
 
 RESOLUTION = {
     "rock": {
@@ -64,13 +76,17 @@ RESOLUTION = {
     "Glock": {
         "rock": "breaks", "scissors": "dents", "Batman": "kills parents of",
         "Spock": "shoots"
-    }
+    },
+
+    "cockroach": {"nuclear bomb": "survives"},
+    "foot": {"cockroach": "squashes"},
+    "nuclear bomb": {"foot": "blows up"}
 }
 
 
 async def setup(bot):
-    for object_name in EMOJI:
-        EMOJI[object_name] += bot.emoji_skin_tone
+    for object_name in HAND_EMOJI:
+        HAND_EMOJI[object_name] += bot.emoji_skin_tone
 
     await bot.add_cog(RPS())
 
@@ -89,7 +105,7 @@ class RPS(commands.Cog):
     async def rps(
         self, ctx,
         rps_object: str,
-        variant: Optional[Literal["RPS", "RPSLS", "RPSLSSBWG"]] = "RPS"  # noqa: UP007 (non-pep604-annotation)
+        variant: Optional[Literal["RPS", "RPSLS", "RPSLSSBWG", "CFN"]] = "RPS"  # noqa: UP007 (non-pep604-annotation)
     ):
         '''
         Rock Paper Scissors
@@ -100,6 +116,9 @@ class RPS(commands.Cog):
         RPSLSSBWG — RPSLS Spider-Man Batman wizard Glock
         https://i.imgur.com/m9C2UTP.jpg
 
+        CFN — cockroach foot nuke (nuclear bomb)
+        https://www.youtube.com/watch?v=wRi2j8k0vjo
+
         Parameters
         ----------
         rps_object
@@ -108,8 +127,11 @@ class RPS(commands.Cog):
             Variant of RPS to play
             (Defaults to None / RPS)
         '''
-        # Note: rpsls invokes this command
-        # Note: rpslssbwg invokes this command
+        # Note: cfn command invokes this command
+        # Note: rpsls command invokes this command
+        # Note: rpslssbwg command invokes this command
+        if normalized_name := OBJECT_ALIASES.get(rps_object):
+            rps_object = normalized_name
         if rps_object not in OBJECTS[variant]:
             raise commands.BadArgument("That's not a valid object")
         value = random.choice(OBJECTS[variant])
@@ -121,13 +143,13 @@ class RPS(commands.Cog):
         elif rps_object in RESOLUTION[value]:
             await ctx.embed_reply(
                 f"I chose `{value}`\n"
-                f"{EMOJI[value]} {RESOLUTION[value][rps_object]} {EMOJI[rps_object]}\n"
+                f"{EMOJI[variant][value]} {RESOLUTION[value][rps_object]} {EMOJI[variant][rps_object]}\n"
                 "You lose :slight_frown:"
             )
         else:
             await ctx.embed_reply(
                 f"I chose `{value}`\n"
-                f"{EMOJI[rps_object]} {RESOLUTION[rps_object][value]} {EMOJI[value]}\n"
+                f"{EMOJI[variant][rps_object]} {RESOLUTION[rps_object][value]} {EMOJI[variant][value]}\n"
                 "You win! :tada:"
             )
 
@@ -187,36 +209,16 @@ class RPS(commands.Cog):
     )
     async def cfn(self, ctx, cfn_object: str):
         '''
-        Cockroach foot nuke
+        Cockroach Foot Nuke (Nuclear Bomb)
         https://www.youtube.com/watch?v=wRi2j8k0vjo
         '''
-        if cfn_object.lower() not in (
-            'c', 'f', 'n', "cockroach", "foot", "nuke"
-        ):
-            raise commands.BadArgument("That's not a valid object")
-        value = random.choice(("cockroach", "foot", "nuke"))
-        short_shape = cfn_object[0].lower()
-        resolution = {
-            'c': {'n': "survives"}, 'f': {'c': "squashes"},
-            'n': {'f': "blows up"}
-        }
-        emotes = {'c': ":bug:", 'f': ":footprints:", 'n': ":bomb:"}
-        if value[0] == short_shape:
-            await ctx.embed_reply(
-                f"I chose `{value}`\n"
-                "It's a draw :confused:"
-            )
-        elif short_shape in resolution[value[0]]:
-            await ctx.embed_reply(
-                f"I chose `{value}`\n"
-                f"{emotes[value[0]]} {resolution[value[0]][short_shape]} {emotes[short_shape]}\n"
-                "You lose :slight_frown:"
+        if command := ctx.bot.get_command("rps"):
+            await ctx.invoke(
+                command, rps_object = cfn_object, variant = "CFN"
             )
         else:
-            await ctx.embed_reply(
-                f"I chose `{value}`\n"
-                f"{emotes[short_shape]} {resolution[short_shape][value[0]]} {emotes[value[0]]}\n"
-                "You win! :tada:"
+            raise RuntimeError(
+                "rps command not found when cfn command invoked"
             )
 
     @commands.command(
