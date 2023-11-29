@@ -12,7 +12,7 @@ EMOJI = {
     "rock": '\N{RAISED FIST}',
     "paper": '\N{RAISED HAND}',
     "scissors": '\N{VICTORY HAND}',
-    "lizard": ":lizard:",
+    "lizard": '\N{PALM DOWN HAND}',
     "Spock": '\N{RAISED HAND WITH PART BETWEEN MIDDLE AND RING FINGERS}'
 }
 
@@ -31,7 +31,7 @@ RESOLUTION = {
 
 
 async def setup(bot):
-    for object_name in ("rock", "paper", "scissors", "Spock"):
+    for object_name in EMOJI:
         EMOJI[object_name] += bot.emoji_skin_tone
 
     await bot.add_cog(RPS())
