@@ -291,9 +291,13 @@ class Games(commands.Cog):
 				"You win! :tada:"
 			)
 	
-	@commands.command(aliases = ["rockpaperscissorslizardspockspidermanbatmanwizardglock", 
-									"rock-paper-scissors-lizard-spock-spiderman-batman-wizard-glock"], 
-						usage = "<object>")
+	@commands.command(
+		aliases = [
+			"rockpaperscissorslizardspockspidermanbatmanwizardglock",
+			"rock-paper-scissors-lizard-spock-spiderman-batman-wizard-glock"
+		],
+		usage = "<object>"
+	)
 	@checks.not_forbidden()
 	async def rpslssbwg(self, ctx, rpslssbwg_object: str):
 		'''
@@ -301,34 +305,55 @@ class Games(commands.Cog):
 		http://i.imgur.com/m9C2UTP.jpg
 		'''
 		rpslssbwg_object = rpslssbwg_object.lower().replace('-', "")
-		if rpslssbwg_object not in ("rock", "paper", "scissors", "lizard", "spock", "spiderman", "batman", "wizard", "glock"):
+		if rpslssbwg_object not in (
+			"rock", "paper", "scissors", "lizard", "spock", "spiderman",
+			"batman", "wizard", "glock"
+		):
 			raise commands.BadArgument("That's not a valid object")
-		value = random.choice(("rock", "paper", "scissors", "lizard", "Spock", "Spider-Man", "Batman", "wizard", "Glock"))
-		resolution = {"rock": {"scissors": "crushes", "lizard": "crushes", "spiderman": "knocks out", "wizard": "interrupts"}, 
-						"paper": {"rock": "covers", "spock": "disproves", "batman": "delays", "glock": "jams"}, 
-						"scissors": {"paper": "cuts", "lizard": "decapitates", "spiderman": "cuts", "wizard": "cuts"}, 
-						"lizard": {"paper": "eats", "spock": "poisons", "batman": "confuses", "glock": "is too small for"}, 
-						"spock": {"rock": "vaporizes", "scissors": "smashes", "spiderman": "befuddles", "wizard": "zaps"}, 
-						"spiderman": {"paper": "rips", "lizard": "defeats", "wizard": "annoys", "glock": "disarms"}, 
-						"batman": {"rock": "explodes", "scissors": "dismantles", "spiderman": "scares", "spock": "hangs"}, 
-						"wizard": {"paper": "burns", "lizard": "transforms", "batman": "stuns", "glock": "melts"}, 
-						"glock": {"rock": "breaks", "scissors": "dents", "batman": "kills parents of", "spock": "shoots"}}
-		emotes = {"rock": f"\N{RAISED FIST}{ctx.bot.emoji_skin_tone}", "paper": f"\N{RAISED HAND}{ctx.bot.emoji_skin_tone}", 
-					"scissors": f"\N{VICTORY HAND}{ctx.bot.emoji_skin_tone}", "lizard": ":lizard:", 
-					"spock": f"\N{RAISED HAND WITH PART BETWEEN MIDDLE AND RING FINGERS}{ctx.bot.emoji_skin_tone}", 
-					"spiderman": ":spider:", "batman": ":bat:", "wizard": ":tophat:", "glock": ":gun:"}
+		value = random.choice((
+			"rock", "paper", "scissors", "lizard", "Spock", "Spider-Man",
+			"Batman", "wizard", "Glock"
+		))
+		resolution = {
+			"rock": {"scissors": "crushes", "lizard": "crushes", "spiderman": "knocks out", "wizard": "interrupts"},
+			"paper": {"rock": "covers", "spock": "disproves", "batman": "delays", "glock": "jams"},
+			"scissors": {"paper": "cuts", "lizard": "decapitates", "spiderman": "cuts", "wizard": "cuts"},
+			"lizard": {"paper": "eats", "spock": "poisons", "batman": "confuses", "glock": "is too small for"},
+			"spock": {"rock": "vaporizes", "scissors": "smashes", "spiderman": "befuddles", "wizard": "zaps"},
+			"spiderman": {"paper": "rips", "lizard": "defeats", "wizard": "annoys", "glock": "disarms"},
+			"batman": {"rock": "explodes", "scissors": "dismantles", "spiderman": "scares", "spock": "hangs"},
+			"wizard": {"paper": "burns", "lizard": "transforms", "batman": "stuns", "glock": "melts"},
+			"glock": {"rock": "breaks", "scissors": "dents", "batman": "kills parents of", "spock": "shoots"}
+		}
+		emotes = {
+			"rock": f"\N{RAISED FIST}{ctx.bot.emoji_skin_tone}",
+			"paper": f"\N{RAISED HAND}{ctx.bot.emoji_skin_tone}", 
+			"scissors": f"\N{VICTORY HAND}{ctx.bot.emoji_skin_tone}",
+			"lizard": ":lizard:",
+			"spock": f"\N{RAISED HAND WITH PART BETWEEN MIDDLE AND RING FINGERS}{ctx.bot.emoji_skin_tone}",
+			"spiderman": ":spider:",
+			"batman": ":bat:",
+			"wizard": ":tophat:",
+			"glock": ":gun:"
+		}
 		standard_value = value.lower().replace('-', "")
 		if standard_value == rpslssbwg_object:
-			await ctx.embed_reply(f"I chose `{value}`\n"
-									"It's a draw :confused:")
+			await ctx.embed_reply(
+				f"I chose `{value}`\n"
+				"It's a draw :confused:"
+			)
 		elif rpslssbwg_object in resolution[standard_value]:
-			await ctx.embed_reply(f"I chose `{value}`\n"
-									f"{emotes[standard_value]} {resolution[standard_value][rpslssbwg_object]} {emotes[rpslssbwg_object]}\n"
-									"You lose :slight_frown:")
+			await ctx.embed_reply(
+				f"I chose `{value}`\n"
+				f"{emotes[standard_value]} {resolution[standard_value][rpslssbwg_object]} {emotes[rpslssbwg_object]}\n"
+				"You lose :slight_frown:"
+			)
 		else:
-			await ctx.embed_reply(f"I chose `{value}`\n"
-									f"{emotes[rpslssbwg_object]} {resolution[rpslssbwg_object][standard_value]} {emotes[standard_value]}\n"
-									"You win! :tada:")
+			await ctx.embed_reply(
+				f"I chose `{value}`\n"
+				f"{emotes[rpslssbwg_object]} {resolution[rpslssbwg_object][standard_value]} {emotes[standard_value]}\n"
+				"You win! :tada:"
+			)
 	
 	@commands.command(aliases = ["cockroachfootnuke", "cockroach-foot-nuke"], 
 						usage = "<object>")
