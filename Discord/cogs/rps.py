@@ -17,7 +17,7 @@ EMOJI = {
     "Spider-Man": '\N{SIGN OF THE HORNS}',
     "Batman": '\N{CALL ME HAND}',
     "wizard": '🫴',  # Replace with '\N{PALM UP HAND}' in Python 3.11
-    "Glock": ":gun:"
+    "Glock": '\N{WHITE LEFT POINTING BACKHAND INDEX}'
 }
 
 RPS_OBJECTS = ("rock", "paper", "scissors")
