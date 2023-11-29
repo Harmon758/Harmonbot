@@ -3,11 +3,37 @@ from discord import app_commands
 from discord.ext import commands
 
 import random
+from typing import Literal, Optional
 
 from utilities import checks
 
 
+EMOJI = {
+    "rock": '\N{RAISED FIST}',
+    "paper": '\N{RAISED HAND}',
+    "scissors": '\N{VICTORY HAND}',
+    "lizard": ":lizard:",
+    "Spock": '\N{RAISED HAND WITH PART BETWEEN MIDDLE AND RING FINGERS}'
+}
+
+RPS_OBJECTS = ("rock", "paper", "scissors")
+RPSLS_OBJECTS = RPS_OBJECTS + ("lizard", "Spock")
+
+OBJECTS = {"RPS": RPS_OBJECTS, "RPSLS": RPSLS_OBJECTS}
+
+RESOLUTION = {
+    "rock": {"scissors": "crushes", "lizard": "crushes"},
+    "paper": {"rock": "covers", "Spock": "disproves"},
+    "scissors": {"paper": "cuts", "lizard": "decapitates"},
+    "lizard": {"paper": "eats", "Spock": "poisons"},
+    "Spock": {"rock": "vaporizes", "scissors": "smashes"}
+}
+
+
 async def setup(bot):
+    for object_name in ("rock", "paper", "scissors", "Spock"):
+        EMOJI[object_name] += bot.emoji_skin_tone
+
     await bot.add_cog(RPS())
 
 class RPS(commands.Cog):
@@ -22,48 +48,50 @@ class RPS(commands.Cog):
         usage = "<object>"
     )
     @app_commands.rename(rps_object = "object")
-    async def rps(self, ctx, rps_object: str):
+    async def rps(
+        self, ctx,
+        rps_object: str,
+        variant: Optional[Literal["RPS", "RPSLS"]] = "RPS"  # noqa: UP007 (non-pep604-annotation)
+    ):
         '''
-        Rock paper scissors
+        Rock Paper Scissors
+
+        RPSLS - RPS lizard Spock
+        https://upload.wikimedia.org/wikipedia/commons/f/fe/Rock_Paper_Scissors_Lizard_Spock_en.svg
 
         Parameters
         ----------
         rps_object
             Object of your choice
+        variant
+            Variant of RPS to play
+            (Defaults to None / RPS)
         '''
-        if rps_object.lower() not in ("rock", "paper", "scissors"):
+        if rps_object not in OBJECTS[variant]:
             raise commands.BadArgument("That's not a valid object")
-        value = random.choice(("rock", "paper", "scissors"))
-        resolution = {
-            "rock": {"scissors": "crushes"}, "paper": {"rock": "covers"},
-            "scissors": {"paper": "cuts"}
-        }
-        emotes = {
-            "rock": f"\N{RAISED FIST}{ctx.bot.emoji_skin_tone}",
-            "paper": f"\N{RAISED HAND}{ctx.bot.emoji_skin_tone}",
-            "scissors": f"\N{VICTORY HAND}{ctx.bot.emoji_skin_tone}"
-        }
+        value = random.choice(OBJECTS[variant])
         if value == rps_object:
             await ctx.embed_reply(f"I chose `{value}`\nIt's a draw :confused:")
-        elif rps_object in resolution[value]:
+        elif rps_object in RESOLUTION[value]:
             await ctx.embed_reply(
                 f"I chose `{value}`\n"
-                f"{emotes[value]} {resolution[value][rps_object]} {emotes[rps_object]}\n"
+                f"{EMOJI[value]} {RESOLUTION[value][rps_object]} {EMOJI[rps_object]}\n"
                 "You lose :slight_frown:"
             )
         else:
             await ctx.embed_reply(
                 f"I chose `{value}`\n"
-                f"{emotes[rps_object]} {resolution[rps_object][value]} {emotes[value]}\n"
+                f"{EMOJI[rps_object]} {RESOLUTION[rps_object][value]} {EMOJI[value]}\n"
                 "You win! :tada:"
             )
 
     @rps.autocomplete("rps_object")
     async def rps_autocomplete(self, interaction, current):
+        variant = interaction.namespace.variant or "RPS"
         return [
             app_commands.Choice(name = rps_object, value = rps_object)
-            for rps_object in ("paper", "rock", "scissors")
-            if current.lower() in rps_object
+            for rps_object in OBJECTS[variant]
+            if current.lower() in rps_object.lower()
         ]
 
     @commands.command(
@@ -77,45 +105,13 @@ class RPS(commands.Cog):
         RPS lizard Spock
         https://upload.wikimedia.org/wikipedia/commons/f/fe/Rock_Paper_Scissors_Lizard_Spock_en.svg
         '''
-        if rpsls_object.lower() not in (
-            'r', 'p', 's', 'l', "rock", "paper", "scissors", "lizard", "spock"
-        ):
-            raise commands.BadArgument("That's not a valid object")
-        value = random.choice(("rock", "paper", "scissors", "lizard", "Spock"))
-        if (
-            rpsls_object[0] == 'S' and rpsls_object.lower() != "scissors" or
-            rpsls_object.lower() == "spock"
-        ):
-            short_shape = 'S'
-        else:
-            short_shape = rpsls_object[0].lower()
-        resolution = {
-            'r': {'s': "crushes", 'l': "crushes"},
-            'p': {'r': "covers", 'S': "disproves"},
-            's': {'p': "cuts", 'l': "decapitates"},
-            'l': {'p': "eats", 'S': "poisons"},
-            'S': {'r': "vaporizes", 's': "smashes"}
-        }
-        emotes = {
-            'r': f"\N{RAISED FIST}{ctx.bot.emoji_skin_tone}",
-            'p': f"\N{RAISED HAND}{ctx.bot.emoji_skin_tone}",
-            's': f"\N{VICTORY HAND}{ctx.bot.emoji_skin_tone}",
-            'l': ":lizard:",
-            'S': f"\N{RAISED HAND WITH PART BETWEEN MIDDLE AND RING FINGERS}{ctx.bot.emoji_skin_tone}"
-        }
-        if value[0] == short_shape:
-            await ctx.embed_reply(f"I chose `{value}`\nIt's a draw :confused:")
-        elif short_shape in resolution[value[0]]:
-            await ctx.embed_reply(
-                f"I chose `{value}`\n"
-                f"{emotes[value[0]]} {resolution[value[0]][short_shape]} {emotes[short_shape]}\n"
-                "You lose :slight_frown:"
+        if command := ctx.bot.get_command("rps"):
+            await ctx.invoke(
+                command, rps_object = rpsls_object, variant = "RPSLS"
             )
         else:
-            await ctx.embed_reply(
-                f"I chose `{value}`\n"
-                f"{emotes[short_shape]} {resolution[short_shape][value[0]]} {emotes[value[0]]}\n"
-                "You win! :tada:"
+            raise RuntimeError(
+                "rps command not found when rpsls command invoked"
             )
 
     @commands.command(
