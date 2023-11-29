@@ -271,7 +271,7 @@ class RPS(commands.Cog):
             """
             SELECT action FROM games.erps
             WHERE object = $1 AND against = $2
-            """, 
+            """,
             standard_value, erps_object
         )
         if action:
@@ -285,7 +285,7 @@ class RPS(commands.Cog):
             """
             SELECT action FROM games.erps
             WHERE object = $1 AND against = $2
-            """, 
+            """,
             erps_object, standard_value
         )
         if action:
