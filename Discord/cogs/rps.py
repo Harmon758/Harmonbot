@@ -1,4 +1,5 @@
 
+from discord import app_commands
 from discord.ext import commands
 
 import random
@@ -14,14 +15,22 @@ class RPS(commands.Cog):
     async def cog_check(self, ctx):
         return await checks.not_forbidden().predicate(ctx)
 
-    @commands.command(
+    @commands.hybrid_command(
         aliases = [
             "rockpaperscissors", "rock-paper-scissors", "rock_paper_scissors"
         ],
         usage = "<object>"
     )
+    @app_commands.rename(rps_object = "object")
     async def rps(self, ctx, rps_object: str):
-        '''Rock paper scissors'''
+        '''
+        Rock paper scissors
+
+        Parameters
+        ----------
+        rps_object
+            Object of your choice
+        '''
         if rps_object.lower() not in (
             'r', 'p', 's', "rock", "paper", "scissors"
         ):
