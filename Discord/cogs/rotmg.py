@@ -101,12 +101,12 @@ class RotMG(commands.Cog):
 				f"Speed: {stats['speed']}, "
 				f"Vitality: {stats['vitality']}, "
 				f"Wisdom: {stats['wisdom']}, "
-				f"Dexterity: {stats['dexterity']}"
+				f"Dexterity: {stats['dexterity']}\n"
 			)
-			equips = []
-			for type, equip in character["equips"].items():
-				equips.append(f"{type.capitalize()}: {equip}")
-			value += '\n' + ", ".join(equips)
+			value += ", ".join(
+				f"{type.capitalize()}: {equip}"
+				for type, equip in character["equips"].items()
+			)
 			value += (
 				f"\nPet: {character['pet']}, "
 				f"Clothing Dye: {character['character_dyes']['clothing_dye']}, "
