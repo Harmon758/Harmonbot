@@ -200,28 +200,43 @@ class Games(commands.Cog):
 		embed.description = f"was the first to click {winning_emoji} and won with a time of {elapsed:.5} seconds!"
 		await response.edit(embed = embed)
 	
-	@commands.command(aliases = ["rockpaperscissors", "rock-paper-scissors", "rock_paper_scissors"], 
-						usage = "<object>")
+	@commands.command(
+		aliases = [
+			"rockpaperscissors", "rock-paper-scissors", "rock_paper_scissors"
+		],
+		usage = "<object>"
+	)
 	@checks.not_forbidden()
 	async def rps(self, ctx, rps_object: str):
 		'''Rock paper scissors'''
-		if rps_object.lower() not in ('r', 'p', 's', "rock", "paper", "scissors"):
+		if rps_object.lower() not in (
+			'r', 'p', 's', "rock", "paper", "scissors"
+		):
 			raise commands.BadArgument("That's not a valid object")
 		value = random.choice(("rock", "paper", "scissors"))
 		short_shape = rps_object[0].lower()
-		resolution = {'r': {'s': "crushes"}, 'p': {'r': "covers"}, 's': {'p': "cuts"}}
-		emotes = {'r': f"\N{RAISED FIST}{ctx.bot.emoji_skin_tone}", 'p': f"\N{RAISED HAND}{ctx.bot.emoji_skin_tone}", 
-					's': f"\N{VICTORY HAND}{ctx.bot.emoji_skin_tone}"}
+		resolution = {
+			'r': {'s': "crushes"}, 'p': {'r': "covers"}, 's': {'p': "cuts"}
+		}
+		emotes = {
+			'r': f"\N{RAISED FIST}{ctx.bot.emoji_skin_tone}",
+			'p': f"\N{RAISED HAND}{ctx.bot.emoji_skin_tone}", 
+			's': f"\N{VICTORY HAND}{ctx.bot.emoji_skin_tone}"
+		}
 		if value[0] == short_shape:
 			await ctx.embed_reply(f"I chose `{value}`\nIt's a draw :confused:")
 		elif short_shape in resolution[value[0]]:
-			await ctx.embed_reply(f"I chose `{value}`\n"
-									f"{emotes[value[0]]} {resolution[value[0]][short_shape]} {emotes[short_shape]}\n"
-									"You lose :slight_frown:")
+			await ctx.embed_reply(
+				f"I chose `{value}`\n"
+				f"{emotes[value[0]]} {resolution[value[0]][short_shape]} {emotes[short_shape]}\n"
+				"You lose :slight_frown:"
+			)
 		else:
-			await ctx.embed_reply(f"I chose `{value}`\n"
-									f"{emotes[short_shape]} {resolution[short_shape][value[0]]} {emotes[value[0]]}\n"
-									"You win! :tada:")
+			await ctx.embed_reply(
+				f"I chose `{value}`\n"
+				f"{emotes[short_shape]} {resolution[short_shape][value[0]]} {emotes[value[0]]}\n"
+				"You win! :tada:"
+			)
 	
 	@commands.command(aliases = ["rockpaperscissorslizardspock", "rock-paper-scissors-lizard-spock"], 
 						usage = "<object>")
