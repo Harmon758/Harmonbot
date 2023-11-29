@@ -238,7 +238,10 @@ class User(commands.Cog):
 
     # TODO: Make general name command with subcommands
     @user.command(name = "name", with_app_command = False)
-    async def user_name(self, ctx, *, user: Optional[discord.Member]):
+    async def user_name(
+        self, ctx, *,
+        user: Optional[discord.Member]  # noqa: UP007 (non-pep604-annotation)
+    ):
         '''The name of a user'''
         # Note: name command invokes this command
         if not user:
