@@ -11,13 +11,15 @@ async def setup(bot):
 
 class RPS(commands.Cog):
 
+    async def cog_check(self, ctx):
+        return await checks.not_forbidden().predicate(ctx)
+
     @commands.command(
         aliases = [
             "rockpaperscissors", "rock-paper-scissors", "rock_paper_scissors"
         ],
         usage = "<object>"
     )
-    @checks.not_forbidden()
     async def rps(self, ctx, rps_object: str):
         '''Rock paper scissors'''
         if rps_object.lower() not in (
@@ -55,7 +57,6 @@ class RPS(commands.Cog):
         ],
         usage = "<object>"
     )
-    @checks.not_forbidden()
     async def rpsls(self, ctx, rpsls_object: str):
         '''
         RPS lizard Spock
@@ -109,7 +110,6 @@ class RPS(commands.Cog):
         ],
         usage = "<object>"
     )
-    @checks.not_forbidden()
     async def rpslssbwg(self, ctx, rpslssbwg_object: str):
         '''
         RPSLS Spider-Man Batman wizard Glock
@@ -170,7 +170,6 @@ class RPS(commands.Cog):
         aliases = ["cockroachfootnuke", "cockroach-foot-nuke"],
         usage = "<object>"
     )
-    @checks.not_forbidden()
     async def cfn(self, ctx, cfn_object: str):
         '''
         Cockroach foot nuke
@@ -209,7 +208,6 @@ class RPS(commands.Cog):
         aliases = ["extremerps", "rps-101", "rps101"],
         usage = "<object>"
     )
-    @checks.not_forbidden()
     async def erps(self, ctx, erps_object: str):
         '''
         Extreme rock paper scissors
