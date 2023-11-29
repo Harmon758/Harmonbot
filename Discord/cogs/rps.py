@@ -13,20 +13,58 @@ EMOJI = {
     "paper": '\N{RAISED HAND}',
     "scissors": '\N{VICTORY HAND}',
     "lizard": '🫳',  # Replace with '\N{PALM DOWN HAND}' in Python 3.11
-    "Spock": '\N{RAISED HAND WITH PART BETWEEN MIDDLE AND RING FINGERS}'
+    "Spock": '\N{RAISED HAND WITH PART BETWEEN MIDDLE AND RING FINGERS}',
+    "Spider-Man": ":spider:",
+    "Batman": ":bat:",
+    "wizard": ":tophat:",
+    "Glock": ":gun:"
 }
 
 RPS_OBJECTS = ("rock", "paper", "scissors")
 RPSLS_OBJECTS = RPS_OBJECTS + ("lizard", "Spock")
+RPSLSSBWG_OBJECTS = RPSLS_OBJECTS + ("Spider-Man", "Batman", "wizard", "Glock")
 
-OBJECTS = {"RPS": RPS_OBJECTS, "RPSLS": RPSLS_OBJECTS}
+OBJECTS = {
+    "RPS": RPS_OBJECTS, "RPSLS": RPSLS_OBJECTS, "RPSLSSBWG": RPSLSSBWG_OBJECTS
+}
 
 RESOLUTION = {
-    "rock": {"scissors": "crushes", "lizard": "crushes"},
-    "paper": {"rock": "covers", "Spock": "disproves"},
-    "scissors": {"paper": "cuts", "lizard": "decapitates"},
-    "lizard": {"paper": "eats", "Spock": "poisons"},
-    "Spock": {"rock": "vaporizes", "scissors": "smashes"}
+    "rock": {
+        "scissors": "crushes", "lizard": "crushes",
+        "Spider-Man": "knocks out", "wizard": "interrupts"
+    },
+    "paper": {
+        "rock": "covers", "Spock": "disproves", "Batman": "delays",
+        "Glock": "jams"
+    },
+    "scissors": {
+        "paper": "cuts", "lizard": "decapitates", "Spider-Man": "cuts",
+        "wizard": "cuts"
+    },
+    "lizard": {
+        "paper": "eats", "Spock": "poisons", "Batman": "confuses",
+        "Glock": "is too small for"
+    },
+    "Spock": {
+        "rock": "vaporizes", "scissors": "smashes", "Spider-Man": "befuddles",
+        "wizard": "zaps"
+    },
+    "Spider-Man": {
+        "paper": "rips", "lizard": "defeats", "wizard": "annoys",
+        "Glock": "disarms"
+    },
+    "Batman": {
+        "rock": "explodes", "scissors": "dismantles", "Spider-Man": "scares",
+        "Spock": "hangs"
+    },
+    "wizard": {
+        "paper": "burns", "lizard": "transforms", "Batman": "stuns",
+        "Glock": "melts"
+    },
+    "Glock": {
+        "rock": "breaks", "scissors": "dents", "Batman": "kills parents of",
+        "Spock": "shoots"
+    }
 }
 
 
@@ -51,13 +89,16 @@ class RPS(commands.Cog):
     async def rps(
         self, ctx,
         rps_object: str,
-        variant: Optional[Literal["RPS", "RPSLS"]] = "RPS"  # noqa: UP007 (non-pep604-annotation)
+        variant: Optional[Literal["RPS", "RPSLS", "RPSLSSBWG"]] = "RPS"  # noqa: UP007 (non-pep604-annotation)
     ):
         '''
         Rock Paper Scissors
 
-        RPSLS - RPS lizard Spock
+        RPSLS — RPS lizard Spock
         https://upload.wikimedia.org/wikipedia/commons/f/fe/Rock_Paper_Scissors_Lizard_Spock_en.svg
+
+        RPSLSSBWG — RPSLS Spider-Man Batman wizard Glock
+        http://i.imgur.com/m9C2UTP.jpg
 
         Parameters
         ----------
@@ -71,7 +112,10 @@ class RPS(commands.Cog):
             raise commands.BadArgument("That's not a valid object")
         value = random.choice(OBJECTS[variant])
         if value == rps_object:
-            await ctx.embed_reply(f"I chose `{value}`\nIt's a draw :confused:")
+            await ctx.embed_reply(
+                f"I chose `{value}`\n"
+                "It's a draw :confused:"
+            )
         elif rps_object in RESOLUTION[value]:
             await ctx.embed_reply(
                 f"I chose `{value}`\n"
@@ -126,55 +170,13 @@ class RPS(commands.Cog):
         RPSLS Spider-Man Batman wizard Glock
         http://i.imgur.com/m9C2UTP.jpg
         '''
-        rpslssbwg_object = rpslssbwg_object.lower().replace('-', "")
-        if rpslssbwg_object not in (
-            "rock", "paper", "scissors", "lizard", "spock", "spiderman",
-            "batman", "wizard", "glock"
-        ):
-            raise commands.BadArgument("That's not a valid object")
-        value = random.choice((
-            "rock", "paper", "scissors", "lizard", "Spock", "Spider-Man",
-            "Batman", "wizard", "Glock"
-        ))
-        resolution = {
-            "rock": {"scissors": "crushes", "lizard": "crushes", "spiderman": "knocks out", "wizard": "interrupts"},
-            "paper": {"rock": "covers", "spock": "disproves", "batman": "delays", "glock": "jams"},
-            "scissors": {"paper": "cuts", "lizard": "decapitates", "spiderman": "cuts", "wizard": "cuts"},
-            "lizard": {"paper": "eats", "spock": "poisons", "batman": "confuses", "glock": "is too small for"},
-            "spock": {"rock": "vaporizes", "scissors": "smashes", "spiderman": "befuddles", "wizard": "zaps"},
-            "spiderman": {"paper": "rips", "lizard": "defeats", "wizard": "annoys", "glock": "disarms"},
-            "batman": {"rock": "explodes", "scissors": "dismantles", "spiderman": "scares", "spock": "hangs"},
-            "wizard": {"paper": "burns", "lizard": "transforms", "batman": "stuns", "glock": "melts"},
-            "glock": {"rock": "breaks", "scissors": "dents", "batman": "kills parents of", "spock": "shoots"}
-        }
-        emotes = {
-            "rock": f"\N{RAISED FIST}{ctx.bot.emoji_skin_tone}",
-            "paper": f"\N{RAISED HAND}{ctx.bot.emoji_skin_tone}",
-            "scissors": f"\N{VICTORY HAND}{ctx.bot.emoji_skin_tone}",
-            "lizard": ":lizard:",
-            "spock": f"\N{RAISED HAND WITH PART BETWEEN MIDDLE AND RING FINGERS}{ctx.bot.emoji_skin_tone}",
-            "spiderman": ":spider:",
-            "batman": ":bat:",
-            "wizard": ":tophat:",
-            "glock": ":gun:"
-        }
-        standard_value = value.lower().replace('-', "")
-        if standard_value == rpslssbwg_object:
-            await ctx.embed_reply(
-                f"I chose `{value}`\n"
-                "It's a draw :confused:"
-            )
-        elif rpslssbwg_object in resolution[standard_value]:
-            await ctx.embed_reply(
-                f"I chose `{value}`\n"
-                f"{emotes[standard_value]} {resolution[standard_value][rpslssbwg_object]} {emotes[rpslssbwg_object]}\n"
-                "You lose :slight_frown:"
+        if command := ctx.bot.get_command("rps"):
+            await ctx.invoke(
+                command, rps_object = rpslssbwg_object, variant = "RPSLSSBWG"
             )
         else:
-            await ctx.embed_reply(
-                f"I chose `{value}`\n"
-                f"{emotes[rpslssbwg_object]} {resolution[rpslssbwg_object][standard_value]} {emotes[standard_value]}\n"
-                "You win! :tada:"
+            raise RuntimeError(
+                "rps command not found when rpslssbwg command invoked"
             )
 
     @commands.command(
