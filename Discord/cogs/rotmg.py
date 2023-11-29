@@ -78,17 +78,47 @@ class RotMG(commands.Cog):
 			await ctx.embed_reply("Error: " + data["error"])
 			return
 		
-		embed = discord.Embed(title = f"{data['player']}'s Characters", color = ctx.bot.bot_color)
-		embed.set_author(name = ctx.author.display_name, icon_url = ctx.author.display_avatar.url)
+		embed = discord.Embed(
+			title = f"{data['player']}'s Characters",
+			color = ctx.bot.bot_color
+		)
+		embed.set_author(
+			name = ctx.author.display_name,
+			icon_url = ctx.author.display_avatar.url
+		)
 		for character in data["characters"]:
-			value = "Fame: {0[fame]:,}, Exp: {0[exp]:,}, Rank: {0[place]:,}, Class Quests Completed: {0[cqc]}, Stats Maxed: {0[stats_maxed]}".format(character)
-			value += "\nHP: {0[hp]}, MP: {0[mp]}, Attack: {0[attack]}, Defense: {0[defense]}, Speed: {0[speed]}, Vitality: {0[vitality]}, Wisdom: {0[wisdom]}, Dexterity: {0[dexterity]}".format(character["stats"])
+			stats = character["stats"]
+			value = (
+				f"Fame: {character['fame']:,}, "
+				f"Exp: {character['exp']:,}, "
+				f"Rank: {character['place']:,}, "
+				f"Class Quests Completed: {character['cqc']}, "
+				f"Stats Maxed: {character['stats_maxed']}\n"
+				f"HP: {stats['hp']}, "
+				f"MP: {stats['mp']}, "
+				f"Attack: {stats['attack']}, "
+				f"Defense: {stats['defense']}, "
+				f"Speed: {stats['speed']}, "
+				f"Vitality: {stats['vitality']}, "
+				f"Wisdom: {stats['wisdom']}, "
+				f"Dexterity: {stats['dexterity']}"
+			)
 			equips = []
 			for type, equip in character["equips"].items():
 				equips.append(f"{type.capitalize()}: {equip}")
 			value += '\n' + ", ".join(equips)
-			value += "\nPet: {0[pet]}, Clothing Dye: {0[character_dyes][clothing_dye]}, Accessory Dye: {0[character_dyes][accessory_dye]}, Backpack: {0[backpack]}".format(character)
-			value += f"\nLast Seen: {character['last_seen']}, Last Server: {character['last_server']}"
-			embed.add_field(name = f"Level {character['level']} {character['class']}", value = value, inline = False)
+			value += (
+				f"\nPet: {character['pet']}, "
+				f"Clothing Dye: {character['character_dyes']['clothing_dye']}, "
+				f"Accessory Dye: {character['character_dyes']['accessory_dye']}, "
+				f"Backpack: {character['backpack']}\n"
+				f"Last Seen: {character['last_seen']}, "
+				f"Last Server: {character['last_server']}"
+			)
+			embed.add_field(
+				name = f"Level {character['level']} {character['class']}",
+				value = value,
+				inline = False
+			)
 		await ctx.send(embed = embed)
 
