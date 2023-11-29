@@ -23,7 +23,7 @@ class RotMG(commands.Cog):
 		'''Realm of the Mad God player information'''
 		# http://webhost.ischool.uw.edu/~joatwood/realmeye_api/0.3/
 		async with ctx.bot.aiohttp_session.get(
-			f"https://nightfirec.at/realmeye-api/",
+			"https://nightfirec.at/realmeye-api/",
 			params = {"player": player}
 		) as resp:
 			data = await resp.json()
