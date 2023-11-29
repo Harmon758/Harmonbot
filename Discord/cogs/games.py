@@ -369,31 +369,30 @@ class Games(commands.Cog):
 			'c', 'f', 'n', "cockroach", "foot", "nuke"
 		):
 			raise commands.BadArgument("That's not a valid object")
+		value = random.choice(("cockroach", "foot", "nuke"))
+		short_shape = cfn_object[0].lower()
+		resolution = {
+			'c': {'n': "survives"}, 'f': {'c': "squashes"},
+			'n': {'f': "blows up"}
+		}
+		emotes = {'c': ":bug:", 'f': ":footprints:", 'n': ":bomb:"}
+		if value[0] == short_shape:
+			await ctx.embed_reply(
+				f"I chose `{value}`\n"
+				"It's a draw :confused:"
+			)
+		elif short_shape in resolution[value[0]]:
+			await ctx.embed_reply(
+				f"I chose `{value}`\n"
+				f"{emotes[value[0]]} {resolution[value[0]][short_shape]} {emotes[short_shape]}\n"
+				"You lose :slight_frown:"
+			)
 		else:
-			value = random.choice(("cockroach", "foot", "nuke"))
-			short_shape = cfn_object[0].lower()
-			resolution = {
-				'c': {'n': "survives"}, 'f': {'c': "squashes"},
-				'n': {'f': "blows up"}
-			}
-			emotes = {'c': ":bug:", 'f': ":footprints:", 'n': ":bomb:"}
-			if value[0] == short_shape:
-				await ctx.embed_reply(
-					f"I chose `{value}`\n"
-					"It's a draw :confused:"
-				)
-			elif short_shape in resolution[value[0]]:
-				await ctx.embed_reply(
-					f"I chose `{value}`\n"
-					f"{emotes[value[0]]} {resolution[value[0]][short_shape]} {emotes[short_shape]}\n"
-					"You lose :slight_frown:"
-				)
-			else:
-				await ctx.embed_reply(
-					f"I chose `{value}`\n"
-					f"{emotes[short_shape]} {resolution[short_shape][value[0]]} {emotes[value[0]]}\n"
-					"You win! :tada:"
-				)
+			await ctx.embed_reply(
+				f"I chose `{value}`\n"
+				f"{emotes[short_shape]} {resolution[short_shape][value[0]]} {emotes[value[0]]}\n"
+				"You win! :tada:"
+			)
 	
 	@commands.command(aliases = ["extremerps", "rps-101", "rps101"], 
 						usage = "<object>")
