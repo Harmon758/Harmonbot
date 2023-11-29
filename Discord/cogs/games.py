@@ -355,32 +355,45 @@ class Games(commands.Cog):
 				"You win! :tada:"
 			)
 	
-	@commands.command(aliases = ["cockroachfootnuke", "cockroach-foot-nuke"], 
-						usage = "<object>")
+	@commands.command(
+		aliases = ["cockroachfootnuke", "cockroach-foot-nuke"],
+		usage = "<object>"
+	)
 	@checks.not_forbidden()
 	async def cfn(self, ctx, cfn_object: str):
 		'''
 		Cockroach foot nuke
 		https://www.youtube.com/watch?v=wRi2j8k0vjo
 		'''
-		if cfn_object.lower() not in ('c', 'f', 'n', "cockroach", "foot", "nuke"):
+		if cfn_object.lower() not in (
+			'c', 'f', 'n', "cockroach", "foot", "nuke"
+		):
 			raise commands.BadArgument("That's not a valid object")
 		else:
 			value = random.choice(("cockroach", "foot", "nuke"))
 			short_shape = cfn_object[0].lower()
-			resolution = {'c': {'n': "survives"}, 'f': {'c': "squashes"}, 'n': {'f': "blows up"}}
+			resolution = {
+				'c': {'n': "survives"}, 'f': {'c': "squashes"},
+				'n': {'f': "blows up"}
+			}
 			emotes = {'c': ":bug:", 'f': ":footprints:", 'n': ":bomb:"}
 			if value[0] == short_shape:
-				await ctx.embed_reply(f"I chose `{value}`\n"
-										"It's a draw :confused:")
+				await ctx.embed_reply(
+					f"I chose `{value}`\n"
+					"It's a draw :confused:"
+				)
 			elif short_shape in resolution[value[0]]:
-				await ctx.embed_reply(f"I chose `{value}`\n"
-										f"{emotes[value[0]]} {resolution[value[0]][short_shape]} {emotes[short_shape]}\n"
-										"You lose :slight_frown:")
+				await ctx.embed_reply(
+					f"I chose `{value}`\n"
+					f"{emotes[value[0]]} {resolution[value[0]][short_shape]} {emotes[short_shape]}\n"
+					"You lose :slight_frown:"
+				)
 			else:
-				await ctx.embed_reply(f"I chose `{value}`\n"
-										f"{emotes[short_shape]} {resolution[short_shape][value[0]]} {emotes[value[0]]}\n"
-										"You win! :tada:")
+				await ctx.embed_reply(
+					f"I chose `{value}`\n"
+					f"{emotes[short_shape]} {resolution[short_shape][value[0]]} {emotes[value[0]]}\n"
+					"You win! :tada:"
+				)
 	
 	@commands.command(aliases = ["extremerps", "rps-101", "rps101"], 
 						usage = "<object>")
