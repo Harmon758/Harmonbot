@@ -23,6 +23,16 @@ class Games(commands.Cog):
 	"""
 	Also see Adventure, Blackjack, Chess, Fish, Maze, Poker, Slots, and Trivia categories
 	"""
+	
+	# TODO: harmonopoly (alias: hrmp)
+	# Harmonopoly is a game based on The Centipede Game where every player
+	# chooses a number.
+	# The player with the lowest number that is not surpassed within +2 of
+	# another number that is chosen, wins. The winner gets points equal to the
+	# number that they chose.
+	# Examples: {1,2 Winner(W): 2} {1,3 W: 3} {1,4 W: 1} {1,3,5 W: 5}
+	# {1,3,5,7,10 W: 7}
+	
 	# TODO: Taboo
 	
 	def __init__(self, bot):
@@ -153,17 +163,6 @@ class Games(commands.Cog):
 					f"Sorry, it was actually {correct_number}"
 				)
 				return
-	
-	@commands.group(aliases = ["hrmp"], case_insensitive = True, hidden = True)
-	@checks.not_forbidden()
-	async def harmonopoly(self, ctx):
-		'''
-		WIP
-		Harmonopoly is a game based on The Centipede Game where every player chooses a number.
-		The player with the lowest number that is not surpassed within +2 of another number that is chosen, wins. The winner gets points equal to the number that they chose.
-		Examples: {1,2 Winner(W): 2} {1,3 W: 3} {1,4 W: 1} {1,3,5 W: 5} {1,3,5,7,10 W: 7}
-		'''
-		pass
 	
 	@commands.command(aliases = ["rtg", "reactiontime", "reactiontimegame", "reaction_time_game"])
 	@checks.not_forbidden()
