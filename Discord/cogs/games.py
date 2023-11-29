@@ -394,8 +394,10 @@ class Games(commands.Cog):
 				"You win! :tada:"
 			)
 	
-	@commands.command(aliases = ["extremerps", "rps-101", "rps101"], 
-						usage = "<object>")
+	@commands.command(
+		aliases = ["extremerps", "rps-101", "rps101"],
+		usage = "<object>"
+	)
 	@checks.not_forbidden()
 	async def erps(self, ctx, erps_object: str):
 		'''
@@ -405,34 +407,38 @@ class Games(commands.Cog):
 		http://www.umop.com/rps101/rps101chart.html
 		'''
 		# TODO: Harmonbot option
-		erps_object = erps_object.lower().replace('.', "").replace("video game", "game")
+		erps_object = (
+			erps_object.lower().replace('.', "").replace("video game", "game")
+		)
 		# dynamite: outwits gun
 		# tornado: sweeps away -> blows away, fills pit, ruins camera
-		emotes = {"dynamite": ":boom:", "tornado": ":cloud_tornado:", "quicksand": "quicksand", 
-					"pit": ":black_circle:", "chain": ":chains:", "gun": ":gun:", "law": ":scales:", "whip": "whip", 
-					"sword": ":crossed_swords:", "rock": f"\N{RAISED FIST}{ctx.bot.emoji_skin_tone}", "death": ":skull:", 
-					"wall": "wall", "sun": ":sunny:", "camera": ":camera:", "fire": ":fire:", "chainsaw": "chainsaw", 
-					"school": ":school:", "scissors": ":scissors:", "poison": "poison", "cage": "cage", "axe": "axe", 
-					"peace": ":peace:", "computer": ":computer:", "castle": ":european_castle:", "snake": ":snake:", 
-					"blood": "blood", "porcupine": "porcupine", "vulture": "vulture", "monkey": ":monkey:", "king": "king", 
-					"queen": "queen", "prince": "prince", "princess": "princess", "police": ":police_car:", 
-					"woman": f"\N{WOMAN}{ctx.bot.emoji_skin_tone}", "baby": f"\N{BABY}{ctx.bot.emoji_skin_tone}", 
-					"man": f"\N{MAN}{ctx.bot.emoji_skin_tone}", "home": ":homes:", "train": ":train:", "car": ":red_car:", 
-					"noise": "noise", "bicycle": f"\N{BICYCLIST}{ctx.bot.emoji_skin_tone}", "tree": ":evergreen_tree:", 
-					"turnip": "turnip", "duck": ":duck:", "wolf": ":wolf:", "cat": ":cat:", "bird": ":bird:", 
-					"fish": ":fish:", "spider": ":spider:", "cockroach": "cockroach", "brain": "brain", 
-					"community": "community", "cross": ":cross:", "money": ":moneybag:", "vampire": "vampire", 
-					"sponge": "sponge", "church": ":church:", "butter": "butter", "book": ":book:", 
-					"paper": f"\N{RAISED HAND}{ctx.bot.emoji_skin_tone}", "cloud": ":cloud:", "airplane": ":airplane:", 
-					"moon": ":full_moon:", "grass": "grass", "film": ":film_frames:", "toilet": ":toilet:", "air": "air", 
-					"planet": "planet", "guitar": ":guitar:", "bowl": "bowl", "cup": "cup", "beer": ":beer:", 
-					"rain": ":cloud_rain:", "water": ":potable_water:", "tv": ":tv:", "rainbow": ":rainbow:", "ufo": "ufo", 
-					"alien": ":alien:", "prayer": f"\N{PERSON WITH FOLDED HANDS}{ctx.bot.emoji_skin_tone}", 
-					"mountain": ":mountain:", "satan": "satan", "dragon": ":dragon:", "diamond": "diamond", 
-					"platinum": "platinum", "gold": "gold", "devil": "devil", "fence": "fence", "game": ":video_game:", 
-					"math": "math", "robot": ":robot:", "heart": ":heart:", "electricity": ":zap:", 
-					"lightning": ":cloud_lightning:", "medusa": "medusa", "power": ":electric_plug:", "laser": "laser", 
-					"nuke": ":bomb:", "sky": "sky", "tank": "tank", "helicopter": ":helicopter:"}
+		emotes = {
+			"dynamite": ":boom:", "tornado": ":cloud_tornado:", "quicksand": "quicksand",
+			"pit": ":black_circle:", "chain": ":chains:", "gun": ":gun:", "law": ":scales:", "whip": "whip",
+			"sword": ":crossed_swords:", "rock": f"\N{RAISED FIST}{ctx.bot.emoji_skin_tone}", "death": ":skull:",
+			"wall": "wall", "sun": ":sunny:", "camera": ":camera:", "fire": ":fire:", "chainsaw": "chainsaw",
+			"school": ":school:", "scissors": ":scissors:", "poison": "poison", "cage": "cage", "axe": "axe",
+			"peace": ":peace:", "computer": ":computer:", "castle": ":european_castle:", "snake": ":snake:",
+			"blood": "blood", "porcupine": "porcupine", "vulture": "vulture", "monkey": ":monkey:", "king": "king",
+			"queen": "queen", "prince": "prince", "princess": "princess", "police": ":police_car:",
+			"woman": f"\N{WOMAN}{ctx.bot.emoji_skin_tone}", "baby": f"\N{BABY}{ctx.bot.emoji_skin_tone}",
+			"man": f"\N{MAN}{ctx.bot.emoji_skin_tone}", "home": ":homes:", "train": ":train:", "car": ":red_car:",
+			"noise": "noise", "bicycle": f"\N{BICYCLIST}{ctx.bot.emoji_skin_tone}", "tree": ":evergreen_tree:",
+			"turnip": "turnip", "duck": ":duck:", "wolf": ":wolf:", "cat": ":cat:", "bird": ":bird:",
+			"fish": ":fish:", "spider": ":spider:", "cockroach": "cockroach", "brain": "brain",
+			"community": "community", "cross": ":cross:", "money": ":moneybag:", "vampire": "vampire",
+			"sponge": "sponge", "church": ":church:", "butter": "butter", "book": ":book:",
+			"paper": f"\N{RAISED HAND}{ctx.bot.emoji_skin_tone}", "cloud": ":cloud:", "airplane": ":airplane:",
+			"moon": ":full_moon:", "grass": "grass", "film": ":film_frames:", "toilet": ":toilet:", "air": "air",
+			"planet": "planet", "guitar": ":guitar:", "bowl": "bowl", "cup": "cup", "beer": ":beer:",
+			"rain": ":cloud_rain:", "water": ":potable_water:", "tv": ":tv:", "rainbow": ":rainbow:", "ufo": "ufo",
+			"alien": ":alien:", "prayer": f"\N{PERSON WITH FOLDED HANDS}{ctx.bot.emoji_skin_tone}",
+			"mountain": ":mountain:", "satan": "satan", "dragon": ":dragon:", "diamond": "diamond",
+			"platinum": "platinum", "gold": "gold", "devil": "devil", "fence": "fence", "game": ":video_game:",
+			"math": "math", "robot": ":robot:", "heart": ":heart:", "electricity": ":zap:",
+			"lightning": ":cloud_lightning:", "medusa": "medusa", "power": ":electric_plug:", "laser": "laser",
+			"nuke": ":bomb:", "sky": "sky", "tank": "tank", "helicopter": ":helicopter:"
+		}
 		'''
 		for key, emote in emotes.ites():
 			if key == emote
@@ -441,10 +447,14 @@ class Games(commands.Cog):
 		value = random.choice(list(emotes.keys()))
 		if erps_object not in emotes:
 			raise commands.BadArgument("That's not a valid object")
-		standard_value = value.lower().replace('.', "").replace("video game", "game")
+		standard_value = (
+			value.lower().replace('.', "").replace("video game", "game")
+		)
 		if standard_value == erps_object:
-			return await ctx.embed_reply(f"I chose `{value}`\n"
-											"It's a draw :confused:")
+			return await ctx.embed_reply(
+				f"I chose `{value}`\n"
+				"It's a draw :confused:"
+			)
 		action = await ctx.bot.db.fetchval(
 			"""
 			SELECT action FROM games.erps
@@ -453,9 +463,11 @@ class Games(commands.Cog):
 			standard_value, erps_object
 		)
 		if action:
-			return await ctx.embed_reply(f"I chose `{value}`\n"
-											f"{emotes[standard_value]} {action} {emotes[erps_object]}\n"
-											"You lose :slight_frown:")
+			return await ctx.embed_reply(
+				f"I chose `{value}`\n"
+				f"{emotes[standard_value]} {action} {emotes[erps_object]}\n"
+				"You lose :slight_frown:"
+			)
 		action = await ctx.bot.db.fetchval(
 			"""
 			SELECT action FROM games.erps
@@ -464,11 +476,15 @@ class Games(commands.Cog):
 			erps_object, standard_value
 		)
 		if action:
-			return await ctx.embed_reply(f"I chose `{value}`\n"
-											f"{emotes[erps_object]} {action} {emotes[standard_value]}\n"
-											"You win! :tada:")
-		return await ctx.embed_reply(":no_entry: Error: I don't know the relationship between "
-										f"{emotes[erps_object]} and {emotes[standard_value]}, the object that I chose")
+			return await ctx.embed_reply(
+				f"I chose `{value}`\n"
+				f"{emotes[erps_object]} {action} {emotes[standard_value]}\n"
+				"You win! :tada:"
+			)
+		return await ctx.embed_reply(
+			":no_entry: Error: I don't know the relationship between "
+			f"{emotes[erps_object]} and {emotes[standard_value]}, the object that I chose"
+		)
 	
 	@commands.command()
 	@checks.not_forbidden()
