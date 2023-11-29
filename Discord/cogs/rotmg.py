@@ -65,7 +65,7 @@ class RotMG(commands.Cog):
 		)
 	
 	@rotmg.command(name = "characters")
-	async def rotmg_characters(self, ctx, player : str):
+	async def rotmg_characters(self, ctx, player: str):
 		'''Realm of the Mad God player characters information'''
 		# http://webhost.ischool.uw.edu/~joatwood/realmeye_api/0.3/
 		async with ctx.bot.aiohttp_session.get(
