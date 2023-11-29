@@ -31,34 +31,40 @@ class RPS(commands.Cog):
         rps_object
             Object of your choice
         '''
-        if rps_object.lower() not in (
-            'r', 'p', 's', "rock", "paper", "scissors"
-        ):
+        if rps_object.lower() not in ("rock", "paper", "scissors"):
             raise commands.BadArgument("That's not a valid object")
         value = random.choice(("rock", "paper", "scissors"))
-        short_shape = rps_object[0].lower()
         resolution = {
-            'r': {'s': "crushes"}, 'p': {'r': "covers"}, 's': {'p': "cuts"}
+            "rock": {"scissors": "crushes"}, "paper": {"rock": "covers"},
+            "scissors": {"paper": "cuts"}
         }
         emotes = {
-            'r': f"\N{RAISED FIST}{ctx.bot.emoji_skin_tone}",
-            'p': f"\N{RAISED HAND}{ctx.bot.emoji_skin_tone}",
-            's': f"\N{VICTORY HAND}{ctx.bot.emoji_skin_tone}"
+            "rock": f"\N{RAISED FIST}{ctx.bot.emoji_skin_tone}",
+            "paper": f"\N{RAISED HAND}{ctx.bot.emoji_skin_tone}",
+            "scissors": f"\N{VICTORY HAND}{ctx.bot.emoji_skin_tone}"
         }
-        if value[0] == short_shape:
+        if value == rps_object:
             await ctx.embed_reply(f"I chose `{value}`\nIt's a draw :confused:")
-        elif short_shape in resolution[value[0]]:
+        elif rps_object in resolution[value]:
             await ctx.embed_reply(
                 f"I chose `{value}`\n"
-                f"{emotes[value[0]]} {resolution[value[0]][short_shape]} {emotes[short_shape]}\n"
+                f"{emotes[value]} {resolution[value][rps_object]} {emotes[rps_object]}\n"
                 "You lose :slight_frown:"
             )
         else:
             await ctx.embed_reply(
                 f"I chose `{value}`\n"
-                f"{emotes[short_shape]} {resolution[short_shape][value[0]]} {emotes[value[0]]}\n"
+                f"{emotes[rps_object]} {resolution[rps_object][value]} {emotes[value]}\n"
                 "You win! :tada:"
             )
+
+    @rps.autocomplete("rps_object")
+    async def rps_autocomplete(self, interaction, current):
+        return [
+            app_commands.Choice(name = rps_object, value = rps_object)
+            for rps_object in ("paper", "rock", "scissors")
+            if current.lower() in rps_object
+        ]
 
     @commands.command(
         aliases = [
