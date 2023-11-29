@@ -23,7 +23,9 @@ HAND_EMOJI = {
 EMOJI = {
     "RPS": HAND_EMOJI, "RPSLS": HAND_EMOJI, "RPSLSSBWG": HAND_EMOJI,
     "CFN": {
-        "cockroach": ":bug:", "foot": ":footprints:", "nuclear bomb": ":bomb:"
+        "cockroach": '\N{COCKROACH}',
+        "foot": ":footprints:",
+        "nuclear bomb": ":bomb:"
     }
 }
 
