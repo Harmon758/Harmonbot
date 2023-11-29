@@ -23,6 +23,7 @@ class Games(commands.Cog):
 	"""
 	Also see Adventure, Blackjack, Chess, Fish, Maze, Poker, Slots, and Trivia categories
 	"""
+	# TODO: Taboo
 	
 	def __init__(self, bot):
 		self.bot = bot
@@ -450,12 +451,6 @@ class Games(commands.Cog):
 				)
 			await message.edit(embed = embed)
 		await message.clear_reactions()
-	
-	@commands.group(case_insensitive = True, hidden = True)
-	@checks.not_forbidden()
-	async def taboo(self, ctx):
-		'''WIP'''
-		return
 	
 	@commands.group(case_insensitive = True)
 	@checks.not_forbidden()
