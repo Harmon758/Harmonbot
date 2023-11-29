@@ -1,8 +1,6 @@
 
 from discord.ext import commands, menus
 
-import random
-
 from utilities import checks
 from utilities.menu import Menu
 
@@ -12,31 +10,6 @@ async def setup(bot):
 # meta.stats reaction_responses column:
 #  Fixed to stop counting own reactions on 2019-10-25
 #  Deprecated on 2020-01-04 in favor of menu_reactions
-
-class GuessMenu(Menu):
-	
-	def __init__(self):
-		super().__init__(timeout = None, check_embeds = True)
-		self.numbers = {str(number) + '\N{COMBINING ENCLOSING KEYCAP}': number for number in range(1, 10)}
-		self.numbers['\N{KEYCAP TEN}'] = 10
-		for emoji, number in self.numbers.items():
-			self.add_button(menus.Button(emoji, self.on_number, position = number))
-	
-	# TODO: Track number of tries
-	
-	async def send_initial_message(self, ctx, channel):
-		self.answer = random.randint(1, 10)
-		return await ctx.embed_reply("Guess a number between 1 to 10")
-	
-	async def on_number(self, payload):
-		embed = self.message.embeds[0]
-		if (number := self.numbers[str(payload.emoji)]) == self.answer:
-			embed.description = f"It was {number}!"
-			self.stop()
-		else:
-			embed.description = ("Guess a number between 1 to 10\n"
-									f"No, it's not {number}")
-		await self.message.edit(embed = embed)
 
 class PlayingMenu(Menu):
 	
@@ -106,8 +79,7 @@ class Reactions(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
 		self.reaction_commands = (
-			(guess, "Games", "guess", [], [checks.not_forbidden().predicate]), 
-			(playing, "Audio", "playing", ["player"], [checks.not_forbidden().predicate, commands.guild_only().predicate])
+			(playing, "Audio", "playing", ["player"], [checks.not_forbidden().predicate, commands.guild_only().predicate]),
 		)
 		for command, cog_name, parent_name, aliases, command_checks in self.reaction_commands:
 			self.reactions.add_command(commands.Command(command, aliases = aliases, checks = command_checks))
@@ -129,10 +101,6 @@ class Reactions(commands.Cog):
 	
 	# TODO: rtg
 
-
-async def guess(ctx):
-	'''Guessing game menu'''
-	await GuessMenu().start(ctx)
 
 async def playing(ctx):
 	'''Audio player'''

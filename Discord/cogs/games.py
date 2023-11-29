@@ -1,5 +1,6 @@
 
 import discord
+from discord import ui
 from discord.ext import commands
 
 import asyncio
@@ -39,6 +40,7 @@ class Games(commands.Cog):
 		self.bot = bot
 		self.war_channel, self.war_players = None, []
 		#check default values
+		self.guess_games = {}
 
 	async def cog_load(self):
 		await self.bot.connect_to_database()
@@ -122,7 +124,7 @@ class Games(commands.Cog):
 			f"\N{BILLIARDS} {games.eightball()}"
 		)
 	
-	@commands.group(case_insensitive = True, invoke_without_command = True)
+	@commands.command()
 	@checks.not_forbidden()
 	async def guess(
 		self, ctx,
@@ -130,39 +132,40 @@ class Games(commands.Cog):
 		tries: Optional[int] = 1  # noqa: UP007 (non-pep604-annotation)
 	):
 		'''Guessing game'''
-		correct_number = random.randint(1, max_value)
-		await ctx.embed_reply(f"Guess a number between 1 to {max_value}")
-		while tries != 0:
-			try:
-				guess = await self.bot.wait_for(
-					"message",
-					timeout = 15.0,
-					check = (
-						lambda m:
-							m.author == ctx.author and
-							m.content.isdigit() and
-							m.content != '0'
-					)
-				)
-			except asyncio.TimeoutError:
-				await ctx.embed_reply(
-					f"Sorry, you took too long\nIt was {correct_number}"
-				)
-				return
-			if int(guess.content) == correct_number:
-				await ctx.embed_reply("You are right!")
-				return
-			elif tries != 1 and int(guess.content) > correct_number:
-				await ctx.embed_reply("It's less than " + guess.content)
-				tries -= 1
-			elif tries != 1 and int(guess.content) < correct_number:
-				await ctx.embed_reply("It's greater than " + guess.content)
-				tries -= 1
-			else:
-				await ctx.embed_reply(
-					f"Sorry, it was actually {correct_number}"
-				)
-				return
+		if guess_game := self.guess_games.get((ctx.channel.id, ctx.author)):
+			description = "You're already playing a guessing game here"
+			if guess_game.message:
+				description = f"[{description}]({guess_game.message.jump_url})"
+			await ctx.embed_reply(description)
+			return
+		
+		self.guess_games[(ctx.channel.id, ctx.author)] = GuessGame(
+			ctx, attempts = tries, max_value = max_value
+		)
+		try:
+			await self.guess_games[(ctx.channel.id, ctx.author)].start()
+		finally:
+			del self.guess_games[(ctx.channel.id, ctx.author)]
+	
+	@commands.Cog.listener("on_message")
+	async def on_guess_message(self, message):
+		if not (
+			guess_game := self.guess_games.get(
+				(message.channel.id, message.author)
+			)
+		):
+			return
+		
+		if not message.content.isdigit():
+			return
+		
+		number = int(message.content)
+		
+		if not number or number > guess_game.max_value:
+			return
+		
+		if guess_game.awaiting_guess:
+			await guess_game.guess(int(message.content))
 	
 	@commands.command(aliases = ["rtg", "reactiontime", "reactiontimegame", "reaction_time_game"])
 	@checks.not_forbidden()
@@ -332,4 +335,131 @@ class Games(commands.Cog):
 				for war_player in self.war_players:
 					await self.bot.send_message(war_player, tiedplayers_print + cards_played_print)
 				pass
+
+class GuessGame:
+	
+	def __init__(self, ctx, *, attempts, max_value):
+		self.ctx = ctx
+		self.attempts = attempts
+		self.max_value = max_value
+		
+		self.awaiting_guess = False
+		self.correct_number = random.randint(1, max_value)
+		self.guessed = asyncio.Event()
+		self.message = None
+		self.time_limit = 15.0
+		self.user = ctx.author
+		self.view = None
+	
+	async def start(self):
+		self.view = (
+			GuessView(self)
+			if self.max_value == 10
+			else None
+		)
+		self.message = await self.ctx.embed_reply(
+			f"Guess a number between 1 to {self.max_value}",
+			footer_text = None,
+			view = self.view
+		)
+		if self.view:
+			self.view.message = self.message
+		
+		self.awaiting_guess = True
+		self.guessed.clear()
+		while self.awaiting_guess:
+			try:
+				await asyncio.wait_for(
+					self.guessed.wait(), timeout = self.time_limit
+				)
+			except asyncio.TimeoutError:
+				# Replace with TimeoutError in Python 3.11
+				self.awaiting_guess = False
+				await self.timeout()
+	
+	async def guess(self, number):
+		embed = self.message.embeds[0]
+		
+		if number == self.correct_number:
+			embed.description += (
+				f"\nYou are right! It was {self.correct_number}"
+			)
+			await self.message.edit(embed = embed)
+			await self.stop()
+			return
+		
+		if self.attempts == 1:
+			embed.description += (
+				f"\nSorry, it was actually {self.correct_number}, not {number}"
+			)
+			await self.message.edit(embed = embed)
+			await self.stop()
+			return
+		
+		embed.description += (
+			f"\nIt's {'less' if number > self.correct_number else 'greater'} than {number}"
+		)
+		await self.message.edit(embed = embed)
+		
+		self.attempts -= 1
+		self.guessed.set()
+	
+	async def stop(self):
+		self.awaiting_guess = False
+		self.guessed.set()
+		if self.view:
+			await self.view.stop()
+	
+	async def timeout(self):
+		await self.ctx.embed_reply(
+			f"Sorry, you took too long\nIt was {self.correct_number}"
+		)
+		await self.stop()
+
+class GuessButton(ui.Button):
+	
+	def __init__(self, emoji, number):
+		super().__init__(style = discord.ButtonStyle.grey, emoji = emoji)
+		
+		self.number = number
+	
+	async def callback(self, interaction):
+		await interaction.response.defer()
+		await self.view.guess_game.guess(self.number)
+
+class GuessView(ui.View):
+	
+	def __init__(self, guess_game):
+		super().__init__(timeout = guess_game.time_limit)
+		
+		self.guess_game = guess_game
+		
+		self.numbers = {str(number) + '\N{COMBINING ENCLOSING KEYCAP}': number for number in range(1, 10)}
+		self.numbers['\N{KEYCAP TEN}'] = 10
+		for emoji, number in self.numbers.items():
+			self.add_item(GuessButton(emoji = emoji, number = number))
+	
+	# TODO: Track number of tries
+	
+	async def interaction_check(self, interaction):
+		if interaction.user.id not in (
+			self.guess_game.user.id, interaction.client.owner_id
+		):
+			await interaction.response.send_message(
+				"You aren't the one playing this guessing game.",
+				ephemeral = True
+			)
+			return False
+		return True
+	
+	async def on_timeout(self):
+		await self.stop()
+	
+	async def stop(self):
+		for item in self.children:
+			item.disabled = True
+		
+		await self.message.edit(view = self)
+		
+		super().stop()
 
