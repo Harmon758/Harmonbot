@@ -14,7 +14,7 @@ EMOJI = {
     "scissors": '\N{VICTORY HAND}',
     "lizard": '🫳',  # Replace with '\N{PALM DOWN HAND}' in Python 3.11
     "Spock": '\N{RAISED HAND WITH PART BETWEEN MIDDLE AND RING FINGERS}',
-    "Spider-Man": ":spider:",
+    "Spider-Man": '\N{SIGN OF THE HORNS}',
     "Batman": ":bat:",
     "wizard": ":tophat:",
     "Glock": ":gun:"
