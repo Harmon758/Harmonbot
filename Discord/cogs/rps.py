@@ -138,7 +138,7 @@ class RPS(commands.Cog):
         }
         emotes = {
             "rock": f"\N{RAISED FIST}{ctx.bot.emoji_skin_tone}",
-            "paper": f"\N{RAISED HAND}{ctx.bot.emoji_skin_tone}", 
+            "paper": f"\N{RAISED HAND}{ctx.bot.emoji_skin_tone}",
             "scissors": f"\N{VICTORY HAND}{ctx.bot.emoji_skin_tone}",
             "lizard": ":lizard:",
             "spock": f"\N{RAISED HAND WITH PART BETWEEN MIDDLE AND RING FINGERS}{ctx.bot.emoji_skin_tone}",
