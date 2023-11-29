@@ -98,7 +98,7 @@ class RPS(commands.Cog):
         https://upload.wikimedia.org/wikipedia/commons/f/fe/Rock_Paper_Scissors_Lizard_Spock_en.svg
 
         RPSLSSBWG — RPSLS Spider-Man Batman wizard Glock
-        http://i.imgur.com/m9C2UTP.jpg
+        https://i.imgur.com/m9C2UTP.jpg
 
         Parameters
         ----------
@@ -108,6 +108,8 @@ class RPS(commands.Cog):
             Variant of RPS to play
             (Defaults to None / RPS)
         '''
+        # Note: rpsls invokes this command
+        # Note: rpslssbwg invokes this command
         if rps_object not in OBJECTS[variant]:
             raise commands.BadArgument("That's not a valid object")
         value = random.choice(OBJECTS[variant])
@@ -168,7 +170,7 @@ class RPS(commands.Cog):
     async def rpslssbwg(self, ctx, rpslssbwg_object: str):
         '''
         RPSLS Spider-Man Batman wizard Glock
-        http://i.imgur.com/m9C2UTP.jpg
+        https://i.imgur.com/m9C2UTP.jpg
         '''
         if command := ctx.bot.get_command("rps"):
             await ctx.invoke(
