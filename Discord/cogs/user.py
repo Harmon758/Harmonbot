@@ -254,7 +254,10 @@ class User(commands.Cog):
             )
 
     @commands.command()
-    async def name(self, ctx, *, user: Optional[discord.Member]):
+    async def name(
+        self, ctx, *,
+        user: Optional[discord.Member]  # noqa: UP007 (non-pep604-annotation)
+    ):
         """The name of a user"""
         if command := ctx.bot.get_command("user name"):
             await ctx.invoke(command, user = user)
