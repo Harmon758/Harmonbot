@@ -12,7 +12,7 @@ EMOJI = {
     "rock": '\N{RAISED FIST}',
     "paper": '\N{RAISED HAND}',
     "scissors": '\N{VICTORY HAND}',
-    "lizard": '\N{PALM DOWN HAND}',
+    "lizard": '🫳',  # Replace with '\N{PALM DOWN HAND}' in Python 3.11
     "Spock": '\N{RAISED HAND WITH PART BETWEEN MIDDLE AND RING FINGERS}'
 }
 
