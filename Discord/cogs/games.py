@@ -451,10 +451,11 @@ class Games(commands.Cog):
 			value.lower().replace('.', "").replace("video game", "game")
 		)
 		if standard_value == erps_object:
-			return await ctx.embed_reply(
+			await ctx.embed_reply(
 				f"I chose `{value}`\n"
 				"It's a draw :confused:"
 			)
+			return
 		action = await ctx.bot.db.fetchval(
 			"""
 			SELECT action FROM games.erps
@@ -463,11 +464,12 @@ class Games(commands.Cog):
 			standard_value, erps_object
 		)
 		if action:
-			return await ctx.embed_reply(
+			await ctx.embed_reply(
 				f"I chose `{value}`\n"
 				f"{emotes[standard_value]} {action} {emotes[erps_object]}\n"
 				"You lose :slight_frown:"
 			)
+			return
 		action = await ctx.bot.db.fetchval(
 			"""
 			SELECT action FROM games.erps
@@ -476,12 +478,13 @@ class Games(commands.Cog):
 			erps_object, standard_value
 		)
 		if action:
-			return await ctx.embed_reply(
+			await ctx.embed_reply(
 				f"I chose `{value}`\n"
 				f"{emotes[erps_object]} {action} {emotes[standard_value]}\n"
 				"You win! :tada:"
 			)
-		return await ctx.embed_reply(
+			return
+		await ctx.embed_reply(
 			":no_entry: Error: I don't know the relationship between "
 			f"{emotes[erps_object]} and {emotes[standard_value]}, the object that I chose"
 		)
