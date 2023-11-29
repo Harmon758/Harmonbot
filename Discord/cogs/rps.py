@@ -25,7 +25,7 @@ EMOJI = {
     "CFN": {
         "cockroach": '\N{COCKROACH}',
         "foot": '\N{FOOT}',
-        "nuclear bomb": ":bomb:"
+        "nuclear bomb": '\N{BOMB}'
     }
 }
 
