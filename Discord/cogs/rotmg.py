@@ -17,7 +17,7 @@ class RotMG(commands.Cog):
 	
 	@commands.group(
 		aliases = ["realmofthemadgod"],
-		invoke_without_command = True, case_insensitive = True
+		case_insensitive = True, invoke_without_command = True
 	)
 	async def rotmg(self, ctx, player: str):
 		'''Realm of the Mad God player information'''
