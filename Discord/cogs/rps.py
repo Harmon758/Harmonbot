@@ -31,7 +31,7 @@ class RPS(commands.Cog):
         }
         emotes = {
             'r': f"\N{RAISED FIST}{ctx.bot.emoji_skin_tone}",
-            'p': f"\N{RAISED HAND}{ctx.bot.emoji_skin_tone}", 
+            'p': f"\N{RAISED HAND}{ctx.bot.emoji_skin_tone}",
             's': f"\N{VICTORY HAND}{ctx.bot.emoji_skin_tone}"
         }
         if value[0] == short_shape:
