@@ -401,7 +401,10 @@ class Games(commands.Cog):
 	@checks.not_forbidden()
 	async def simon(self, ctx):
 		'''Based on the electronic memory game'''
-		circle_emojis = ("\N{LARGE BLUE CIRCLE}", "\N{LARGE GREEN CIRCLE}", "\N{LARGE RED CIRCLE}", "\N{LARGE YELLOW CIRCLE}")
+		circle_emojis = (
+			"\N{LARGE BLUE CIRCLE}", "\N{LARGE GREEN CIRCLE}",
+			"\N{LARGE RED CIRCLE}", "\N{LARGE YELLOW CIRCLE}"
+		)
 		message = await ctx.embed_reply("Get ready!")
 		embed = message.embeds[0]
 		sequence = []
@@ -412,26 +415,39 @@ class Games(commands.Cog):
 			sequence.append(random.choice(circle_emojis))
 			for circle_emoji in sequence:
 				display = ["\N{MEDIUM BLACK CIRCLE}"] * 4
-				embed.description = "Playing the sequence:\n" + ' '.join(display)
+				embed.description = (
+					"Playing the sequence:\n" + ' '.join(display)
+				)
 				await message.edit(embed = embed)
 				await asyncio.sleep(1)
 				display[circle_emojis.index(circle_emoji)] = circle_emoji
-				embed.description = "Playing the sequence:\n" + ' '.join(display)
+				embed.description = (
+					"Playing the sequence:\n" + ' '.join(display)
+				)
 				await message.edit(embed = embed)
 				await asyncio.sleep(1)
 			embed.description = "Playback the sequence:"
 			await message.edit(embed = embed)
 			for correct_emoji in sequence:
 				try:
-					payload = await ctx.bot.wait_for_raw_reaction_add_or_remove(emoji = circle_emojis, message = message, user = ctx.author, timeout = 5)
+					payload = await ctx.bot.wait_for_raw_reaction_add_or_remove(
+						emoji = circle_emojis, message = message,
+						user = ctx.author, timeout = 5
+					)
 				except asyncio.TimeoutError:
-					embed.description = f"Game over. You timed out on a sequence of length {len(sequence)}."
+					embed.description = (
+						f"Game over. You timed out on a sequence of length {len(sequence)}."
+					)
 					break
 				if payload.emoji.name != correct_emoji:
-					embed.description = f"Game over. You failed on a sequence of length {len(sequence)}."
+					embed.description = (
+						f"Game over. You failed on a sequence of length {len(sequence)}."
+					)
 					break
 			else:
-				embed.description = f"You completed the sequence! Get ready for a sequence of length {len(sequence) + 1}."
+				embed.description = (
+					f"You completed the sequence! Get ready for a sequence of length {len(sequence) + 1}."
+				)
 			await message.edit(embed = embed)
 		await message.clear_reactions()
 	
