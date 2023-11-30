@@ -22,7 +22,7 @@ async def setup(bot):
 class Games(commands.Cog):
 	
 	"""
-	Also see Adventure, Blackjack, Chess, Fish, Maze, Poker, Slots, and Trivia categories
+	Also see Adventure, Blackjack, Chess, Fish, Maze, Poker, RPS, Slots, and Trivia categories
 	"""
 	
 	# TODO: harmonopoly (alias: hrmp)
