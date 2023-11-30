@@ -145,7 +145,7 @@ class Games(commands.Cog):
 		response = await ctx.embed_reply("Please add 10 reactions to this message", author_name = None, attempt_delete = False)
 		embed = response.embeds[0]
 		while len(response.reactions) < 10:
-			await self.bot.wait_for("reaction_add", check = lambda r, u: r.message.id == response.id)
+			await ctx.bot.wait_for("reaction_add", check = lambda r, u: r.message.id == response.id)
 			response = await ctx.channel.fetch_message(response.id)
 		reactions = response.reactions
 		winning_emoji = random.choice(reactions).emoji
@@ -166,7 +166,7 @@ class Games(commands.Cog):
 		embed.description = f"First to click the {winning_emoji} reaction wins. Go!"
 		await response.edit(embed = embed)
 		start_time = timeit.default_timer()
-		payload = await self.bot.wait_for_raw_reaction_add_or_remove(message = response, emoji = winning_emoji)
+		payload = await ctx.bot.wait_for_raw_reaction_add_or_remove(message = response, emoji = winning_emoji)
 		elapsed = timeit.default_timer() - start_time
 		winner = await ctx.guild.fetch_member(payload.user_id)
 		embed.set_author(name = winner.display_name, icon_url = winner.avatar.url)
