@@ -117,7 +117,9 @@ class RPS(commands.Cog):
             )
             """
         )
-        exists = await self.bot.db.fetchval("SELECT EXISTS (SELECT * from games.erps)")
+        exists = await self.bot.db.fetchval(
+            "SELECT EXISTS (SELECT * from games.erps)"
+        )
         if not exists:
             url = "http://www.umop.com/rps101/alloutcomes.htm"
             async with self.bot.aiohttp_session.get(url) as resp:
