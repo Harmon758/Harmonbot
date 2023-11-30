@@ -121,13 +121,16 @@ class RPS(commands.Cog):
             "SELECT EXISTS (SELECT * from games.erps)"
         )
         if not exists:
-            url = "http://www.umop.com/rps101/alloutcomes.htm"
-            async with self.bot.aiohttp_session.get(url) as resp:
+            async with self.bot.aiohttp_session.get(
+                "http://www.umop.com/rps101/alloutcomes.htm"
+            ) as resp:
                 data = await resp.text()
+
             raw_text = BeautifulSoup(data, "lxml").text
             raw_text = re.sub("\n+", '\n', raw_text).strip()
             raw_text = raw_text.lower().replace("video game", "game")
             raw_text = raw_text.split('\n')[:-1]
+
             for line in raw_text:
                 words = line.split()
                 if words[0].isdecimal() and words[1] == '-':
