@@ -82,10 +82,10 @@ wand==0.6.13
 wolframalpha==5.0.0
 wordcloud==1.9.2
 wordnik-py3==2.1.2
-# youtube-dl==2023.11.23
+# youtube-dl==2023.11.30
 # https://github.com/ytdl-org/youtube-dl/issues/31585
-# https://github.com/ytdl-org/ytdl-nightly/releases/tag/2023.11.23
-youtube-dl @ https://github.com/ytdl-org/ytdl-nightly/releases/download/2023.11.23/youtube-dl-2023.11.23.tar.gz
+# https://github.com/ytdl-org/ytdl-nightly/releases/tag/2023.11.30
+youtube-dl @ https://github.com/ytdl-org/ytdl-nightly/releases/download/2023.11.30/youtube-dl-2023.11.30.tar.gz
 yt-dlp==2023.11.16
 
 aiodns==3.1.1
