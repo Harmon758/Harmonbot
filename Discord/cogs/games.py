@@ -434,7 +434,10 @@ class GuessView(ui.View):
 		
 		self.guess_game = guess_game
 		
-		self.numbers = {str(number) + '\N{COMBINING ENCLOSING KEYCAP}': number for number in range(1, 10)}
+		self.numbers = {
+			str(number) + '\N{COMBINING ENCLOSING KEYCAP}': number
+			for number in range(1, 10)
+		}
 		self.numbers['\N{KEYCAP TEN}'] = 10
 		for number_emoji, number in self.numbers.items():
 			self.add_item(GuessButton(emoji = number_emoji, number = number))
