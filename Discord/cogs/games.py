@@ -357,23 +357,24 @@ class GuessGame:
 		self.awaiting_guess = False
 		self.correct_number = random.randint(1, max_value)
 		self.guessed = asyncio.Event()
-		self.time_limit = 15.0
+		self.message = None
+		self.time_limit = 15.0  # TODO: Custom time limit?
 		self.user = ctx.author
-		self.view = None
-	
-	async def start(self):
 		self.view = (
 			GuessView(self)
-			if self.max_value == 10
+			if self.max_value == 10  # TODO: Support view for <= 10
 			else None
 		)
-		message = await self.ctx.embed_reply(
-			f"Guess a number between 1 to {self.max_value}",
+	
+	async def start(self):
+		self.message = await self.ctx.embed_reply(
+			title = "Guessing Game",
+			description = f"Guess a number between 1 to {self.max_value}",
 			footer_text = None,
 			view = self.view
 		)
 		if self.view:
-			self.view.message = message
+			self.view.message = self.message
 		
 		self.awaiting_guess = True
 		self.guessed.clear()
@@ -405,17 +406,24 @@ class GuessGame:
 			stop = False
 		
 		if stop:
-			await self.ctx.embed_reply(
-				description = description, footer_text = None
+			self.message = await self.ctx.embed_reply(
+				title = "Guessing Game",
+				title_url = self.message.jump_url,
+				description = description,
+				in_response_to = False
 			)
 			await self.stop()
 		else:
-			message = await self.ctx.embed_reply(
-				description = description, footer_text = None, view = self.view
+			self.message = await self.ctx.embed_reply(
+				title = "Guessing Game",
+				title_url = self.message.jump_url,
+				description = description,
+				in_response_to = False,
+				view = self.view
 			)
 			if self.view:
 				await self.view.message.edit(view = None)
-				self.view.message = message
+				self.view.message = self.message
 			
 			self.attempts -= 1
 			self.guessed.set()
@@ -428,7 +436,12 @@ class GuessGame:
 	
 	async def timeout(self):
 		await self.ctx.embed_reply(
-			f"Sorry, you took too long\nIt was {self.correct_number}"
+			title = "Guessing Game",
+			title_url = self.message.jump_url,
+			description = (
+				f"Sorry, you took too long\nIt was {self.correct_number}"
+			),
+			in_response_to = False
 		)
 		await self.stop()
 
