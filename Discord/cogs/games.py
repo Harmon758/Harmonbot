@@ -405,11 +405,13 @@ class GuessGame:
 			stop = False
 		
 		if stop:
-			await self.ctx.embed_reply(description = description)
+			await self.ctx.embed_reply(
+				description = description, footer_text = None
+			)
 			await self.stop()
 		else:
 			message = await self.ctx.embed_reply(
-				description = description, view = self.view
+				description = description, footer_text = None, view = self.view
 			)
 			if self.view:
 				await self.view.message.edit(view = None)
