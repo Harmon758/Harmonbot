@@ -436,8 +436,8 @@ class GuessView(ui.View):
 		
 		self.numbers = {str(number) + '\N{COMBINING ENCLOSING KEYCAP}': number for number in range(1, 10)}
 		self.numbers['\N{KEYCAP TEN}'] = 10
-		for emoji, number in self.numbers.items():
-			self.add_item(GuessButton(emoji = emoji, number = number))
+		for number_emoji, number in self.numbers.items():
+			self.add_item(GuessButton(emoji = number_emoji, number = number))
 	
 	# TODO: Track number of tries
 	
