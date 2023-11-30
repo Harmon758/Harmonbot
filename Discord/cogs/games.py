@@ -357,7 +357,6 @@ class GuessGame:
 		self.awaiting_guess = False
 		self.correct_number = random.randint(1, max_value)
 		self.guessed = asyncio.Event()
-		self.message = None
 		self.time_limit = 15.0
 		self.user = ctx.author
 		self.view = None
@@ -368,13 +367,13 @@ class GuessGame:
 			if self.max_value == 10
 			else None
 		)
-		self.message = await self.ctx.embed_reply(
+		message = await self.ctx.embed_reply(
 			f"Guess a number between 1 to {self.max_value}",
 			footer_text = None,
 			view = self.view
 		)
 		if self.view:
-			self.view.message = self.message
+			self.view.message = message
 		
 		self.awaiting_guess = True
 		self.guessed.clear()
@@ -389,31 +388,35 @@ class GuessGame:
 				await self.timeout()
 	
 	async def guess(self, number):
-		embed = self.message.embeds[0]
-		
 		if number == self.correct_number:
-			embed.description += (
-				f"\nYou are right! It was {self.correct_number}"
+			description = f"You are right! It was {self.correct_number}"
+			stop = True
+		
+		elif self.attempts == 1:
+			description = (
+				f"Sorry, it was actually {self.correct_number}, not {number}"
 			)
-			await self.message.edit(embed = embed)
-			await self.stop()
-			return
+			stop = True
 		
-		if self.attempts == 1:
-			embed.description += (
-				f"\nSorry, it was actually {self.correct_number}, not {number}"
+		else:
+			description = (
+				f"It's {'less' if number > self.correct_number else 'greater'} than {number}"
 			)
-			await self.message.edit(embed = embed)
+			stop = False
+		
+		if stop:
+			await self.ctx.embed_reply(description = description)
 			await self.stop()
-			return
-		
-		embed.description += (
-			f"\nIt's {'less' if number > self.correct_number else 'greater'} than {number}"
-		)
-		await self.message.edit(embed = embed)
-		
-		self.attempts -= 1
-		self.guessed.set()
+		else:
+			message = await self.ctx.embed_reply(
+				description = description, view = self.view
+			)
+			if self.view:
+				await self.view.message.edit(view = None)
+				self.view.message = message
+			
+			self.attempts -= 1
+			self.guessed.set()
 	
 	async def stop(self):
 		self.awaiting_guess = False
