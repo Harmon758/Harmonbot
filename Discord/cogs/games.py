@@ -128,8 +128,8 @@ class Games(commands.Cog):
 	@checks.not_forbidden()
 	async def guess(
 		self, ctx,
-		max_value: Optional[int] = 10,  # noqa: UP007 (non-pep604-annotation)
-		tries: Optional[int] = 1  # noqa: UP007 (non-pep604-annotation)
+		max_value: Optional[commands.Range[int, 1, None]] = 10,  # noqa: UP007 (non-pep604-annotation)
+		tries: Optional[commands.Range[int, 1, None]] = 1  # noqa: UP007 (non-pep604-annotation)
 	):
 		'''
 		Guessing game
@@ -138,8 +138,10 @@ class Games(commands.Cog):
 		----------
 		max_value
 			The maximum number in the range to guess from
+			(Defaults to 10)
 		tries
 			The number of attempts to guess the number
+			(Defaults to 1)
 		'''
 		if guess_game := self.guess_games.get((ctx.channel.id, ctx.author)):
 			description = "You're already playing a guessing game here"
