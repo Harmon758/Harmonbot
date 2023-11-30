@@ -928,7 +928,7 @@ class Search(commands.GroupCog, group_name = "search"):
     @search.command(name = "youtube", aliases = ["yt"])
     async def search_youtube(self, ctx, *, search: str):
         '''Search for a YouTube video'''
-        # Note: audio search command invokes this command
+        # Note: youtube search command invokes this command
         ydl = youtube_dl.YoutubeDL(
             {"default_search": "auto", "noplaylist": True, "quiet": True}
         )

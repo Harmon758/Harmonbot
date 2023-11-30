@@ -202,6 +202,20 @@ class Audio(commands.Cog):
                 "when youtube information command invoked"
             )
 
+    @youtube.command(name = "search", with_app_command = False)
+    @checks.not_forbidden()
+    async def youtube_search(self, ctx, *, search):
+        '''Search for a YouTube video'''
+        if command := ctx.bot.get_command("search youtube"):
+            await ctx.invoke(command, search = search)
+        else:
+            raise RuntimeError(
+                "search youtube command not found "
+                "when youtube search command invoked"
+            )
+
+    # TODO: Other audio search commands?
+
     @audio.command(name = "join", aliases = ["summon", "move"])
     @commands.check_any(
         checks.is_permitted(),
@@ -662,19 +676,6 @@ class Audio(commands.Cog):
             await ctx.embed_reply(
                 ":warning: Something else is already playing\n"
                 "Please stop it first"
-            )
-
-    @audio.command(name = "search", with_app_command = False)
-    @checks.not_forbidden()
-    async def audio_search(self, ctx, *, search):
-        '''Search for a YouTube video'''
-        # TODO: Only invoke when parent command invoked with youtube or yt
-        if command := ctx.bot.get_command("search youtube"):
-            await ctx.invoke(command, search = search)
-        else:
-            raise RuntimeError(
-                "search youtube command not found "
-                "when audio search command invoked"
             )
 
     @audio.command(name = "text", with_app_command = False)
