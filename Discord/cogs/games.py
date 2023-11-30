@@ -124,14 +124,23 @@ class Games(commands.Cog):
 			f"\N{BILLIARDS} {games.eightball()}"
 		)
 	
-	@commands.command()
+	@commands.hybrid_command()
 	@checks.not_forbidden()
 	async def guess(
 		self, ctx,
 		max_value: Optional[int] = 10,  # noqa: UP007 (non-pep604-annotation)
 		tries: Optional[int] = 1  # noqa: UP007 (non-pep604-annotation)
 	):
-		'''Guessing game'''
+		'''
+		Guessing game
+		
+		Parameters
+		----------
+		max_value
+			The maximum number in the range to guess from
+		tries
+			The number of attempts to guess the number
+		'''
 		if guess_game := self.guess_games.get((ctx.channel.id, ctx.author)):
 			description = "You're already playing a guessing game here"
 			if guess_game.message:
