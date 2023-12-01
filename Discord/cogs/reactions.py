@@ -16,6 +16,6 @@ class Reactions(commands.Cog):
 
     @commands.command(aliases = ["reaction", "menus", "menu"], hidden = True)
     async def reactions(self, ctx):
-        '''Deprecated now that there are native buttons'''
+        """Deprecated now that there are native buttons"""
         await ctx.send_help(ctx.command)
 
