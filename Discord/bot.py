@@ -1169,10 +1169,13 @@ class Bot(commands.Bot):
                 return False
             return True
 
-        add = self.wait_for("raw_reaction_add", check = raw_reaction_check)
-        remove = self.wait_for("raw_reaction_remove", check = raw_reaction_check)
         done, pending = await asyncio.wait(
-            (add, remove),
+            (
+                self.wait_for("raw_reaction_add", check = raw_reaction_check),
+                self.wait_for(
+                    "raw_reaction_remove", check = raw_reaction_check
+                )
+            ),
             return_when = asyncio.FIRST_COMPLETED,
             timeout = timeout
         )
