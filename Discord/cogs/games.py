@@ -137,9 +137,9 @@ class Games(commands.Cog):
 		if guess_game.awaiting_guess:
 			await guess_game.guess(int(message.content))
 	
-	@commands.command(aliases = ["rtg", "reactiontime", "reactiontimegame", "reaction_time_game"])
+	@commands.command(aliases = ["rtg", "reactiontime", "reaction_time", "reactiontimegame", "reaction_time_game"])
 	@checks.not_forbidden()
-	async def reaction_time(self, ctx):
+	async def reaction(self, ctx):
 		'''Reaction time game'''
 		# TODO: Randomly add reactions
 		response = await ctx.embed_reply("Please add 10 reactions to this message", author_name = None, attempt_delete = False)
