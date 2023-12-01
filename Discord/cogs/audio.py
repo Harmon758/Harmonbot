@@ -1,5 +1,6 @@
 
 import discord
+from discord import ui
 from discord.ext import commands
 
 import base64
@@ -999,10 +1000,7 @@ class Audio(commands.Cog):
                 "audio volume command not found when volume command invoked"
             )
 
-    @commands.group(
-        aliases = ["current"],
-        invoke_without_command = True, case_insensitive = True
-    )
+    @commands.command(aliases = ["current", "player"])
     @checks.is_voice_connected()
     @checks.not_forbidden()
     async def playing(self, ctx):
@@ -1052,13 +1050,15 @@ class Audio(commands.Cog):
 
         requester = ctx.guild.voice_client.source.requester
 
-        await ctx.embed_reply(
+        view = Player(ctx)
+        view.message = await ctx.embed_reply(
             title = title,
             title_url = title_url,
             description = description,
             footer_text = "Added by " + requester.display_name,
             footer_icon_url = requester.display_avatar.url,
-            timestamp = ctx.guild.voice_client.source.timestamp
+            timestamp = ctx.guild.voice_client.source.timestamp,
+            view = view
         )
 
     @audio.group(name = "queue", fallback = "show")
@@ -1474,4 +1474,98 @@ class Audio(commands.Cog):
             data = await resp.json()
 
         return data["access_token"]
+
+
+class Player(ui.View):
+
+    def __init__(self, ctx):
+        super().__init__(timeout = 600)
+
+        self.ctx = ctx
+
+    # TODO: Queue?, Empty?, Settext?, Join?, Leave?, Other?
+    # TODO: Resend player?
+    # TODO: player command: Timestamp for radio?
+    # TODO: Fix embed replying to user who invoked command rather than clicked button
+
+    async def is_permitted(self, command, user_id):
+        while ((permitted := await self.ctx.get_permission(command.name, id = user_id)) is None
+                and command.parent is not None):
+            command = command.parent
+        return permitted or user_id in (self.ctx.guild.owner_id, self.ctx.bot.owner_id)
+
+    @ui.button(
+        emoji = '\N{BLACK RIGHT-POINTING TRIANGLE WITH DOUBLE VERTICAL BAR}'
+    )
+    async def pause_or_resume_button(self, interaction, button):
+        await interaction.response.defer()
+        if self.ctx.guild.voice_client.is_playing():
+            command = self.ctx.bot.cogs["Audio"].pause
+        else:
+            command = self.ctx.bot.cogs["Audio"].resume
+        if await self.is_permitted(command, interaction.user.id):
+            await self.ctx.invoke(command)
+
+    @ui.button(
+        emoji = '\N{BLACK RIGHT-POINTING DOUBLE TRIANGLE WITH VERTICAL BAR}'
+    )
+    async def skip_button(self, interaction, button):
+        await interaction.response.defer()
+        command = self.ctx.bot.cogs["Audio"].skip
+        if await self.is_permitted(command, interaction.user.id):
+            await self.ctx.invoke(command)
+
+    @ui.button(
+        emoji = '\N{CLOCKWISE RIGHTWARDS AND LEFTWARDS OPEN CIRCLE ARROWS WITH CIRCLED ONE OVERLAY}'
+    )
+    async def replay_button(self, interaction, button):
+        await interaction.response.defer()
+        command = self.ctx.bot.cogs["Audio"].replay
+        if await self.is_permitted(command, interaction.user.id):
+            await self.ctx.invoke(command)
+
+    @ui.button(emoji = '\N{TWISTED RIGHTWARDS ARROWS}')
+    async def shuffle_button(self, interaction, button):
+        await interaction.response.defer()
+        command = self.ctx.bot.cogs["Audio"].shuffle
+        if await self.is_permitted(command, interaction.user.id):
+            await self.ctx.invoke(command)
+
+    @ui.button(emoji = '\N{RADIO}')
+    async def radio_button(self, interaction, button):
+        await interaction.response.defer()
+        command = self.ctx.bot.cogs["Audio"].radio
+        if await self.is_permitted(command, interaction.user.id):
+            await self.ctx.invoke(command)
+
+    @ui.button(emoji = '\N{SPEAKER WITH ONE SOUND WAVE}')
+    async def volume_down_button(self, interaction, button):
+        await interaction.response.defer()
+        await self.change_volume(interaction.user.id, -10)
+
+    @ui.button(emoji = '\N{SPEAKER WITH THREE SOUND WAVES}')
+    async def volume_up_button(self, interaction, button):
+        await interaction.response.defer()
+        await self.change_volume(interaction.user.id, 10)
+
+    async def change_volume(self, user_id, volume_change):
+        command = self.ctx.bot.cogs["Audio"].volume
+        if await self.is_permitted(command, user_id):
+            # TODO: Just invoke without checking?
+            if self.ctx.guild.voice_client.is_playing():
+                await self.ctx.invoke(command, volume_setting = self.ctx.guild.voice_client.source.volume + volume_change)
+            else:
+                await self.ctx.embed_reply(f":no_entry: Couldn't {'increase' if volume_change > 0 else 'decrease'} volume\n"
+                                            "There's nothing playing right now")
+
+    async def on_timeout(self):
+        await self.stop()
+
+    async def stop(self):
+        for item in self.children:
+            item.disabled = True
+
+        await self.message.edit(view = self)
+
+        super().stop()
 
