@@ -137,7 +137,7 @@ class Games(commands.Cog):
 		if guess_game.awaiting_guess:
 			await guess_game.guess(int(message.content))
 	
-	@commands.command(aliases = ["rtg", "reactiontime", "reaction_time", "reactiontimegame", "reaction_time_game"])
+	@commands.command(aliases = ["react", "rtg", "reactiontime", "reaction_time", "reactiontimegame", "reaction_time_game"])
 	@checks.not_forbidden()
 	async def reaction(self, ctx):
 		'''Reaction time game'''
