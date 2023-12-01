@@ -7,6 +7,7 @@ import textwrap
 
 from utilities import checks
 from utilities.menu import Menu
+from utilities.paginators import ButtonPaginator
 
 
 async def setup(bot):
@@ -147,10 +148,11 @@ class Blobs(commands.Cog):
     async def menu_command(self, ctx, number: int = 1):
         '''Blobs menu'''
         records = await ctx.bot.db.fetch("SELECT * FROM blobs.blobs ORDER BY blob")
-        menu = BlobsMenu(records, number)
-        self.menus.append(menu)
-        await menu.start(ctx, wait = True)
-        self.menus.remove(menu)
+        paginator = ButtonPaginator(
+            ctx, BlobsSource(records), initial_page = number
+        )
+        await paginator.start()
+        ctx.bot.views.append(paginator)
 
     @blobs.command()
     @checks.not_forbidden()
@@ -228,19 +230,4 @@ class BlobsSource(menus.ListPageSource):
         embed.set_image(url = record["image"])
         embed.set_footer(text = f"Blob {menu.current_page + 1} of {self.get_max_pages()}")
         return {"content": f"In response to: `{menu.ctx.message.clean_content}`", "embed": embed}
-
-
-class BlobsMenu(Menu, menus.MenuPages):
-
-    def __init__(self, records, number):
-        super().__init__(BlobsSource(records), timeout = None, clear_reactions_after = True, check_embeds = True)
-        self.initial_offset = number - 1
-
-    async def send_initial_message(self, ctx, channel):
-        page = await self.source.get_page(self.initial_offset)
-        self.current_page = self.initial_offset
-        kwargs = await self.source.format_page(self, page)
-        message = await channel.send(**kwargs)
-        await ctx.bot.attempt_delete_message(ctx.message)
-        return message
 
