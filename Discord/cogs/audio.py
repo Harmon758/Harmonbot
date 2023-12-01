@@ -1000,10 +1000,10 @@ class Audio(commands.Cog):
                 "audio volume command not found when volume command invoked"
             )
 
-    @commands.command(aliases = ["current", "player"])
+    @commands.command(aliases = ["current", "playing"])
     @checks.is_voice_connected()
     @checks.not_forbidden()
-    async def playing(self, ctx):
+    async def player(self, ctx):
         '''See the currently playing song'''
         if not ctx.guild.voice_client.is_playing():
             await ctx.embed_reply(":speaker: There is no song currently playing")
