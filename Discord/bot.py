@@ -1147,7 +1147,9 @@ class Bot(commands.Bot):
         ):
             await message.edit(**fields)
 
-    async def wait_for_raw_reaction_add_or_remove(self, *, emoji = None, message = None, user = None, timeout = None):
+    async def wait_for_raw_reaction_add_or_remove(
+        self, *, emoji = None, message = None, user = None, timeout = None
+    ):
         def raw_reaction_check(payload):
             if emoji:
                 if isinstance(emoji, discord.Emoji | discord.PartialEmoji):
@@ -1169,7 +1171,11 @@ class Bot(commands.Bot):
 
         add = self.wait_for("raw_reaction_add", check = raw_reaction_check)
         remove = self.wait_for("raw_reaction_remove", check = raw_reaction_check)
-        done, pending = await asyncio.wait((add, remove), return_when = asyncio.FIRST_COMPLETED, timeout = timeout)
+        done, pending = await asyncio.wait(
+            (add, remove),
+            return_when = asyncio.FIRST_COMPLETED,
+            timeout = timeout
+        )
         for task in pending:
             task.cancel()
         if not done:
