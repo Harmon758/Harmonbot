@@ -1129,16 +1129,6 @@ class Bot(commands.Bot):
     async def on_socket_event_type(self, event_type):
         self.socket_events[event_type] = self.socket_events.get(event_type, 0) + 1
 
-    async def increment_menu_reactions_count(self):
-        await self.db.execute(
-            """
-            UPDATE meta.stats
-            SET menu_reactions = menu_reactions + 1
-            WHERE timestamp = $1
-            """,
-            self.online_time
-        )
-
     # TODO: optimize/overhaul
     def send_embed(
         self, destination, description = None, *, title = None,
