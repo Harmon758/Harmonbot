@@ -99,8 +99,14 @@ class Information(commands.Cog):
 	async def server(self, ctx):
 		'''Information about the server'''
 		# Note: server information command invokes this command
-		text_count = sum(isinstance(channel, discord.TextChannel) for channel in ctx.guild.channels)
-		voice_count = sum(channel.type is discord.ChannelType.voice for channel in ctx.guild.channels)
+		text_count = sum(
+			isinstance(channel, discord.TextChannel)
+			for channel in ctx.guild.channels
+		)
+		voice_count = sum(
+			channel.type is discord.ChannelType.voice
+			for channel in ctx.guild.channels
+		)
 		bot_count = sum(m.bot for m in ctx.guild.members)
 		if system_messages := ctx.guild.system_channel:
 			system_messages = system_messages.mention
@@ -110,23 +116,49 @@ class Information(commands.Cog):
 				system_messages += "\nBoosts"
 		if not (guild_owner := ctx.guild.owner):
 			guild_owner = await ctx.guild.fetch_member(ctx.guild.owner_id)
-		fields = [("Owner", guild_owner.mention), ("ID", ctx.guild.id), 
-					("Channels", f"{text_count} text\n{voice_count} voice"), 
-					("Members", f"{ctx.guild.member_count}\n({bot_count} bots)"), 
-					("Roles", len(ctx.guild.roles)), 
-					("AFK Channel", getattr(ctx.guild.afk_channel, "mention", ctx.guild.afk_channel)), 
-					("AFK Timeout", f"{ctx.guild.afk_timeout / 60:g} min."), 
-					("System Messages", system_messages), 
-					# ZWS = Zero Width Space
-					("Default Notification Settings", ctx.guild.default_notifications.name.replace('_', ' ').title().replace("Mentions", f"@{ctx.bot.ZWS}mentions")), 
-					("Verification Level", str(ctx.guild.verification_level).capitalize()), 
-					("Explicit Content Filter", str(ctx.guild.explicit_content_filter).replace('_', ' ').title()), 
-					("2FA Requirement", bool(ctx.guild.mfa_level)), 
-					("Boost Status", f"Level {ctx.guild.premium_tier}\n"
-										f"{ctx.guild.premium_subscription_count} {ctx.bot.inflect_engine.plural('Boost', ctx.guild.premium_subscription_count)}"), 
-					("Limits", f"Emoji: {ctx.guild.emoji_limit}\n"
-								f"Bitrate: {ctx.guild.bitrate_limit // 1000:g} kbps\n"
-								f"Filesize: {ctx.guild.filesize_limit // 1024 ** 2} MB")]
+		fields = [
+			("Owner", guild_owner.mention), ("ID", ctx.guild.id),
+			("Channels", f"{text_count} text\n{voice_count} voice"),
+			("Members", f"{ctx.guild.member_count}\n({bot_count} bots)"),
+			("Roles", len(ctx.guild.roles)),
+			(
+				"AFK Channel",
+				getattr(
+					ctx.guild.afk_channel, "mention", ctx.guild.afk_channel
+				)
+			),
+			("AFK Timeout", f"{ctx.guild.afk_timeout / 60:g} min."),
+			("System Messages", system_messages),
+			# ZWS = Zero Width Space
+			(
+				"Default Notification Settings",
+				ctx.guild.default_notifications.name.replace('_', ' ').title().replace("Mentions", f"@{ctx.bot.ZWS}mentions")
+			),
+			(
+				"Verification Level",
+				str(ctx.guild.verification_level).capitalize()
+			),
+			(
+				"Explicit Content Filter",
+				str(ctx.guild.explicit_content_filter).replace('_', ' ').title()
+			),
+			("2FA Requirement", bool(ctx.guild.mfa_level)),
+			(
+				"Boost Status",
+				(
+					f"Level {ctx.guild.premium_tier}\n"
+					f"{ctx.guild.premium_subscription_count} {ctx.bot.inflect_engine.plural('Boost', ctx.guild.premium_subscription_count)}"
+				)
+			),
+			(
+				"Limits",
+				(
+					f"Emoji: {ctx.guild.emoji_limit}\n"
+					f"Bitrate: {ctx.guild.bitrate_limit // 1000:g} kbps\n"
+					f"Filesize: {ctx.guild.filesize_limit // 1024 ** 2} MB"
+				)
+			)
+		]
 		if "VANITY_URL" in ctx.guild.features:
 			with contextlib.suppress(discord.Forbidden):
 				invite = await ctx.guild.vanity_invite()
@@ -135,7 +167,9 @@ class Information(commands.Cog):
 			fields.append(("Invite Splash", f"[URL]({ctx.guild.splash.url})"))
 		if "BANNER" in ctx.guild.features:
 			fields.append(("Banner", f"[URL]({ctx.guild.banner.url})"))
-		emojis = {"standard": [], "animated": [], "managed": [], "unavailable": []}
+		emojis = {
+			"standard": [], "animated": [], "managed": [], "unavailable": []
+		}
 		for emoji in ctx.guild.emojis:
 			if not emoji.available:
 				emojis["unavailable"].append(str(emoji))
@@ -148,14 +182,21 @@ class Information(commands.Cog):
 		for emoji_type in ("standard", "animated", "managed", "unavailable"):
 			specific_emojis = emojis[emoji_type]
 			if specific_emojis:
-				specific_emojis = textwrap.wrap(' '.join(specific_emojis), width = ctx.bot.EFVCL)
+				specific_emojis = textwrap.wrap(
+					' '.join(specific_emojis), width = ctx.bot.EFVCL
+				)
 				# EFVCL = Embed Field Value Character Limit
-				fields.append((f"{emoji_type.replace('standard', '').capitalize()} Emojis", specific_emojis[0]))
+				fields.append((
+					f"{emoji_type.replace('standard', '').capitalize()} Emojis",
+					specific_emojis[0]
+				))
 				for emoji in specific_emojis[1:]:
 					fields.append((ctx.bot.ZERO_WIDTH_SPACE, emoji))
-		await ctx.embed_reply(title = ctx.guild.name, title_url = str(ctx.guild.icon.url), 
-								thumbnail_url = ctx.guild.icon.url, fields = fields, 
-								footer_text = "Created", timestamp = ctx.guild.created_at)
+		await ctx.embed_reply(
+			title = ctx.guild.name, title_url = str(ctx.guild.icon.url), 
+			thumbnail_url = ctx.guild.icon.url, fields = fields, 
+			footer_text = "Created", timestamp = ctx.guild.created_at
+		)
 	
 	@information.command(with_app_command = False)
 	async def spotify(self, ctx, url: str):
