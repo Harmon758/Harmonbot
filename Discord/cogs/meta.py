@@ -747,7 +747,7 @@ class Meta(commands.Cog):
             ))
         if message_context_menu_commands:
             fields.append((
-                "Menu Context Menu Commands",
+                "Message Context Menu Commands",
                 self.bot.CODE_BLOCK.format('\n'.join(
                     f"({command.id}) {command.name}"
                     for command in message_context_menu_commands
