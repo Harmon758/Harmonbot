@@ -27,7 +27,6 @@ class Audio(commands.Cog):
         # TODO: Add back as audio subcommands:
         # library, library subcommands
         # listen, listen subcommands
-        # playing?
         # radio
         # skip, merge skip subcommand?
 
@@ -1000,11 +999,12 @@ class Audio(commands.Cog):
                 "audio volume command not found when volume command invoked"
             )
 
-    @commands.command(aliases = ["current", "playing"])
+    @audio.command(name = "player", aliases = ["current", "playing"])
     @checks.is_voice_connected()
     @checks.not_forbidden()
-    async def player(self, ctx):
+    async def audio_player(self, ctx):
         '''See the currently playing song'''
+        # Note: player command invokes this command
         if not ctx.guild.voice_client.is_playing():
             await ctx.embed_reply(":speaker: There is no song currently playing")
             return
@@ -1060,6 +1060,18 @@ class Audio(commands.Cog):
             timestamp = ctx.guild.voice_client.source.timestamp,
             view = view
         )
+
+    @commands.command(aliases = ["current", "playing"])
+    @checks.is_voice_connected()
+    @checks.not_forbidden()
+    async def player(self, ctx):
+        '''See the currently playing song'''
+        if command := ctx.bot.get_command("audio player"):
+            await ctx.invoke(command)
+        else:
+            raise RuntimeError(
+                "audio player command not found when player command invoked"
+            )
 
     @audio.group(name = "queue", fallback = "show")
     @checks.is_voice_connected()
