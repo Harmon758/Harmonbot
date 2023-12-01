@@ -1573,10 +1573,17 @@ class AudioPlayerView(ui.View):
     async def change_volume(self, volume_change):
         # TODO: Just invoke without checking?
         if self.ctx.guild.voice_client.is_playing():
-            await self.ctx.invoke(self.ctx.bot.cogs["Audio"].volume, volume_setting = self.ctx.guild.voice_client.source.volume + volume_change)
+            await self.ctx.invoke(
+                self.ctx.bot.cogs["Audio"].volume,
+                volume_setting = (
+                    self.ctx.guild.voice_client.source.volume + volume_change
+                )
+            )
         else:
-            await self.ctx.embed_reply(f":no_entry: Couldn't {'increase' if volume_change > 0 else 'decrease'} volume\n"
-                                        "There's nothing playing right now")
+            await self.ctx.embed_reply(
+                f":no_entry: Couldn't {'increase' if volume_change > 0 else 'decrease'} volume\n"
+                "There's nothing playing right now"
+            )
 
     async def on_timeout(self):
         await self.stop()
