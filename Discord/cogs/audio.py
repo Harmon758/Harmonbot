@@ -1495,7 +1495,7 @@ class AudioPlayerView(ui.View):
             custom_id == "pause" and
             not self.ctx.guild.voice_client.is_playing()
         ):
-            custom_id == "resume"
+            custom_id = "resume"
 
         command = getattr(self.ctx.bot.cogs["Audio"], custom_id)
         while (
