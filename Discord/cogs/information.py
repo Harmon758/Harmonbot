@@ -66,11 +66,15 @@ class Information(commands.Cog):
 			output[-1]["hex"] = hex(ord(char))
 			output[-1]["url"] = f"http://www.fileformat.info/info/unicode/char/{output[-1]['hex'][2:]}/index.htm"
 		if len(output) == 1:
-			await ctx.embed_reply(f"`{output[0]['char']}` ({output[0]['hex']})", 
-									title = output[0]["name"], title_url = output[0]["url"])
+			await ctx.embed_reply(
+				f"`{output[0]['char']}` ({output[0]['hex']})", 
+				title = output[0]["name"], title_url = output[0]["url"]
+			)
 		else:
-			output = '\n'.join(f"[{char['name']}]({char['url']}): `{char['char']}` ({char['hex']})" 
-								for char in output)
+			output = '\n'.join(
+				f"[{char['name']}]({char['url']}): `{char['char']}` ({char['hex']})" 
+				for char in output
+			)
 			if len(output) > ctx.bot.EMBED_DESCRIPTION_CHARACTER_LIMIT:
 				output = output[:ctx.bot.EMBED_DESCRIPTION_CHARACTER_LIMIT]
 				output = output[:output.rfind('\n')]
