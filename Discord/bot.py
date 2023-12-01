@@ -1,7 +1,7 @@
 
 import discord
 from discord import app_commands
-from discord.ext import commands, menus
+from discord.ext import commands
 
 import asyncio
 import contextlib
@@ -1036,27 +1036,8 @@ class Bot(commands.Bot):
                         f"{self.error_emoji} Error: You can only bulk delete messages that are under 14 days old"
                     )
                     return
-                # Menus
-                case menus.CannotEmbedLinks():
-                    await ctx.embed_reply(
-                        "I need to be able to send embeds to show menus\n"
-                        "Plese give me permission to Embed Links"
-                    )
-                    return
-                case menus.CannotAddReactions():
-                    await ctx.embed_reply(
-                        "I need to be able to add reactions to show menus\n"
-                        "Please give me permission to Add Reactions"
-                    )
-                    return
-                case menus.CannotReadMessageHistory():
-                    await ctx.embed_reply(
-                        "I need to be able to read message history to show menus\n"
-                        "Please give me permission to Read Message History"
-                    )
-                    return
                 # Bot missing permissions (Unhandled)
-                case discord.Forbidden() | menus.CannotSendMessages():
+                case discord.Forbidden():
                     self.print(
                         f"Missing Permissions for {ctx.command.qualified_name} in #{ctx.channel.name} in {ctx.guild.name}"
                     )
