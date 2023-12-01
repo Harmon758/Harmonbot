@@ -1498,7 +1498,10 @@ class AudioPlayerView(ui.View):
     # TODO: Queue?, Empty?, Settext?, Join?, Leave?, Other?
     # TODO: Resend player?
     # TODO: player command: Timestamp for radio?
-    # TODO: Fix embed replying to user who invoked command rather than clicked button
+    # TODO: Fix embed replying to user who invoked command rather than clicked
+    #       button
+
+    # TODO: Indicate user who pressed button when invoked as slash command
 
     async def interaction_check(self, interaction):
         custom_id = interaction.data["custom_id"].split('_')[0]
@@ -1521,7 +1524,7 @@ class AudioPlayerView(ui.View):
             command = command.parent
         permitted = permitted or interaction.user.id in (
             self.ctx.guild.owner_id, self.ctx.bot.owner_id
-        )
+        )  # TODO: Broaden to allow administrators
 
         if not permitted:
             await interaction.response.send_message(
@@ -1583,7 +1586,6 @@ class AudioPlayerView(ui.View):
         await self.change_volume(10)
 
     async def change_volume(self, volume_change):
-        # TODO: Just invoke without checking?
         if self.ctx.guild.voice_client.is_playing():
             await self.ctx.invoke(
                 self.ctx.bot.cogs["Audio"].volume,
@@ -1592,6 +1594,7 @@ class AudioPlayerView(ui.View):
                 )
             )
         else:
+            # TODO: Change player volume when not playing
             await self.ctx.embed_reply(
                 f":no_entry: Couldn't {'increase' if volume_change > 0 else 'decrease'} volume\n"
                 "There's nothing playing right now"
