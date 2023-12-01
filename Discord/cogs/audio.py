@@ -1050,7 +1050,7 @@ class Audio(commands.Cog):
 
         requester = ctx.guild.voice_client.source.requester
 
-        view = Player(ctx)
+        view = AudioPlayerView(ctx)
         view.message = await ctx.embed_reply(
             title = title,
             title_url = title_url,
@@ -1476,7 +1476,7 @@ class Audio(commands.Cog):
         return data["access_token"]
 
 
-class Player(ui.View):
+class AudioPlayerView(ui.View):
 
     def __init__(self, ctx):
         super().__init__(timeout = 600)
