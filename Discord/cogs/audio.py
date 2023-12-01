@@ -1498,10 +1498,18 @@ class AudioPlayerView(ui.View):
             custom_id == "resume"
 
         command = getattr(self.ctx.bot.cogs["Audio"], custom_id)
-        while ((permitted := await self.ctx.get_permission(command.name, id = interaction.user.id)) is None
-                and command.parent is not None):
+        while (
+            (
+                permitted := await self.ctx.get_permission(
+                    command.name, id = interaction.user.id
+                )
+            ) is None
+            and command.parent is not None
+        ):
             command = command.parent
-        permitted = permitted or interaction.user.id in (self.ctx.guild.owner_id, self.ctx.bot.owner_id)
+        permitted = permitted or interaction.user.id in (
+            self.ctx.guild.owner_id, self.ctx.bot.owner_id
+        )
 
         if not permitted:
             await interaction.response.send_message(
