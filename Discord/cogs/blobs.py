@@ -6,7 +6,6 @@ import difflib
 import textwrap
 
 from utilities import checks
-from utilities.menu import Menu
 from utilities.paginators import ButtonPaginator
 
 
