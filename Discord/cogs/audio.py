@@ -1488,75 +1488,87 @@ class AudioPlayerView(ui.View):
     # TODO: player command: Timestamp for radio?
     # TODO: Fix embed replying to user who invoked command rather than clicked button
 
-    async def is_permitted(self, command, user_id):
-        while ((permitted := await self.ctx.get_permission(command.name, id = user_id)) is None
+    async def interaction_check(self, interaction):
+        custom_id = interaction.data["custom_id"].split('_')[0]
+
+        if (
+            custom_id == "pause" and
+            not self.ctx.guild.voice_client.is_playing()
+        ):
+            custom_id == "resume"
+
+        command = getattr(self.ctx.bot.cogs["Audio"], custom_id)
+        while ((permitted := await self.ctx.get_permission(command.name, id = interaction.user.id)) is None
                 and command.parent is not None):
             command = command.parent
-        return permitted or user_id in (self.ctx.guild.owner_id, self.ctx.bot.owner_id)
+        permitted = permitted or interaction.user.id in (self.ctx.guild.owner_id, self.ctx.bot.owner_id)
+
+        if not permitted:
+            await interaction.response.send_message(
+                f"{self.error_emoji} You don't have permission to do that here",
+                ephemeral = True
+            )
+
+        return permitted
 
     @ui.button(
-        emoji = '\N{BLACK RIGHT-POINTING TRIANGLE WITH DOUBLE VERTICAL BAR}'
+        emoji = '\N{BLACK RIGHT-POINTING TRIANGLE WITH DOUBLE VERTICAL BAR}',
+        custom_id = "pause_resume"
     )
     async def pause_or_resume_button(self, interaction, button):
         await interaction.response.defer()
         if self.ctx.guild.voice_client.is_playing():
-            command = self.ctx.bot.cogs["Audio"].pause
+            await self.ctx.invoke(self.ctx.bot.cogs["Audio"].pause)
         else:
-            command = self.ctx.bot.cogs["Audio"].resume
-        if await self.is_permitted(command, interaction.user.id):
-            await self.ctx.invoke(command)
+            await self.ctx.invoke(self.ctx.bot.cogs["Audio"].resume)
 
     @ui.button(
-        emoji = '\N{BLACK RIGHT-POINTING DOUBLE TRIANGLE WITH VERTICAL BAR}'
+        emoji = '\N{BLACK RIGHT-POINTING DOUBLE TRIANGLE WITH VERTICAL BAR}',
+        custom_id = "skip"
     )
     async def skip_button(self, interaction, button):
         await interaction.response.defer()
-        command = self.ctx.bot.cogs["Audio"].skip
-        if await self.is_permitted(command, interaction.user.id):
-            await self.ctx.invoke(command)
+        await self.ctx.invoke(self.ctx.bot.cogs["Audio"].skip)
 
     @ui.button(
-        emoji = '\N{CLOCKWISE RIGHTWARDS AND LEFTWARDS OPEN CIRCLE ARROWS WITH CIRCLED ONE OVERLAY}'
+        emoji = '\N{CLOCKWISE RIGHTWARDS AND LEFTWARDS OPEN CIRCLE ARROWS WITH CIRCLED ONE OVERLAY}',
+        custom_id = "replay"
     )
     async def replay_button(self, interaction, button):
         await interaction.response.defer()
-        command = self.ctx.bot.cogs["Audio"].replay
-        if await self.is_permitted(command, interaction.user.id):
-            await self.ctx.invoke(command)
+        await self.ctx.invoke(self.ctx.bot.cogs["Audio"].replay)
 
-    @ui.button(emoji = '\N{TWISTED RIGHTWARDS ARROWS}')
+    @ui.button(emoji = '\N{TWISTED RIGHTWARDS ARROWS}', custom_id = "shuffle")
     async def shuffle_button(self, interaction, button):
         await interaction.response.defer()
-        command = self.ctx.bot.cogs["Audio"].shuffle
-        if await self.is_permitted(command, interaction.user.id):
-            await self.ctx.invoke(command)
+        await self.ctx.invoke(self.ctx.bot.cogs["Audio"].shuffle)
 
-    @ui.button(emoji = '\N{RADIO}')
+    @ui.button(emoji = '\N{RADIO}', custom_id = "radio")
     async def radio_button(self, interaction, button):
         await interaction.response.defer()
-        command = self.ctx.bot.cogs["Audio"].radio
-        if await self.is_permitted(command, interaction.user.id):
-            await self.ctx.invoke(command)
+        await self.ctx.invoke(self.ctx.bot.cogs["Audio"].radio)
 
-    @ui.button(emoji = '\N{SPEAKER WITH ONE SOUND WAVE}')
+    @ui.button(
+        emoji = '\N{SPEAKER WITH ONE SOUND WAVE}', custom_id = "volume_down"
+    )
     async def volume_down_button(self, interaction, button):
         await interaction.response.defer()
-        await self.change_volume(interaction.user.id, -10)
+        await self.change_volume(-10)
 
-    @ui.button(emoji = '\N{SPEAKER WITH THREE SOUND WAVES}')
+    @ui.button(
+        emoji = '\N{SPEAKER WITH THREE SOUND WAVES}', custom_id = "volume_up"
+    )
     async def volume_up_button(self, interaction, button):
         await interaction.response.defer()
-        await self.change_volume(interaction.user.id, 10)
+        await self.change_volume(10)
 
-    async def change_volume(self, user_id, volume_change):
-        command = self.ctx.bot.cogs["Audio"].volume
-        if await self.is_permitted(command, user_id):
-            # TODO: Just invoke without checking?
-            if self.ctx.guild.voice_client.is_playing():
-                await self.ctx.invoke(command, volume_setting = self.ctx.guild.voice_client.source.volume + volume_change)
-            else:
-                await self.ctx.embed_reply(f":no_entry: Couldn't {'increase' if volume_change > 0 else 'decrease'} volume\n"
-                                            "There's nothing playing right now")
+    async def change_volume(self, volume_change):
+        # TODO: Just invoke without checking?
+        if self.ctx.guild.voice_client.is_playing():
+            await self.ctx.invoke(self.ctx.bot.cogs["Audio"].volume, volume_setting = self.ctx.guild.voice_client.source.volume + volume_change)
+        else:
+            await self.ctx.embed_reply(f":no_entry: Couldn't {'increase' if volume_change > 0 else 'decrease'} volume\n"
+                                        "There's nothing playing right now")
 
     async def on_timeout(self):
         await self.stop()
