@@ -1,21 +1,21 @@
 
 from discord.ext import commands
 
-from utilities import checks
-
-
-async def setup(bot):
-    await bot.add_cog(Reactions(bot))
 
 # meta.stats reaction_responses column:
 #  Fixed to stop counting own reactions on 2019-10-25
 #  Deprecated on 2020-01-04 in favor of menu_reactions
 
+
+async def setup(bot):
+    await bot.add_cog(Reactions(bot))
+
 class Reactions(commands.Cog):
 
-    @commands.command(aliases = ["reaction", "menus", "menu"])
-    @checks.not_forbidden()
+    """Deprecated now that there are native buttons"""
+
+    @commands.command(aliases = ["reaction", "menus", "menu"], hidden = True)
     async def reactions(self, ctx):
-        '''Menu versions of commands'''
+        '''Deprecated now that there are native buttons'''
         await ctx.send_help(ctx.command)
 
