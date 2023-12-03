@@ -397,7 +397,7 @@ class Audio(commands.Cog):
     @commands.group(aliases = ["next", "remove"], invoke_without_command = True, case_insensitive = True)
     @checks.not_forbidden()
     @checks.is_voice_connected()
-    async def skip(self, ctx, *, number : int = 0):
+    async def skip(self, ctx, *, number: int = 0):
         '''
         Skip a song
         Skip or vote to skip the current song or skip a song number in the queue
