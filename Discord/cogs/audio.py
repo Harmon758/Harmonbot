@@ -438,7 +438,7 @@ class Audio(commands.Cog):
     @skip.command(name = "to")
     @checks.is_voice_connected()
     @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
-    async def skip_to(self, ctx, number : int):
+    async def skip_to(self, ctx, number: int):
         '''
         Skip to a song in the queue
         Skips every song before number
