@@ -879,7 +879,7 @@ class Audio(commands.Cog):
     @library.command(name = "song")
     @checks.is_voice_connected()
     @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
-    async def library_song(self, ctx, *, filename : str = ""):
+    async def library_song(self, ctx, *, filename: str = ""):
         '''Play a song from my library'''
         if not (await self.players[ctx.guild.id].play_from_library(ctx, filename = filename)):
             await ctx.embed_reply(":warning: Something else is already playing\nPlease stop it first")
