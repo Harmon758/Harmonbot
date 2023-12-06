@@ -903,7 +903,7 @@ class Audio(commands.Cog):
     @library.command(name = "search")
     @checks.not_forbidden()
     @checks.is_voice_connected()
-    async def library_search(self, ctx, *, search : str):
+    async def library_search(self, ctx, *, search: str):
         '''Search songs in the library'''
         results = [filename for filename in self.players[ctx.guild.id].library_files if search.lower() in filename.lower()]
         if not results:
