@@ -122,7 +122,7 @@ google-cloud-core==2.3.3
 googleapis-common-protos==1.61.0
 greenlet==3.0.1
 grpcio==1.59.3
-grpcio-status==1.59.3
+grpcio-status==1.60.0
 h11==0.14.0
 h2==4.1.0
 hpack==4.0.0
