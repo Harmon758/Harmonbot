@@ -17,15 +17,15 @@ def card_value(card):
     try:
         return int(card.value)
     except ValueError:
-        # Use pattern matching in Python 3.10
-        if card.value == "Ace":
-            return 1
-        elif card.value == "Jack":
-            return 11
-        elif card.value == "Queen":
-            return 12
-        elif card.value == "King":
-            return 13
+        match card.value:
+            case "Ace":
+                return 1
+            case "Jack":
+                return 11
+            case "Queen":
+                return 12
+            case "King":
+                return 13
 
 def cards_to_string(cards):
     return " | ".join(
