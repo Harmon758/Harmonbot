@@ -208,24 +208,24 @@ class Twitter(commands.Cog):
             async with self.bot.aiohttp_session.get(
                 f"{nitter_instance_url}/{handle}/rss"
             ) as resp:
-                # TODO: Use structural pattern matching with Python 3.10
-                if resp.status == 400:
-                    await ctx.embed_reply(
-                        f"{ctx.bot.error_emoji} User not found:\n"
-                        f"> `{handle}` doesn't appear to be a valid Twitter "
-                        f"user at https://twitter.com/{handle}\n"
-                        "> If the user existed before, they may have been "
-                        "suspended or banned."
-                    )
-                    return
-                elif resp.status == 404:
-                    await ctx.embed_reply(
-                        f"{ctx.bot.error_emoji} User not found:\n"
-                        f"> The page at https://twitter.com/{handle} is "
-                        "either invalid, private, requires login, or doesn't "
-                        "exist"
-                    )
-                    return
+                match resp.status:
+                    case 400:
+                        await ctx.embed_reply(
+                            f"{ctx.bot.error_emoji} User not found:\n"
+                            f"> `{handle}` doesn't appear to be a valid "
+                            f"Twitter user at https://twitter.com/{handle}\n"
+                            "> If the user existed before, they may have been "
+                            "suspended or banned."
+                        )
+                        return
+                    case 404:
+                        await ctx.embed_reply(
+                            f"{ctx.bot.error_emoji} User not found:\n"
+                            f"> The page at https://twitter.com/{handle} is "
+                            "either invalid, private, requires login, or "
+                            "doesn't exist"
+                        )
+                        return
 
                 feed_text = await resp.text()
 
