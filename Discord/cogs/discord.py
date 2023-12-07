@@ -24,6 +24,7 @@ ACTIVITES = {
     "Checkers In The Park": 832013003968348200,
     "Chef Showdown": 1037680572660727838,
     "Chess In The Park": 832012774040141894,
+    "Colonist": 1106787098452832296,
     "Color Together": 1039835161136746497,
     # "Doodle Crew": 878067389634314250,  # Now Sketch Heads
     "Fishington.io": 814288819477020702,
