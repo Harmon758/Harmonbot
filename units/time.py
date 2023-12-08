@@ -4,6 +4,7 @@ import datetime
 
 def duration_to_string(
     duration: datetime.timedelta,
+    *,
     weeks: bool = True,
     milliseconds: bool = False,
     microseconds: bool = False,
