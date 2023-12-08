@@ -51,7 +51,7 @@ async def get_item_id(
 async def get_ge_data(
     item: str,
     *,
-    item_id: int | str | None  = None,
+    item_id: int | str | None = None,
     aiohttp_session: aiohttp.ClientSession | None = None
 ) -> dict:
     async with ensure_session(aiohttp_session) as aiohttp_session:
