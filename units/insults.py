@@ -33,9 +33,9 @@ ELIZABETHAN_NOUNS = (
     "Flirt-gill", "Foot-licker", "Fustilarian", "Giglet", "Gudgeon", "Haggard",
     "Harpy", "Hedge-pig", "Horn-beast", "Huggermugger", "Jolt-head",
     "Lewdster", "Lout", "Maggot-pie", "Malt-worm", "Mammet", "Measle",
-    "Minnow","Miscreant", "Mold-warp", "Mumble-news", "Nut-hook", "Pigeon-egg",
-    "Pignut", "Puttock","Pumpion", "Rats-bane", "Scut", "Skains-mate",
-    "Strumpet", "Varlot", "Vassal", "Whey-face", "Wagtail"
+    "Minnow", "Miscreant", "Mold-warp", "Mumble-news", "Nut-hook",
+    "Pigeon-egg", "Pignut", "Puttock", "Pumpion", "Rats-bane", "Scut",
+    "Skains-mate", "Strumpet", "Varlot", "Vassal", "Whey-face", "Wagtail"
 )
 
 
