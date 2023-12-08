@@ -26,6 +26,7 @@ class BackgroundColor(IntEnum):
 
 def affix_ansi(
     string: str,
+    *,
     bold: bool = False,
     underline: bool = False,
     text_color: TextColor | None = None,
