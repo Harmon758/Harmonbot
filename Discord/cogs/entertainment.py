@@ -27,7 +27,6 @@ class Entertainment(commands.Cog):
 	@commands.group(aliases = ["anilsit"], case_insensitive = True, invoke_without_command = True)
 	async def anime(self, ctx, *, search: str):
 		'''Search AniList'''
-		url = "https://graphql.anilist.co"
 		query = """
 		query ($search: String) {
 			Media (search: $search, type: ANIME) {
@@ -75,11 +74,14 @@ class Entertainment(commands.Cog):
 		# trailer
 		# trending
 		# trends
-		data = {"query": query, "variables": {"search": search}}
-		async with ctx.bot.aiohttp_session.post(url, json = data) as resp:
+		async with ctx.bot.aiohttp_session.post(
+			"https://graphql.anilist.co",
+			json = {"query": query, "variables": {"search": search}}
+		) as resp:
 			data = await resp.json()
 		if not (media := data["data"]["Media"]) and "errors" in data:
-			return await ctx.embed_reply(f":no_entry: Error: {data['errors'][0]['message']}")
+			await ctx.embed_reply(f":no_entry: Error: {data['errors'][0]['message']}")
+			return
 		# Title
 		english_title = media["title"]["english"]
 		native_title = media["title"]["native"]
