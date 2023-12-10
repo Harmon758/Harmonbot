@@ -80,7 +80,7 @@ urllib3==2.1.0
 vcrpy==5.1.0
 wand==0.6.13
 wolframalpha==5.0.0
-wordcloud==1.9.2
+wordcloud==1.9.3
 wordnik-py3==2.1.2
 # youtube-dl==2023.12.7
 # https://github.com/ytdl-org/youtube-dl/issues/31585
