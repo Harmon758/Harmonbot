@@ -24,7 +24,10 @@ class Entertainment(commands.Cog):
 	# TODO: manga
 	# TODO: anime menu
 	
-	@commands.group(aliases = ["anilsit"], case_insensitive = True, invoke_without_command = True)
+	@commands.group(
+		aliases = ["anilsit"],
+		case_insensitive = True, invoke_without_command = True
+	)
 	async def anime(self, ctx, *, search: str):
 		'''Search AniList'''
 		query = """
@@ -80,7 +83,9 @@ class Entertainment(commands.Cog):
 		) as resp:
 			data = await resp.json()
 		if not (media := data["data"]["Media"]) and "errors" in data:
-			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {data['errors'][0]['message']}")
+			await ctx.embed_reply(
+				f"{ctx.bot.error_emoji} Error: {data['errors'][0]['message']}"
+			)
 			return
 		# Title
 		english_title = media["title"]["english"]
@@ -89,21 +94,35 @@ class Entertainment(commands.Cog):
 		title = english_title or native_title
 		if native_title != title:
 			title += f" ({native_title})"
-		if romaji_title != english_title and len(title) + len(romaji_title) < ctx.bot.EMBED_TITLE_CHARACTER_LIMIT:
+		if (
+			romaji_title != english_title and
+			len(title) + len(romaji_title) < ctx.bot.EMBED_TITLE_CHARACTER_LIMIT
+		):
 			title += f" ({romaji_title})"
 		# Description
 		description = ""
 		if media["description"]:
 			description = BeautifulSoup(media["description"], "lxml").text
 		# Format + Episodes
-		fields = [("Format", ' '.join(word if word in ("TV", "OVA", "ONA") else word.capitalize() for word in media["format"].split('_'))), 
-					("Episodes", media["episodes"])]
+		fields = [
+			(
+				"Format",
+				' '.join(
+					word if word in ("TV", "OVA", "ONA") else word.capitalize()
+					for word in media["format"].split('_')
+				)
+			),
+			("Episodes", media["episodes"])
+		]
 		non_inline_fields = []
 		# Episode Duration
 		if duration := media["duration"]:
 			fields.append(("Episode Duration", f"{duration} minutes"))
 		# Status
-		fields.append(("Status", ' '.join(word.capitalize() for word in media["status"].split('_'))))
+		fields.append((
+			"Status",
+			' '.join(word.capitalize() for word in media["status"].split('_'))
+		))
 		# Start + End Date
 		for date_type in ("start", "end"):
 			if year := media[date_type + "Date"]["year"]:
@@ -115,7 +134,10 @@ class Entertainment(commands.Cog):
 				fields.append((date_type.capitalize() + " Date", date))
 		# Season
 		if media["season"]:  # and media["seasonYear"] ?
-			fields.append(("Season", f"{media['season'].capitalize()} {media['seasonYear']}"))
+			fields.append((
+				"Season",
+				f"{media['season'].capitalize()} {media['seasonYear']}"
+			))
 		# Average Score
 		if average_score := media["averageScore"]:
 			fields.append(("Average Score", f"{average_score}%"))
@@ -123,7 +145,10 @@ class Entertainment(commands.Cog):
 		if mean_score := media["meanScore"]:
 			fields.append(("Mean Score", f"{mean_score}%"))
 		# Popularity + Favorites
-		fields.extend((("Popularity", media["popularity"]), ("Favorites", media["favourites"])))
+		fields.extend((
+			("Popularity", media["popularity"]),
+			("Favorites", media["favourites"])
+		))
 		# Main Studio + Producers
 		main_studio = None
 		producers = []
@@ -133,12 +158,24 @@ class Entertainment(commands.Cog):
 			else:
 				producers.append(studio["node"])
 		if main_studio: 
-			fields.append(("Studio", f"[{main_studio['name']}]({main_studio['siteUrl']})"))
+			fields.append((
+				"Studio", f"[{main_studio['name']}]({main_studio['siteUrl']})"
+			))
 		if producers:
-			fields.append(("Producers", ", ".join(f"[{producer['name']}]({producer['siteUrl']})" for producer in producers), len(producers) <= 2))
+			fields.append((
+				"Producers",
+				", ".join(
+					f"[{producer['name']}]({producer['siteUrl']})"
+					for producer in producers
+				),
+				len(producers) <= 2
+			))
 		# Source
 		if source := media["source"]:
-			fields.append(("Source", ' '.join(word.capitalize() for word in source.split('_'))))
+			fields.append((
+				"Source",
+				' '.join(word.capitalize() for word in source.split('_'))
+			))
 		# Hashtag
 		if hashtag := media["hashtag"]:
 			fields.append(("Hashtag", hashtag))
@@ -146,7 +183,9 @@ class Entertainment(commands.Cog):
 		if len(media["genres"]) <= 2:
 			fields.append(("Genres", ", ".join(media["genres"])))
 		else:
-			non_inline_fields.append(("Genres", ", ".join(media["genres"]), False))
+			non_inline_fields.append((
+				"Genres", ", ".join(media["genres"]), False
+			))
 		# Synonyms
 		if synonyms := media["synonyms"]:
 			fields.append(("Synonyms", ", ".join(synonyms)))
@@ -163,10 +202,12 @@ class Entertainment(commands.Cog):
 			fields.append(("Tags", ", ".join(tags)))
 		elif tags:
 			non_inline_fields.append(("Tags", ", ".join(tags), False))
-		await ctx.embed_reply(description, title = title, title_url = media["siteUrl"], 
-								thumbnail_url = media["coverImage"]["extraLarge"], 
-								fields = fields + non_inline_fields, 
-								image_url = media["bannerImage"])
+		await ctx.embed_reply(
+			description, title = title, title_url = media["siteUrl"],
+			thumbnail_url = media["coverImage"]["extraLarge"],
+			fields = fields + non_inline_fields,
+			image_url = media["bannerImage"]
+		)
 	
 	@anime.command(name = "links", aliases = ["link"])
 	async def anime_links(self, ctx, *, search: str):
