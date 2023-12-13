@@ -212,7 +212,6 @@ class Entertainment(commands.Cog):
 	@anime.command(name = "links", aliases = ["link"])
 	async def anime_links(self, ctx, *, search: str):
 		'''Links for anime'''
-		url = "https://graphql.anilist.co"
 		query = """
 		query ($search: String) {
 			Media (search: $search, type: ANIME) {
@@ -224,11 +223,14 @@ class Entertainment(commands.Cog):
 			}
 		}
 		"""
-		data = {"query": query, "variables": {"search": search}}
-		async with ctx.bot.aiohttp_session.post(url, json = data) as resp:
+		async with ctx.bot.aiohttp_session.post(
+			"https://graphql.anilist.co",
+			json = {"query": query, "variables": {"search": search}}
+		) as resp:
 			data = await resp.json()
 		if not (media := data["data"]["Media"]) and "errors" in data:
-			return await ctx.embed_reply(f":no_entry: Error: {data['errors'][0]['message']}")
+			await ctx.embed_reply(f":no_entry: Error: {data['errors'][0]['message']}")
+			return
 		english_title = media["title"]["english"]
 		native_title = media["title"]["native"]
 		romaji_title = media["title"]["romaji"]
