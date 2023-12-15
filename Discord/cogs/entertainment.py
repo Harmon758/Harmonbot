@@ -233,11 +233,13 @@ class Entertainment(commands.Cog):
 			json = {"query": query, "variables": {"search": search}}
 		) as resp:
 			data = await resp.json()
+		
 		if not (media := data["data"]["Media"]) and "errors" in data:
 			await ctx.embed_reply(
 				f"{ctx.bot.error_emoji} Error: {data['errors'][0]['message']}"
 			)
 			return
+		
 		english_title = media["title"]["english"]
 		native_title = media["title"]["native"]
 		romaji_title = media["title"]["romaji"]
@@ -249,13 +251,15 @@ class Entertainment(commands.Cog):
 			len(title) + len(romaji_title) < ctx.bot.EMBED_TITLE_CHARACTER_LIMIT
 		):
 			title += f" ({romaji_title})"
+		
 		await ctx.embed_reply(
-			'\n'.join(
+			title = title,
+			title_url = media["siteUrl"],
+			thumbnail_url = media["coverImage"]["extraLarge"],
+			description = '\n'.join(
 				f"[{link['site']}]({link['url']})"
 				for link in media['externalLinks']
 			),
-			title = title, title_url = media["siteUrl"],
-			thumbnail_url = media["coverImage"]["extraLarge"],
 			image_url = media["bannerImage"]
 		)
 	
