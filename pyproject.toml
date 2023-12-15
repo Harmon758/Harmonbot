@@ -27,6 +27,7 @@ select = [
     "PIE",  # flake8-pie
     "PYI",  # flake8-pyi
     "SLOT",  # flake8-slots
+    "TCH",  # flake8-type-checking
     "TD",  # flake8-todos
     "UP",  # pyupgrade
     "YTT",  # flake8-2020
