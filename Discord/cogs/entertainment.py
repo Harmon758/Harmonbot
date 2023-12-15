@@ -82,11 +82,13 @@ class Entertainment(commands.Cog):
 			json = {"query": query, "variables": {"search": search}}
 		) as resp:
 			data = await resp.json()
+		
 		if not (media := data["data"]["Media"]) and "errors" in data:
 			await ctx.embed_reply(
 				f"{ctx.bot.error_emoji} Error: {data['errors'][0]['message']}"
 			)
 			return
+		
 		# Title
 		english_title = media["title"]["english"]
 		native_title = media["title"]["native"]
@@ -202,9 +204,12 @@ class Entertainment(commands.Cog):
 			fields.append(("Tags", ", ".join(tags)))
 		elif tags:
 			non_inline_fields.append(("Tags", ", ".join(tags), False))
+		
 		await ctx.embed_reply(
-			description, title = title, title_url = media["siteUrl"],
+			title = title,
+			title_url = media["siteUrl"],
 			thumbnail_url = media["coverImage"]["extraLarge"],
+			description = description,
 			fields = fields + non_inline_fields,
 			image_url = media["bannerImage"]
 		)
