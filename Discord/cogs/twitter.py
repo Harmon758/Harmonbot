@@ -484,7 +484,7 @@ class Twitter(commands.Cog):
                                                 notice
                                             )
                                     continue
-                        case 500 | 502 | 503 | 504 | 520 | 521 | 522 | 524:
+                        case 500 | 502 | 503 | 504 | 520 | 521 | 522 | 524 | 530:
                             # TODO: Log
                             await asyncio.sleep(1)
                             continue
