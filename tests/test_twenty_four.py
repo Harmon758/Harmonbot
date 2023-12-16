@@ -20,7 +20,7 @@ class TestCheckSolution(unittest.TestCase):
         self.assertFalse(check_solution(['1', '2', '3', '4'], "test"))
 
     def test_backslash_handling(self):
-        self.assertTrue(check_solution(['1', '1', '3', '8'], "1\*1\*3\*8"))
+        self.assertTrue(check_solution(['1', '1', '3', '8'], r"1\*1\*3\*8"))
 
     def test_combine_numbers_as_digits(self):
         self.assertFalse(check_solution(['1', '1', '2', '4'], "1 * 1 * 24"))
