@@ -1188,7 +1188,7 @@ class Bot(commands.Bot):
         for task in pending:
             task.cancel()
         if not done:
-            raise asyncio.TimeoutError
+            raise TimeoutError
         return done.pop().result()
 
     # Override Context class
