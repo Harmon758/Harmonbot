@@ -1,4 +1,4 @@
 :loop
-py -3.10 Twitch_Harmonbot.py
+py -3.11 Twitch_Harmonbot.py
 goto loop
 PAUSE
