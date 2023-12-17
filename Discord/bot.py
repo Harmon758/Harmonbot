@@ -13,6 +13,7 @@ import os
 from platform import python_version
 import random
 import sys
+import tomllib
 import traceback
 from urllib import parse
 # TODO: use urllib.parse
@@ -31,7 +32,6 @@ import pydealer
 import pyowm
 import requests
 import sentry_sdk
-import tomli  # Use tomllib in Python 3.11
 import tweepy
 import tweepy.asynchronous
 import twitchio
@@ -275,7 +275,7 @@ class Bot(commands.Bot):
     @functools.cache
     def config(self):
         with open("../config.toml", "rb") as config_file:
-            return tomli.load(config_file)
+            return tomllib.load(config_file)
 
     @property
     def emoji_guild_ids(self):
