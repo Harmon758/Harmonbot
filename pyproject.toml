@@ -1,7 +1,7 @@
 [project]
 name = "Harmonbot"
 dynamic = ["version"]
-requires-python = "~=3.11.6"
+requires-python = "~=3.11.7"
 
 [build-system]
 requires = ["setuptools==69.0.2", "setuptools-scm==8.0.4"]
