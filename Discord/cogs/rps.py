@@ -15,11 +15,11 @@ HAND_EMOJI = {
     "rock": '\N{RAISED FIST}',
     "paper": '\N{RAISED HAND}',
     "scissors": '\N{VICTORY HAND}',
-    "lizard": '🫳',  # Replace with '\N{PALM DOWN HAND}' in Python 3.11
+    "lizard": '\N{PALM DOWN HAND}',
     "Spock": '\N{RAISED HAND WITH PART BETWEEN MIDDLE AND RING FINGERS}',
     "Spider-Man": '\N{SIGN OF THE HORNS}',
     "Batman": '\N{CALL ME HAND}',
-    "wizard": '🫴',  # Replace with '\N{PALM UP HAND}' in Python 3.11
+    "wizard": '\N{PALM UP HAND}',
     "Glock": '\N{WHITE LEFT POINTING BACKHAND INDEX}'
 }
 
