@@ -110,7 +110,6 @@ contextlib2==21.6.0
 contourpy==1.2.0
 cycler==0.12.1
 cymem==2.0.8
-exceptiongroup==1.2.0
 fonttools==4.46.0
 frozenlist==1.4.1
 geojson==2.5.0
