@@ -1171,9 +1171,15 @@ class Bot(commands.Bot):
 
         done, pending = await asyncio.wait(
             (
-                self.wait_for("raw_reaction_add", check = raw_reaction_check),
-                self.wait_for(
-                    "raw_reaction_remove", check = raw_reaction_check
+                asyncio.create_task(
+                    self.wait_for(
+                        "raw_reaction_add", check = raw_reaction_check
+                    )
+                ),
+                asyncio.create_task(
+                    self.wait_for(
+                        "raw_reaction_remove", check = raw_reaction_check
+                    )
                 )
             ),
             return_when = asyncio.FIRST_COMPLETED,
