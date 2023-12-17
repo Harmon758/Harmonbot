@@ -342,8 +342,7 @@ class GuessGame:
 				await asyncio.wait_for(
 					self.guessed.wait(), timeout = self.time_limit
 				)
-			except asyncio.TimeoutError:
-				# Replace with TimeoutError in Python 3.11
+			except TimeoutError:
 				self.awaiting_guess = False
 				await self.timeout()
 	
