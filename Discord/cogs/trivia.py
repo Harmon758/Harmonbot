@@ -755,8 +755,7 @@ class TriviaBoard:
                 await asyncio.wait_for(
                     self.answered.wait(), timeout = self.seconds
                 )
-            except asyncio.TimeoutError:
-                # Replace with TimeoutError in Python 3.11
+            except TimeoutError:
                 self.awaiting_answer = False
                 await self.timeout()
 
