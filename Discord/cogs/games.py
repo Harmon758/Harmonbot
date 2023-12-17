@@ -210,7 +210,7 @@ class Games(commands.Cog):
 						emoji = circle_emojis, message = message,
 						user = ctx.author, timeout = 5
 					)
-				except asyncio.TimeoutError:
+				except TimeoutError:
 					embed.description = (
 						f"Game over. You timed out on a sequence of length {len(sequence)}."
 					)
