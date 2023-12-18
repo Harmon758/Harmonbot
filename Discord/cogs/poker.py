@@ -366,7 +366,7 @@ class PokerRound(discord.ui.View):
             message = await self.bot.wait_for(
                 "message", check = self.bet_check, timeout = self.timeout
             )
-        except asyncio.TimeoutError:
+        except TimeoutError:
             return
 
         if self.is_finished():
