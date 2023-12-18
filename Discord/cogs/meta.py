@@ -1125,7 +1125,7 @@ class StatisticsView(ui.View):
             ).add_field(
                 name = "Uptime",
                 value = duration_to_string(
-                    datetime.datetime.now(datetime.timezone.utc) - ctx.bot.online_time,
+                    datetime.datetime.now(datetime.UTC) - ctx.bot.online_time,
                     abbreviate = True
                 )
             ).add_field(
