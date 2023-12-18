@@ -347,7 +347,7 @@ class Meta(commands.Cog):
                     "Uptime",
                     duration_to_string(
                         datetime.datetime.now(
-                            datetime.timezone.utc
+                            datetime.UTC
                         ) - ctx.bot.online_time,
                         abbreviate = True
                     )
