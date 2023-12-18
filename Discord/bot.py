@@ -128,7 +128,7 @@ class Bot(commands.Bot):
 
         # Variables
         self.guild_settings = {}
-        self.online_time = datetime.datetime.now(datetime.timezone.utc)
+        self.online_time = datetime.datetime.now(datetime.UTC)
         self.session_commands_invoked = {}
         self.session_slash_commands_invoked = {}
         self.socket_events = {}
