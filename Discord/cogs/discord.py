@@ -527,7 +527,7 @@ async def quote(interaction, message: discord.Message):
 async def timestamp(interaction, message: discord.Message):
     """Timestamp of a message"""
     time = discord.utils.snowflake_time(message.id).replace(
-        tzinfo = datetime.timezone.utc
+        tzinfo = datetime.UTC
     )
     await interaction.response.send_message(
         embed = discord.Embed(
