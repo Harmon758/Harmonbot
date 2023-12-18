@@ -499,7 +499,7 @@ class TriviaBoard:
                 embeds = [
                     discord.Embed(
                         description = "Time's up " + discord.utils.format_dt(
-                            datetime.datetime.now(datetime.timezone.utc) +
+                            datetime.datetime.now(datetime.UTC) +
                             datetime.timedelta(seconds = self.seconds),
                             style = 'R'
                         ),
@@ -593,7 +593,7 @@ class TriviaBoard:
                     self.message.embeds[0],
                     discord.Embed(
                         description = "Time's up " + discord.utils.format_dt(
-                            datetime.datetime.now(datetime.timezone.utc) +
+                            datetime.datetime.now(datetime.UTC) +
                             datetime.timedelta(seconds = self.seconds),
                             style = 'R'
                         ),
