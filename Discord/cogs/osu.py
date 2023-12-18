@@ -224,6 +224,6 @@ class Osu(commands.Cog):
             footer_text = "Joined",
             timestamp = dateutil.parser.parse(
                 data["join_date"]
-            ).replace(tzinfo = datetime.timezone.utc)
+            ).replace(tzinfo = datetime.UTC)
         )
 
