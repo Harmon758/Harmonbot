@@ -439,7 +439,7 @@ class AdventurePlayer:
 	async def stop_foraging(self):
 		if self.last_action == "foraging":
 			item = self.last_action_item
-			time_spent = math.ceil((datetime.datetime.now(datetime.timezone.utc) - self.last_action_time).total_seconds()) / 60
+			time_spent = math.ceil((datetime.datetime.now(datetime.UTC) - self.last_action_time).total_seconds()) / 60
 			await self.stop_action()
 			item_amount = math.floor(time_spent * self.foraging_rate)
 			await self.add_to_inventory(item, item_amount)
