@@ -327,7 +327,7 @@ class Adventure(commands.Cog):
                     m.author == ctx.author and
                     m.content.lower() in ('y', "yes", 'n', "no")
             )
-        except asyncio.TimeoutError:
+        except TimeoutError:
             return
         finally:
             await self.bot.attempt_delete_message(ask_message)
@@ -356,7 +356,7 @@ class Adventure(commands.Cog):
                     check = lambda m:
                         m.author == ctx.author and m.content == prompt
                 )
-            except asyncio.TimeoutError:
+            except TimeoutError:
                 return await ctx.embed_reply(
                     f":stop_sign: You have stopped actively chopping {wood_type}"
                 )
