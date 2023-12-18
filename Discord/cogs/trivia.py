@@ -733,12 +733,12 @@ class TriviaBoard:
             description = self.clue["text"],
             footer_text = "Air Date",
             timestamp = datetime.datetime.combine(
-                self.clue["airdate"], datetime.time(), datetime.timezone.utc
+                self.clue["airdate"], datetime.time(), datetime.UTC
             ),
             embeds = [
                 discord.Embed(
                     description = "Time's up " + discord.utils.format_dt(
-                        datetime.datetime.now(datetime.timezone.utc) +
+                        datetime.datetime.now(datetime.UTC) +
                         datetime.timedelta(seconds = self.seconds),
                         style = 'R'
                     ),
