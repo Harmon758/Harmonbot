@@ -466,7 +466,7 @@ class AdventurePlayer:
 	async def stop_woodcutting(self):
 		if self.last_action == "woodcutting":
 			wood_type = self.last_action_item
-			time_spent = math.ceil((datetime.datetime.now(datetime.timezone.utc) - self.last_action_time).total_seconds()) / 60
+			time_spent = math.ceil((datetime.datetime.now(datetime.UTC) - self.last_action_time).total_seconds()) / 60
 			await self.stop_action()
 			current_wood_lvl = wood_lvl(wood_type)
 			wood_amount = math.floor(time_spent * self.wood_rate(wood_type) * self.woodcutting_rate)
