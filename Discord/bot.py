@@ -1298,7 +1298,7 @@ class Bot(commands.Bot):
 
     async def shutdown_tasks(self):
         # Save uptime
-        now = datetime.datetime.now(datetime.timezone.utc)
+        now = datetime.datetime.now(datetime.UTC)
         uptime = now - self.online_time
         with contextlib.suppress(asyncpg.UndefinedTableError):
             # Table might not have been created yet for CI
