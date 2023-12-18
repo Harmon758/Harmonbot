@@ -142,15 +142,20 @@ class Adventure(commands.Cog):
 		else:
 			await ctx.embed_reply(item)
 	
-	@adventure.group(aliases = ["gather"], invoke_without_command = True, case_insensitive = True)
+	@adventure.group(
+		aliases = ["gather"],
+		invoke_without_command = True, case_insensitive = True
+	)
 	async def forage(self, ctx, *, item: str = ""):
 		'''Foraging'''
 		player = await self.get_adventure_player(ctx.author.id)
 		started = await player.start_foraging(item)
 		if started == "foraging":
 			stopped = await player.stop_foraging()
-			output = (f":herb: You were foraging {stopped[0]} for {stopped[1]:,.2f} min. and received {stopped[2]:,} {stopped[0]} and xp.\n"
-						f"While you were foraging, you also found {stopped[3]:,} {FORAGEABLES[stopped[0]][0]}")
+			output = (
+				f":herb: You were foraging {stopped[0]} for {stopped[1]:,.2f} min. and received {stopped[2]:,} {stopped[0]} and xp.\n"
+				f"While you were foraging, you also found {stopped[3]:,} {FORAGEABLES[stopped[0]][0]}"
+			)
 			if stopped[4]:
 				output += f" and {stopped[4]:,} {FORAGEABLES[stopped[0]][1]}!"
 			await ctx.embed_reply(output)
@@ -159,12 +164,16 @@ class Adventure(commands.Cog):
 			else:
 				return
 		if started is True:
-			await ctx.embed_reply(f":herb: You have started foraging for {item}")
+			await ctx.embed_reply(
+				f":herb: You have started foraging for {item}"
+			)
 			# TODO: active option?
 		elif started is False:
 			await ctx.embed_reply(":no_entry: That item type doesn't exist")
 		else:
-			await ctx.embed_reply(f":no_entry: You're currently {started}! You can't start/stop foraging right now")
+			await ctx.embed_reply(
+				f":no_entry: You're currently {started}! You can't start/stop foraging right now"
+			)
 	
 	@forage.command(name = "items", aliases = ["item", "type", "types"])
 	async def forage_items(self, ctx):
