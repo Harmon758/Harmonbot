@@ -382,7 +382,7 @@ class Discord(commands.Cog):
         if ID:
             ID = ID.id
             time = discord.utils.snowflake_time(ID).replace(
-                tzinfo = datetime.timezone.utc
+                tzinfo = datetime.UTC
             )
             await ctx.embed_reply(
                 f"{discord.utils.format_dt(time)}\n{time}"
@@ -391,7 +391,7 @@ class Discord(commands.Cog):
         elif ctx.message.reference:
             ID = ctx.message.reference.message_id
             time = discord.utils.snowflake_time(ID).replace(
-                tzinfo = datetime.timezone.utc
+                tzinfo = datetime.UTC
             )
             referenced_message = (
                 ctx.message.reference.cached_message or
@@ -408,7 +408,7 @@ class Discord(commands.Cog):
 
         if time:
             time = time.replace("from now", "")
-            now = datetime.datetime.now(datetime.timezone.utc)
+            now = datetime.datetime.now(datetime.UTC)
             if not (matches := self.calendar.nlp(time, sourceTime = now)):
                 raise commands.BadArgument("Invalid time")
             parsed_datetime, context, start_pos, end_pos, matched_text = matches[0]
@@ -418,10 +418,10 @@ class Discord(commands.Cog):
                     second = now.second, microsecond = now.microsecond
                 )
             time = parsed_datetime.replace(
-                tzinfo = datetime.timezone.utc
+                tzinfo = datetime.UTC
             )
         else:
-            time = datetime.datetime.now(datetime.timezone.utc)
+            time = datetime.datetime.now(datetime.UTC)
 
         t = discord.utils.format_dt(time, style = 't')
         T = discord.utils.format_dt(time, style = 'T')
