@@ -10,12 +10,54 @@ import random
 from utilities import checks
 
 CRAFTABLES = {("rock", "stick"): "rock attached to stick"}
-EXAMINE_MESSAGES = {"boulder": "wow, that's a big rock", "rock": "it's a rock..", "rock attached to stick": "it must have taken you a long time to make this", "stick": "pointy", "stone": "it's a bigger rock.."}
-FORAGEABLES = {"plant": ("shrub", "bush"), "rock": ("stone", "boulder"), "stick": ("branch", "trunk")}
-MINERALS = {"talc": (1), "graphite": (1.5), "putnisite": (1.75, 1), "bauxite": (2, 10), "gypsum": (2), "halite": (2.25), "galena": (2.625), "chalcocite": (2.75), "copper": (3), "celestine": (3.25), "chalcopyrite": (3.5), "strontianite": (3.5), "azurite": (3.75), "cuprite": (3.75), "malachite": (3.75), "cassiterite": (6.5), "pollucite": (6.75), "qingsongite": (9.5, 1), "quartz": (7, 10)}
+EXAMINE_MESSAGES = {
+	"boulder": "wow, that's a big rock",
+	"rock": "it's a rock..",
+	"rock attached to stick": "it must have taken you a long time to make this",
+	"stick": "pointy",
+	"stone": "it's a bigger rock.."
+}
+FORAGEABLES = {
+	"plant": ("shrub", "bush"),
+	"rock": ("stone", "boulder"),
+	"stick": ("branch", "trunk")
+}
+MINERALS = {
+	"talc": (1), "graphite": (1.5), "putnisite": (1.75, 1),
+	"bauxite": (2, 10), "gypsum": (2), "halite": (2.25), "galena": (2.625),
+	"chalcocite": (2.75), "copper": (3), "celestine": (3.25),
+	"chalcopyrite": (3.5), "strontianite": (3.5), "azurite": (3.75),
+	"cuprite": (3.75), "malachite": (3.75), "cassiterite": (6.5),
+	"pollucite": (6.75), "qingsongite": (9.5, 1), "quartz": (7, 10)
+}
 # https://en.wikipedia.org/wiki/Mohs_scale_of_mineral_hardness
 SKILLS = ["fishing", "foraging", "mining", "woodcutting"]
-WOOD_TYPES = ["cuipo", "balsa", "eastern white pine", "basswood", "western white pine", "hemlock", "chestnut", "larch", "red alder", "western juniper", "douglas fir", "southern yellow pine", "silver maple", "radiata pine", "shedua", "box elder", "sycamore", "parana", "honduran mahogany", "african mahogany", "lacewood", "eastern red cedar", "paper birch", "boire", "red maple", "imbusia", "cherry", "black walnut", "boreal", "peruvian walnut", "siberian larch", "makore", "english oak", "rose gum", "teak", "larch", "carapa guianensis", "heart pine", "movingui", "yellow birch", "caribbean heart pine", "red oak", "american beech", "ash", "ribbon gum", "tasmanian oak", "white oak", "australian cypress", "bamboo", "kentucky coffeetree", "caribbean walnut", "hard maple", "sweet birch", "curupixa", "sapele", "peroba", "true pine", "zebrawood", "tualang", "wenge", "highland beech", "black locust", "kempas", "merbau", "blackwood", "african padauk", "rosewood", "bangkirai", "afzelia", "hickory", "tigerwood", "purpleheart", "jarrah", "amendoim", "merbau", "tallowwood", "cameron", "bubinga", "sydney blue gum", "karri", "osage orange", "brushbox", "brazilian koa", "pradoo", "bocote", "balfourodendron riedelianum", "golden teak", "mesquite", "jatoba", "spotted gum", "southern chestnut", "live oak", "turpentine", "bloodwood", "cocobolo", "yvyraro", "massaranduba", "ebony", "ironwood", "sucupira", "cumaru", "lapacho", "bolivian cherry", "grey ironbark", "moabi", "lapacho", "brazilian ebony", "brazilian olivewood", "snakewood", "piptadenia macrocarpa", "lignum vitae", "schinopsis balansae", "schinopsis brasiliensis", "australian buloke"]
+WOOD_TYPES = [
+	"cuipo", "balsa", "eastern white pine", "basswood", "western white pine",
+	"hemlock", "chestnut", "larch", "red alder", "western juniper",
+	"douglas fir", "southern yellow pine", "silver maple", "radiata pine",
+	"shedua", "box elder", "sycamore", "parana", "honduran mahogany",
+	"african mahogany", "lacewood", "eastern red cedar", "paper birch",
+	"boire", "red maple", "imbusia", "cherry", "black walnut", "boreal",
+	"peruvian walnut", "siberian larch", "makore", "english oak", "rose gum",
+	"teak", "larch", "carapa guianensis", "heart pine", "movingui",
+	"yellow birch", "caribbean heart pine", "red oak", "american beech",
+	"ash", "ribbon gum", "tasmanian oak", "white oak", "australian cypress",
+	"bamboo", "kentucky coffeetree", "caribbean walnut", "hard maple",
+	"sweet birch", "curupixa", "sapele", "peroba", "true pine", "zebrawood",
+	"tualang", "wenge", "highland beech", "black locust", "kempas", "merbau",
+	"blackwood", "african padauk", "rosewood", "bangkirai", "afzelia",
+	"hickory", "tigerwood", "purpleheart", "jarrah", "amendoim", "merbau",
+	"tallowwood", "cameron", "bubinga", "sydney blue gum", "karri",
+	"osage orange", "brushbox", "brazilian koa", "pradoo", "bocote",
+	"balfourodendron riedelianum", "golden teak", "mesquite", "jatoba",
+	"spotted gum", "southern chestnut", "live oak", "turpentine", "bloodwood",
+	"cocobolo", "yvyraro", "massaranduba", "ebony", "ironwood", "sucupira",
+	"cumaru", "lapacho", "bolivian cherry", "grey ironbark", "moabi",
+	"lapacho", "brazilian ebony", "brazilian olivewood", "snakewood",
+	"piptadenia macrocarpa", "lignum vitae", "schinopsis balansae",
+	"schinopsis brasiliensis", "australian buloke"
+]
 # https://en.wikipedia.org/wiki/Janka_hardness_test
 
 async def setup(bot):
