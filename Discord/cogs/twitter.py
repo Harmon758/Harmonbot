@@ -413,7 +413,7 @@ class Twitter(commands.Cog):
             handle = record["handle"]
 
             if record["ttl"] and datetime.datetime.now(
-                datetime.timezone.utc
+                datetime.UTC
             ) < record["last_checked"] + datetime.timedelta(
                 minutes = record["ttl"]
             ):
