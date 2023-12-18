@@ -513,7 +513,7 @@ class TriviaBoard:
                     "message",
                     check = self.answer_check, timeout = self.seconds
                 )
-            except asyncio.TimeoutError:
+            except TimeoutError:
                 self.scores[player] = (
                     self.scores.get(player, 0) - int(self.value)
                 )
