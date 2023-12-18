@@ -224,14 +224,19 @@ class Adventure(commands.Cog):
 		records = await player.inventory()
 		await ctx.embed_reply(", ".join(f"{record['item']}: {record['count']:,}" for record in sorted(records, key = itemgetter("item"))))
 	
-	@adventure.group(aliases = ["stat", "levels", "level", "lvls", "lvl"], invoke_without_command = True, case_insensitive = True)
+	@adventure.group(
+		aliases = ["stat", "levels", "level", "lvls", "lvl"],
+		invoke_without_command = True, case_insensitive = True
+	)
 	async def stats(self, ctx):
 		'''Stats'''
 		player = await self.get_adventure_player(ctx.author.id)
-		await ctx.embed_reply(f":fishing_pole_and_fish: Fishing xp: {player.fishing_xp:,} (Level {player.fishing_lvl:,})\n"
-								f":herb: Foraging xp: {player.foraging_xp:,} (Level {player.foraging_lvl:,})\n"
-								f":pick: Mining xp: {player.mining_xp:,} (Level {player.mining_lvl:,})\n"
-								f":evergreen_tree: Woodcutting xp: {player.woodcutting_xp:,} (Level {player.woodcutting_lvl:,})")
+		await ctx.embed_reply(
+			f":fishing_pole_and_fish: Fishing xp: {player.fishing_xp:,} (Level {player.fishing_lvl:,})\n"
+			f":herb: Foraging xp: {player.foraging_xp:,} (Level {player.foraging_lvl:,})\n"
+			f":pick: Mining xp: {player.mining_xp:,} (Level {player.mining_lvl:,})\n"
+			f":evergreen_tree: Woodcutting xp: {player.woodcutting_xp:,} (Level {player.woodcutting_lvl:,})"
+		)
 		# time started/played
 	
 	@stats.command(name = "foraging", aliases = ["forage", "gather", "gathering"])
