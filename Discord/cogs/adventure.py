@@ -317,9 +317,16 @@ class Adventure(commands.Cog):
 	
 	async def woodcutting_active(self, ctx, wood_type):
 		player = await self.get_adventure_player(ctx.author.id)
-		ask_message = await ctx.embed_reply(f":grey_question: Would you like to chop {wood_type} trees actively? Yes/No")
+		ask_message = await ctx.embed_reply(
+			f":grey_question: Would you like to chop {wood_type} trees actively? Yes/No"
+		)
 		try:
-			message = await self.bot.wait_for("message", timeout = 60, check = lambda m: m.author == ctx.author and m.content.lower() in ('y', "yes", 'n', "no"))
+			message = await self.bot.wait_for(
+				"message", timeout = 60,
+				check = lambda m:
+					m.author == ctx.author and
+					m.content.lower() in ('y', "yes", 'n', "no")
+			)
 		except asyncio.TimeoutError:
 			return
 		finally:
@@ -332,23 +339,35 @@ class Adventure(commands.Cog):
 		time = int(60 / rate)
 		chopped_message = None
 		while message:
-			chopping = await ctx.embed_reply(":evergreen_tree: Chopping..",
-												footer_text = f"This could take up to {time} seconds")
+			chopping = await ctx.embed_reply(
+				":evergreen_tree: Chopping..",
+				footer_text = f"This could take up to {time} seconds"
+			)
 			await asyncio.sleep(random.randint(1, time))
 			await self.bot.attempt_delete_message(message)
 			await self.bot.attempt_delete_message(chopping)
 			prompt = random.choice(("chop", "whack", "swing", "cut"))
-			prompt_message = await ctx.embed_reply(f'Reply with "{prompt}" in the next 10 seconds to continue')
+			prompt_message = await ctx.embed_reply(
+				f'Reply with "{prompt}" in the next 10 seconds to continue'
+			)
 			try:
-				message = await self.bot.wait_for("message", timeout = 10, check = lambda m: m.author == ctx.author and m.content == prompt)
+				message = await self.bot.wait_for(
+					"message", timeout = 10,
+					check = lambda m:
+						m.author == ctx.author and m.content == prompt
+				)
 			except asyncio.TimeoutError:
-				return await ctx.embed_reply(f":stop_sign: You have stopped actively chopping {wood_type}")
+				return await ctx.embed_reply(
+					f":stop_sign: You have stopped actively chopping {wood_type}"
+				)
 			else:
 				chopped = await player.chop_once(wood_type)
 				if chopped_message:
 					await self.bot.attempt_delete_message(chopped_message)
-				chopped_message = await ctx.embed_reply(f":evergreen_tree: You chopped a {wood_type} tree.\n"
-														f"You now have {chopped[0]:,} {wood_type} and {chopped[1]:,} woodcutting xp")
+				chopped_message = await ctx.embed_reply(
+					f":evergreen_tree: You chopped a {wood_type} tree.\n"
+					f"You now have {chopped[0]:,} {wood_type} and {chopped[1]:,} woodcutting xp"
+				)
 			finally:
 				await self.bot.attempt_delete_message(prompt_message)
 	
