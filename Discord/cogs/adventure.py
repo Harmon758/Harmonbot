@@ -239,14 +239,18 @@ class Adventure(commands.Cog):
 		)
 		# time started/played
 	
-	@stats.command(name = "foraging", aliases = ["forage", "gather", "gathering"])
+	@stats.command(
+		name = "foraging", aliases = ["forage", "gather", "gathering"]
+	)
 	async def stats_foraging(self, ctx):
 		'''Foraging stats'''
 		player = await self.get_adventure_player(ctx.author.id)
 		foraging_xp = player.foraging_xp
-		await ctx.embed_reply(f":herb: Foraging xp: {foraging_xp:,}\n"
-								f"{self.level_bar(foraging_xp)}\n"
-								f"{xp_left_to_next_lvl(foraging_xp):,} xp to next level")
+		await ctx.embed_reply(
+			f":herb: Foraging xp: {foraging_xp:,}\n"
+			f"{self.level_bar(foraging_xp)}\n"
+			f"{xp_left_to_next_lvl(foraging_xp):,} xp to next level"
+		)
 	
 	@stats.command(name = "woodcutting", aliases = ["wc"])
 	async def stats_woodcutting(self, ctx):
