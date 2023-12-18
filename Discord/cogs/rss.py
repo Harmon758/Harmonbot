@@ -376,38 +376,16 @@ class RSS(commands.Cog):
 							except discord.Forbidden:
 								pass
 							except discord.HTTPException as e:
-								if e.status == 400 and e.code == 50035:
-									if (
-										"In embed.url: Not a well formed URL." in e.text or  # still necessary?
-										"In embeds.0.url: Not a well formed URL." in e.text or
-										(
-											(
-												"In embed.url: Scheme" in e.text or  # still necessary?
-												"In embeds.0.url: Scheme" in e.text
-											) and
-											"is not supported. Scheme must be one of ('http', 'https')." in e.text
-										)
-									):
+								if (
+									e.status == 400 and
+									e.code == 50035 and
+									"Not a well formed URL" in e.text
+								):
+									if "In embeds.0.url" in e.text:
 										embed.url = None
-									if (
-										"In embed.thumbnail.url: Not a well formed URL." in e.text or  # still necessary?
-										"In embeds.0.thumbnail.url: Not a well formed URL." in e.text or
-										(
-											(
-												"In embed.thumbnail.url: Scheme" in e.text or  # still necessary?
-												"In embeds.0.thumbnail.url: Scheme" in e.text
-											) and
-											"is not supported. Scheme must be one of ('http', 'https')." in e.text
-										)
-									):
+									if "In embeds.0.thumbnail.url" in e.text:
 										embed.set_thumbnail(url = "")
-									if (
-										"In embed.footer.icon_url: Not a well formed URL." in e.text or
-										(
-											"In embed.footer.icon_url: Scheme" in e.text and
-											"is not supported. Scheme must be one of ('http', 'https')." in e.text
-										)
-									):
+									if "In embeds.0.footer.icon_url" in e.text:
 										embed.set_footer(
 											text = feed_info.feed.title
 										)
