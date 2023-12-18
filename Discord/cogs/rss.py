@@ -263,11 +263,11 @@ class RSS(commands.Cog):
 				await self.bot.db.execute(
 					"""
 					UPDATE rss.feeds
-					SET last_checked = NOW(), 
-						ttl = $1, 
+					SET last_checked = NOW(),
+						ttl = $1,
 						max_age = $2
 					WHERE feed = $3
-					""", 
+					""",
 					ttl, max_age, feed
 				)
 				for entry in feed_info.entries:
@@ -279,7 +279,7 @@ class RSS(commands.Cog):
 						VALUES ($1, $2)
 						ON CONFLICT DO NOTHING
 						RETURNING *
-						""", 
+						""",
 						entry_id, feed
 					)
 					if not inserted:
@@ -345,52 +345,86 @@ class RSS(commands.Cog):
 							"ignore", category = XMLParsedAsHTMLWarning
 						)
 						footer_icon_url = (
-							feed_info.feed.get("icon") or feed_info.feed.get("logo") or 
-							(feed_image := feed_info.feed.get("image")) and feed_image.get("href") or 
-							(parsed_image := BeautifulSoup(feed_text, "lxml").image) and next(iter(parsed_image.attrs.values()), None) or 
-							None
+							feed_info.feed.get("icon") or
+							feed_info.feed.get("logo") or 
+							(
+								feed_image := feed_info.feed.get("image")
+							) and feed_image.get("href") or
+							(
+								parsed_image := BeautifulSoup(
+									feed_text, "lxml"
+								).image
+							) and next(
+								iter(parsed_image.attrs.values()), None
+							) or None
 						)
-					embed.set_footer(text = feed_info.feed.get("title", feed), icon_url = footer_icon_url)
+					embed.set_footer(
+						text = feed_info.feed.get("title", feed),
+						icon_url = footer_icon_url
+					)
 					# Send embed(s)
-					channel_records = await self.bot.db.fetch("SELECT channel_id FROM rss.feeds WHERE feed = $1", feed)
+					channel_records = await self.bot.db.fetch(
+						"SELECT channel_id FROM rss.feeds WHERE feed = $1",
+						feed
+					)
 					for record in channel_records:
-						if text_channel := self.bot.get_channel(record["channel_id"]):
+						if text_channel := self.bot.get_channel(
+							record["channel_id"]
+						):
 							try:
 								await text_channel.send(embed = embed)
 							except discord.Forbidden:
 								pass
 							except discord.HTTPException as e:
 								if e.status == 400 and e.code == 50035:
-									if ("In embed.url: Not a well formed URL." in e.text or  # still necessary?
-										"In embeds.0.url: Not a well formed URL." in e.text or 
-										(("In embed.url: Scheme" in e.text or  #still necessary?
-											"In embeds.0.url: Scheme" in e.text) and 
-											"is not supported. Scheme must be one of ('http', 'https')." in e.text)):
+									if (
+										"In embed.url: Not a well formed URL." in e.text or  # still necessary?
+										"In embeds.0.url: Not a well formed URL." in e.text or
+										(
+											(
+												"In embed.url: Scheme" in e.text or  # still necessary?
+												"In embeds.0.url: Scheme" in e.text
+											) and
+											"is not supported. Scheme must be one of ('http', 'https')." in e.text
+										)
+									):
 										embed.url = None
-									if ("In embed.thumbnail.url: Not a well formed URL." in e.text or  # still necessary?
-										"In embeds.0.thumbnail.url: Not a well formed URL." in e.text or 
-										(("In embed.thumbnail.url: Scheme" in e.text or  # still necessary?
-											"In embeds.0.thumbnail.url: Scheme" in e.text) and 
-											"is not supported. Scheme must be one of ('http', 'https')." in e.text)):
+									if (
+										"In embed.thumbnail.url: Not a well formed URL." in e.text or  # still necessary?
+										"In embeds.0.thumbnail.url: Not a well formed URL." in e.text or
+										(
+											(
+												"In embed.thumbnail.url: Scheme" in e.text or  # still necessary?
+												"In embeds.0.thumbnail.url: Scheme" in e.text
+											) and
+											"is not supported. Scheme must be one of ('http', 'https')." in e.text
+										)
+									):
 										embed.set_thumbnail(url = "")
-									if ("In embed.footer.icon_url: Not a well formed URL." in e.text or 
-										("In embed.footer.icon_url: Scheme" in e.text and 
-											"is not supported. Scheme must be one of ('http', 'https')." in e.text)):
-										embed.set_footer(text = feed_info.feed.title)
+									if (
+										"In embed.footer.icon_url: Not a well formed URL." in e.text or
+										(
+											"In embed.footer.icon_url: Scheme" in e.text and
+											"is not supported. Scheme must be one of ('http', 'https')." in e.text
+										)
+									):
+										embed.set_footer(
+											text = feed_info.feed.title
+										)
 									await text_channel.send(embed = embed)
 								else:
 									raise
 						# TODO: Remove text channel data if now non-existent
 			except (
-				aiohttp.ClientConnectionError, aiohttp.ClientPayloadError, 
-				aiohttp.TooManyRedirects, asyncio.TimeoutError, 
+				aiohttp.ClientConnectionError, aiohttp.ClientPayloadError,
+				aiohttp.TooManyRedirects, asyncio.TimeoutError,
 				UnicodeDecodeError
 			) as e:
 				await self.bot.db.execute(
 					"""
 					INSERT INTO rss.errors (feed, type, message)
 					VALUES ($1, $2, $3)
-					""", 
+					""",
 					feed, type(e).__name__, str(e)
 				)
 				# Print error?
