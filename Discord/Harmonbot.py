@@ -61,7 +61,7 @@ if __name__ == "__main__":
 				)
 				VALUES ($1, $2, $3, $4, $5, $6, FALSE, $7, $8, $9, $10, $11, CAST($12 AS jsonb[]), TRUE, $13, $14)
 				""", 
-				message.created_at.replace(tzinfo = datetime.timezone.utc), message.id, 
+				message.created_at.replace(tzinfo = datetime.UTC), message.id, 
 				author.id, author.name, author.discriminator, author.display_name, 
 				channel.parent_id, channel.parent.name, guild.id, guild.name, 
 				message.content.replace('\N{NULL}', ""), 
@@ -80,7 +80,7 @@ if __name__ == "__main__":
 				)
 				VALUES ($1, $2, $3, $4, $5, $6, TRUE, $7, CAST($8 AS jsonb[]), FALSE)
 				""", 
-				message.created_at.replace(tzinfo = datetime.timezone.utc), message.id, 
+				message.created_at.replace(tzinfo = datetime.UTC), message.id, 
 				author.id, author.name, author.discriminator, author.display_name, 
 				message.content.replace('\N{NULL}', ""), 
 				[replace_null_character(embed.to_dict()) for embed in message.embeds]
@@ -97,7 +97,7 @@ if __name__ == "__main__":
 				)
 				VALUES ($1, $2, $3, $4, $5, $6, FALSE, $7, $8, $9, $10, $11, CAST($12 AS jsonb[]), FALSE)
 				""", 
-				message.created_at.replace(tzinfo = datetime.timezone.utc), message.id, 
+				message.created_at.replace(tzinfo = datetime.UTC), message.id, 
 				author.id, author.name, author.discriminator, author.display_name, 
 				channel.id, channel.name, guild.id, guild.name, 
 				message.content.replace('\N{NULL}', ""), 
