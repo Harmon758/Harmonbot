@@ -225,14 +225,14 @@ class RSS(commands.Cog):
 			feed = record["feed"]
 			
 			if record["ttl"] and datetime.datetime.now(
-				datetime.timezone.utc
+				datetime.UTC
 			) < record["last_checked"] + datetime.timedelta(
 				minutes = record["ttl"]
 			):
 				continue
 			
 			if record["max_age"] and datetime.datetime.now(
-				datetime.timezone.utc
+				datetime.UTC
 			) < record["last_checked"] + datetime.timedelta(
 				seconds = record["max_age"]
 			):
