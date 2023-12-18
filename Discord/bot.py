@@ -1088,7 +1088,7 @@ class Bot(commands.Bot):
                         ON CONFLICT (edited_at, message_id) DO
                         UPDATE SET before_content = $3, after_content = $4
                         """,
-                        after.edited_at.replace(tzinfo = datetime.timezone.utc), after.id,
+                        after.edited_at.replace(tzinfo = datetime.UTC), after.id,
                         before.content.replace('\N{NULL}', ""), after.content.replace('\N{NULL}', "")
                     )
                 before_embeds = [embed.to_dict() for embed in before.embeds]
@@ -1102,7 +1102,7 @@ class Bot(commands.Bot):
                         ON CONFLICT (edited_at, message_id) DO
                         UPDATE SET before_embeds = CAST($3 AS jsonb[]), after_embeds = CAST($4 AS jsonb[])
                         """,
-                        after.edited_at.replace(tzinfo = datetime.timezone.utc), after.id, before_embeds, after_embeds
+                        after.edited_at.replace(tzinfo = datetime.UTC), after.id, before_embeds, after_embeds
                     )
         except OSError as e:
             self.print(f"Error processing message edit: {e}")
