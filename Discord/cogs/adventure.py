@@ -404,7 +404,7 @@ class AdventurePlayer:
 	async def start_action(self, action, item):
 		self.last_action = action
 		self.last_action_item = item
-		self.last_action_time = datetime.datetime.now(datetime.timezone.utc)
+		self.last_action_time = datetime.datetime.now(datetime.UTC)
 		await self.bot.db.execute(
 			"""
 			UPDATE adventure.players
