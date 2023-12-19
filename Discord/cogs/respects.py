@@ -98,10 +98,10 @@ class Respects(commands.Cog):
 
     @respects.command()
     async def pay(self, ctx):
-        '''
+        """
         Pay Respects
         Can also be triggered with 'f' or 'F'
-        '''
+        """
         total_respects = await ctx.bot.db.fetchval(
             """
             UPDATE respects.stats
