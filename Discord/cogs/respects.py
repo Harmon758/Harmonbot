@@ -131,11 +131,20 @@ class Respects(commands.Cog):
             """,
             ctx.author.id
         )
-        suffix = ctx.bot.inflect_engine.ordinal(user_respects)[len(str(user_respects)):]
-        response = f"{ctx.author.mention} has paid their respects for the {user_respects:,}{suffix} time\n"
+
+        suffix = ctx.bot.inflect_engine.ordinal(user_respects)[
+            len(str(user_respects)):
+        ]
+        response = (
+            f"{ctx.author.mention} has paid their respects for the "
+            f"{user_respects:,}{suffix} time\n"
+        )
         if ctx.guild:
-            response += f"Total respects paid in this server: {guild_respects:,}\n"
+            response += (
+                f"Total respects paid in this server: {guild_respects:,}\n"
+            )
         response += f"Total respects paid so far: {total_respects:,}"
+
         await ctx.embed_reply(response)
 
     @app_commands.command(name = 'f')
