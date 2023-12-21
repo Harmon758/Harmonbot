@@ -135,7 +135,7 @@ class Location(commands.Cog):
 
     @commands.group(case_insensitive = True, invoke_without_command = True)
     async def geocode(self, ctx, *, address: str):
-        '''Convert addresses to geographic coordinates'''
+        """Convert addresses to geographic coordinates"""
         try:
             data = await get_geocode_data(
                 address, aiohttp_session = ctx.bot.aiohttp_session
