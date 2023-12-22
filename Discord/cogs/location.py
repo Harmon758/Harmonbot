@@ -154,7 +154,7 @@ class Location(commands.Cog):
 
     @geocode.command(name = "reverse")
     async def geocode_reverse(self, ctx, latitude: float, longitude: float):
-        '''Convert geographic coordinates to addresses'''
+        """Convert geographic coordinates to addresses"""
         url = "https://maps.googleapis.com/maps/api/geocode/json"
         params = {"latlng": f"{latitude},{longitude}", "key": ctx.bot.GOOGLE_API_KEY}
         async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
