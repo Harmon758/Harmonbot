@@ -155,16 +155,22 @@ class Location(commands.Cog):
     @geocode.command(name = "reverse")
     async def geocode_reverse(self, ctx, latitude: float, longitude: float):
         """Convert geographic coordinates to addresses"""
-        url = "https://maps.googleapis.com/maps/api/geocode/json"
-        params = {"latlng": f"{latitude},{longitude}", "key": ctx.bot.GOOGLE_API_KEY}
-        async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
+        async with ctx.bot.aiohttp_session.get(
+            "https://maps.googleapis.com/maps/api/geocode/json",
+            params = {
+                "latlng": f"{latitude},{longitude}",
+                "key": ctx.bot.GOOGLE_API_KEY
+            }
+        ) as resp:
             data = await resp.json()
         if data["status"] == "ZERO_RESULTS":
-            return await ctx.embed_reply(f"{ctx.bot.error_emoji} Address/Location not found")
+            await ctx.embed_reply(f"{ctx.bot.error_emoji} Address/Location not found")
+            return
         if data["status"] != "OK":
-            return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error")
+            await ctx.embed_reply(f"{ctx.bot.error_emoji} Error")
+            return
         data = data["results"][0]
-        await ctx.embed_reply(data["formatted_address"], title = f"Address for {latitude}, {longitude}")
+        await ctx.embed_reply(title = f"Address for {latitude}, {longitude}", description = data["formatted_address"])
 
     # TODO: random address command?
 
