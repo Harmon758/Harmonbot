@@ -546,7 +546,7 @@ class Tools(commands.Cog):
             ctx.author.id
         )
         if not exists:
-            await ctx.embed_reply("You don't have any tags :slight_frown:\nAdd one with `{}{} add <tag> <content>`".format(ctx.prefix, ctx.invoked_with))
+            await ctx.embed_reply(f"You don't have any tags :slight_frown:\nAdd one with `{ctx.prefix}{ctx.invoked_with} add <tag> <content>`")
             # TODO: Fix invoked_with for subcommands
         return not exists
 
