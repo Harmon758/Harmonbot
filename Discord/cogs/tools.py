@@ -571,7 +571,7 @@ class Tools(commands.Cog):
             tags = [record["tag"] for record in records]
             close_matches = difflib.get_close_matches(tag, tags)
             close_matches = "\nDid you mean:\n{}".format('\n'.join(close_matches)) if close_matches else ""
-            await ctx.embed_reply("You don't have that tag{}".format(close_matches))
+            await ctx.embed_reply(f"You don't have that tag{close_matches}")
         return not exists
 
     @commands.command(hidden = True)
