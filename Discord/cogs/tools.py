@@ -577,10 +577,10 @@ class Tools(commands.Cog):
     @commands.command(hidden = True)
     @checks.not_forbidden()
     async def webmtogif(self, ctx):
-        '''
+        """
         WebM to GIF
         This command has been deprecated
         See https://imgur.com/vidgif instead
-        '''
+        """
         await ctx.embed_reply("See https://imgur.com/vidgif")
 
