@@ -101,7 +101,7 @@ catalogue==2.0.10
 certifi==2023.11.17
 cffi==1.16.0
 charset-normalizer==3.3.2
-clarifai-grpc==9.11.0
+clarifai-grpc==9.11.5
 click==8.1.7
 cloudpathlib==0.16.0
 colorama==0.4.6
