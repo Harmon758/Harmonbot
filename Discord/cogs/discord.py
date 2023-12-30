@@ -281,9 +281,13 @@ class Discord(commands.Cog):
         For the channel you execute the command in
         """
         if ctx.channel.permissions_for(ctx.author).mention_everyone:
-            await ctx.embed_reply("You are able to mention everyone/here in this channel")
+            await ctx.embed_reply(
+                "You are able to mention everyone/here in this channel"
+            )
         else:
-            await ctx.embed_reply("You are not able to mention everyone/here in this channel")
+            await ctx.embed_reply(
+                "You are not able to mention everyone/here in this channel"
+            )
 
     @commands.command(aliases = ["mycolour", "my_color", "my_colour"])
     @commands.guild_only()
