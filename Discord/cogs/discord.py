@@ -359,7 +359,7 @@ class Discord(commands.Cog):
     @commands.guild_only()
     # TODO: Handle own messages (in DMs)
     async def suppress(self, ctx, message: discord.Message):
-        '''Suppress embeds in a message'''
+        """Suppress embeds in a message"""
         await message.edit(suppress = True)
         await ctx.embed_reply(f"\N{FACE WITH FINGER COVERING CLOSED LIPS} Suppressed embeds in [message]({message.jump_url})")
 
