@@ -355,13 +355,18 @@ class Discord(commands.Cog):
 
     @commands.command()
     @commands.bot_has_permissions(manage_messages = True)
-    @commands.check_any(commands.has_permissions(manage_messages = True), commands.is_owner())
+    @commands.check_any(
+        commands.has_permissions(manage_messages = True), commands.is_owner()
+    )
     @commands.guild_only()
     # TODO: Handle own messages (in DMs)
     async def suppress(self, ctx, message: discord.Message):
         """Suppress embeds in a message"""
         await message.edit(suppress = True)
-        await ctx.embed_reply(f"\N{FACE WITH FINGER COVERING CLOSED LIPS} Suppressed embeds in [message]({message.jump_url})")
+        await ctx.embed_reply(
+            "\N{FACE WITH FINGER COVERING CLOSED LIPS} Suppressed embeds in "
+            f"[message]({message.jump_url})"
+        )
 
     @commands.command()
     @commands.bot_has_permissions(manage_messages = True)
