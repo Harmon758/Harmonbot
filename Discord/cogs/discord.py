@@ -370,13 +370,18 @@ class Discord(commands.Cog):
 
     @commands.command()
     @commands.bot_has_permissions(manage_messages = True)
-    @commands.check_any(commands.has_permissions(manage_messages = True), commands.is_owner())
+    @commands.check_any(
+        commands.has_permissions(manage_messages = True), commands.is_owner()
+    )
     @commands.guild_only()
     # TODO: Handle own messages (in DMs)
     async def unsuppress(self, ctx, message: discord.Message):
         """Unsuppress embeds in a message"""
         await message.edit(suppress = False)
-        await ctx.embed_reply(f"\N{SPEAKING HEAD IN SILHOUETTE} Unsuppressed embeds in [message]({message.jump_url})")
+        await ctx.embed_reply(
+            "\N{SPEAKING HEAD IN SILHOUETTE} Unsuppressed embeds in "
+            f"[message]({message.jump_url})"
+        )
 
     @commands.command()
     @checks.not_forbidden()
