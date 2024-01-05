@@ -69,10 +69,10 @@ class Images(commands.Cog):
         image: Optional[discord.Attachment],  # noqa: UP007 (non-pep604-annotation)
         image_url: Optional[str]  # noqa: UP007 (non-pep604-annotation)
     ):
-        '''
+        """
         Image color density values
         and the closest W3C color name for each identified color
-        '''
+        """
         if image:
             image_url = image.url
         elif not image_url:
