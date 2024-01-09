@@ -124,7 +124,7 @@ class Images(commands.Cog):
 
     @giphy.command(name = "random")
     async def giphy_random(self, ctx):
-        '''Random gif from giphy'''
+        """Random gif from giphy"""
         # Note: random giphy command invokes this command
         async with ctx.bot.aiohttp_session.get(
             "http://api.giphy.com/v1/gifs/random",
