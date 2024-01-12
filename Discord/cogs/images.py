@@ -138,7 +138,7 @@ class Images(commands.Cog):
 
     @giphy.command(name = "trending")
     async def giphy_trending(self, ctx):
-        """Trending gif"""
+        """Trending GIF from Giphy"""
         async with ctx.bot.aiohttp_session.get(
             "http://api.giphy.com/v1/gifs/trending",
             params = {"api_key": ctx.bot.GIPHY_API_KEY}
