@@ -186,7 +186,7 @@ class Images(commands.Cog):
 
     @commands.group(case_insensitive = True, invoke_without_command = True)
     async def imgur(self, ctx):
-        '''Imgur'''
+        """Imgur"""
         await ctx.send_help(ctx.command)
 
     @imgur.command(name = "search")
