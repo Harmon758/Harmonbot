@@ -191,7 +191,7 @@ class Images(commands.Cog):
 
     @imgur.command(name = "search")
     async def imgur_search(self, ctx, *, search: str):
-        '''Search images on Imgur'''
+        """Search images on Imgur"""
         # Note: search imgur command invokes this command
         if not (
             result := ctx.bot.imgur_client.gallery_search(search, sort = "top")
