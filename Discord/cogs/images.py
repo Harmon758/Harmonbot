@@ -294,7 +294,7 @@ class Images(commands.Cog):
         image: Optional[discord.Attachment],  # noqa: UP007 (non-pep604-annotation)
         image_url: Optional[str]  # noqa: UP007 (non-pep604-annotation)
     ):
-        '''NSFW recognition'''
+        """NSFW recognition"""
         if image:
             image_url = image.url
         elif not image_url:
