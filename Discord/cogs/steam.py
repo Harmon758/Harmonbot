@@ -16,7 +16,7 @@ class Steam(commands.Cog):
 
     @commands.group(case_insensitive = True, invoke_without_command = True)
     async def steam(self, ctx):
-        '''Steam Information'''
+        """Steam Information"""
         await ctx.send_help(ctx.command)
 
     # https://developer.valvesoftware.com/wiki/Steam_Web_API
