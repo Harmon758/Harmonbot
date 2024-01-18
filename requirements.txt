@@ -14,7 +14,7 @@ aiocache==0.12.2
 aiohttp==3.9.1
 async-lru==2.0.4
 asyncpg==0.29.0
-beautifulsoup4==4.12.2
+beautifulsoup4==4.12.3
 chess==1.10.0
 clarifai==9.11.0
 cryptography==41.0.7
