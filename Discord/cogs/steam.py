@@ -33,12 +33,14 @@ class Steam(commands.Cog):
             "http://api.steampowered.com/ISteamApps/GetAppList/v0002/"
         ) as resp:
             data = await resp.json()
+
         apps = data["applist"]["apps"]
         appid = 0
         for app_info in apps:
             if app_info["name"].lower() == app.lower():
                 appid = app_info["appid"]
                 break
+
         await ctx.embed_reply(appid)
 
     @steam.command(aliases = ["game_count"])
