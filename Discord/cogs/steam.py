@@ -67,7 +67,7 @@ class Steam(commands.Cog):
 
     @steam.command(aliases = ["game_info"])
     async def gameinfo(self, ctx, *, game: str):
-        '''Information about a game'''
+        """Information about a game"""
         async with ctx.bot.aiohttp_session.get(
             "http://api.steampowered.com/ISteamApps/GetAppList/v0002/"
         ) as resp:
