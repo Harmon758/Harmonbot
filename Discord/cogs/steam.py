@@ -105,7 +105,7 @@ class Steam(commands.Cog):
 
     @steam.command(aliases = ["launch"])
     async def run(self, ctx, *, game: str):
-        '''Generate a steam link to launch a game'''
+        """Generate a steam link to launch a game"""
         async with ctx.bot.aiohttp_session.get(
             "http://api.steampowered.com/ISteamApps/GetAppList/v0002/"
         ) as resp:
