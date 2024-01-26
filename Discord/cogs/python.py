@@ -23,8 +23,9 @@ class Python(commands.Cog):
     @commands.command()
     async def pypi(self, ctx, package: str):
         """Information about a package on PyPI"""
-        url = f"https://pypi.python.org/pypi/{package}/json"
-        async with ctx.bot.aiohttp_session.get(url) as resp:
+        async with ctx.bot.aiohttp_session.get(
+            f"https://pypi.python.org/pypi/{package}/json"
+        ) as resp:
             if resp.status == 404:
                 await ctx.embed_reply(
                     f"{ctx.bot.error_emoji} Package not found"
