@@ -31,7 +31,9 @@ class Python(commands.Cog):
                     f"{ctx.bot.error_emoji} Package not found"
                 )
                 return
+
             data = await resp.json()
+
         await ctx.embed_reply(
             title = data["info"]["name"],
             title_url = data["info"]["package_url"],
