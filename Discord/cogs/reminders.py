@@ -87,7 +87,7 @@ class Reminders(commands.Cog):
 				reminder = reminder[len(prefix):]
 		reminder = reminder.replace("from now", "")
 		# Parse reminder
-		now = datetime.datetime.now(datetime.timezone.utc)
+		now = datetime.datetime.now(datetime.UTC)
 		if not (matches := self.calendar.nlp(reminder, sourceTime = now)):
 			raise commands.BadArgument("Time not specified")
 		parsed_datetime, context, start_pos, end_pos, matched_text = matches[0]
@@ -96,7 +96,7 @@ class Reminders(commands.Cog):
 				hour = now.hour, minute = now.minute,
 				second = now.second, microsecond = now.microsecond
 			)
-		parsed_datetime = parsed_datetime.replace(tzinfo = datetime.timezone.utc)
+		parsed_datetime = parsed_datetime.replace(tzinfo = datetime.UTC)
 		if parsed_datetime < now:
 			raise commands.BadArgument("Time is in the past")
 		# Respond
@@ -108,7 +108,7 @@ class Reminders(commands.Cog):
 			timestamp = parsed_datetime
 		)
 		# Insert into database
-		created_time = ctx.message.created_at.replace(tzinfo = datetime.timezone.utc)
+		created_time = ctx.message.created_at.replace(tzinfo = datetime.UTC)
 		await self.bot.db.execute(
 			"""
 			INSERT INTO reminders.reminders (user_id, channel_id, message_id, created_time, remind_time, reminder)
