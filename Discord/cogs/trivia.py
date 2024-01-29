@@ -1100,7 +1100,7 @@ class TriviaQuestion:
                 author_name = None,
                 title = capwords(record["category"]),
                 description = "Showing question " + discord.utils.format_dt(
-                    datetime.datetime.now(datetime.timezone.utc) +
+                    datetime.datetime.now(datetime.UTC) +
                     datetime.timedelta(seconds = self.seconds),
                     style = 'R'
                 ),
@@ -1118,7 +1118,7 @@ class TriviaQuestion:
         embeds = [
             discord.Embed(
                 description = "Showing answer " + discord.utils.format_dt(
-                    datetime.datetime.now(datetime.timezone.utc) +
+                    datetime.datetime.now(datetime.UTC) +
                     datetime.timedelta(seconds = self.seconds),
                     style = 'R'
                 ),
@@ -1131,7 +1131,7 @@ class TriviaQuestion:
             description = record["text"],
             footer_text = "Air Date",
             timestamp = datetime.datetime.combine(
-                record["airdate"], datetime.time(), datetime.timezone.utc
+                record["airdate"], datetime.time(), datetime.UTC
             ),
             view = TriviaQuestionView(self, self.seconds),
             embeds = embeds
