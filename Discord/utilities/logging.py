@@ -126,7 +126,7 @@ class AiohttpAccessLogger(AccessLogger):
                 INSERT INTO aiohttp.access_log
                 VALUES ($1, $2, $3, $4, $5, $6, $7)
                 """,
-                datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(seconds = time),
+                datetime.datetime.now(datetime.UTC) - datetime.timedelta(seconds = time),
                 self._format_a(request, response, time),
                 self._format_r(request, response, time),
                 response.status, response.body_length,
