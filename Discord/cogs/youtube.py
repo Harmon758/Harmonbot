@@ -411,7 +411,7 @@ class YouTube(commands.Cog):
 			time_published = dateutil.parser.parse(video_data.published)
 			
 			# Don't process videos published more than an hour ago
-			if time_published < datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(hours = 1):
+			if time_published < datetime.datetime.now(datetime.UTC) - datetime.timedelta(hours = 1):
 				return
 			
 			embed = discord.Embed(
