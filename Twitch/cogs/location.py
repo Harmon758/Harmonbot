@@ -78,7 +78,7 @@ class Location:
         output = f"{forecaster.forecast.location.name}, {forecaster.forecast.location.country}"
         for weather in forecaster.forecast:
             date = weather.reference_time(timeformat = "date")
-            if datetime.datetime.now(datetime.timezone.utc) > date:
+            if datetime.datetime.now(datetime.UTC) > date:
                 continue
             temperature_c = weather.temperature(unit = "celsius")
             temperature_f = weather.temperature(unit = "fahrenheit")
