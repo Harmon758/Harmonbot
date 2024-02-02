@@ -33,7 +33,7 @@ class Twitch:
 		if not follow:
 			return await ctx.send(f"{ctx.author.name.capitalize()}, you haven't followed yet!")
 		followed_at = dateutil.parser.parse(follow["followed_at"])
-		ago = duration_to_string(datetime.datetime.now(datetime.timezone.utc) - followed_at)
+		ago = duration_to_string(datetime.datetime.now(datetime.UTC) - followed_at)
 		await ctx.send(f"{ctx.author.name.capitalize()} followed on {followed_at.strftime('%B %#d %Y')}, {ago} ago")
 		# %#d for removal of leading zero on Windows with native Python executable
 	
