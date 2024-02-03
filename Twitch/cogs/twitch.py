@@ -65,7 +65,7 @@ class Twitch:
 		stream = await ctx.get_stream()
 		if not stream:
 			return await ctx.send("Uptime not found.")
-		duration = datetime.datetime.now(datetime.timezone.utc) - dateutil.parser.parse(stream["started_at"])
+		duration = datetime.datetime.now(datetime.UTC) - dateutil.parser.parse(stream["started_at"])
 		await ctx.send(duration_to_string(duration))
 	
 	@commands.command()
