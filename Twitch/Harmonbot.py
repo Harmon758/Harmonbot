@@ -212,7 +212,7 @@ class Bot(commands.Bot):
 			VALUES ($1, $2, $3, $4, $5)
 			""", 
 			datetime.datetime.now(), message.channel.name, message.author.name, message.content, 
-			None if message.echo else message.timestamp.replace(tzinfo = datetime.timezone.utc)
+			None if message.echo else message.timestamp.replace(tzinfo = datetime.UTC)
 		)
 		# Ignore own messages
 		if message.author.name == "harmonbot":
