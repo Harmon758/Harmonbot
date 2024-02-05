@@ -418,7 +418,7 @@ class Astronomy(commands.Cog):
 	
 	@astronomy.command()
 	async def people(self, ctx):
-		'''Current people in space'''
+		"""Current people in space"""
 		# TODO: add input/search option
 		async with ctx.bot.aiohttp_session.get("http://api.open-notify.org/astros.json") as resp:
 			data = await resp.json()
