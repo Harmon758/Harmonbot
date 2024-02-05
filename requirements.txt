@@ -26,7 +26,7 @@ en_core_web_md @ https://github.com/explosion/spacy-models/releases/download/en_
 feedparser==6.0.11
 gidgethub==5.3.0
 GitPython==3.1.40
-google-api-core[grpc]==2.15.0
+google-api-core[grpc]==2.16.2
 google-cloud-translate==3.13.0
 hypothesis==6.92.1
 imageio==2.33.1
