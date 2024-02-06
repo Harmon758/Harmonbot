@@ -422,7 +422,7 @@ class Astronomy(commands.Cog):
 		# TODO: add input/search option
 		async with ctx.bot.aiohttp_session.get("http://api.open-notify.org/astros.json") as resp:
 			data = await resp.json()
-		await ctx.embed_reply('\n'.join("{0[name]} ({0[craft]})".format(person) for person in data["people"]), title = "Current People In Space ({})".format(data["number"]))
+		await ctx.embed_reply('\n'.join(f"{person['name']} ({person['craft']})" for person in data["people"]), title = "Current People In Space ({})".format(data["number"]))
 	
 	@astronomy.command()
 	async def publication(self, ctx, *, bibcode: str):
