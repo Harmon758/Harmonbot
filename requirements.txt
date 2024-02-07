@@ -187,7 +187,7 @@ spacy-legacy==3.0.12
 spacy-loggers==1.0.5
 srsly==2.4.8
 tempora==5.5.0
-thinc==8.2.2
+thinc==8.2.3
 tqdm==4.66.1
 tritonclient==2.34.0
 typer==0.9.0
