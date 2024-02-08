@@ -430,7 +430,7 @@ class Astronomy(commands.Cog):
 				f"{person['name']} ({person['craft']})"
 				for person in data["people"]
 			),
-			title = "Current People In Space ({})".format(data["number"])
+			title = f"Current People In Space ({data['number']})"
 		)
 	
 	@astronomy.command()
