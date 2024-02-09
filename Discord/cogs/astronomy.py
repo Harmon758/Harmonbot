@@ -426,11 +426,11 @@ class Astronomy(commands.Cog):
 			data = await resp.json()
 		
 		await ctx.embed_reply(
-			'\n'.join(
+			title = f"Current People In Space ({data['number']})",
+			description = '\n'.join(
 				f"{person['name']} ({person['craft']})"
 				for person in data["people"]
-			),
-			title = f"Current People In Space ({data['number']})"
+			)
 		)
 	
 	@astronomy.command()
