@@ -435,7 +435,7 @@ class Astronomy(commands.Cog):
 	
 	@astronomy.command()
 	async def publication(self, ctx, *, bibcode: str):
-		'''Publications'''
+		"""Publications"""
 		async with ctx.bot.aiohttp_session.get(
 			f"https://api.arcsecond.io/publications/{bibcode}/",
 			params = {"format": "json"}
