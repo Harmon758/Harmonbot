@@ -441,11 +441,14 @@ class Astronomy(commands.Cog):
 			params = {"format": "json"}
 		) as resp:
 			data = await resp.json()
+		
 		if not data:
 			await ctx.embed_reply(":no_entry: Publication not found")
 			return
+		
 		if isinstance(data, list):
 			data = data[0]
+		
 		await ctx.embed_reply(
 			title = data["title"],
 			fields = (
