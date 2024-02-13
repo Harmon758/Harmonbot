@@ -443,7 +443,9 @@ class Astronomy(commands.Cog):
 			data = await resp.json()
 		
 		if not data:
-			await ctx.embed_reply(":no_entry: Publication not found")
+			await ctx.embed_reply(
+				f"{ctx.bot.error_emoji} Publication not found"
+			)
 			return
 		
 		if isinstance(data, list):
