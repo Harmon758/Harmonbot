@@ -462,7 +462,7 @@ class Astronomy(commands.Cog):
 	
 	@astronomy.group(invoke_without_command = True, case_insensitive = True)
 	async def telegram(self, ctx):
-		'''Quick publications, often related to ongoing events occuring in the sky'''
+		"""Quick publications, often related to ongoing events occuring in the sky"""
 		await ctx.send_help(ctx.command)
 	
 	@telegram.command(name = "atel", aliases = ["astronomerstelegram"])
