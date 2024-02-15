@@ -473,7 +473,7 @@ class Astronomy(commands.Cog):
 		'''
 		# TODO: use textwrap
 		async with ctx.bot.aiohttp_session.get(
-			"https://api.arcsecond.io/telegrams/ATel/{}/".format(number),
+			f"https://api.arcsecond.io/telegrams/ATel/{number}/",
 			params = {"format": "json"}
 		) as resp:
 			if resp.status == 500:
@@ -489,7 +489,7 @@ class Astronomy(commands.Cog):
 		if len(data["subjects"]) > 1 or data["subjects"][0] != "Undefined":
 			fields.append(("Subjects", ", ".join(sorted(data["subjects"]))))
 		related = [
-			"[{0}](http://www.astronomerstelegram.org/?read={0})".format(related_telegram)
+			f"[{related_telegram}](http://www.astronomerstelegram.org/?read={related_telegram})"
 			for related_telegram in sorted(data["related_telegrams"])
 		]
 		if related:
@@ -501,7 +501,7 @@ class Astronomy(commands.Cog):
 			)
 		await ctx.embed_reply(
 			description, title = data["title"],
-			title_url = "http://www.astronomerstelegram.org/?read={}".format(number),
+			title_url = f"http://www.astronomerstelegram.org/?read={number}",
 			fields = fields
 		)
 	
