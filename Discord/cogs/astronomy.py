@@ -467,10 +467,10 @@ class Astronomy(commands.Cog):
 	
 	@telegram.command(name = "atel", aliases = ["astronomerstelegram"])
 	async def telegram_atel(self, ctx, number: int):
-		'''
+		"""
 		The Astronomer's Telegram
 		http://www.astronomerstelegram.org/
-		'''
+		"""
 		# TODO: use textwrap
 		async with ctx.bot.aiohttp_session.get(
 			f"https://api.arcsecond.io/telegrams/ATel/{number}/",
