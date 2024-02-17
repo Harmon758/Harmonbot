@@ -485,20 +485,28 @@ class Astronomy(commands.Cog):
 		description = data["content"].replace('\n', ' ')
 		if len(description) > 1000:
 			description = description[:1000] + "..."
+		
 		fields = []
 		if len(data["subjects"]) > 1 or data["subjects"][0] != "Undefined":
 			fields.append(("Subjects", ", ".join(sorted(data["subjects"]))))
 		related = [
-			f"[{related_telegram}](http://www.astronomerstelegram.org/?read={related_telegram})"
+			f"[{related_telegram}]"
+			f"(http://www.astronomerstelegram.org/?read={related_telegram})"
 			for related_telegram in sorted(data["related_telegrams"])
 		]
 		if related:
 			for i in range(0, len(related), 18):
-				fields.append(("Related Telegrams", ", ".join(related[i: i + 18])))
+				fields.append(
+					("Related Telegrams", ", ".join(related[i: i + 18]))
+				)
 		if data["detected_objects"]:
 			fields.append(
-				("Detected Objects", ", ".join(sorted(data["detected_objects"])))
+				(
+					"Detected Objects",
+					", ".join(sorted(data["detected_objects"]))
+				)
 			)
+		
 		await ctx.embed_reply(
 			description, title = data["title"],
 			title_url = f"http://www.astronomerstelegram.org/?read={number}",
