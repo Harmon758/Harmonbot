@@ -515,10 +515,10 @@ class Astronomy(commands.Cog):
 	
 	@telegram.command(name = "gcn", aliases = ["circulars"])
 	async def telegram_gcn(self, ctx, number: str):
-		'''
+		"""
 		GCN Circulars
 		https://gcn.gsfc.nasa.gov/
-		'''
+		"""
 		# TODO: use textwrap
 		url = f"https://api.arcsecond.io/telegrams/GCN/Circulars/{number}/"
 		params = {"format": "json"}
