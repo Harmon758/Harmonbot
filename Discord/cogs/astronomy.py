@@ -525,16 +525,23 @@ class Astronomy(commands.Cog):
 		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			if resp.status in (404, 500):
 				return await ctx.embed_reply(":no_entry: Error")
+			
 			data = await resp.json()
-		# TODO: include submitter?, authors?, related_circulars?, external_links?
+		# TODO: include submitter?, authors?, related_circulars?,
+		#       external_links?
 		description = re.sub("([^\n])\n([^\n])", r"\1 \2", data["content"])
 		description = re.sub(r"\n\s*\n", '\n', description)
 		if len(description) > 1000:
 			description = description[:1000] + "..."
 		description = ctx.bot.CODE_BLOCK.format(description)
-		await ctx.embed_reply(description, title = data["title"] or None, 
-								title_url = f"https://gcn.gsfc.nasa.gov/gcn3/{number}.gcn3", 
-								timestamp = dateutil.parser.parse(data["date"]) if data["date"] else None)
+
+		await ctx.embed_reply(
+			description, title = data["title"] or None,
+			title_url = f"https://gcn.gsfc.nasa.gov/gcn3/{number}.gcn3",
+			timestamp = (
+				dateutil.parser.parse(data["date"]) if data["date"] else None
+			)
+		)
 	
 	@astronomy.command(aliases = ["instrument"])
 	async def telescope(
