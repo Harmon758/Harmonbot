@@ -520,11 +520,13 @@ class Astronomy(commands.Cog):
 		https://gcn.gsfc.nasa.gov/
 		"""
 		# TODO: use textwrap
-		url = f"https://api.arcsecond.io/telegrams/GCN/Circulars/{number}/"
-		params = {"format": "json"}
-		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
+		async with ctx.bot.aiohttp_session.get(
+			f"https://api.arcsecond.io/telegrams/GCN/Circulars/{number}/",
+			params = {"format": "json"}
+		) as resp:
 			if resp.status in (404, 500):
-				return await ctx.embed_reply(":no_entry: Error")
+				await ctx.embed_reply(":no_entry: Error")
+				return
 			
 			data = await resp.json()
 		# TODO: include submitter?, authors?, related_circulars?,
@@ -536,8 +538,9 @@ class Astronomy(commands.Cog):
 		description = ctx.bot.CODE_BLOCK.format(description)
 
 		await ctx.embed_reply(
-			description, title = data["title"] or None,
+			title = data["title"] or None,
 			title_url = f"https://gcn.gsfc.nasa.gov/gcn3/{number}.gcn3",
+			description = description,
 			timestamp = (
 				dateutil.parser.parse(data["date"]) if data["date"] else None
 			)
