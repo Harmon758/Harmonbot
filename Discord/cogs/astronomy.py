@@ -477,7 +477,7 @@ class Astronomy(commands.Cog):
 			params = {"format": "json"}
 		) as resp:
 			if resp.status == 500:
-				await ctx.embed_reply(":no_entry: Error")
+				await ctx.embed_reply(f"{ctx.bot.error_emoji} Error")
 				return
 			data = await resp.json()
 		# TODO: include credential_certification?, authors?,
