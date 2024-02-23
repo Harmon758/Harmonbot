@@ -48,7 +48,7 @@ psycopg[binary]==3.1.15
 py-cpuinfo==9.0.0
 pycountry==23.12.11
 pycryptodomex==3.19.0
-pydantic==2.5.2
+pydantic==2.6.2
 pydealer==1.4.0
 # pygost==5.6  # No longer on PyPI
 pyowm==3.3.0
