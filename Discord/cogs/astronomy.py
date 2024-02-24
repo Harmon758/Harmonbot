@@ -552,10 +552,10 @@ class Astronomy(commands.Cog):
 		self, ctx, *,
 		telescope: Optional[str]  # noqa: UP007 (non-pep604-annotation)
 	):
-		'''
+		"""
 		Telescopes and instruments
 		At observing sites on Earth
-		'''
+		"""
 		if not self.telescopes:
 			data = {"next": "https://api.arcsecond.io/telescopes/?format=json"}
 			while data["next"]:
