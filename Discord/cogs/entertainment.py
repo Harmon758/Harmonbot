@@ -266,7 +266,7 @@ class Entertainment(commands.Cog):
 	# TODO: Switch name + alias
 	@commands.command(aliases = ["movie"])
 	async def imdb(self, ctx, *, search: str):
-		'''IMDb Information'''
+		"""IMDb Information"""
 		url = "http://www.omdbapi.com/"
 		params = {'t': search, "plot": "short", "apikey": ctx.bot.OMDB_API_KEY}
 		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
