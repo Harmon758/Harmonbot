@@ -273,20 +273,24 @@ class Entertainment(commands.Cog):
 			data = await resp.json()
 		if data["Response"] == "False":
 			return await ctx.embed_reply(f":no_entry: Error: {data['Error']}")
-		fields = [("IMDb Rating", data["imdbRating"]), ("Runtime", data["Runtime"]), 
-					("Genre(s)", data["Genre"]), ("Director", data["Director"]), 
-					("Writer", data["Writer"]), ("Cast", data["Actors"]), 
-					("Language", data["Language"]), ("Country", data["Country"]), 
-					("Awards", data["Awards"])]
+		fields = [
+			("IMDb Rating", data["imdbRating"]), ("Runtime", data["Runtime"]),
+			("Genre(s)", data["Genre"]), ("Director", data["Director"]),
+			("Writer", data["Writer"]), ("Cast", data["Actors"]),
+			("Language", data["Language"]), ("Country", data["Country"]),
+			("Awards", data["Awards"])
+		]
 		if "totalSeasons" in data:
 			fields.append(("Total Seasons", data["totalSeasons"]))
 		fields.append(("Plot", data["Plot"], False))
 		thumbnail_url = None
 		if data["Poster"] != "N/A":
 			thumbnail_url = data["Poster"]
-		await ctx.embed_reply(f"{data['Year']} {data['Type']}", title = data["Title"], 
-								title_url = f"http://www.imdb.com/title/{data['imdbID']}", 
-								fields = fields, thumbnail_url = thumbnail_url)
+		await ctx.embed_reply(
+			f"{data['Year']} {data['Type']}", title = data["Title"],
+			title_url = f"http://www.imdb.com/title/{data['imdbID']}",
+			fields = fields, thumbnail_url = thumbnail_url
+		)
 	
 	@commands.group(case_insensitive = True, invoke_without_command = True)
 	async def xkcd(self, ctx, *, query: Optional[Union[int, str]]):
