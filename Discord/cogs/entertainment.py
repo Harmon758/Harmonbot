@@ -267,12 +267,18 @@ class Entertainment(commands.Cog):
 	@commands.command(aliases = ["movie"])
 	async def imdb(self, ctx, *, search: str):
 		"""IMDb Information"""
-		url = "http://www.omdbapi.com/"
-		params = {'t': search, "plot": "short", "apikey": ctx.bot.OMDB_API_KEY}
-		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
+		async with ctx.bot.aiohttp_session.get(
+			"http://www.omdbapi.com/",
+			params = {
+				't': search, "plot": "short", "apikey": ctx.bot.OMDB_API_KEY
+			}
+		) as resp:
 			data = await resp.json()
+		
 		if data["Response"] == "False":
-			return await ctx.embed_reply(f":no_entry: Error: {data['Error']}")
+			await ctx.embed_reply(f":no_entry: Error: {data['Error']}")
+			return
+		
 		fields = [
 			("IMDb Rating", data["imdbRating"]), ("Runtime", data["Runtime"]),
 			("Genre(s)", data["Genre"]), ("Director", data["Director"]),
@@ -283,13 +289,17 @@ class Entertainment(commands.Cog):
 		if "totalSeasons" in data:
 			fields.append(("Total Seasons", data["totalSeasons"]))
 		fields.append(("Plot", data["Plot"], False))
+		
 		thumbnail_url = None
 		if data["Poster"] != "N/A":
 			thumbnail_url = data["Poster"]
+		
 		await ctx.embed_reply(
-			f"{data['Year']} {data['Type']}", title = data["Title"],
+			title = data["Title"],
 			title_url = f"http://www.imdb.com/title/{data['imdbID']}",
-			fields = fields, thumbnail_url = thumbnail_url
+			description = f"{data['Year']} {data['Type']}",
+			fields = fields,
+			thumbnail_url = thumbnail_url
 		)
 	
 	@commands.group(case_insensitive = True, invoke_without_command = True)
