@@ -276,7 +276,9 @@ class Entertainment(commands.Cog):
 			data = await resp.json()
 		
 		if data["Response"] == "False":
-			await ctx.embed_reply(f":no_entry: Error: {data['Error']}")
+			await ctx.embed_reply(
+				f"{ctx.bot.error_emoji} Error: {data['Error']}"
+			)
 			return
 		
 		fields = [
