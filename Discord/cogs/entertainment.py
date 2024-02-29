@@ -292,16 +292,12 @@ class Entertainment(commands.Cog):
 			fields.append(("Total Seasons", data["totalSeasons"]))
 		fields.append(("Plot", data["Plot"], False))
 		
-		thumbnail_url = None
-		if data["Poster"] != "N/A":
-			thumbnail_url = data["Poster"]
-		
 		await ctx.embed_reply(
 			title = data["Title"],
 			title_url = f"http://www.imdb.com/title/{data['imdbID']}",
 			description = f"{data['Year']} {data['Type']}",
 			fields = fields,
-			thumbnail_url = thumbnail_url
+			thumbnail_url = data["Poster"] if data["Poster"] != "N/A" else None
 		)
 	
 	@commands.group(case_insensitive = True, invoke_without_command = True)
