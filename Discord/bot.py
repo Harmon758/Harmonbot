@@ -1330,19 +1330,32 @@ async def load(ctx, cog: str):
     try:
         await ctx.bot.load_extension("cogs." + cog)
     except commands.ExtensionAlreadyLoaded:
-        await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Cog already loaded")
+        await ctx.embed_reply(
+            f"{ctx.bot.error_emoji} Error: Cog already loaded"
+        )
     except commands.ExtensionFailed as e:
-        await ctx.embed_reply(f"{ctx.bot.error_emoji} Error loading cog: {e.original.__class__.__name__}: {e.original}")
+        await ctx.embed_reply(
+            f"{ctx.bot.error_emoji} Error loading cog: "
+            f"{e.original.__class__.__name__}: {e.original}"
+        )
     except commands.ExtensionNotFound:
         await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Cog not found")
     except commands.NoEntryPointError:
-        await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Setup function not found")
+        await ctx.embed_reply(
+            f"{ctx.bot.error_emoji} Error: Setup function not found"
+        )
     except commands.ExtensionError as e:
         await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
     except Exception as e:
-        await ctx.embed_reply(f"\N{THUMBS DOWN SIGN}{ctx.bot.emoji_skin_tone} Failed to load `{cog}` cog\n{type(e).__name__}: {e}")
+        await ctx.embed_reply(
+            f"\N{THUMBS DOWN SIGN}{ctx.bot.emoji_skin_tone} "
+            f"Failed to load `{cog}` cog\n{type(e).__name__}: {e}"
+        )
     else:
-        await ctx.embed_reply(f"\N{THUMBS UP SIGN}{ctx.bot.emoji_skin_tone} Loaded `{cog}` cog \N{GEAR}")
+        await ctx.embed_reply(
+            f"\N{THUMBS UP SIGN}{ctx.bot.emoji_skin_tone} "
+            f"Loaded `{cog}` cog \N{GEAR}"
+        )
 
 @commands.group(invoke_without_command = True, case_insensitive = True)
 @commands.is_owner()
