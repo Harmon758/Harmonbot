@@ -1360,7 +1360,7 @@ async def load(ctx, cog: str):
 @commands.group(invoke_without_command = True, case_insensitive = True)
 @commands.is_owner()
 async def unload(ctx, cog: str):
-    '''Unload cog'''
+    """Unload cog"""
     try:
         await ctx.bot.unload_extension("cogs." + cog)
     except commands.ExtensionNotLoaded:
