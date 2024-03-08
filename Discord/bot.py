@@ -1364,13 +1364,21 @@ async def unload(ctx, cog: str):
     try:
         await ctx.bot.unload_extension("cogs." + cog)
     except commands.ExtensionNotLoaded:
-        await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Cog not found/loaded")
+        await ctx.embed_reply(
+            f"{ctx.bot.error_emoji} Error: Cog not found/loaded"
+        )
     except commands.ExtensionError as e:
         await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
     except Exception as e:
-        await ctx.embed_reply(f"\N{THUMBS UP SIGN}{ctx.bot.emoji_skin_tone} Failed to unload `{cog}` cog\n{type(e).__name__}: {e}")
+        await ctx.embed_reply(
+            f"\N{THUMBS UP SIGN}{ctx.bot.emoji_skin_tone} "
+            f"Failed to unload `{cog}` cog\n{type(e).__name__}: {e}"
+        )
     else:
-        await ctx.embed_reply(f"\N{OK HAND SIGN}{ctx.bot.emoji_skin_tone} Unloaded `{cog}` cog \N{GEAR}")
+        await ctx.embed_reply(
+            f"\N{OK HAND SIGN}{ctx.bot.emoji_skin_tone} "
+            f"Unloaded `{cog}` cog \N{GEAR}"
+        )
 
 @commands.command()
 @commands.is_owner()
