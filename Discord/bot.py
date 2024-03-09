@@ -1383,7 +1383,7 @@ async def unload(ctx, cog: str):
 @commands.command()
 @commands.is_owner()
 async def reload(ctx, cog: str):
-    '''Reload cog'''
+    """Reload cog"""
     try:
         await ctx.bot.reload_extension("cogs." + cog)
     except commands.ExtensionFailed as e:
