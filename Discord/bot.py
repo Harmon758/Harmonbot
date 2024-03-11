@@ -1387,17 +1387,27 @@ async def reload(ctx, cog: str):
     try:
         await ctx.bot.reload_extension("cogs." + cog)
     except commands.ExtensionFailed as e:
-        await ctx.embed_reply(f"{ctx.bot.error_emoji} Error loading cog: {e.original.__class__.__name__}: {e.original}")
+        await ctx.embed_reply(
+            f"{ctx.bot.error_emoji} Error loading cog: "
+            f"{e.original.__class__.__name__}: {e.original}"
+        )
     except commands.ExtensionNotFound:
         await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Cog not found")
     except commands.ExtensionNotLoaded:
-        await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Cog not found/loaded")
+        await ctx.embed_reply(
+            f"{ctx.bot.error_emoji} Error: Cog not found/loaded"
+        )
     except commands.NoEntryPointError:
-        await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Setup function not found")
+        await ctx.embed_reply(
+            f"{ctx.bot.error_emoji} Error: Setup function not found"
+        )
     except commands.ExtensionError as e:
         await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
     except Exception as e:
-        await ctx.embed_reply(f"\N{THUMBS DOWN SIGN}{ctx.bot.emoji_skin_tone} Failed to reload `{cog}` cog\n{type(e).__name__}: {e}")
+        await ctx.embed_reply(
+            f"\N{THUMBS DOWN SIGN}{ctx.bot.emoji_skin_tone} "
+            f"Failed to reload `{cog}` cog\n{type(e).__name__}: {e}"
+        )
     else:
         await ctx.bot.db.execute(
             """
@@ -1407,7 +1417,10 @@ async def reload(ctx, cog: str):
             """,
             ctx.bot.online_time
         )
-        await ctx.embed_reply(f"\N{THUMBS UP SIGN}{ctx.bot.emoji_skin_tone} Reloaded `{cog}` cog \N{GEAR}")
+        await ctx.embed_reply(
+            f"\N{THUMBS UP SIGN}{ctx.bot.emoji_skin_tone} "
+            f"Reloaded `{cog}` cog \N{GEAR}"
+        )
 
 
 @commands.command(name = "aiml", aliases = ["brain"])
