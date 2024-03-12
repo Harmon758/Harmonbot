@@ -1426,7 +1426,7 @@ async def reload(ctx, cog: str):
 @commands.command(name = "aiml", aliases = ["brain"])
 @commands.is_owner()
 async def load_aiml(ctx):
-    '''Load AIML'''
+    """Load AIML"""
     for predicate, value in ctx.bot.aiml_predicates.items():
         ctx.bot.aiml_kernel.setBotPredicate(predicate, value)
     if os.path.isfile(ctx.bot.data_path + "/aiml/aiml_brain.brn"):
