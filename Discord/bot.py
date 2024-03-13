@@ -1430,11 +1430,20 @@ async def load_aiml(ctx):
     for predicate, value in ctx.bot.aiml_predicates.items():
         ctx.bot.aiml_kernel.setBotPredicate(predicate, value)
     if os.path.isfile(ctx.bot.data_path + "/aiml/aiml_brain.brn"):
-        ctx.bot.aiml_kernel.bootstrap(brainFile = ctx.bot.data_path + "/aiml/aiml_brain.brn")
+        ctx.bot.aiml_kernel.bootstrap(
+            brainFile = ctx.bot.data_path + "/aiml/aiml_brain.brn"
+        )
     elif os.path.isfile(ctx.bot.data_path + "/aiml/std-startup.xml"):
-        ctx.bot.aiml_kernel.bootstrap(learnFiles = ctx.bot.data_path + "/aiml/std-startup.xml", commands = "load aiml b")
-        ctx.bot.aiml_kernel.saveBrain(ctx.bot.data_path + "/aiml/aiml_brain.brn")
-    await ctx.embed_reply(f"\N{OK HAND SIGN}{ctx.bot.emoji_skin_tone} Loaded AIML")
+        ctx.bot.aiml_kernel.bootstrap(
+            learnFiles = ctx.bot.data_path + "/aiml/std-startup.xml",
+            commands = "load aiml b"
+        )
+        ctx.bot.aiml_kernel.saveBrain(
+            ctx.bot.data_path + "/aiml/aiml_brain.brn"
+        )
+    await ctx.embed_reply(
+        f"\N{OK HAND SIGN}{ctx.bot.emoji_skin_tone} Loaded AIML"
+    )
 
 @commands.command(name = "aiml", aliases = ["brain"])
 @commands.is_owner()
