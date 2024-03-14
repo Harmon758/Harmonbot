@@ -1448,7 +1448,7 @@ async def load_aiml(ctx):
 @commands.command(name = "aiml", aliases = ["brain"])
 @commands.is_owner()
 async def unload_aiml(ctx):
-    '''Unload AIML'''
+    """Unload AIML"""
     ctx.bot.aiml_kernel.resetBrain()
     await ctx.embed_reply(f"\N{OK HAND SIGN}{ctx.bot.emoji_skin_tone} Unloaded AIML")
 
