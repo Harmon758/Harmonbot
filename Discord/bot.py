@@ -1450,5 +1450,7 @@ async def load_aiml(ctx):
 async def unload_aiml(ctx):
     """Unload AIML"""
     ctx.bot.aiml_kernel.resetBrain()
-    await ctx.embed_reply(f"\N{OK HAND SIGN}{ctx.bot.emoji_skin_tone} Unloaded AIML")
+    await ctx.embed_reply(
+        f"\N{OK HAND SIGN}{ctx.bot.emoji_skin_tone} Unloaded AIML"
+    )
 
