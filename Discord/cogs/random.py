@@ -228,7 +228,7 @@ class Random(commands.Cog):
 
     @random.command(name = "coin", aliases = ["flip"], with_app_command = False)
     async def random_coin(self, ctx):
-        '''Flip a coin'''
+        """Flip a coin"""
         # Note: coin command invokes this command
         await ctx.embed_reply(random.choice(("Heads!", "Tails!")))
 
