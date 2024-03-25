@@ -91,7 +91,7 @@ class Random(commands.Cog):
 
     @random.command(name = "card", with_app_command = False)
     async def random_card(self, ctx):
-        '''Random playing card'''
+        """Random playing card"""
         # Note: card command invokes this command
         await ctx.embed_reply(f":{random.choice(pydealer.const.SUITS).lower()}: {random.choice(pydealer.const.VALUES)}")
 
