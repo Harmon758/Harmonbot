@@ -71,7 +71,7 @@ class Random(commands.Cog):
         name = "bunny", aliases = ["rabbit"], with_app_command = False
     )
     async def random_bunny(self, ctx):
-        '''Random bunny'''
+        """Random bunny"""
         # Note: bunny command invokes this command
         url = "https://api.bunnies.io/v2/loop/random/?media=gif"
         async with ctx.bot.aiohttp_session.get(url) as resp:
