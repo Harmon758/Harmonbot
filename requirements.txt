@@ -33,7 +33,7 @@ imageio==2.33.1
 imgurpython==1.1.7
 inflect==7.0.0
 isodate==0.6.1
-markdownify==0.11.6
+markdownify==0.12.1
 matplotlib==3.8.2
 more-itertools==10.1.0
 mypy==1.7.1
