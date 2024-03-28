@@ -73,11 +73,17 @@ class Random(commands.Cog):
     async def random_bunny(self, ctx):
         """Random bunny"""
         # Note: bunny command invokes this command
-        url = "https://api.bunnies.io/v2/loop/random/?media=gif"
-        async with ctx.bot.aiohttp_session.get(url) as resp:
+        async with ctx.bot.aiohttp_session.get(
+            "https://api.bunnies.io/v2/loop/random/?media=gif"
+        ) as resp:
             data = await resp.json()
+        
         gif = data["media"]["gif"]
-        await ctx.embed_reply(f"[:rabbit2:]({gif})", image_url = gif)
+
+        await ctx.embed_reply(
+            description = f"[:rabbit2:]({gif})",
+            image_url = gif
+        )
 
     @commands.command(aliases = ["rabbit"])
     async def bunny(self, ctx):
