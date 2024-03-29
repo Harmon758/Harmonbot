@@ -81,7 +81,7 @@ class Random(commands.Cog):
         gif = data["media"]["gif"]
 
         await ctx.embed_reply(
-            description = f"[:rabbit2:]({gif})",
+            description = f"[\N{RABBIT}]({gif})",
             image_url = gif
         )
 
