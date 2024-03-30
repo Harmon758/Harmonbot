@@ -49,10 +49,10 @@ class Random(commands.Cog):
 
     @commands.hybrid_group(case_insensitive = True)
     async def random(self, ctx):
-        '''
+        """
         Random things
         All random subcommands are also commands
-        '''
+        """
         # TODO: random random
         await ctx.embed_reply(":grey_question: Random what?")
 
