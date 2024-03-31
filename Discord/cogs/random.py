@@ -54,7 +54,7 @@ class Random(commands.Cog):
         All random subcommands are also commands
         """
         # TODO: random random
-        await ctx.embed_reply(":grey_question: Random what?")
+        await ctx.embed_reply("\N{WHITE QUESTION MARK ORNAMENT} Random what?")
 
     @random.command(with_app_command = False)
     async def blob(self, ctx):
