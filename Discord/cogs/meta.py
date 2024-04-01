@@ -891,7 +891,7 @@ class Meta(commands.Cog):
     @commands.command()
     @commands.is_owner()
     async def events(self, ctx):
-        '''WebSocket events'''
+        """WebSocket events"""
         await ctx.embed_reply(
             ctx.bot.PY_CODE_BLOCK.format(
                 ctx.bot.socket_events
