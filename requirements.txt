@@ -107,7 +107,7 @@ cloudpathlib==0.16.0
 colorama==0.4.6
 confection==0.1.4
 contextlib2==21.6.0
-contourpy==1.2.0
+contourpy==1.2.1
 cycler==0.12.1
 cymem==2.0.8
 fonttools==4.46.0
