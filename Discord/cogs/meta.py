@@ -72,7 +72,7 @@ class Meta(commands.Cog):
     @commands.command()
     @commands.is_owner()
     async def benchmark(self, ctx):
-        '''Benchmark'''
+        """Benchmark"""
         process = psutil.Process()
         process.cpu_percent()
         message = await ctx.embed_reply(
