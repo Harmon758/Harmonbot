@@ -195,7 +195,7 @@ types-html5lib==1.1.11.15
 tzdata==2023.3
 uritemplate==4.1.1
 wasabi==1.1.2
-weasel==0.3.4
+weasel==0.4.0
 websockets==10.4
 wrapt==1.16.0
 xmltodict==0.13.0
