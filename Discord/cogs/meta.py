@@ -165,7 +165,7 @@ class Meta(commands.Cog):
 
     @commands.group(aliases = ["shard"], case_insensitive = True, invoke_without_command = True)
     async def shards(self, ctx):
-        '''Current number of shards'''
+        """Current number of shards"""
         await ctx.embed_reply(ctx.bot.shard_count or 1)
 
     @shards.command(aliases = ["recommend"])
