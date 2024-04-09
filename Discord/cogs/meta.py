@@ -180,7 +180,7 @@ class Meta(commands.Cog):
     @commands.command(aliases = ["typing"], hidden = True)
     @checks.not_forbidden()
     async def type(self, ctx):
-        '''Sends typing status'''
+        """Sends typing status"""
         # TODO: Add seconds option
         await ctx.typing()
 
