@@ -188,7 +188,7 @@ class Meta(commands.Cog):
 
     @commands.command()
     async def about(self, ctx):
-        '''About me'''
+        """About me"""
         fields = []
         if (changes := git.Repo("..").git.log(
             "-3", "--first-parent",
