@@ -242,7 +242,7 @@ class Meta(commands.Cog):
 
     @commands.command()
     async def changelog(self, ctx):
-        '''Link to changelog'''
+        """Link to changelog"""
         await ctx.message.reply(ctx.bot.changelog)
 
     @commands.command()
