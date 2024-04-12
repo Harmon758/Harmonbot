@@ -174,7 +174,7 @@ rich==13.7.0
 rpds-py==0.15.2
 rsa==4.9
 schema==0.7.5
-setuptools==69.0.2
+setuptools==69.4.0
 setuptools-scm==8.0.4
 sgmllib3k==1.0.0
 six==1.16.0
