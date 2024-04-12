@@ -554,7 +554,7 @@ class Meta(commands.Cog):
     @commands.guild_only()
     @checks.not_forbidden()
     async def harmonbot_nickname(self, ctx, *, nickname : str = ""):
-        '''My nickname'''
+        """My nickname"""
         if not nickname:
             return await ctx.embed_reply(ctx.me.nick)
         try:
