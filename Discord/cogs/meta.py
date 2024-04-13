@@ -556,11 +556,14 @@ class Meta(commands.Cog):
     async def harmonbot_nickname(self, ctx, *, nickname : str = ""):
         """My nickname"""
         if not nickname:
-            return await ctx.embed_reply(ctx.me.nick)
+            await ctx.embed_reply(ctx.me.nick)
+            return
+
         try:
             is_owner = await commands.is_owner().predicate(ctx)
         except commands.NotOwner:
             is_owner = False
+
         if is_owner:
             await ctx.me.edit(nick = nickname)
         else:
