@@ -822,7 +822,7 @@ class Meta(commands.Cog):
     @commands.group(hidden = True, invoke_without_command = True, case_insensitive = True)
     @checks.not_forbidden()
     async def test(self, ctx):
-        '''Basic test command'''
+        """Basic test command"""
         await ctx.send("Hello, World!")
 
     @app_commands.command(name = "test")
