@@ -819,7 +819,9 @@ class Meta(commands.Cog):
 
     # Testing
 
-    @commands.group(hidden = True, invoke_without_command = True, case_insensitive = True)
+    @commands.group(
+        hidden = True, invoke_without_command = True, case_insensitive = True
+    )
     @checks.not_forbidden()
     async def test(self, ctx):
         """Basic test command"""
