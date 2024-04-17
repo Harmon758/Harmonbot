@@ -829,7 +829,7 @@ class Meta(commands.Cog):
 
     @app_commands.command(name = "test")
     async def slash_test(self, interaction):
-        '''Basic test command'''
+        """Basic test command"""
         await interaction.response.send_message("Hello, World!")
 
     @test.command(name = "delete")
