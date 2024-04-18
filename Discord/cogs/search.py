@@ -44,10 +44,10 @@ class Search(commands.GroupCog, group_name = "search"):
 
     @commands.group(invoke_without_command = True, case_insensitive = True)
     async def search(self, ctx):
-        '''
+        """
         Search things
         All search subcommands are also commands
-        '''
+        """
         await ctx.embed_reply(":grey_question: Search what?")
 
     @search.command(name = "amazon")
