@@ -48,7 +48,7 @@ class Search(commands.GroupCog, group_name = "search"):
         Search things
         All search subcommands are also commands
         """
-        await ctx.embed_reply(":grey_question: Search what?")
+        await ctx.embed_reply("\N{WHITE QUESTION MARK ORNAMENT} Search what?")
 
     @search.command(name = "amazon")
     async def search_amazon(self, ctx, *search: str):
