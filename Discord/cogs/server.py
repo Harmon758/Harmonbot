@@ -64,7 +64,7 @@ class Server(commands.Cog):
 	
 	@server.command(with_app_command = False)
 	async def name(self, ctx):
-		'''The server's name'''
+		"""The server's name"""
 		await ctx.embed_reply(ctx.guild.name)
 	
 	@server.command(with_app_command = False)
