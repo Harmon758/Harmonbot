@@ -69,7 +69,7 @@ class Server(commands.Cog):
 	
 	@server.command(with_app_command = False)
 	async def owner(self, ctx):
-		'''The owner of the server'''
+		"""The owner of the server"""
 		if not (guild_owner := ctx.guild.owner):
 			guild_owner = await ctx.guild.fetch_member(ctx.guild.owner_id)
 		await ctx.embed_reply(
