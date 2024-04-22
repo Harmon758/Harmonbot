@@ -40,7 +40,7 @@ class Server(commands.Cog):
 	
 	@server.command(with_app_command = False)
 	async def icon(self, ctx):
-		'''See a bigger version of the server icon'''
+		"""See a bigger version of the server icon"""
 		if not ctx.guild.icon:
 			await ctx.embed_reply(f"{ctx.bot.error_emoji} This server doesn't have an icon")
 		else:
