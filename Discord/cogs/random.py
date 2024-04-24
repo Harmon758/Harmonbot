@@ -381,13 +381,13 @@ class Random(commands.Cog):
                     await ctx.embed_reply(", ".join(str(roll) for roll in result))
             except discord.HTTPException:
                 # TODO: use textwrap/paginate
-                await ctx.embed_reply(":no_entry: Output too long")
+                await ctx.embed_reply(f"{ctx.bot.error_emoji} Output too long")
             except pyparsing.ParseException:
-                await ctx.embed_reply(":no_entry: Invalid input")
+                await ctx.embed_reply(f"{ctx.bot.error_emoji} Invalid input")
             except (concurrent.futures.TimeoutError, multiprocessing.context.TimeoutError):
-                await ctx.embed_reply(":no_entry: Execution exceeded time limit")
+                await ctx.embed_reply(f"{ctx.bot.error_emoji} Execution exceeded time limit")
             except dice.DiceFatalException as e:
-                await ctx.embed_reply(f":no_entry: Error: {e}")
+                await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
 
     @commands.command(aliases = ["die", "roll"])
     async def dice(self, ctx, *, input: str = '6'):
