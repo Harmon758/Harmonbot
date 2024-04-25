@@ -378,14 +378,21 @@ class Random(commands.Cog):
                 if isinstance(result, int):
                     await ctx.embed_reply(result)
                 else:
-                    await ctx.embed_reply(", ".join(str(roll) for roll in result))
+                    await ctx.embed_reply(
+                        ", ".join(str(roll) for roll in result)
+                    )
             except discord.HTTPException:
                 # TODO: use textwrap/paginate
                 await ctx.embed_reply(f"{ctx.bot.error_emoji} Output too long")
             except pyparsing.ParseException:
                 await ctx.embed_reply(f"{ctx.bot.error_emoji} Invalid input")
-            except (concurrent.futures.TimeoutError, multiprocessing.context.TimeoutError):
-                await ctx.embed_reply(f"{ctx.bot.error_emoji} Execution exceeded time limit")
+            except (
+                concurrent.futures.TimeoutError,
+                multiprocessing.context.TimeoutError
+            ):
+                await ctx.embed_reply(
+                    f"{ctx.bot.error_emoji} Execution exceeded time limit"
+                )
             except dice.DiceFatalException as e:
                 await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
 
