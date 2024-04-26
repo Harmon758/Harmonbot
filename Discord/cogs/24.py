@@ -1,10 +1,17 @@
 
+from __future__ import annotations
+
 import discord
 from discord import ui
 from discord.ext import commands
 
+from typing import TYPE_CHECKING
+
 from units.twenty_four import check_solution, generate_numbers
 from utilities import checks
+
+if TYPE_CHECKING:
+    from utilities.context import Context
 
 
 async def setup(bot):
@@ -15,7 +22,7 @@ class TwentyFour(commands.Cog, name = "24"):
 
     @commands.hybrid_command(name = "24", aliases = ["twenty-four"])
     @checks.not_forbidden()
-    async def twenty_four(self, ctx):
+    async def twenty_four(self, ctx: Context):
         """24 Game"""
         await ctx.defer()
 
