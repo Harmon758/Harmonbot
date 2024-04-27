@@ -1,12 +1,18 @@
 
+from __future__ import annotations
+
 from discord import ui
 from discord.ext import commands
 
 import asyncio
+from typing import TYPE_CHECKING
 
 import pydealer
 
 from utilities import checks
+
+if TYPE_CHECKING:
+    from utilities.context import Context
 
 
 BLACKJACK_VALUES = pydealer.const.DEFAULT_RANKS["values"].copy()
@@ -23,7 +29,7 @@ class Blackjack(commands.Cog):
 
     @commands.hybrid_command()
     @checks.not_forbidden()
-    async def blackjack(self, ctx):
+    async def blackjack(self, ctx: Context):
         """Play a game of blackjack"""
         # TODO: S17
         game = BlackjackGame(bot = ctx.bot)
