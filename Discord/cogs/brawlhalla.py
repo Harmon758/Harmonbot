@@ -1,12 +1,17 @@
 
+from __future__ import annotations
+
 from discord import app_commands
 from discord.ext import commands
 
-from typing import Optional
+from typing import Optional, TYPE_CHECKING
 
 from units.cache import async_cache
 from utilities import checks
 from utilities.converters import SteamID64
+
+if TYPE_CHECKING:
+    from utilities.context import Context
 
 
 async def setup(bot):
@@ -24,7 +29,7 @@ class Brawlhalla(commands.Cog):
         return await checks.not_forbidden().predicate(ctx)
 
     @commands.hybrid_group(case_insensitive = True)
-    async def brawlhalla(self, ctx):
+    async def brawlhalla(self, ctx: Context):
         """Brawlhalla"""
         await ctx.send_help(ctx.command)
 
