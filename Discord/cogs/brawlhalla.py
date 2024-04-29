@@ -8,10 +8,10 @@ from typing import Optional, TYPE_CHECKING
 
 from units.cache import async_cache
 from utilities import checks
-from utilities.converters import SteamID64
 
 if TYPE_CHECKING:
     from utilities.context import Context
+    from utilities.converters import SteamID64
 
 
 async def setup(bot):
