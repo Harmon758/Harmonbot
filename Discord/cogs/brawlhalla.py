@@ -34,7 +34,7 @@ class Brawlhalla(commands.Cog):
         await ctx.send_help(ctx.command)
 
     @brawlhalla.command()
-    async def legend(self, ctx, *, name: str):
+    async def legend(self, ctx: Context, *, name: str):
         """
         Show information about a Brawlhalla legend
 
