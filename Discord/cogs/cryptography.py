@@ -1,9 +1,11 @@
 
+from __future__ import annotations
+
 import discord
 from discord.ext import commands
 
 import hashlib
-from typing import Literal, Optional
+from typing import Literal, Optional, TYPE_CHECKING
 import zlib
 
 from Cryptodome.Hash import MD2, MD4, RIPEMD160
@@ -22,6 +24,9 @@ from units.cryptography import (
 )
 from utilities import checks
 
+if TYPE_CHECKING:
+    from utilities.context import Context
+
 
 async def setup(bot):
     await bot.add_cog(Cryptography())
@@ -34,7 +39,7 @@ class Cryptography(commands.Cog):
     # TODO: not forbidden global check?
 
     @commands.hybrid_group(aliases = ["decrpyt"], case_insensitive = True)
-    async def decode(self, ctx):
+    async def decode(self, ctx: Context):
         """Decode encoded messages"""
         await ctx.send_help(ctx.command)
 
