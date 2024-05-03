@@ -1,7 +1,6 @@
 
 from __future__ import annotations
 
-import discord
 from discord.ext import commands
 
 import hashlib
@@ -25,6 +24,7 @@ from units.cryptography import (
 from utilities import checks
 
 if TYPE_CHECKING:
+    import discord
     from utilities.context import Context
 
 
