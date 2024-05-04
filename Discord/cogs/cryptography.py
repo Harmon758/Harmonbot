@@ -24,7 +24,7 @@ from units.cryptography import (
 from utilities import checks
 
 if TYPE_CHECKING:
-    import discord
+    from discord import Attachment
     from utilities.context import Context
 
 
@@ -184,7 +184,7 @@ class Cryptography(commands.Cog):
     @decode.command(name = "qr")
     async def decode_qr(
         self, ctx,
-        image: Optional[discord.Attachment],  # noqa: UP007 (non-pep604-annotation)
+        image: Optional[Attachment],  # noqa: UP007 (non-pep604-annotation)
         image_url: Optional[str]  # noqa: UP007 (non-pep604-annotation)
     ):
         """
