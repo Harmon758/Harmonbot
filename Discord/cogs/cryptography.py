@@ -47,7 +47,7 @@ class Cryptography(commands.Cog):
         name = "caesar", aliases = ["rot"],
         case_insensitive = True, with_app_command = False
     )
-    async def decode_caesar(self, ctx, key: int, *, message: str):
+    async def decode_caesar(self, ctx: Context, key: int, *, message: str):
         """Decode caesar cipher"""
         await ctx.embed_reply(decode_caesar_cipher(message, key))
 
