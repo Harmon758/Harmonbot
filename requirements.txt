@@ -65,7 +65,7 @@ seaborn==0.13.0
 sentry-sdk==1.39.1
 spacy==3.7.2
 spacy-entity-linker==1.0.3
-speechrecognition==3.10.1
+speechrecognition==3.10.4
 sphobjinv==2.3.1
 SQLAlchemy==2.0.23
 sympy==1.12
