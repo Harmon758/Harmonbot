@@ -52,7 +52,7 @@ class Cryptography(commands.Cog):
         await ctx.embed_reply(decode_caesar_cipher(message, key))
 
     @decode_caesar.command(name = "brute", with_app_command = False)
-    async def decode_caesar_brute(self, ctx, *, message: str):
+    async def decode_caesar_brute(self, ctx: Context, *, message: str):
         '''Brute force decode caesar cipher'''
         # TODO: Paginate if too long
         await ctx.embed_reply('\n'.join(f"{key}: {decode_caesar_cipher(message, key)}" for key in range(26)))
