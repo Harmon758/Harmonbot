@@ -16,7 +16,7 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-    - uses: actions/checkout@v4.1.1
+    - uses: actions/checkout@v4.1.5
     - name: Set up PostgreSQL ${{ matrix.postgresql-version }}
       uses: harmon758/postgresql-action@v1
       with:
@@ -52,7 +52,7 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-    - uses: actions/checkout@v4.1.1
+    - uses: actions/checkout@v4.1.5
     - name: Set up Python
       uses: actions/setup-python@v5.0.0
       with:
@@ -83,7 +83,7 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4.1.1
+      uses: actions/checkout@v4.1.5
     - name: Set up Go ${{ matrix.go-version }}
       uses: actions/setup-go@v3.5.0
       with:
