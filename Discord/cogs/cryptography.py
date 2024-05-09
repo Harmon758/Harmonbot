@@ -134,7 +134,9 @@ class Cryptography(commands.Cog):
         name = "34.12-2015", aliases = ["кузнечик", "kuznyechik"],
         hidden = True, with_app_command = False
     )
-    async def decode_gost_34_12_2015(self, ctx, key: str, *, data: str):
+    async def decode_gost_34_12_2015(
+        self, ctx: Context, key: str, *, data: str
+    ):
         """
         GOST 34.12-2015 128-bit block cipher
         Also known as Кузнечик or Kuznyechik
