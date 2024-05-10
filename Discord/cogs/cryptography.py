@@ -171,7 +171,7 @@ class Cryptography(commands.Cog):
         # )
 
     @decode.command(name = "morse")
-    async def decode_morse(self, ctx, *, message: str):
+    async def decode_morse(self, ctx: Context, *, message: str):
         """
         Decode Morse code
 
