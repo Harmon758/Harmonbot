@@ -247,7 +247,7 @@ class Cryptography(commands.Cog):
         await ctx.embed_reply(message[::-1])
 
     @commands.hybrid_group(aliases = ["encrypt"], case_insensitive = True)
-    async def encode(self, ctx):
+    async def encode(self, ctx: Context):
         """Encode messages"""
         await ctx.send_help(ctx.command)
 
