@@ -44,7 +44,7 @@ pandas==2.1.4
 parsedatetime==2.6
 pillow==10.1.0
 psutil==5.9.7
-psycopg[binary]==3.1.15
+psycopg[binary]==3.1.19
 py-cpuinfo==9.0.0
 pycountry==23.12.11
 pycryptodomex==3.19.0
@@ -155,7 +155,7 @@ pluggy==1.3.0
 preshed==3.0.9
 protobuf==4.25.1
 proto-plus==1.23.0
-psycopg-binary==3.1.15
+psycopg-binary==3.1.19
 pyasn1==0.5.1
 pyasn1-modules==0.3.0
 pycares==4.4.0
