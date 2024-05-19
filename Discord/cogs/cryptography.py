@@ -294,7 +294,7 @@ class Cryptography(commands.Cog):
         name = "gost", aliases = ["гост"],
         case_insensitive = True, hidden = True
     )
-    async def encode_gost(self, ctx):
+    async def encode_gost(self, ctx: Context):
         """
         Russian Federation/Soviet Union GOST
         Межгосударственный стандарт
