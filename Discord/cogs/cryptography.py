@@ -316,8 +316,8 @@ class Cryptography(commands.Cog):
         name = "magma", aliases = ["28147-89", "магма"], hidden = True
     )
     async def encode_gost_magma(
-        self, ctx, mode: Literal["CBC", "CFB", "CNT", "ECB", "MAC"], key: str,
-        *, data: str
+        self, ctx: Context, mode: Literal["CBC", "CFB", "CNT", "ECB", "MAC"],
+        key: str, *, data: str
     ):
         """
         GOST 28147-89 block cipher, also known as Магма or Magma
