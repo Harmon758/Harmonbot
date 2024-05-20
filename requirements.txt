@@ -19,7 +19,7 @@ chess==1.10.0
 clarifai==9.11.0
 cryptography==41.0.7
 dice==4.0.0
-emoji==2.9.0
+emoji==2.12.0
 # en-core-web-md==3.7.1
 # https://github.com/explosion/spacy-models/releases/tag/en_core_web_md-3.7.1
 en_core_web_md @ https://github.com/explosion/spacy-models/releases/download/en_core_web_md-3.7.1/en_core_web_md-3.7.1-py3-none-any.whl
