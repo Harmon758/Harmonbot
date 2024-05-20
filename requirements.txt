@@ -118,7 +118,7 @@ google-auth==2.25.2
 google-cloud-core==2.4.1
 googleapis-common-protos==1.62.0
 greenlet==3.0.2
-grpcio==1.60.0
+grpcio==1.64.0
 grpcio-status==1.60.0
 h11==0.14.0
 h2==4.1.0
