@@ -372,7 +372,7 @@ class Cryptography(commands.Cog):
         name = "streebog", aliases = ["34.11-2012", "стрибог"], hidden = True
     )
     async def encode_gost_streebog(
-        self, ctx, digest_size: Literal[256, 512], *, data: str
+        self, ctx: Context, digest_size: Literal[256, 512], *, data: str
     ):
         """
         GOST 34.11-2012 hash function
