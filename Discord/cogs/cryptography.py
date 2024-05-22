@@ -414,7 +414,7 @@ class Cryptography(commands.Cog):
     @encode_gost.command(
         name = "34.11-94", hidden = True, with_app_command = False
     )
-    async def encode_gost_34_11_94(self, ctx, *, data: str):
+    async def encode_gost_34_11_94(self, ctx: Context, *, data: str):
         """
         GOST 34.11-94 hash function
 
