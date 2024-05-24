@@ -474,7 +474,7 @@ class Cryptography(commands.Cog):
         # )
 
     @encode.command(name = "morse")
-    async def encode_morse(self, ctx, *, message: str):
+    async def encode_morse(self, ctx: Context, *, message: str):
         """
         Encode a message in Morse code
 
