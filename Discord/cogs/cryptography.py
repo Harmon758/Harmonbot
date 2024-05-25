@@ -489,7 +489,7 @@ class Cryptography(commands.Cog):
             await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
 
     @encode.command(name = "qr")
-    async def encode_qr(self, ctx, *, message: str):
+    async def encode_qr(self, ctx: Context, *, message: str):
         """
         Encode a message in a QR code
         
