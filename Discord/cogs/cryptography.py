@@ -503,7 +503,7 @@ class Cryptography(commands.Cog):
         await ctx.embed_reply(image_url = url)
 
     @encode.command(name = "reverse", with_app_command = False)
-    async def encode_reverse(self, ctx, *, message: str):
+    async def encode_reverse(self, ctx: Context, *, message: str):
         """Reverse text"""
         await ctx.embed_reply(message[::-1])
 
