@@ -85,7 +85,7 @@ wordnik-py3==2.1.2
 # https://github.com/ytdl-org/youtube-dl/issues/31585
 # https://github.com/ytdl-org/ytdl-nightly/releases/tag/2023.12.07
 youtube-dl @ https://github.com/ytdl-org/ytdl-nightly/releases/download/2023.12.07/youtube-dl-2023.12.07.tar.gz
-yt-dlp==2023.11.16
+yt-dlp==2024.5.26
 
 aiodns==3.1.1
 aiosignal==1.3.1
