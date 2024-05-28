@@ -515,7 +515,7 @@ class Cryptography(commands.Cog):
         await ctx.embed_reply(h.hexdigest())
 
     @commands.hybrid_group(case_insensitive = True)
-    async def hash(self, ctx):
+    async def hash(self, ctx: Context):
         """Use hash algorithms/functions"""
         await ctx.send_help(ctx.command)
 
