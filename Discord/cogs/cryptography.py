@@ -520,7 +520,7 @@ class Cryptography(commands.Cog):
         await ctx.send_help(ctx.command)
 
     @hash.command()
-    async def md2(self, ctx, *, message: str):
+    async def md2(self, ctx: Context, *, message: str):
         """
         Hash using MD2 Message-Digest Algorithm
 
