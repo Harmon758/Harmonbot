@@ -535,7 +535,7 @@ class Cryptography(commands.Cog):
         )
 
     @hash.command()
-    async def md4(self, ctx, *, message: str):
+    async def md4(self, ctx: Context, *, message: str):
         """
         Hash using MD4 Message-Digest Algorithm
 
