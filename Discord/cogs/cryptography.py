@@ -550,7 +550,7 @@ class Cryptography(commands.Cog):
         )
 
     @hash.command()
-    async def md5(self, ctx, *, message: str):
+    async def md5(self, ctx: Context, *, message: str):
         """
         Hash using MD5 Message-Digest Algorithm
 
