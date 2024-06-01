@@ -563,7 +563,7 @@ class Cryptography(commands.Cog):
         await ctx.embed_reply(hashlib.md5(message.encode("UTF-8")).hexdigest())
 
     @hash.command(name = "ripemd-160", aliases = ["ripemd160"])
-    async def ripemd160(self, ctx, *, message: str):
+    async def ripemd160(self, ctx: Context, *, message: str):
         """
         Hash using RIPEMD-160 (RIPE Message Digest)
 
