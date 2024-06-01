@@ -78,7 +78,7 @@ unicodedata2==15.1.0
 urllib3==2.1.0
 vcrpy==5.1.0
 wand==0.6.13
-wolframalpha==5.0.0
+wolframalpha==5.1.2
 wordcloud==1.9.3
 wordnik-py3==2.1.2
 # youtube-dl==2023.12.7
