@@ -578,7 +578,7 @@ class Cryptography(commands.Cog):
         )
 
     @hash.command(name = "sha-1", aliases = ["sha1"])
-    async def sha1(self, ctx, *, message: str):
+    async def sha1(self, ctx: Context, *, message: str):
         """
         Hash using SHA-1 (Secure Hash Algorithm 1)
 
