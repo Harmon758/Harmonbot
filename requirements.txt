@@ -105,7 +105,7 @@ clarifai-grpc==9.11.0
 click==8.1.7
 cloudpathlib==0.16.0
 colorama==0.4.6
-confection==0.1.4
+confection==0.1.5
 contextlib2==21.6.0
 contourpy==1.2.0
 cycler==0.12.1
