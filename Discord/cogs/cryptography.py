@@ -627,7 +627,7 @@ class Cryptography(commands.Cog):
         )
 
     @hash.command(name = "sha-384", aliases = ["sha384"])
-    async def sha384(self, ctx, *, message: str):
+    async def sha384(self, ctx: Context, *, message: str):
         """
         Hash using SHA-384 (Secure Hash Algorithm 2)
 
