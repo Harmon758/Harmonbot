@@ -659,7 +659,7 @@ class Cryptography(commands.Cog):
         )
 
     @hash.command(name = "sha3-224", aliases = ["sha3_224"])
-    async def sha3_224(self, ctx, *, message: str):
+    async def sha3_224(self, ctx: Context, *, message: str):
         """
         Hash using SHA3-224 (Secure Hash Algorithm 3)
 
