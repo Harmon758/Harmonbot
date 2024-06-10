@@ -707,7 +707,7 @@ class Cryptography(commands.Cog):
         )
 
     @hash.command(name = "sha3-512", aliases = ["sha3_512"])
-    async def sha3_512(self, ctx, *, message: str):
+    async def sha3_512(self, ctx: Context, *, message: str):
         """
         Hash using SHA3-512 (Secure Hash Algorithm 3)
 
