@@ -746,7 +746,8 @@ class Cryptography(commands.Cog):
 
     @hash.command(aliases = ["shake_256"])
     async def shake256(
-        self, ctx, length: commands.Range[int, 1, 2000], *, message: str
+        self, ctx: Context, length: commands.Range[int, 1, 2000], *,
+        message: str
     ):
         """
         Hash using SHAKE256 (Secure Hash Algorithm 3)
