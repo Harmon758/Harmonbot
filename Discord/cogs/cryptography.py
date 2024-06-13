@@ -767,7 +767,7 @@ class Cryptography(commands.Cog):
         )
 
     @hash.command()
-    async def sm3(self, ctx, *, message: str):
+    async def sm3(self, ctx: Context, *, message: str):
         """
         Hash using SM3 (ShangMi 3)
 
