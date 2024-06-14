@@ -1,7 +1,14 @@
 
+from __future__ import annotations
+
 from discord.ext import commands
 
+from typing import TYPE_CHECKING
+
 from utilities import checks
+
+if TYPE_CHECKING:
+    from utilities.context import Context
 
 
 async def setup(bot):
@@ -25,7 +32,7 @@ class Duelyst(commands.Cog):
     @commands.group(
         hidden = True, case_insensitive = True, invoke_without_command = True
     )
-    async def duelyst(self, ctx):
+    async def duelyst(self, ctx: Context):
         """
         This command is deprecated now that Duelyst is closed/shut down:
         https://duelyst.com/news/farewell-duelyst
