@@ -44,7 +44,7 @@ class Duelyst(commands.Cog):
         await ctx.send_help(ctx.command)
 
     @duelyst.group(hidden = True, case_insensitive = True)
-    async def card(self, ctx, *, name: str):
+    async def card(self, ctx: Context, *, name: str):
         """
         This command is deprecated now that Duelyst is closed/shut down:
         https://duelyst.com/news/farewell-duelyst
