@@ -56,7 +56,7 @@ class Duelyst(commands.Cog):
         await ctx.send_help(ctx.command)
 
     @card.command(hidden = True)
-    async def card_random(self, ctx):
+    async def card_random(self, ctx: Context):
         """
         This command is deprecated now that Duelyst is closed/shut down:
         https://duelyst.com/news/farewell-duelyst
