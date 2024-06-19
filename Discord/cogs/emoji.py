@@ -1,13 +1,19 @@
 
+from __future__ import annotations
+
 import discord
 from discord import app_commands
 from discord.ext import commands
 
 from enum import Enum
 from operator import attrgetter
+from typing import TYPE_CHECKING
 
 from utilities import checks
 from utilities.transformers import PartialEmojiTransformer
+
+if TYPE_CHECKING:
+    from utilities.context import Context
 
 
 class EMOJI(Enum):
@@ -74,7 +80,7 @@ class EmojiCog(commands.GroupCog, group_name = "emoji", name = "Emoji"):
     """Emoji"""
 
     @commands.command(aliases = ["bigmote"])
-    async def bigmoji(self, ctx, emoji: discord.PartialEmoji):
+    async def bigmoji(self, ctx: Context, emoji: discord.PartialEmoji):
         """Enlarge custom emoji"""
         await ctx.embed_reply(
             title = emoji.name,
