@@ -1,13 +1,19 @@
 
+from __future__ import annotations
+
 import discord
 from discord.ext import commands
 
 import asyncio
 import math
+import typing
 
 import pydealer
 
 from utilities import checks
+
+if typing.TYPE_CHECKING:
+    from utilities.context import Context
 
 
 async def setup(bot):
@@ -40,7 +46,7 @@ class Fish(commands.Cog):
 
     @commands.command(aliases = ["gofish", "go_fish"])
     @checks.not_forbidden()
-    async def fish(self, ctx):
+    async def fish(self, ctx: Context):
         '''Go Fish'''
         if match := self.matches.get(ctx.channel.id):
             return await ctx.embed_reply(
