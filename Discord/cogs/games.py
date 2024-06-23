@@ -1,4 +1,6 @@
 
+from __future__ import annotations
+
 import discord
 from discord import ui
 from discord.ext import commands
@@ -6,11 +8,14 @@ from discord.ext import commands
 import asyncio
 import random
 import timeit
-from typing import Optional
+from typing import Optional, TYPE_CHECKING
 
 # from modules import war
 from units import games
 from utilities import checks
+
+if TYPE_CHECKING:
+	from utilities.context import Context
 
 
 async def setup(bot):
@@ -41,7 +46,7 @@ class Games(commands.Cog):
 	
 	@commands.command(aliases = ["talk", "ask"])
 	@checks.not_forbidden()
-	async def cleverbot(self, ctx, *, message: str):
+	async def cleverbot(self, ctx: Context, *, message: str):
 		'''
 		Talk to Cleverbot
 		Uses [Cleverbot](http://www.cleverbot.com/)'s [API](https://www.cleverbot.com/api/)
