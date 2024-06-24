@@ -58,10 +58,12 @@ class Games(commands.Cog):
 		# TODO: Rename to get_cleverbot_reply
 		# TODO: Include user-specific conversation state
 		# TODO: Move to utilities?
-		url = "https://www.cleverbot.com/getreply"
-		params = {"key": self.bot.CLEVERBOT_API_KEY, "input": message}
-		async with self.bot.aiohttp_session.get(url, params = params) as resp:
+		async with self.bot.aiohttp_session.get(
+			"https://www.cleverbot.com/getreply",
+			params = {"key": self.bot.CLEVERBOT_API_KEY, "input": message}
+		) as resp:
 			data = await resp.json()
+		
 		return data["output"]
 	
 	@commands.hybrid_command(
