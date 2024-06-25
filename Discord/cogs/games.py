@@ -71,7 +71,7 @@ class Games(commands.Cog):
 	)
 	@checks.not_forbidden()
 	async def eightball(
-		self, ctx, *,
+		self, ctx: Context, *,
 		question: Optional[str] = ""  # noqa: UP007 (non-pep604-annotation)
 	):
 		"""
