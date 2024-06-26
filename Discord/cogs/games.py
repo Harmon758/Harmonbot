@@ -93,7 +93,7 @@ class Games(commands.Cog):
 	@commands.hybrid_command()
 	@checks.not_forbidden()
 	async def guess(
-		self, ctx,
+		self, ctx: Context,
 		max_value: Optional[commands.Range[int, 1, None]] = 10,  # noqa: UP007 (non-pep604-annotation)
 		tries: Optional[commands.Range[int, 1, None]] = 1  # noqa: UP007 (non-pep604-annotation)
 	):
