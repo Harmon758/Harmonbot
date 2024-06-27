@@ -182,7 +182,7 @@ class Games(commands.Cog):
 	
 	@commands.command()
 	@checks.not_forbidden()
-	async def simon(self, ctx):
+	async def simon(self, ctx: Context):
 		'''Based on the electronic memory game'''
 		circle_emojis = (
 			"\N{LARGE BLUE CIRCLE}", "\N{LARGE GREEN CIRCLE}",
