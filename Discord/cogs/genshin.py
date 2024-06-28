@@ -1,13 +1,19 @@
 
+from __future__ import annotations
+
 from discord import app_commands
 from discord.ext import commands
 
 import calendar
+from typing import TYPE_CHECKING
 
 from units.genshin_impact import (
     API_BASE_URL, get_character, get_character_images, get_characters
 )
 from utilities import checks
+
+if TYPE_CHECKING:
+    from utilities.context import Context
 
 
 async def setup(bot):
@@ -21,7 +27,7 @@ class GenshinImpact(commands.Cog, name = "Genshin Impact"):
         return await checks.not_forbidden().predicate(ctx)
 
     @commands.hybrid_group(aliases = ["genshin"], case_insensitive = True)
-    async def genshin_impact(self, ctx):
+    async def genshin_impact(self, ctx: Context):
         """Genshin Impact"""
         await ctx.send_help(ctx.command)
 
