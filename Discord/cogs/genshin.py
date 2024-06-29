@@ -32,7 +32,7 @@ class GenshinImpact(commands.Cog, name = "Genshin Impact"):
         await ctx.send_help(ctx.command)
 
     @genshin_impact.command()
-    async def character(self, ctx, name: str):
+    async def character(self, ctx: Context, name: str):
         """
         Show information about a Genshin Impact character
 
