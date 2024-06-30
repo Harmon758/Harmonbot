@@ -111,7 +111,7 @@ class GenshinImpact(commands.Cog, name = "Genshin Impact"):
         ]
 
     @genshin_impact.command(aliases = ["fandom", "wikia", "wikicities"])
-    async def wiki(self, ctx, *, query: str):
+    async def wiki(self, ctx: Context, *, query: str):
         """
         Search for an article on the Genshin Impact wiki
 
