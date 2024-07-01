@@ -1,15 +1,20 @@
 
+from __future__ import annotations
+
 import discord
 from discord.ext import commands
 
 import inspect
 import re
-from typing import Optional
+from typing import Optional, TYPE_CHECKING
 
 import imgurpython
 
 from units import clarifai
 from utilities import checks
+
+if TYPE_CHECKING:
+    from utilities.context import Context
 
 
 async def setup(bot):
@@ -65,7 +70,7 @@ class Images(commands.Cog):
 
     @image.command(name = "color", aliases = ["colour"])
     async def image_color(
-        self, ctx,
+        self, ctx: Context,
         image: Optional[discord.Attachment],  # noqa: UP007 (non-pep604-annotation)
         image_url: Optional[str]  # noqa: UP007 (non-pep604-annotation)
     ):
