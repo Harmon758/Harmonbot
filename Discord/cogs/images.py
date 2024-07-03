@@ -13,7 +13,7 @@ from units import clarifai
 from utilities import checks
 
 if TYPE_CHECKING:
-    import discord
+    from discord import Attachment
     from utilities.context import Context
 
 
@@ -71,7 +71,7 @@ class Images(commands.Cog):
     @image.command(name = "color", aliases = ["colour"])
     async def image_color(
         self, ctx: Context,
-        image: Optional[discord.Attachment],  # noqa: UP007 (non-pep604-annotation)
+        image: Optional[Attachment],  # noqa: UP007 (non-pep604-annotation)
         image_url: Optional[str]  # noqa: UP007 (non-pep604-annotation)
     ):
         """
@@ -214,7 +214,7 @@ class Images(commands.Cog):
 
     @imgur.command(name = "upload")
     async def imgur_upload(self, ctx,
-        image: Optional[discord.Attachment],  # noqa: UP007 (non-pep604-annotation)
+        image: Optional[Attachment],  # noqa: UP007 (non-pep604-annotation)
         image_url: Optional[str]  # noqa: UP007 (non-pep604-annotation)
     ):
         """Upload images to Imgur"""
@@ -263,7 +263,7 @@ class Images(commands.Cog):
     @image.command(name = "recognition")
     async def image_recognition(
         self, ctx,
-        image: Optional[discord.Attachment],  # noqa: UP007 (non-pep604-annotation)
+        image: Optional[Attachment],  # noqa: UP007 (non-pep604-annotation)
         image_url: Optional[str]  # noqa: UP007 (non-pep604-annotation)
     ):
         """Image recognition"""
@@ -296,7 +296,7 @@ class Images(commands.Cog):
     @commands.command()
     async def nsfw(
         self, ctx,
-        image: Optional[discord.Attachment],  # noqa: UP007 (non-pep604-annotation)
+        image: Optional[Attachment],  # noqa: UP007 (non-pep604-annotation)
         image_url: Optional[str]  # noqa: UP007 (non-pep604-annotation)
     ):
         """NSFW recognition"""
