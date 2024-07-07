@@ -155,7 +155,7 @@ class Images(commands.Cog):
         )
 
     @image.command(aliases = ["search"])
-    async def google(self, ctx, *, search: str):
+    async def google(self, ctx: Context, *, search: str):
         '''Google image search something'''
         # Note: google images command invokes this command
         # Note: search google images command invokes this command
