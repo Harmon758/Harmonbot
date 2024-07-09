@@ -195,7 +195,7 @@ class Images(commands.Cog):
         await ctx.send_help(ctx.command)
 
     @imgur.command(name = "search")
-    async def imgur_search(self, ctx, *, search: str):
+    async def imgur_search(self, ctx: Context, *, search: str):
         """Search images on Imgur"""
         # Note: search imgur command invokes this command
         if not (
