@@ -213,7 +213,8 @@ class Images(commands.Cog):
             await ctx.embed_reply(image_url = result.link)
 
     @imgur.command(name = "upload")
-    async def imgur_upload(self, ctx,
+    async def imgur_upload(
+        self, ctx,
         image: Optional[Attachment],  # noqa: UP007 (non-pep604-annotation)
         image_url: Optional[str]  # noqa: UP007 (non-pep604-annotation)
     ):
