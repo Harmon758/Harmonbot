@@ -235,7 +235,7 @@ class Images(commands.Cog):
             await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
 
     @image.command(name = "random")
-    async def image_random(self, ctx, *, query = ""):
+    async def image_random(self, ctx: Context, *, query = ""):
         '''Random photo from Unsplash'''
         # Note: random photo command invokes this command
         async with ctx.bot.aiohttp_session.get(
