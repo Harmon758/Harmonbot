@@ -263,7 +263,7 @@ class Images(commands.Cog):
 
     @image.command(name = "recognition")
     async def image_recognition(
-        self, ctx,
+        self, ctx: Context,
         image: Optional[Attachment],  # noqa: UP007 (non-pep604-annotation)
         image_url: Optional[str]  # noqa: UP007 (non-pep604-annotation)
     ):
