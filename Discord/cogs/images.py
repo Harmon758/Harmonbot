@@ -296,7 +296,7 @@ class Images(commands.Cog):
 
     @commands.command()
     async def nsfw(
-        self, ctx,
+        self, ctx: Context,
         image: Optional[Attachment],  # noqa: UP007 (non-pep604-annotation)
         image_url: Optional[str]  # noqa: UP007 (non-pep604-annotation)
     ):
