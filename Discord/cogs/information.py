@@ -1,9 +1,12 @@
 
+from __future__ import annotations
+
 import discord
 from discord.ext import commands
 
 import contextlib
 import textwrap
+from typing import TYPE_CHECKING
 # import unicodedata
 import urllib
 
@@ -14,6 +17,9 @@ import unicodedata2 as unicodedata
 from modules import utilities
 from units.time import duration_to_string
 from utilities import checks
+
+if TYPE_CHECKING:
+    from utilities.context import Context
 
 
 BADGE_EMOJI_IDS = {
@@ -83,7 +89,7 @@ class Information(commands.Cog):
 
     @information.command(with_app_command = False)
     @commands.guild_only()
-    async def role(self, ctx, *, role: discord.Role):
+    async def role(self, ctx: Context, *, role: discord.Role):
         """Information about a role"""
         # Note: role information command invokes this command
         await ctx.embed_reply(
