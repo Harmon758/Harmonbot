@@ -316,7 +316,7 @@ class Information(commands.Cog):
         # TODO: Guild permissions?, separate command?
 
     @information.command(aliases = ["yt"])
-    async def youtube(self, ctx, url: str):
+    async def youtube(self, ctx: Context, url: str):
         """
         Show information about a YouTube video
 
