@@ -32,12 +32,18 @@ class Lichess(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
 		
-		self.modes = ("ultraBullet", "bullet", "blitz", "rapid", "classical", "correspondence", 
-						"crazyhouse", "chess960", "kingOfTheHill", "threeCheck", "antichess", 
-						"atomic", "horde", "racingKings", "puzzle")
-		self.mode_names = ("Ultrabullet", "Bullet", "Blitz", "Rapid", "Classical", "Correspondence", 
-							"Crazyhouse", "Chess960", "King of the Hill", "Three-Check", "Antichess", 
-							"Atomic", "Horde", "Racing Kings", "Training")
+		self.modes = (
+			"ultraBullet", "bullet", "blitz", "rapid", "classical",
+			"correspondence", "crazyhouse", "chess960", "kingOfTheHill",
+			"threeCheck", "antichess", "atomic", "horde", "racingKings",
+			"puzzle"
+		)
+		self.mode_names = (
+			"Ultrabullet", "Bullet", "Blitz", "Rapid", "Classical",
+			"Correspondence", "Crazyhouse", "Chess960", "King of the Hill",
+			"Three-Check", "Antichess", "Atomic", "Horde", "Racing Kings",
+			"Training"
+		)
 		
 		self.load_emoji()
 		self.generate_user_mode_commands()
