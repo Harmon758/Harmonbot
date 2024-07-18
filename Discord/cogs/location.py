@@ -1,4 +1,6 @@
 
+from __future__ import annotations
+
 import discord
 from discord import app_commands, ui
 from discord.ext import commands
@@ -6,7 +8,7 @@ from discord.ext import commands
 from decimal import Decimal
 import io
 import random
-from typing import Literal, Optional
+from typing import Literal, Optional, TYPE_CHECKING
 
 import datetime
 import pyowm.commons.exceptions
@@ -15,6 +17,9 @@ from units.location import (
     get_geocode_data, get_timezone_data, wind_degrees_to_direction
 )
 from utilities import checks
+
+if TYPE_CHECKING:
+    from utilities.context import Context
 
 
 async def setup(bot):
@@ -134,7 +139,7 @@ class Location(commands.Cog):
         await ctx.embed_reply(title = country_name, fields = fields)
 
     @commands.group(case_insensitive = True, invoke_without_command = True)
-    async def geocode(self, ctx, *, address: str):
+    async def geocode(self, ctx: Context, *, address: str):
         """Convert addresses to geographic coordinates"""
         try:
             data = await get_geocode_data(
