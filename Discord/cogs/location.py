@@ -192,7 +192,7 @@ class Location(commands.Cog):
 
     @commands.group(case_insensitive = True, invoke_without_command = True)
     async def map(
-        self, ctx,
+        self, ctx: Context,
         zoom: Optional[int] = 13,  # noqa: UP007 (non-pep604-annotation)
         maptype: Optional[  # noqa: UP007 (non-pep604-annotation)
             Literal["roadmap", "satellite", "hybrid", "terrain"]
