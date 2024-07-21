@@ -219,7 +219,7 @@ class Location(commands.Cog):
 
     @map.command(name = "random")
     async def map_random(
-        self, ctx,
+        self, ctx: Context,
         zoom: Optional[int] = 13,  # noqa: UP007 (non-pep604-annotation)
         maptype: Optional[  # noqa: UP007 (non-pep604-annotation)
             Literal["roadmap", "satellite", "hybrid", "terrain"]
