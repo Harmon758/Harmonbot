@@ -250,7 +250,7 @@ class Location(commands.Cog):
 
     @commands.group(case_insensitive = True, invoke_without_command = True)
     async def streetview(
-        self, ctx,
+        self, ctx: Context,
         pitch: Optional[int] = 0,  # noqa: UP007 (non-pep604-annotation)
         heading: Optional[int] = None,  # noqa: UP007 (non-pep604-annotation)
         *, location: str
