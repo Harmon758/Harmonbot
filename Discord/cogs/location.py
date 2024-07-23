@@ -283,7 +283,7 @@ class Location(commands.Cog):
         )
 
     @streetview.command(name = "random")
-    async def streetview_random(self, ctx, radius: int = 5_000_000):
+    async def streetview_random(self, ctx: Context, radius: int = 5_000_000):
         '''
         Generate street view of a random location
         `radius`: sets a radius, specified in meters, in which to search for a panorama, centered on the given latitude and longitude.
