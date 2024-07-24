@@ -312,7 +312,7 @@ class Location(commands.Cog):
         aliases = ["timezone"],
         case_insensitive = True, invoke_without_command = True
     )
-    async def time(self, ctx, *, location: str):
+    async def time(self, ctx: Context, *, location: str):
         '''Current time of a location'''
         try:
             geocode_data = await get_geocode_data(
