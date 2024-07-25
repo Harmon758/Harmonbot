@@ -349,7 +349,7 @@ class Location(commands.Cog):
         )
 
     @time.command(name = "random")
-    async def time_random(self, ctx):
+    async def time_random(self, ctx: Context):
         """Random time"""
         if command := ctx.bot.get_command("random time"):
             await ctx.invoke(command)
