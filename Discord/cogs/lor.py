@@ -1,12 +1,18 @@
 
+from __future__ import annotations
+
 import discord
 from discord.ext import commands
 
 import contextlib
 import difflib
 import json
+from typing import TYPE_CHECKING
 
 from utilities import checks
+
+if TYPE_CHECKING:
+    from utilities.context import Context
 
 
 async def setup(bot):
@@ -40,7 +46,7 @@ class LoR(commands.Cog):
         return await checks.not_forbidden().predicate(ctx)
 
     @commands.hybrid_group(case_insensitive = True)
-    async def lor(self, ctx):
+    async def lor(self, ctx: Context):
         """Legends of Runeterra"""
         await ctx.send_help(ctx.command)
 
