@@ -51,7 +51,7 @@ class LoR(commands.Cog):
         await ctx.send_help(ctx.command)
 
     @lor.command()
-    async def card(self, ctx, *, name: str):
+    async def card(self, ctx: Context, *, name: str):
         """
         Show a specified Legends of Runeterra card
 
