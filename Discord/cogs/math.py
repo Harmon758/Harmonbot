@@ -1,4 +1,6 @@
 
+from __future__ import annotations
+
 import discord
 from discord.ext import commands
 
@@ -6,11 +8,15 @@ import asyncio
 import concurrent.futures
 import math
 import multiprocessing
+from typing import TYPE_CHECKING
 
 import aiohttp
 import sympy
 
 from utilities import checks
+
+if TYPE_CHECKING:
+    from utilities.context import Context
 
 
 async def setup(bot):
@@ -72,7 +78,7 @@ class Math(commands.Cog):
                 )
 
     @commands.command()
-    async def exp(self, ctx, value: float):
+    async def exp(self, ctx: Context, value: float):
         '''
         Exponential function
         e ** value | e ^ value
