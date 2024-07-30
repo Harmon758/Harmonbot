@@ -89,7 +89,7 @@ class Math(commands.Cog):
             await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
 
     @commands.command()
-    async def factorial(self, ctx, value: int):
+    async def factorial(self, ctx: Context, value: int):
         """Factorial"""
         try:
             await ctx.embed_reply(math.factorial(value))
