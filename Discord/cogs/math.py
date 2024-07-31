@@ -97,7 +97,7 @@ class Math(commands.Cog):
             await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
 
     @commands.command(aliases = ["greatest_common_divisor"])
-    async def gcd(self, ctx, *integers: int):
+    async def gcd(self, ctx: Context, *integers: int):
         """Greatest common divisor"""
         await ctx.embed_reply(math.gcd(*integers))
 
