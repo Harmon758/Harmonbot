@@ -102,7 +102,7 @@ class Math(commands.Cog):
         await ctx.embed_reply(math.gcd(*integers))
 
     @commands.command(aliases = ["least_common_multiple"])
-    async def lcm(self, ctx, *integers: int):
+    async def lcm(self, ctx: Context, *integers: int):
         """Least common multiple"""
         await ctx.embed_reply(math.lcm(*integers))
 
