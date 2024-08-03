@@ -135,7 +135,7 @@ class Math(commands.Cog):
             )
 
     @commands.command(aliases = ["squareroot", "square_root"])
-    async def sqrt(self, ctx, value: float):
+    async def sqrt(self, ctx: Context, value: float):
         """Square root"""
         try:
             await ctx.embed_reply(math.sqrt(value))
