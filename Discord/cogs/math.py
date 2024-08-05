@@ -168,7 +168,7 @@ class Math(commands.Cog):
         aliases = ["integral", "integration"],
         case_insensitive = True, invoke_without_command = True
     )
-    async def integrate(self, ctx, *, equation: str):
+    async def integrate(self, ctx: Context, *, equation: str):
         """
         Integrate an equation
         with respect to x (dx)
