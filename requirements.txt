@@ -35,7 +35,7 @@ inflect==7.0.0
 isodate==0.6.1
 markdownify==0.11.6
 matplotlib==3.8.2
-more-itertools==10.1.0
+more-itertools==10.4.0
 mypy==1.7.1
 numexpr==2.8.8
 numpy==1.26.2
