@@ -219,7 +219,7 @@ class Math(commands.Cog):
             "arc_cosine"
         ]
     )
-    async def acos(self, ctx, value: float):
+    async def acos(self, ctx: Context, value: float):
         """Arc cosine function"""
         await ctx.embed_reply(math.acos(value))
 
