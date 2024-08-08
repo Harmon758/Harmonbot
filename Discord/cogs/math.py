@@ -229,7 +229,7 @@ class Math(commands.Cog):
             "arc_cosineh"
         ]
     )
-    async def acosh(self, ctx, value: float):
+    async def acosh(self, ctx: Context, value: float):
         """Inverse hyperbolic cosine function"""
         await ctx.embed_reply(math.acosh(value))
 
