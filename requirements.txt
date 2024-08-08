@@ -28,7 +28,7 @@ gidgethub==5.3.0
 GitPython==3.1.40
 google-api-core[grpc]==2.15.0
 google-cloud-translate==3.13.0
-hypothesis==6.92.1
+hypothesis==6.110.1
 imageio==2.33.1
 imgurpython==1.1.7
 inflect==7.0.0
