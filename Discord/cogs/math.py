@@ -247,7 +247,7 @@ class Math(commands.Cog):
             "asineh", "arcsinh", "arcsineh", "a_sineh", "arc_sinh", "arc_sineh"
         ]
     )
-    async def asinh(self, ctx, value: float):
+    async def asinh(self, ctx: Context, value: float):
         """Inverse hyperbolic sine function"""
         await ctx.embed_reply(math.asinh(value))
 
