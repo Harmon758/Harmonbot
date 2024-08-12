@@ -268,7 +268,7 @@ class Math(commands.Cog):
             "arc_tangenth"
         ]
     )
-    async def atanh(self, ctx, value: float):
+    async def atanh(self, ctx: Context, value: float):
         """Inverse hyperbolic tangent function"""
         await ctx.embed_reply(math.atanh(value))
 
