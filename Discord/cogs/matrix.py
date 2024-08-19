@@ -1,11 +1,17 @@
 
+from __future__ import annotations
+
 from discord.ext import commands
 
 import ast
 import numpy
 import scipy
+from typing import TYPE_CHECKING
 
 from utilities import checks
+
+if TYPE_CHECKING:
+    from utilities.context import Context
 
 
 async def setup(bot):
@@ -29,7 +35,7 @@ class Matrix(commands.Cog):
         aliases = ["matrices"],
         case_insensitive = True, invoke_without_command = True
     )
-    async def matrix(self, ctx):
+    async def matrix(self, ctx: Context):
         """
         Matrix operations
         Input matrices as a list of lists (array of arrays)
