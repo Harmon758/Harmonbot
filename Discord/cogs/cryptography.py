@@ -1,6 +1,7 @@
 
 from __future__ import annotations
 
+from discord import Attachment  # noqa: TCH001
 from discord.ext import commands
 
 import hashlib
@@ -24,7 +25,6 @@ from units.cryptography import (
 from utilities import checks
 
 if TYPE_CHECKING:
-    from discord import Attachment
     from utilities.context import Context
 
 

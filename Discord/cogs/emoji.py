@@ -10,10 +10,10 @@ from operator import attrgetter
 from typing import TYPE_CHECKING
 
 from utilities import checks
+from utilities.transformers import PartialEmojiTransformer  # noqa: TCH002
 
 if TYPE_CHECKING:
     from utilities.context import Context
-    from utilities.transformers import PartialEmojiTransformer
 
 
 class EMOJI(Enum):
