@@ -55,7 +55,7 @@ class Matrix(commands.Cog):
         aliases = ["cosine"],
         case_insensitive = True, invoke_without_command = True
     )
-    async def cos(self, ctx, *, matrix: Matrix):
+    async def cos(self, ctx: Context, *, matrix: Matrix):
         """Cosine of a matrix"""
         await ctx.embed_reply(str(scipy.linalg.cosm(matrix)))
 
