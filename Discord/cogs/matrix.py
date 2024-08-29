@@ -87,7 +87,7 @@ class Matrix(commands.Cog):
         await ctx.embed_reply(str(numpy.matrix(matrix).I))
 
     @matrix.command(aliases = ["logarithm"])
-    async def log(self, ctx, *, matrix: Matrix):
+    async def log(self, ctx: Context, *, matrix: Matrix):
         """Compute matrix logarithm"""
         await ctx.embed_reply(str(scipy.linalg.logm(matrix)))
 
