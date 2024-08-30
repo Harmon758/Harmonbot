@@ -92,7 +92,7 @@ class Matrix(commands.Cog):
         await ctx.embed_reply(str(scipy.linalg.logm(matrix)))
 
     @matrix.command()
-    async def lu(self, ctx, *, matrix: Matrix):
+    async def lu(self, ctx: Context, *, matrix: Matrix):
         """LU decomposition of a matrix"""
         p, l, u = (  # noqa: E741 (ambiguous-variable-name)
             scipy.linalg.lu(matrix)
