@@ -103,7 +103,7 @@ class Matrix(commands.Cog):
         aliases = ["times", '*'],
         case_insensitive = True, invoke_without_command = True
     )
-    async def multiply(self, ctx, matrix_a: Matrix, matrix_b: Matrix):
+    async def multiply(self, ctx: Context, matrix_a: Matrix, matrix_b: Matrix):
         """Multiply two matrices"""
         await ctx.embed_reply(
             str(numpy.matrix(matrix_a) * numpy.matrix(matrix_b))
