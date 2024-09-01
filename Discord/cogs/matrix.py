@@ -110,7 +110,9 @@ class Matrix(commands.Cog):
         )
 
     @multiply.command(name = "scalar")
-    async def multiply_scalar(self, ctx, matrix: Matrix, scalar: float):
+    async def multiply_scalar(
+        self, ctx: Context, matrix: Matrix, scalar: float
+    ):
         """Multiply a matrix by a scalar"""
         await ctx.embed_reply(str(numpy.matrix(matrix) * scalar))
 
