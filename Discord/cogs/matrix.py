@@ -138,7 +138,7 @@ class Matrix(commands.Cog):
         aliases = ["sine"],
         case_insensitive = True, invoke_without_command = True
     )
-    async def sin(self, ctx, *, matrix: Matrix):
+    async def sin(self, ctx: Context, *, matrix: Matrix):
         """Sine of a matrix"""
         await ctx.embed_reply(str(scipy.linalg.sinm(matrix)))
 
