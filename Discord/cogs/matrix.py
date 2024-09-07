@@ -148,7 +148,7 @@ class Matrix(commands.Cog):
         await ctx.embed_reply(str(scipy.linalg.sinhm(matrix)))
 
     @matrix.command(aliases = ["squareroot", "square_root", '√'])
-    async def sqrt(self, ctx, *, matrix: Matrix):
+    async def sqrt(self, ctx: Context, *, matrix: Matrix):
         """Square root of a matrix"""
         await ctx.embed_reply(str(scipy.linalg.sqrtm(matrix)))
 
