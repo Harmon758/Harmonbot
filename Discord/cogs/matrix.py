@@ -163,7 +163,7 @@ class Matrix(commands.Cog):
         aliases = ["tangent"],
         case_insensitive = True, invoke_without_command = True
     )
-    async def tan(self, ctx, *, matrix: Matrix):
+    async def tan(self, ctx: Context, *, matrix: Matrix):
         """Tangent of a matrix"""
         await ctx.embed_reply(str(scipy.linalg.tanm(matrix)))
 
