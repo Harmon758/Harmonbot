@@ -144,7 +144,7 @@ markdown-it-py==3.0.0
 MarkupSafe==2.1.3
 mdurl==0.1.2
 mpmath==1.3.0
-multidict==6.0.4
+multidict==6.1.0
 murmurhash==1.0.10
 mutagen==1.47.0
 mypy_extensions==1.0.0
