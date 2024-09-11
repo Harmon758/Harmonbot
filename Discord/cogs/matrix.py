@@ -176,7 +176,7 @@ class Matrix(commands.Cog):
         aliases = ["transposition"],
         case_insensitive = True, invoke_without_command = True
     )
-    async def transpose(self, ctx, *, matrix: Matrix):
+    async def transpose(self, ctx: Context, *, matrix: Matrix):
         """Transpose of a matrix"""
         await ctx.embed_reply(str(numpy.matrix(matrix).T))
 
