@@ -57,7 +57,7 @@ pyspellchecker==0.7.2
 python-aiml==0.9.3
 python-dateutil==2.8.2
 python-dotenv==1.0.0
-pytz==2023.3.post1
+pytz==2024.2
 requests[socks]==2.31.0
 ruff==0.1.8
 scipy==1.11.4
