@@ -12,13 +12,16 @@ packages = ["units"]
 python_version = "3.11"
 
 [tool.ruff]
+include = ["tests/*.py", "units/*.py"]
+target-version = "py311"
+
+[tool.ruff.lint]
 ignore = [
     "E501",  # line-too-long
     "TD002",  # missing-todo-author
     "TD003",  # missing-todo-link
     "UP015",  # redundant-open-modes
 ]
-include = ["tests/*.py", "units/*.py"]
 select = [
     "E",  # pycodestyle error
     "EXE",  # flake8-executable
@@ -32,7 +35,6 @@ select = [
     "UP",  # pyupgrade
     "YTT",  # flake8-2020
 ]
-target-version = "py311"
 
 [tool.setuptools]
 packages = ["units"]
