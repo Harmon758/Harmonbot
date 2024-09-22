@@ -129,13 +129,11 @@ class Pokemon(commands.Cog):
     @pokemon.command(with_app_command = False)
     async def characteristic(self, ctx, id: int):
         '''WIP'''
-        ...
 
     @pokemon.group(case_insensitive = True, with_app_command = False)
     async def contest(self, ctx):
         '''WIP'''
         # TODO: contest effects?, super contest effects?
-        ...
 
     @contest.command(
         name = "condition", aliases = ["type"], with_app_command = False
@@ -170,32 +168,26 @@ class Pokemon(commands.Cog):
     async def encounter(self, ctx):
         '''WIP'''
         # TODO: conditions?/condition values?
-        ...
 
     @encounter.command(name = "method", with_app_command = False)
     async def encounter_method(self, ctx, id_or_name: str):
         '''WIP'''
-        ...
 
     @pokemon.group(case_insensitive = True, with_app_command = False)
     async def evolution(self, ctx):
         '''WIP'''
-        ...
 
     @evolution.command(name = "chain", with_app_command = False)
     async def evolution_chain(self, ctx, id: int):
         '''WIP'''
-        ...
 
     @evolution.command(name = "trigger", with_app_command = False)
     async def evolution_trigger(self, ctx, id_or_name: str):
         '''WIP'''
-        ...
 
     @pokemon.command(with_app_command = False)
     async def generation(self, ctx, id_or_name: str):
         '''WIP'''
-        ...
 
     @pokemon.command(
         aliases = ["rate", "growthrate", "growth_rate"],
@@ -203,83 +195,67 @@ class Pokemon(commands.Cog):
     )
     async def growth(self, ctx, id_or_name: str):
         '''WIP'''
-        ...
 
     @pokemon.group(case_insensitive = True, with_app_command = False)
     async def item(self, ctx, id_or_name: str):
         '''WIP'''
         # TODO: fling effect?
-        ...
 
     @item.command(name = "attribute", with_app_command = False)
     async def item_attribute(self, ctx, id_or_name: str):
         '''WIP'''
-        ...
 
     @item.command(name = "category", with_app_command = False)
     async def item_category(self, ctx, id_or_name: str):
         '''WIP'''
-        ...
 
     @item.command(name = "pocket", with_app_command = False)
     async def item_pocket(self, ctx, id_or_name: str):
         '''WIP'''
-        ...
 
     @pokemon.group(case_insensitive = True, with_app_command = False)
     async def location(self, ctx, id: int):
         '''WIP'''
         # TODO: pal park areas?
-        ...
 
     @location.command(name = "area", with_app_command = False)
     async def location_area(self, ctx, id: int):
         '''WIP'''
-        ...
 
     @pokemon.command(with_app_command = False)
     async def machine(self, ctx, id_or_name: str):
         '''WIP'''
-        ...
 
     @pokemon.group(case_insensitive = True, with_app_command = False)
     async def move(self, ctx, id_or_name: str):
         '''WIP'''
         # TODO: damage classes?, learn methods?, targets?
-        ...
 
     @move.command(name = "ailment", with_app_command = False)
     async def move_ailment(self, ctx, id_or_name: str):
         '''WIP'''
-        ...
 
     @move.command(name = "category", with_app_command = False)
     async def move_category(self, ctx, id_or_name: str):
         '''WIP'''
-        ...
 
     @pokemon.command(with_app_command = False)
     async def nature(self, ctx, id_or_name: str):
         '''WIP'''
-        ...
 
     @pokemon.command(with_app_command = False)
     async def pokedex(self, ctx, id_or_name: str):
         '''WIP'''
-        ...
 
     @pokemon.command(with_app_command = False)
     async def region(self, ctx, id_or_name: str):
         '''WIP'''
-        ...
 
     @pokemon.command(with_app_command = False)
     async def species(self, ctx, id_or_name: str):
         '''WIP'''
-        ...
 
     @pokemon.command(with_app_command = False)
     async def type(self, ctx, id_or_name: str):
         '''WIP'''
-        ...
 
