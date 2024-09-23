@@ -42,7 +42,6 @@ class Astronomy(commands.Cog):
 	async def chart(self, ctx, *, chart: str):
 		'''WIP'''
 		# paginate, https://api.arcsecond.io/findingcharts/HD%205980/
-		...
 	
 	@astronomy.group(aliases = ["archive", "archives"], invoke_without_command = True, case_insensitive = True)
 	async def data(self, ctx):
@@ -372,7 +371,6 @@ class Astronomy(commands.Cog):
 	async def astronomy_object(self, ctx, *, object: str):
 		'''WIP'''
 		# https://api.arcsecond.io/objects/alpha%20centurai/
-		...
 	
 	@astronomy.command()
 	async def observatory(self, ctx, *, observatory: str):
