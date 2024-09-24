@@ -70,7 +70,7 @@ class Math(commands.Cog):
                     f"{ctx.bot.error_emoji} Error: Division by zero"
                 )
             except (
-                asyncio.TimeoutError, concurrent.futures.TimeoutError,
+                TimeoutError, concurrent.futures.TimeoutError,
                 multiprocessing.context.TimeoutError
             ):
                 await ctx.embed_reply(
