@@ -10,7 +10,7 @@ twitchio @ git+https://github.com/TwitchIO/Twitchio.git@01f3c17
 irc==20.3.0
 python-telegram-bot==20.7
 
-aiocache==0.12.2
+aiocache==0.12.3
 aiohttp==3.9.1
 async-lru==2.0.4
 asyncpg==0.29.0
