@@ -69,7 +69,7 @@ class Math(commands.Cog):
                 await ctx.embed_reply(
                     f"{ctx.bot.error_emoji} Error: Division by zero"
                 )
-            except (TimeoutError, multiprocessing.context.TimeoutError):
+            except (TimeoutError, multiprocessing.TimeoutError):
                 await ctx.embed_reply(
                     f"{ctx.bot.error_emoji} Execution exceeded time limit"
                 )
