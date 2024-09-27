@@ -411,8 +411,7 @@ class RSS(commands.Cog):
                         # TODO: Remove text channel data if now non-existent
             except (
                 aiohttp.ClientConnectionError, aiohttp.ClientPayloadError,
-                aiohttp.TooManyRedirects, asyncio.TimeoutError,
-                UnicodeDecodeError
+                aiohttp.TooManyRedirects, TimeoutError, UnicodeDecodeError
             ) as e:
                 await self.bot.db.execute(
                     """
