@@ -5,7 +5,6 @@ import discord
 from discord.ext import commands
 
 import asyncio
-import concurrent.futures
 import math
 import multiprocessing
 from typing import TYPE_CHECKING
