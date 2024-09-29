@@ -617,7 +617,7 @@ class Twitter(commands.Cog):
                 await asyncio.sleep(60)
             except (
                 aiohttp.ClientConnectionError, aiohttp.TooManyRedirects,
-                asyncio.TimeoutError
+                TimeoutError
             ):
                 # TODO: Log
                 await asyncio.sleep(1)
