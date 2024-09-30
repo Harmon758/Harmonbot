@@ -282,7 +282,7 @@ class YouTube(commands.Cog):
 					await asyncio.sleep(1)
 				except (
 					aiohttp.ClientOSError, aiohttp.ClientPayloadError,
-					asyncio.TimeoutError
+					TimeoutError
 				) as e:
 					await self.bot.db.execute(
 						"""
