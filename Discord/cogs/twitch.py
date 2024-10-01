@@ -482,7 +482,7 @@ class Twitch(commands.Cog):
 				f"Twitch Task Connection Error: {type(e).__name__}: {e}"
 			)
 			await asyncio.sleep(10)
-		except asyncio.TimeoutError as e:
+		except TimeoutError as e:
 			self.bot.print(
 				f"Twitch Task Timeout Error: {type(e).__name__}: {e}"
 			)
