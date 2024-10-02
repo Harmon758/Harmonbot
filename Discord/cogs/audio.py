@@ -4,7 +4,6 @@ from discord import ui
 from discord.ext import commands
 
 import base64
-import concurrent.futures
 import random
 from typing import Optional
 import urllib
@@ -257,7 +256,7 @@ class Audio(commands.Cog):
                     ":headphones: I've joined the voice channel"
                 )
             return True
-        except concurrent.futures.TimeoutError:
+        except TimeoutError:
             await ctx.embed_reply(
                 ":no_entry: Error joining the voice channel\n"
                 "Please check that I'm permitted to join"
