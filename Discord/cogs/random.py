@@ -5,7 +5,6 @@ from discord.ext import commands
 
 import asyncio
 import calendar
-import concurrent.futures
 import csv
 import datetime
 import multiprocessing
@@ -386,10 +385,7 @@ class Random(commands.Cog):
                 await ctx.embed_reply(f"{ctx.bot.error_emoji} Output too long")
             except pyparsing.ParseException:
                 await ctx.embed_reply(f"{ctx.bot.error_emoji} Invalid input")
-            except (
-                concurrent.futures.TimeoutError,
-                multiprocessing.context.TimeoutError
-            ):
+            except (TimeoutError, multiprocessing.context.TimeoutError):
                 await ctx.embed_reply(
                     f"{ctx.bot.error_emoji} Execution exceeded time limit"
                 )
