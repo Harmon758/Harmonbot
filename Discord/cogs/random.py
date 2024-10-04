@@ -385,7 +385,7 @@ class Random(commands.Cog):
                 await ctx.embed_reply(f"{ctx.bot.error_emoji} Output too long")
             except pyparsing.ParseException:
                 await ctx.embed_reply(f"{ctx.bot.error_emoji} Invalid input")
-            except (TimeoutError, multiprocessing.context.TimeoutError):
+            except (TimeoutError, multiprocessing.TimeoutError):
                 await ctx.embed_reply(
                     f"{ctx.bot.error_emoji} Execution exceeded time limit"
                 )
