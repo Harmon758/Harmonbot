@@ -32,7 +32,7 @@ hypothesis==6.92.1
 imageio==2.33.1
 imgurpython==1.1.7
 inflect==7.0.0
-isodate==0.6.1
+isodate==0.7.2
 markdownify==0.11.6
 matplotlib==3.8.2
 more-itertools==10.1.0
