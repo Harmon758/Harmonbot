@@ -199,5 +199,5 @@ weasel==0.3.4
 websockets==10.4
 wrapt==1.16.0
 xmltodict==0.13.0
-yarl==1.9.4
+yarl==1.15.0
 
