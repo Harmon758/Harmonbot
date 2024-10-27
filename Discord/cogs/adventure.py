@@ -104,7 +104,6 @@ class Adventure(commands.Cog):
     @commands.group(aliases = ["rpg"], invoke_without_command = True, case_insensitive = True)
     async def adventure(self, ctx):
         '''WIP'''
-        pass
 
     async def get_adventure_player(self, user_id):
         player = self.adventure_players.get(user_id)
