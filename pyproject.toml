@@ -27,6 +27,7 @@ select = [
     "EXE",  # flake8-executable
     "F",  # Pyflakes
     "FA",  # flake8-future-annotations
+    "FURB",  # refurb
     "PIE",  # flake8-pie
     "PYI",  # flake8-pyi
     "SLOT",  # flake8-slots
