@@ -183,7 +183,8 @@ if __name__ == "__main__":
 		# Conversion commands (regex)
 		if ctx.prefix and not ctx.command:
 			units = re.match(r"^(\w+)to(\w+)", message.content[len(ctx.prefix):], re.I)
-			if not units: return
+			if not units:
+				return
 			if len(message.content.split()) == 1:
 				return await ctx.embed_reply(":no_entry: Please enter input")
 			try:
