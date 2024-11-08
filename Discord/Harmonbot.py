@@ -182,7 +182,7 @@ if __name__ == "__main__":
 		
 		# Conversion commands (regex)
 		if ctx.prefix and not ctx.command:
-			units = re.match(r"^(\w+)to(\w+)", message.content[len(ctx.prefix):], re.I)
+			units = re.match(r"^(\w+)to(\w+)", message.content[len(ctx.prefix):], re.IGNORECASE)
 			if not units:
 				return
 			if len(message.content.split()) == 1:
