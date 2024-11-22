@@ -30,6 +30,7 @@ select = [
     "FURB",  # refurb
     "PIE",  # flake8-pie
     "PYI",  # flake8-pyi
+    "RSE",  # flake8-raise
     "SLOT",  # flake8-slots
     "TCH",  # flake8-type-checking
     "TD",  # flake8-todos
