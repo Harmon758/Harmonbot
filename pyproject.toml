@@ -32,7 +32,7 @@ select = [
     "PYI",  # flake8-pyi
     "RSE",  # flake8-raise
     "SLOT",  # flake8-slots
-    "TCH",  # flake8-type-checking
+    "TC",  # flake8-type-checking
     "TD",  # flake8-todos
     "UP",  # pyupgrade
     "YTT",  # flake8-2020
