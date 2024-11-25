@@ -13,7 +13,6 @@ python_version = "3.11"
 
 [tool.ruff]
 include = ["tests/*.py", "units/*.py"]
-target-version = "py311"
 
 [tool.ruff.lint]
 ignore = [
