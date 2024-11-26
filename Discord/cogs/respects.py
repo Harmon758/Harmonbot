@@ -1,4 +1,6 @@
 
+from __future__ import annotations
+
 import discord
 from discord import app_commands
 from discord.ext import commands
@@ -10,8 +12,12 @@ import math
 import matplotlib
 import numpy
 ## import scipy
+from typing import TYPE_CHECKING
 
 from utilities import checks
+
+if TYPE_CHECKING:
+    from utilities.context import Context
 
 
 async def setup(bot):
@@ -64,7 +70,7 @@ class Respects(commands.Cog):
         aliases = ["respect"],
         case_insensitive = True, invoke_without_command = True
     )
-    async def respects(self, ctx):
+    async def respects(self, ctx: Context):
         """
         Press F to Pay Respects
         https://knowyourmeme.com/memes/press-f-to-pay-respects
