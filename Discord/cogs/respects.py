@@ -78,7 +78,7 @@ class Respects(commands.Cog):
         await ctx.send_help(ctx.command)
 
     @respects.command()
-    async def paid(self, ctx):
+    async def paid(self, ctx: Context):
         """
         Respects paid
         Record of respects paid by each user began on 2016-12-20
