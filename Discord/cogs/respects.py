@@ -103,7 +103,7 @@ class Respects(commands.Cog):
         await ctx.embed_reply(response)
 
     @respects.command()
-    async def pay(self, ctx):
+    async def pay(self, ctx: Context):
         """
         Pay Respects
         Can also be triggered with 'f' or 'F'
