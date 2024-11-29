@@ -160,7 +160,7 @@ class Respects(commands.Cog):
         await self.pay(ctx)
 
     @respects.command(aliases = ["statistics"])
-    async def stats(self, ctx):
+    async def stats(self, ctx: Context):
         '''Statistics'''
         total_respects = await ctx.bot.db.fetchval(
             "SELECT value FROM respects.stats WHERE stat = 'total'"
