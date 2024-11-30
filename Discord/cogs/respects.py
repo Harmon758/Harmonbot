@@ -233,7 +233,7 @@ class Respects(commands.Cog):
         )
 
     @respects.command(aliases = ["most"])
-    async def top(self, ctx, number: int = 10):
+    async def top(self, ctx: Context, number: int = 10):
         '''Top respects paid'''
         if number > 10:
             number = 10
