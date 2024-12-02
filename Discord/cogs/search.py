@@ -1,10 +1,12 @@
 
+from __future__ import annotations
+
 import discord
 from discord import app_commands
 from discord.ext import commands
 
 import functools
-from typing import Literal, Optional
+from typing import Literal, Optional, TYPE_CHECKING
 
 import youtube_dl
 
@@ -13,6 +15,9 @@ from utilities import checks
 from utilities.menu_sources import WolframAlphaSource
 from utilities.paginators import ButtonPaginator
 from utilities.views import WikiArticlesView
+
+if TYPE_CHECKING:
+    from utilities.context import Context
 
 
 FANDOM_WIKIS = {
@@ -43,7 +48,7 @@ class Search(commands.GroupCog, group_name = "search"):
         return await checks.not_forbidden().predicate(ctx)
 
     @commands.group(invoke_without_command = True, case_insensitive = True)
-    async def search(self, ctx):
+    async def search(self, ctx: Context):
         """
         Search things
         All search subcommands are also commands
