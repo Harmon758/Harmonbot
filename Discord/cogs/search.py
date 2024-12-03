@@ -56,7 +56,7 @@ class Search(commands.GroupCog, group_name = "search"):
         await ctx.embed_reply("\N{WHITE QUESTION MARK ORNAMENT} Search what?")
 
     @search.command(name = "amazon")
-    async def search_amazon(self, ctx, *search: str):
+    async def search_amazon(self, ctx: Context, *search: str):
         """Search with Amazon"""
         # Note: amazon command invokes this command
         await ctx.embed_reply(
