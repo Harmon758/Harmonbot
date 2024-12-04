@@ -65,7 +65,7 @@ class Search(commands.GroupCog, group_name = "search"):
         )
 
     @commands.command()
-    async def amazon(self, ctx, *search: str):
+    async def amazon(self, ctx: Context, *search: str):
         """Search with Amazon"""
         if command := ctx.bot.get_command("search amazon"):
             await ctx.invoke(command, *search)
