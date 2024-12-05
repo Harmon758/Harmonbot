@@ -75,7 +75,7 @@ class Search(commands.GroupCog, group_name = "search"):
             )
 
     @search.command(name = "aol")
-    async def search_aol(self, ctx, *search: str):
+    async def search_aol(self, ctx: Context, *search: str):
         """Search with AOL"""
         # Note: aol command invokes this command
         await ctx.embed_reply(
