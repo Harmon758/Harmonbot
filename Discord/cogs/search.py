@@ -84,7 +84,7 @@ class Search(commands.GroupCog, group_name = "search"):
         )
 
     @commands.command()
-    async def aol(self, ctx, *search: str):
+    async def aol(self, ctx: Context, *search: str):
         """Search with AOL"""
         if command := ctx.bot.get_command("search aol"):
             await ctx.invoke(command, *search)
