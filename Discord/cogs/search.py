@@ -94,7 +94,7 @@ class Search(commands.GroupCog, group_name = "search"):
             )
 
     @search.command(name = "ask.com")
-    async def search_ask_com(self, ctx, *search: str):
+    async def search_ask_com(self, ctx: Context, *search: str):
         """Search with Ask.com"""
         # Note: ask.com command invokes this command
         await ctx.embed_reply(
