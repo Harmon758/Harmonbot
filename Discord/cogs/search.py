@@ -103,7 +103,7 @@ class Search(commands.GroupCog, group_name = "search"):
         )
 
     @commands.command(name = "ask.com")
-    async def ask_com(self, ctx, *search: str):
+    async def ask_com(self, ctx: Context, *search: str):
         """Search with Ask.com"""
         if command := ctx.bot.get_command("search ask.com"):
             await ctx.invoke(command, *search)
