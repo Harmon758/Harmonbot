@@ -113,7 +113,7 @@ class Search(commands.GroupCog, group_name = "search"):
             )
 
     @search.command(name = "baidu")
-    async def search_baidu(self, ctx, *search: str):
+    async def search_baidu(self, ctx: Context, *search: str):
         """Search with Baidu"""
         # Note: baidu command invokes this command
         await ctx.embed_reply(
