@@ -122,7 +122,7 @@ class Search(commands.GroupCog, group_name = "search"):
         )
 
     @commands.command()
-    async def baidu(self, ctx, *search: str):
+    async def baidu(self, ctx: Context, *search: str):
         """Search with Baidu"""
         if command := ctx.bot.get_command("search baidu"):
             await ctx.invoke(command, *search)
