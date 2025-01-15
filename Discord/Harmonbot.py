@@ -261,8 +261,7 @@ if __name__ == "__main__":
 				opus = discord.opus.libopus_loader("bin/opus.dll")
 				opus.opus_get_version_string.restype = ctypes.c_char_p
 				harmonbot_opus_version = opus.opus_get_version_string().decode("UTF-8")
-				if harmonbot_opus_version.startswith("libopus "):
-					harmonbot_opus_version = harmonbot_opus_version[8:]
+				harmonbot_opus_version = harmonbot_opus_version.removeprefix("libopus ")
 				### Discard additional information from git describe
 				harmonbot_opus_version = harmonbot_opus_version.split('-')[0]
 				harmonbot_opus_version = Version(harmonbot_opus_version)
@@ -271,8 +270,7 @@ if __name__ == "__main__":
 				## Get Opus version provided by discord.py
 				discord.opus._lib.opus_get_version_string.restype = ctypes.c_char_p
 				library_opus_version = discord.opus._lib.opus_get_version_string().decode("UTF-8")
-				if library_opus_version.startswith("libopus "):
-					library_opus_version = library_opus_version[8:]
+				library_opus_version = library_opus_version.removeprefix("libopus ")
 				### Discard additional information from git describe
 				library_opus_version = library_opus_version.split('-')[0]
 				library_opus_version = Version(library_opus_version)
