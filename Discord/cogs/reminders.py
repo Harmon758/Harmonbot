@@ -83,8 +83,7 @@ class Reminders(commands.Cog):
 			raise commands.BadArgument("Time not specified")
 		# Clean reminder input
 		for prefix in ("me about ", "me to ", "me "):
-			if reminder.startswith(prefix):
-				reminder = reminder[len(prefix):]
+			reminder = reminder.removeprefix(prefix)
 		reminder = reminder.replace("from now", "")
 		# Parse reminder
 		now = datetime.datetime.now(datetime.UTC)
