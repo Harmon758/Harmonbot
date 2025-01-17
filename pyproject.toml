@@ -28,6 +28,7 @@ select = [
     "FA",  # flake8-future-annotations
     "FURB",  # refurb
     "PIE",  # flake8-pie
+    "PLE",  # Pylint Error
     "PYI",  # flake8-pyi
     "RSE",  # flake8-raise
     "SLOT",  # flake8-slots
