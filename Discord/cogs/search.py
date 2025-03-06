@@ -132,7 +132,7 @@ class Search(commands.GroupCog, group_name = "search"):
             )
 
     @search.command(name = "bing")
-    async def search_bing(self, ctx, *search: str):
+    async def search_bing(self, ctx: Context, *search: str):
         """Search with Bing"""
         # Note: bing command invokes this command
         await ctx.embed_reply(
