@@ -141,7 +141,7 @@ class Search(commands.GroupCog, group_name = "search"):
         )
 
     @commands.command()
-    async def bing(self, ctx, *search: str):
+    async def bing(self, ctx: Context, *search: str):
         """Search with Bing"""
         if command := ctx.bot.get_command("search bing"):
             await ctx.invoke(command, *search)
