@@ -151,7 +151,7 @@ class Search(commands.GroupCog, group_name = "search"):
             )
 
     @search.command(name = "duckduckgo")
-    async def search_duckduckgo(self, ctx, *search: str):
+    async def search_duckduckgo(self, ctx: Context, *search: str):
         """Search with DuckDuckGo"""
         # Note: duckduckgo command invokes this command
         await ctx.embed_reply(
