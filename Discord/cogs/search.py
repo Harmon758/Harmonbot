@@ -160,7 +160,7 @@ class Search(commands.GroupCog, group_name = "search"):
         )
 
     @commands.command()
-    async def duckduckgo(self, ctx, *search: str):
+    async def duckduckgo(self, ctx: Context, *search: str):
         """Search with DuckDuckGo"""
         if command := ctx.bot.get_command("search duckduckgo"):
             await ctx.invoke(command, *search)
