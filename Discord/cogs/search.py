@@ -174,7 +174,7 @@ class Search(commands.GroupCog, group_name = "search"):
         name = "google",
         case_insensitive = True, invoke_without_command = True
     )
-    async def search_google(self, ctx, *, search: str):
+    async def search_google(self, ctx: Context, *, search: str):
         """Google search"""
         # Note: google command invokes this command
         await ctx.embed_reply(
