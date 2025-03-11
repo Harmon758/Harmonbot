@@ -186,7 +186,7 @@ class Search(commands.GroupCog, group_name = "search"):
         name = "google",
         case_insensitive = True, invoke_without_command = True
     )
-    async def google(self, ctx, *, search: str):
+    async def google(self, ctx: Context, *, search: str):
         """Google search"""
         if command := ctx.bot.get_command("search google"):
             await ctx.invoke(command, search = search)
