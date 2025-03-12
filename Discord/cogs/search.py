@@ -196,7 +196,7 @@ class Search(commands.GroupCog, group_name = "search"):
             )
 
     @search_google.command(name = "images", aliases = ["image"])
-    async def search_google_images(self, ctx, *, search: str):
+    async def search_google_images(self, ctx: Context, *, search: str):
         '''Google image search something'''
         if command := ctx.bot.get_command("image google"):
             await ctx.invoke(command, search = search)
