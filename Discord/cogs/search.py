@@ -218,7 +218,7 @@ class Search(commands.GroupCog, group_name = "search"):
             )
 
     @search.command(name = "imfeelinglucky", aliases = ["im_feeling_lucky"])
-    async def search_imfeelinglucky(self, ctx, *search: str):
+    async def search_imfeelinglucky(self, ctx: Context, *search: str):
         """First Google result of a search"""
         # Note: imfeelinglucky command invokes this command
         await ctx.embed_reply(
