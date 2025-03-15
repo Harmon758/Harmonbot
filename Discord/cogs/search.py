@@ -227,7 +227,7 @@ class Search(commands.GroupCog, group_name = "search"):
         )
 
     @commands.command(aliases = ["im_feeling_lucky"])
-    async def imfeelinglucky(self, ctx, *search: str):
+    async def imfeelinglucky(self, ctx: Context, *search: str):
         """First Google result of a search"""
         if command := ctx.bot.get_command("search imfeelinglucky"):
             await ctx.invoke(command, *search)
