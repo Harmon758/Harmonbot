@@ -238,7 +238,7 @@ class Search(commands.GroupCog, group_name = "search"):
             )
 
     @search.command(name = "imgur")
-    async def search_imgur(self, ctx, *, search: str):
+    async def search_imgur(self, ctx: Context, *, search: str):
         '''Search images on Imgur'''
         if command := ctx.bot.get_command("imgur search"):
             await ctx.invoke(command, search = search)
