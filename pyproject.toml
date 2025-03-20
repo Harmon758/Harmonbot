@@ -27,6 +27,7 @@ select = [
     "F",  # Pyflakes
     "FA",  # flake8-future-annotations
     "FURB",  # refurb
+    "PGH",  # pygrep-hooks
     "PIE",  # flake8-pie
     "PLE",  # Pylint Error
     "PYI",  # flake8-pyi
