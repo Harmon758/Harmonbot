@@ -249,7 +249,7 @@ class Search(commands.GroupCog, group_name = "search"):
             )
 
     @search.command(name = "lma.ctfy")
-    async def search_lma_ctfy(self, ctx, *search: str):
+    async def search_lma_ctfy(self, ctx: Context, *search: str):
         """Let Me Ask.Com That For You"""
         # Note: lma.ctfy command invokes this command
         await ctx.embed_reply(
