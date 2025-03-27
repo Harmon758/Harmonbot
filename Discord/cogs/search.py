@@ -258,7 +258,7 @@ class Search(commands.GroupCog, group_name = "search"):
         )
 
     @commands.command(name = "lma.ctfy")
-    async def lma_ctfy(self, ctx, *search: str):
+    async def lma_ctfy(self, ctx: Context, *search: str):
         """Let Me Ask.Com That For You"""
         if command := ctx.bot.get_command("search lma.ctfy"):
             await ctx.invoke(command, *search)
