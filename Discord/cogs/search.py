@@ -289,7 +289,7 @@ class Search(commands.GroupCog, group_name = "search"):
             )
 
     @search.command(name = "lmatfy")
-    async def search_lmatfy(self, ctx, *search: str):
+    async def search_lmatfy(self, ctx: Context, *search: str):
         """Let Me Amazon That For You"""
         # Note: lmatfy command invokes this command
         await ctx.embed_reply(
