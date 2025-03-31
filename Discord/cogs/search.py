@@ -298,7 +298,7 @@ class Search(commands.GroupCog, group_name = "search"):
         )
 
     @commands.command()
-    async def lmatfy(self, ctx, *search: str):
+    async def lmatfy(self, ctx: Context, *search: str):
         """Let Me Amazon That For You"""
         if command := ctx.bot.get_command("search lmatfy"):
             await ctx.invoke(command, *search)
