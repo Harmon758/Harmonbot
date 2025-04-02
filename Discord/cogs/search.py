@@ -317,7 +317,7 @@ class Search(commands.GroupCog, group_name = "search"):
         )
 
     @commands.command()
-    async def lmbdtfy(self, ctx, *search: str):
+    async def lmbdtfy(self, ctx: Context, *search: str):
         """Let Me Baidu That For You"""
         if command := ctx.bot.get_command("search lmbdtfy"):
             await ctx.invoke(command, *search)
