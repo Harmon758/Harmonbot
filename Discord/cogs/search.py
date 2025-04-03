@@ -327,7 +327,7 @@ class Search(commands.GroupCog, group_name = "search"):
             )
 
     @search.command(name = "lmbtfy")
-    async def search_lmbtfy(self, ctx, *search: str):
+    async def search_lmbtfy(self, ctx: Context, *search: str):
         """Let Me Bing That For You"""
         # Note: lmbtfy command invokes this command
         output = f"[LMBTFY: \"{' '.join(search)}\"](http://lmbtfy.com/?s=b&q={'+'.join(search)})\n"
