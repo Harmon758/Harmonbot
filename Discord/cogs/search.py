@@ -335,7 +335,7 @@ class Search(commands.GroupCog, group_name = "search"):
         await ctx.embed_reply(output)
 
     @commands.command()
-    async def lmbtfy(self, ctx, *search: str):
+    async def lmbtfy(self, ctx: Context, *search: str):
         """Let Me Bing That For You"""
         if command := ctx.bot.get_command("search lmbtfy"):
             await ctx.invoke(command, *search)
