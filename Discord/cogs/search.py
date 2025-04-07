@@ -364,7 +364,7 @@ class Search(commands.GroupCog, group_name = "search"):
             )
 
     @search.command(name = "lmgtfy")
-    async def search_lmgtfy(self, ctx, *search: str):
+    async def search_lmgtfy(self, ctx: Context, *search: str):
         """Let Me Google That For You"""
         # Note: lmgtfy command invokes this command
         await ctx.embed_reply(
