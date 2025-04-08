@@ -373,7 +373,7 @@ class Search(commands.GroupCog, group_name = "search"):
         )
 
     @commands.command()
-    async def lmgtfy(self, ctx, *search: str):
+    async def lmgtfy(self, ctx: Context, *search: str):
         """Let Me Google That For You"""
         if command := ctx.bot.get_command("search lmgtfy"):
             await ctx.invoke(command, *search)
