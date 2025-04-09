@@ -383,7 +383,7 @@ class Search(commands.GroupCog, group_name = "search"):
             )
 
     @search.command(name = "lmytfy")
-    async def search_lmytfy(self, ctx, *search: str):
+    async def search_lmytfy(self, ctx: Context, *search: str):
         """Let Me Yahoo That For You"""
         # Note: lmytfy command invokes this command
         await ctx.embed_reply(
