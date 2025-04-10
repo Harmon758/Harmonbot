@@ -392,7 +392,7 @@ class Search(commands.GroupCog, group_name = "search"):
         )
 
     @commands.command()
-    async def lmytfy(self, ctx, *search: str):
+    async def lmytfy(self, ctx: Context, *search: str):
         """Let Me Yahoo That For You"""
         if command := ctx.bot.get_command("search lmytfy"):
             await ctx.invoke(command, *search)
