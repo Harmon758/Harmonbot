@@ -402,7 +402,7 @@ class Search(commands.GroupCog, group_name = "search"):
             )
 
     @search.command(name = "startpage")
-    async def search_startpage(self, ctx, *search: str):
+    async def search_startpage(self, ctx: Context, *search: str):
         """Search with StartPage"""
         # Note: startpage command invokes this command
         await ctx.embed_reply(
