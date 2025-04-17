@@ -411,7 +411,7 @@ class Search(commands.GroupCog, group_name = "search"):
         )
 
     @commands.command()
-    async def startpage(self, ctx, *search: str):
+    async def startpage(self, ctx: Context, *search: str):
         """Search with StartPage"""
         if command := ctx.bot.get_command("search startpage"):
             await ctx.invoke(command, *search)
