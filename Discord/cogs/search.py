@@ -425,7 +425,7 @@ class Search(commands.GroupCog, group_name = "search"):
         name = "uesp", description = "[UESP](http://uesp.net/wiki/Main_Page)",
         case_insensitive = True, invoke_without_command = True
     )
-    async def search_uesp(self, ctx, *, search: str):
+    async def search_uesp(self, ctx: Context, *, search: str):
         """Look something up on the Unofficial Elder Scrolls Pages"""
         # Note: uesp command invokes this command
         try:
