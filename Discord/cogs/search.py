@@ -449,7 +449,7 @@ class Search(commands.GroupCog, group_name = "search"):
         description = "[UESP](http://uesp.net/wiki/Main_Page)",
         case_insensitive = True, invoke_without_command = True
     )
-    async def uesp(self, ctx, *, search: str):
+    async def uesp(self, ctx: Context, *, search: str):
         """Look something up on the Unofficial Elder Scrolls Pages"""
         if command := ctx.bot.get_command("search uesp"):
             await ctx.invoke(command, search = search)
