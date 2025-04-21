@@ -487,7 +487,7 @@ class Search(commands.GroupCog, group_name = "search"):
             )
 
     @uesp.command(name = "random")
-    async def uesp_random(self, ctx):
+    async def uesp_random(self, ctx: Context):
         '''
         Random UESP page
         [UESP](http://uesp.net/wiki/Main_Page)
