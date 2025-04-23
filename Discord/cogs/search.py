@@ -557,7 +557,7 @@ class Search(commands.GroupCog, group_name = "search"):
         aliases = ["wiki"],
         case_insensitive = True, invoke_without_command = True
     )
-    async def wikipedia(self, ctx, *, query: str):
+    async def wikipedia(self, ctx: Context, *, query: str):
         """
         Search for an article on Wikipedia
 
