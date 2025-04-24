@@ -575,7 +575,7 @@ class Search(commands.GroupCog, group_name = "search"):
             )
 
     @search_wikipedia.command(name = "random")
-    async def search_wikipedia_random(self, ctx):
+    async def search_wikipedia_random(self, ctx: Context):
         """Random Wikipedia article"""
         # Note: random wikipedia command invokes this command
         # Note: wikipedia random command invokes this command
