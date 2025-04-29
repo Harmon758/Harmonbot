@@ -610,7 +610,7 @@ class Search(commands.GroupCog, group_name = "search"):
 
     @search.command(name = "fandom", aliases = ["wikia", "wikicities"])
     async def search_fandom(
-        self, ctx,
+        self, ctx: Context,
         wiki: Literal[
             "Disney", "Foundation", "Genshin Impact",
             "Marvel Cinematic Universe", "Memory Alpha", "Pixar", "Redwall",
