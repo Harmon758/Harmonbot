@@ -710,7 +710,7 @@ class Search(commands.GroupCog, group_name = "search"):
             )
 
     @search.command(name = "tolkien")
-    async def search_tolkien(self, ctx, *, query: str):
+    async def search_tolkien(self, ctx: Context, *, query: str):
         """Search for an article on Tolkien Gateway"""
         # Note: tolkien command invokes this command
         try:
