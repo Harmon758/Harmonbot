@@ -731,7 +731,7 @@ class Search(commands.GroupCog, group_name = "search"):
         ctx.bot.views.append(view)
 
     @commands.command()
-    async def tolkien(self, ctx, *, query: str):
+    async def tolkien(self, ctx: Context, *, query: str):
         """Search for an article on Tolkien Gateway"""
         if command := ctx.bot.get_command("search tolkien"):
             await ctx.invoke(command, query = query)
