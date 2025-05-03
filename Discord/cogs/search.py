@@ -912,7 +912,7 @@ class Search(commands.GroupCog, group_name = "search"):
             await ctx.embed_reply(f"Some results timed out: {result.timedout.replace(',', ', ')}")
 
     @search.command(name = "yahoo")
-    async def search_yahoo(self, ctx, *search: str):
+    async def search_yahoo(self, ctx: Context, *search: str):
         """Search with Yahoo"""
         # Note: yahoo command invokes this command
         await ctx.embed_reply(
