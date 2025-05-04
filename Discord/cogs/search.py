@@ -921,7 +921,7 @@ class Search(commands.GroupCog, group_name = "search"):
         )
 
     @commands.command()
-    async def yahoo(self, ctx, *search: str):
+    async def yahoo(self, ctx: Context, *search: str):
         """Search with Yahoo"""
         if command := ctx.bot.get_command("search yahoo"):
             await ctx.invoke(command, *search)
