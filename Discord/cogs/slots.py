@@ -1,10 +1,16 @@
 
+from __future__ import annotations
+
 import discord
 from discord import ui
 from discord.ext import commands
 
 import itertools
 import random
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from utilities.context import Context
 
 
 EMOJI = [
@@ -45,7 +51,7 @@ class Slots(commands.Cog):
         )
 
     @commands.hybrid_group(case_insensitive = True, fallback = "play")
-    async def slots(self, ctx):
+    async def slots(self, ctx: Context):
         """
         Slot machine
         10 Points (¤) to play
