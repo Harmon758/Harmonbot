@@ -65,7 +65,7 @@ class Slots(commands.Cog):
         await play_slots(ctx)
 
     @slots.command()
-    async def plays(self, ctx):
+    async def plays(self, ctx: Context):
         """How many times you've played slots"""
         plays = await ctx.bot.db.fetchval(
             """
