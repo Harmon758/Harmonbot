@@ -85,7 +85,7 @@ class Slots(commands.Cog):
 
     @slots.command(with_app_command = False)
     @commands.is_owner()
-    async def value(self, ctx):
+    async def value(self, ctx: Context):
         value = 0
         for reels in itertools.product(EMOJI, repeat = 3):
             value += calculate_slots_points(list(reels))
