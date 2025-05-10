@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 import discord
-from discord import app_commands
+from discord import app_commands, Interaction
 from discord.ext import commands
 
 from enum import Enum
@@ -111,7 +111,7 @@ class EmojiCog(commands.GroupCog, group_name = "emoji", name = "Emoji"):
 
     @app_commands.command()
     async def enlarge(
-        self, interaction, *,
+        self, interaction: Interaction, *,
         emoji: app_commands.Transform[
             discord.PartialEmoji, PartialEmojiTransformer
         ]
