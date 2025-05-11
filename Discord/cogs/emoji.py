@@ -142,7 +142,9 @@ class EmojiCog(commands.GroupCog, group_name = "emoji", name = "Emoji"):
             key = attrgetter("name")
         )
     )
-    async def send(self, interaction, *, emoji: app_commands.Choice[str]):
+    async def send(
+        self, interaction: Interaction, *, emoji: app_commands.Choice[str]
+    ):
         """
         Send emoji
 
