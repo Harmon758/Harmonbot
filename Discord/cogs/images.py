@@ -1,7 +1,7 @@
 
 from __future__ import annotations
 
-from discord import Attachment  # noqa: TCH001
+from discord import Attachment  # noqa: TC001
 from discord.ext import commands
 
 import inspect
