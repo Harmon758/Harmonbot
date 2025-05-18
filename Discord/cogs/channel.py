@@ -52,7 +52,7 @@ class Channel(commands.Cog):
     @category.command(name = "create", aliases = ["make", "new"], with_app_command = False)
     @commands.bot_has_guild_permissions(manage_channels = True)
     @commands.check_any(commands.has_guild_permissions(manage_channels = True), commands.is_owner())
-    async def category_create(self, ctx, *, name : str):
+    async def category_create(self, ctx, *, name: str):
         '''Create category'''
         channel = await ctx.guild.create_category_channel(name)
         await ctx.embed_reply(channel.mention + " created")
