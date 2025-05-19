@@ -58,7 +58,7 @@ class Channel(commands.Cog):
         await ctx.embed_reply(channel.mention + " created")
 
     @category.command(name = "name", with_app_command = False)
-    async def category_name(self, ctx, channel : discord.CategoryChannel, *, name : str = ""):
+    async def category_name(self, ctx, channel: discord.CategoryChannel, *, name: str = ""):
         '''Name of a category'''
         if name:
             await checks.has_permissions_for(channel, manage_channels = True).predicate(ctx)
