@@ -2,6 +2,8 @@
 import discord
 from discord.ext import commands
 
+from typing import Optional
+
 from utilities import checks
 
 
@@ -69,7 +71,7 @@ class Channel(commands.Cog):
             await ctx.embed_reply(channel)
 
     @category.command(name = "nsfw", with_app_command = False)
-    async def category_nsfw(self, ctx, channel: discord.CategoryChannel, nsfw: bool = None):
+    async def category_nsfw(self, ctx, channel: discord.CategoryChannel, nsfw: Optional[bool]):  # noqa: UP007 (non-pep604-annotation)
         '''Whether a category is NSFW or not'''
         if nsfw is not None:
             await checks.has_permissions_for(channel, manage_channels = True).predicate(ctx)
