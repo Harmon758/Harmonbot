@@ -10,7 +10,7 @@ from operator import attrgetter
 from typing import TYPE_CHECKING
 
 from utilities import checks
-from utilities.transformers import PartialEmojiTransformer  # noqa: TC002
+from utilities.transformers import PartialEmojiTransformer  # noqa: TC002 (typing-only-third-party-import)
 
 if TYPE_CHECKING:
     from utilities.context import Context
