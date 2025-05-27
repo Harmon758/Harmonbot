@@ -82,7 +82,7 @@ class Channel(commands.Cog):
             await ctx.embed_reply(channel.mention + " is {}NSFW".format("" if channel.is_nsfw() else "not "))
 
     @category.command(name = "position", with_app_command = False)
-    async def category_position(self, ctx, channel : discord.CategoryChannel, position : int = None):
+    async def category_position(self, ctx, channel: discord.CategoryChannel, position: int = None):
         '''
         The position in the category list
         This is a number that starts at 0
