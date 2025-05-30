@@ -103,7 +103,7 @@ class Channel(commands.Cog):
         await ctx.send_help(ctx.command)
 
     @text.command(name = "category", with_app_command = False)
-    async def text_category(self, ctx, channel: discord.TextChannel, *, category: discord.CategoryChannel = None):
+    async def text_category(self, ctx, channel: discord.TextChannel, *, category: Optional[discord.CategoryChannel]):  # noqa: UP007 (non-pep604-annotation)
         '''Category the text channel belongs to'''
         if category:
             await checks.has_permissions_for(channel, manage_channels = True).predicate(ctx)
