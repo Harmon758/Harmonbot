@@ -116,7 +116,7 @@ class Channel(commands.Cog):
     @text.command(name = "create", aliases = ["make", "new"], with_app_command = False)
     @commands.bot_has_guild_permissions(manage_channels = True)
     @commands.check_any(commands.has_guild_permissions(manage_channels = True), commands.is_owner())
-    async def text_create(self, ctx, name : str):
+    async def text_create(self, ctx, name: str):
         '''Create text channel'''
         channel = await ctx.guild.create_text_channel(name)
         await ctx.embed_reply(channel.mention + " created")
