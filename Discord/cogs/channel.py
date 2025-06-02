@@ -122,7 +122,7 @@ class Channel(commands.Cog):
         await ctx.embed_reply(channel.mention + " created")
 
     @text.command(name = "name", with_app_command = False)
-    async def text_name(self, ctx, channel: discord.TextChannel, *, name: str = ""):
+    async def text_name(self, ctx, channel: discord.TextChannel, *, name: Optional[str]):  # noqa: UP007 (non-pep604-annotation)
         '''Name of a text channel'''
         if name:
             await checks.has_permissions_for(channel, manage_channels = True).predicate(ctx)
