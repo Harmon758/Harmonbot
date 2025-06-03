@@ -133,7 +133,7 @@ class Channel(commands.Cog):
             await ctx.embed_reply(channel)
 
     @text.command(name = "nsfw", with_app_command = False)
-    async def text_nsfw(self, ctx, channel : discord.TextChannel, nsfw : bool = None):
+    async def text_nsfw(self, ctx, channel: discord.TextChannel, nsfw: bool = None):
         '''Whether a text channel is NSFW or not'''
         if nsfw is not None:
             await checks.has_permissions_for(channel, manage_channels = True).predicate(ctx)
