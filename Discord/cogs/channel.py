@@ -144,7 +144,7 @@ class Channel(commands.Cog):
             await ctx.embed_reply(channel.mention + " is {}NSFW".format("" if channel.is_nsfw() else "not "))
 
     @text.command(name = "position", with_app_command = False)
-    async def text_position(self, ctx, channel : discord.TextChannel, position : int = None):
+    async def text_position(self, ctx, channel: discord.TextChannel, position: int = None):
         '''
         The position in the channel list
         This is a number that starts at 0
