@@ -159,7 +159,7 @@ class Channel(commands.Cog):
             await ctx.embed_reply(f"{channel.mention}'s position is {channel.position}")
 
     @text.command(name = "slowmode", with_app_command = False)
-    async def text_slowmode(self, ctx, channel: discord.TextChannel, slowmode_delay: int = None):
+    async def text_slowmode(self, ctx, channel: discord.TextChannel, slowmode_delay: Optional[int]):  # noqa: UP007 (non-pep604-annotation)
         '''
         Slowmode setting
         Slowmode delay must be between 0 and 120 inclusive
