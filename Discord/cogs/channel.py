@@ -185,7 +185,7 @@ class Channel(commands.Cog):
     @text.command(name = "sync", with_app_command = False)
     @commands.bot_has_permissions(manage_channels = True, manage_permissions = True)
     @commands.check_any(commands.has_permissions(manage_channels = True, manage_permissions = True), commands.is_owner())
-    async def text_sync(self, ctx, *, channel : discord.TextChannel):
+    async def text_sync(self, ctx, *, channel: discord.TextChannel):
         '''Sync permissions with category the text channel belongs to'''
         await channel.edit(sync_permissions = True)
         await ctx.embed_reply("Permissions synced with: " + channel.category.mention)
