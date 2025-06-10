@@ -191,7 +191,7 @@ class Channel(commands.Cog):
         await ctx.embed_reply("Permissions synced with: " + channel.category.mention)
 
     @text.command(name = "topic", with_app_command = False)
-    async def text_topic(self, ctx, channel : discord.TextChannel, *, topic : str = ""):
+    async def text_topic(self, ctx, channel: discord.TextChannel, *, topic: str = ""):
         '''Name of a text channel'''
         if topic:
             await checks.has_permissions_for(channel, manage_channels = True).predicate(ctx)
