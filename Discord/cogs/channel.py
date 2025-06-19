@@ -224,7 +224,7 @@ class Channel(commands.Cog):
 
     @voice.command(name = "bitrate", with_app_command = False)
     async def voice_bitrate(self, ctx, channel: discord.VoiceChannel, bitrate: Optional[int]):  # noqa: UP007 (non-pep604-annotation)
-        '''Voice channel’s preferred audio bitrate in bits per second'''
+        '''Voice channel's preferred audio bitrate in bits per second'''
         if bitrate is not None:
             await checks.has_permissions_for(channel, manage_channels = True).predicate(ctx)
             await checks.bot_has_permissions_for(channel, manage_channels = True).predicate(ctx)
