@@ -234,7 +234,7 @@ class Channel(commands.Cog):
             await ctx.embed_reply(f"{channel.mention}'s bitrate is {channel.bitrate}")
 
     @voice.command(name = "category", with_app_command = False)
-    async def voice_category(self, ctx, channel: discord.VoiceChannel, *, category: discord.CategoryChannel = None):
+    async def voice_category(self, ctx, channel: discord.VoiceChannel, *, category: Optional[discord.CategoryChannel]):  # noqa: UP007 (non-pep604-annotation)
         '''Category the voice channel belongs to'''
         if category:
             await checks.has_permissions_for(channel, manage_channels = True).predicate(ctx)
