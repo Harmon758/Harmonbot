@@ -247,7 +247,7 @@ class Channel(commands.Cog):
     @voice.command(name = "create", aliases = ["make", "new"], with_app_command = False)
     @commands.bot_has_guild_permissions(manage_channels = True)
     @commands.check_any(commands.has_guild_permissions(manage_channels = True), commands.is_owner())
-    async def voice_create(self, ctx, *, name : str):
+    async def voice_create(self, ctx, *, name: str):
         '''Create voice channel'''
         channel = await ctx.guild.create_voice_channel(name)
         await ctx.embed_reply(channel.mention + " created")
