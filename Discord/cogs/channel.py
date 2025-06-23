@@ -253,7 +253,7 @@ class Channel(commands.Cog):
         await ctx.embed_reply(channel.mention + " created")
 
     @voice.command(name = "name", with_app_command = False)
-    async def voice_name(self, ctx, channel : discord.VoiceChannel, *, name : str = ""):
+    async def voice_name(self, ctx, channel: discord.VoiceChannel, *, name: str = ""):
         '''Name of a voice channel'''
         if name:
             await checks.has_permissions_for(channel, manage_channels = True).predicate(ctx)
