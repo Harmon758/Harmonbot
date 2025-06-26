@@ -264,7 +264,7 @@ class Channel(commands.Cog):
             await ctx.embed_reply(channel)
 
     @voice.command(name = "position", with_app_command = False)
-    async def voice_position(self, ctx, channel: discord.VoiceChannel, position: int = None):
+    async def voice_position(self, ctx, channel: discord.VoiceChannel, position: Optional[int]):  # noqa: UP007 (non-pep604-annotation)
         '''
         The position in the channel list
         This is a number that starts at 0
