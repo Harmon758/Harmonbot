@@ -281,7 +281,7 @@ class Channel(commands.Cog):
     @voice.command(name = "sync", with_app_command = False)
     @commands.bot_has_permissions(manage_channels = True, manage_permissions = True)
     @commands.check_any(commands.has_permissions(manage_channels = True, manage_permissions = True), commands.is_owner())
-    async def voice_sync(self, ctx, *, channel : discord.VoiceChannel):
+    async def voice_sync(self, ctx, *, channel: discord.VoiceChannel):
         '''Sync permissions with category the voice channel belongs to'''
         await channel.edit(sync_permissions = True)
         await ctx.embed_reply("Permissions synced with: " + channel.category.mention)
