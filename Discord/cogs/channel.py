@@ -287,7 +287,7 @@ class Channel(commands.Cog):
         await ctx.embed_reply("Permissions synced with: " + channel.category.mention)
 
     @voice.command(name = "user_limit", aliases = ["userlimit"], with_app_command = False)
-    async def voice_user_limit(self, ctx, channel : discord.VoiceChannel, user_limit : int = None):
+    async def voice_user_limit(self, ctx, channel: discord.VoiceChannel, user_limit: int = None):
         '''Limit for number of members that can be in the voice channel'''
         if user_limit is not None:
             await checks.has_permissions_for(channel, manage_channels = True).predicate(ctx)
