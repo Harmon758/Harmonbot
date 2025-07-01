@@ -115,7 +115,7 @@ class Random(commands.Cog):
     @random.group(name = "cat", fallback = "image", case_insensitive = True)
     async def random_cat(
         self, ctx,
-        category: Optional[str]  # noqa: UP007 (non-pep604-annotation)
+        category: Optional[str]  # noqa: UP045 (non-pep604-annotation-optional)
     ):
         """Random image of a cat"""
         # Note: cat command invokes this command
@@ -146,7 +146,7 @@ class Random(commands.Cog):
     @commands.group(case_insensitive = True, invoke_without_command = True)
     async def cat(
         self, ctx,
-        category: Optional[str]  # noqa: UP007 (non-pep604-annotation)
+        category: Optional[str]  # noqa: UP045 (non-pep604-annotation-optional)
     ):
         """Random image of a cat"""
         if command := ctx.bot.get_command("random cat"):
@@ -415,8 +415,8 @@ class Random(commands.Cog):
     @app_commands.rename(sub_breed = "sub-breed")
     async def random_dog(
         self, ctx,
-        breed: Optional[str],  # noqa: UP007 (non-pep604-annotation)
-        sub_breed: Optional[str]  # noqa: UP007 (non-pep604-annotation)
+        breed: Optional[str],  # noqa: UP045 (non-pep604-annotation-optional)
+        sub_breed: Optional[str]  # noqa: UP045 (non-pep604-annotation-optional)
     ):
         """
         Random image of a dog
@@ -462,8 +462,8 @@ class Random(commands.Cog):
     @commands.group(case_insensitive = True, invoke_without_command = True)
     async def dog(
         self, ctx,
-        breed: Optional[str],  # noqa: UP007 (non-pep604-annotation)
-        sub_breed: Optional[str]  # noqa: UP007 (non-pep604-annotation)
+        breed: Optional[str],  # noqa: UP045 (non-pep604-annotation-optional)
+        sub_breed: Optional[str]  # noqa: UP045 (non-pep604-annotation-optional)
     ):
         """
         Random image of a dog
@@ -787,8 +787,8 @@ class Random(commands.Cog):
     @random_joke.command(name = "dad", with_app_command = False)
     async def random_joke_dad(
         self, ctx,
-        image: Optional[bool] = False,  # noqa: UP007 (non-pep604-annotation)
-        joke_id: Optional[str] = None  # noqa: UP007 (non-pep604-annotation)
+        image: Optional[bool] = False,  # noqa: UP045 (non-pep604-annotation-optional)
+        joke_id: Optional[str] = None  # noqa: UP045 (non-pep604-annotation-optional)
     ):
         '''Random dad joke'''
         # Note: joke dad command invokes this command
@@ -827,8 +827,8 @@ class Random(commands.Cog):
     @joke.command(name = "dad")
     async def joke_dad(
         self, ctx,
-        image: Optional[bool] = False,  # noqa: UP007 (non-pep604-annotation)
-        joke_id: Optional[str] = None  # noqa: UP007 (non-pep604-annotation)
+        image: Optional[bool] = False,  # noqa: UP045 (non-pep604-annotation-optional)
+        joke_id: Optional[str] = None  # noqa: UP045 (non-pep604-annotation-optional)
     ):
         """Random dad joke"""
         if command := ctx.bot.get_command("random joke dad"):
@@ -915,8 +915,8 @@ class Random(commands.Cog):
     @random.command(with_app_command = False)
     async def map(
         self, ctx,
-        zoom: Optional[int] = 13,  # noqa: UP007 (non-pep604-annotation)
-        maptype: Optional[  # noqa: UP007 (non-pep604-annotation)
+        zoom: Optional[int] = 13,  # noqa: UP045 (non-pep604-annotation-optional)
+        maptype: Optional[  # noqa: UP045 (non-pep604-annotation-optional)
             Literal["roadmap", "satellite", "hybrid", "terrain"]
         ] = "roadmap"
     ):
@@ -1036,7 +1036,7 @@ class Random(commands.Cog):
     @commands.command()
     async def quote(
         self, ctx,
-        message: Optional[discord.Message]  # noqa: UP007 (non-pep604-annotation)
+        message: Optional[discord.Message]  # noqa: UP045 (non-pep604-annotation-optional)
     ):
         """Random quote or quote a message"""
         # TODO: other options to quote by?

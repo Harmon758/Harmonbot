@@ -72,7 +72,7 @@ class Games(commands.Cog):
 	@checks.not_forbidden()
 	async def eightball(
 		self, ctx: Context, *,
-		question: Optional[str] = ""  # noqa: UP007 (non-pep604-annotation)
+		question: Optional[str] = ""  # noqa: UP045 (non-pep604-annotation-optional)
 	):
 		"""
 		Ask 8-ball a yes or no question
@@ -94,8 +94,8 @@ class Games(commands.Cog):
 	@checks.not_forbidden()
 	async def guess(
 		self, ctx: Context,
-		max_value: Optional[commands.Range[int, 1, None]] = 10,  # noqa: UP007 (non-pep604-annotation)
-		tries: Optional[commands.Range[int, 1, None]] = 1  # noqa: UP007 (non-pep604-annotation)
+		max_value: Optional[commands.Range[int, 1, None]] = 10,  # noqa: UP045 (non-pep604-annotation-optional)
+		tries: Optional[commands.Range[int, 1, None]] = 1  # noqa: UP045 (non-pep604-annotation-optional)
 	):
 		'''
 		Guessing game

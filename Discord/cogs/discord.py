@@ -387,8 +387,8 @@ class Discord(commands.Cog):
     @checks.not_forbidden()
     async def timestamp(
         self, ctx,
-        ID: Optional[discord.Message | discord.Object],  # noqa: UP007 (non-pep604-annotation)
-        *, time: Optional[str]  # noqa: UP007 (non-pep604-annotation)
+        ID: Optional[discord.Message | discord.Object],  # noqa: UP045 (non-pep604-annotation-optional)
+        *, time: Optional[str]  # noqa: UP045 (non-pep604-annotation-optional)
     ):
         '''
         Timestamp of a Discord ID or message or formatted markdown for a time

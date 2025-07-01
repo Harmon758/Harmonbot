@@ -223,7 +223,7 @@ class Audio(commands.Cog):
     )
     async def audio_join(
         self, ctx, *,
-        channel: Optional[  # noqa: UP007 (non-pep604-annotation)
+        channel: Optional[  # noqa: UP045 (non-pep604-annotation-optional)
             discord.VoiceChannel
         ] = parameters.CurrentVoiceChannel
     ):
@@ -270,7 +270,7 @@ class Audio(commands.Cog):
     )
     async def join(
         self, ctx, *,
-        channel: Optional[  # noqa: UP007 (non-pep604-annotation)
+        channel: Optional[  # noqa: UP045 (non-pep604-annotation-optional)
             discord.VoiceChannel
         ] = parameters.CurrentVoiceChannel
     ):
@@ -639,7 +639,7 @@ class Audio(commands.Cog):
     @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
     async def radio(
         self, ctx,
-        setting: Optional[bool] = None  # noqa: UP007 (non-pep604-annotation)
+        setting: Optional[bool] = None  # noqa: UP045 (non-pep604-annotation-optional)
     ):
         '''
         Radio station based on the current song
@@ -705,11 +705,11 @@ class Audio(commands.Cog):
     )
     async def audio_tts(
         self, ctx,
-        amplitude: Optional[commands.Range[int, 0, 1000]] = 100,  # noqa: UP007 (non-pep604-annotation)
-        pitch: Optional[commands.Range[int, 0, 99]] = 50,  # noqa: UP007 (non-pep604-annotation)
-        speed: Optional[commands.Range[int, 80, 9000]] = 150,  # noqa: UP007 (non-pep604-annotation)
-        word_gap: Optional[commands.Range[int, 0, 1000]] = 0,  # noqa: UP007 (non-pep604-annotation)
-        voice: Optional[str] = "en-us+f1",  # noqa: UP007 (non-pep604-annotation)
+        amplitude: Optional[commands.Range[int, 0, 1000]] = 100,  # noqa: UP045 (non-pep604-annotation-optional)
+        pitch: Optional[commands.Range[int, 0, 99]] = 50,  # noqa: UP045 (non-pep604-annotation-optional)
+        speed: Optional[commands.Range[int, 80, 9000]] = 150,  # noqa: UP045 (non-pep604-annotation-optional)
+        word_gap: Optional[commands.Range[int, 0, 1000]] = 0,  # noqa: UP045 (non-pep604-annotation-optional)
+        voice: Optional[str] = "en-us+f1",  # noqa: UP045 (non-pep604-annotation-optional)
         *, message: str
     ):
         '''
@@ -758,11 +758,11 @@ class Audio(commands.Cog):
     )
     async def tts(
         self, ctx,
-        amplitude: Optional[commands.Range[int, 0, 1000]] = 100,  # noqa: UP007 (non-pep604-annotation)
-        pitch: Optional[commands.Range[int, 0, 99]] = 50,  # noqa: UP007 (non-pep604-annotation)
-        speed: Optional[commands.Range[int, 80, 9000]] = 150,  # noqa: UP007 (non-pep604-annotation)
-        word_gap: Optional[commands.Range[int, 0, 1000]] = 0,  # noqa: UP007 (non-pep604-annotation)
-        voice: Optional[str] = "en-us+f1",  # noqa: UP007 (non-pep604-annotation)
+        amplitude: Optional[commands.Range[int, 0, 1000]] = 100,  # noqa: UP045 (non-pep604-annotation-optional)
+        pitch: Optional[commands.Range[int, 0, 99]] = 50,  # noqa: UP045 (non-pep604-annotation-optional)
+        speed: Optional[commands.Range[int, 80, 9000]] = 150,  # noqa: UP045 (non-pep604-annotation-optional)
+        word_gap: Optional[commands.Range[int, 0, 1000]] = 0,  # noqa: UP045 (non-pep604-annotation-optional)
+        voice: Optional[str] = "en-us+f1",  # noqa: UP045 (non-pep604-annotation-optional)
         *, message: str
     ):
         '''
@@ -922,8 +922,8 @@ class Audio(commands.Cog):
     )
     async def audio_volume(
         self, ctx,
-        volume_setting: Optional[commands.Range[float, 0.0, 2000.0]] = None,  # noqa: UP007 (non-pep604-annotation)
-        default: Optional[bool] = False  # noqa: UP007 (non-pep604-annotation)
+        volume_setting: Optional[commands.Range[float, 0.0, 2000.0]] = None,  # noqa: UP045 (non-pep604-annotation-optional)
+        default: Optional[bool] = False  # noqa: UP045 (non-pep604-annotation-optional)
     ):
         '''
         Change or show the volume of the current song or player
@@ -974,8 +974,8 @@ class Audio(commands.Cog):
     )
     async def volume(
         self, ctx,
-        volume_setting: Optional[commands.Range[float, 0.0, 2000.0]] = None,  # noqa: UP007 (non-pep604-annotation)
-        default: Optional[bool] = False  # noqa: UP007 (non-pep604-annotation)
+        volume_setting: Optional[commands.Range[float, 0.0, 2000.0]] = None,  # noqa: UP045 (non-pep604-annotation-optional)
+        default: Optional[bool] = False  # noqa: UP045 (non-pep604-annotation-optional)
     ):
         '''
         Change or show the volume of the current song or player
@@ -1234,7 +1234,7 @@ class Audio(commands.Cog):
     @checks.not_forbidden()
     async def audio_latency(
         self, ctx,
-        average: Optional[bool] = False  # noqa: UP007 (non-pep604-annotation)
+        average: Optional[bool] = False  # noqa: UP045 (non-pep604-annotation-optional)
     ):
         '''
         Latency between a HEARTBEAT and its HEARTBEAT_ACK in seconds

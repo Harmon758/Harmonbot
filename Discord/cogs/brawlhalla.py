@@ -108,7 +108,7 @@ class Brawlhalla(commands.Cog):
     @brawlhalla.command()
     async def player(
         self, ctx: Context, name: SteamID64,
-        legend: Optional[str] = None  # noqa: UP007 (non-pep604-annotation)
+        legend: Optional[str] = None  # noqa: UP045 (non-pep604-annotation-optional)
     ):
         """
         Show information about a Brawlhalla player

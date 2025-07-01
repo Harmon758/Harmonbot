@@ -775,7 +775,7 @@ class Resources(commands.Cog):
     @checks.not_forbidden()
     async def whatis(
         self, ctx, *,
-        search: Optional[str]  # noqa: UP007 (non-pep604-annotation)
+        search: Optional[str]  # noqa: UP045 (non-pep604-annotation-optional)
     ):
         '''WIP'''
         if not search:

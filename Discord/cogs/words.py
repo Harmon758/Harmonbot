@@ -272,7 +272,7 @@ class Words(commands.Cog):
     @commands.group(case_insensitive = True, invoke_without_command = True)
     async def translate(
         self, ctx, *,
-        text: Optional[str]  # noqa: UP007 (non-pep604-annotation)
+        text: Optional[str]  # noqa: UP045 (non-pep604-annotation-optional)
     ):
         '''Translate to English'''
         # TODO: From and to language code options?
@@ -351,7 +351,7 @@ class Words(commands.Cog):
     @translate.command(name = "to")
     async def translate_to(
         self, ctx, language_code: str, *,
-        text: Optional[str]  # noqa: UP007 (non-pep604-annotation)
+        text: Optional[str]  # noqa: UP045 (non-pep604-annotation-optional)
     ):
         '''Translate to a specific language'''
         if not text:

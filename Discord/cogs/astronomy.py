@@ -548,7 +548,7 @@ class Astronomy(commands.Cog):
 	@astronomy.command(aliases = ["instrument"])
 	async def telescope(
 		self, ctx, *,
-		telescope: Optional[str]  # noqa: UP007 (non-pep604-annotation)
+		telescope: Optional[str]  # noqa: UP045 (non-pep604-annotation-optional)
 	):
 		"""
 		Telescopes and instruments

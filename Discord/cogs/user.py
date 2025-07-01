@@ -60,8 +60,8 @@ class User(commands.Cog):
     @user.command(name = "avatar")
     async def user_avatar(
         self, ctx,
-        flip: Optional[bool] = False,  # noqa: UP007 (non-pep604-annotation)
-        mirror: Optional[bool] = False,  # noqa: UP007 (non-pep604-annotation)
+        flip: Optional[bool] = False,  # noqa: UP045 (non-pep604-annotation-optional)
+        mirror: Optional[bool] = False,  # noqa: UP045 (non-pep604-annotation-optional)
         *, user: discord.User = commands.Author
     ):
         """
@@ -118,8 +118,8 @@ class User(commands.Cog):
     @commands.command()
     async def avatar(
         self, ctx,
-        flip: Optional[bool] = False,  # noqa: UP007 (non-pep604-annotation)
-        mirror: Optional[bool] = False,  # noqa: UP007 (non-pep604-annotation)
+        flip: Optional[bool] = False,  # noqa: UP045 (non-pep604-annotation-optional)
+        mirror: Optional[bool] = False,  # noqa: UP045 (non-pep604-annotation-optional)
         *, user: discord.User = commands.Author
     ):
         """
@@ -149,7 +149,7 @@ class User(commands.Cog):
     @user.command(name = "discriminator", with_app_command = False)
     async def user_discriminator(
         self, ctx, *,
-        user: Optional[discord.Member]  # noqa: UP007 (non-pep604-annotation)
+        user: Optional[discord.Member]  # noqa: UP045 (non-pep604-annotation-optional)
     ):
         '''
         Get a discriminator
@@ -170,7 +170,7 @@ class User(commands.Cog):
     @commands.command()
     async def discriminator(
         self, ctx, *,
-        user: Optional[discord.Member]  # noqa: UP007 (non-pep604-annotation)
+        user: Optional[discord.Member]  # noqa: UP045 (non-pep604-annotation-optional)
     ):
         """
         Get a discriminator
@@ -240,7 +240,7 @@ class User(commands.Cog):
     @user.command(name = "name", with_app_command = False)
     async def user_name(
         self, ctx, *,
-        user: Optional[discord.Member]  # noqa: UP007 (non-pep604-annotation)
+        user: Optional[discord.Member]  # noqa: UP045 (non-pep604-annotation-optional)
     ):
         '''The name of a user'''
         # Note: name command invokes this command
@@ -256,7 +256,7 @@ class User(commands.Cog):
     @commands.command()
     async def name(
         self, ctx, *,
-        user: Optional[discord.Member]  # noqa: UP007 (non-pep604-annotation)
+        user: Optional[discord.Member]  # noqa: UP045 (non-pep604-annotation-optional)
     ):
         """The name of a user"""
         if command := ctx.bot.get_command("user name"):

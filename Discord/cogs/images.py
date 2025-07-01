@@ -71,8 +71,8 @@ class Images(commands.Cog):
     @image.command(name = "color", aliases = ["colour"])
     async def image_color(
         self, ctx: Context,
-        image: Optional[Attachment],  # noqa: UP007 (non-pep604-annotation)
-        image_url: Optional[str]  # noqa: UP007 (non-pep604-annotation)
+        image: Optional[Attachment],  # noqa: UP045 (non-pep604-annotation-optional)
+        image_url: Optional[str]  # noqa: UP045 (non-pep604-annotation-optional)
     ):
         """
         Image color density values
@@ -215,8 +215,8 @@ class Images(commands.Cog):
     @imgur.command(name = "upload")
     async def imgur_upload(
         self, ctx: Context,
-        image: Optional[Attachment],  # noqa: UP007 (non-pep604-annotation)
-        image_url: Optional[str]  # noqa: UP007 (non-pep604-annotation)
+        image: Optional[Attachment],  # noqa: UP045 (non-pep604-annotation-optional)
+        image_url: Optional[str]  # noqa: UP045 (non-pep604-annotation-optional)
     ):
         """Upload images to Imgur"""
         if image:
@@ -264,8 +264,8 @@ class Images(commands.Cog):
     @image.command(name = "recognition")
     async def image_recognition(
         self, ctx: Context,
-        image: Optional[Attachment],  # noqa: UP007 (non-pep604-annotation)
-        image_url: Optional[str]  # noqa: UP007 (non-pep604-annotation)
+        image: Optional[Attachment],  # noqa: UP045 (non-pep604-annotation-optional)
+        image_url: Optional[str]  # noqa: UP045 (non-pep604-annotation-optional)
     ):
         """Image recognition"""
         if image:
@@ -297,8 +297,8 @@ class Images(commands.Cog):
     @commands.command()
     async def nsfw(
         self, ctx: Context,
-        image: Optional[Attachment],  # noqa: UP007 (non-pep604-annotation)
-        image_url: Optional[str]  # noqa: UP007 (non-pep604-annotation)
+        image: Optional[Attachment],  # noqa: UP045 (non-pep604-annotation-optional)
+        image_url: Optional[str]  # noqa: UP045 (non-pep604-annotation-optional)
     ):
         """NSFW recognition"""
         if image:

@@ -186,8 +186,8 @@ class Cryptography(commands.Cog):
     @decode.command(name = "qr")
     async def decode_qr(
         self, ctx: Context,
-        image: Optional[Attachment],  # noqa: UP007 (non-pep604-annotation)
-        image_url: Optional[str]  # noqa: UP007 (non-pep604-annotation)
+        image: Optional[Attachment],  # noqa: UP045 (non-pep604-annotation-optional)
+        image_url: Optional[str]  # noqa: UP045 (non-pep604-annotation-optional)
     ):
         """
         Decode QR code

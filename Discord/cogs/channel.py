@@ -71,7 +71,7 @@ class Channel(commands.Cog):
             await ctx.embed_reply(channel)
 
     @category.command(name = "nsfw", with_app_command = False)
-    async def category_nsfw(self, ctx, channel: discord.CategoryChannel, nsfw: Optional[bool]):  # noqa: UP007 (non-pep604-annotation)
+    async def category_nsfw(self, ctx, channel: discord.CategoryChannel, nsfw: Optional[bool]):  # noqa: UP045 (non-pep604-annotation-optional)
         '''Whether a category is NSFW or not'''
         if nsfw is not None:
             await checks.has_permissions_for(channel, manage_channels = True).predicate(ctx)
@@ -82,7 +82,7 @@ class Channel(commands.Cog):
             await ctx.embed_reply(channel.mention + " is {}NSFW".format("" if channel.is_nsfw() else "not "))
 
     @category.command(name = "position", with_app_command = False)
-    async def category_position(self, ctx, channel: discord.CategoryChannel, position: Optional[int]):  # noqa: UP007 (non-pep604-annotation)
+    async def category_position(self, ctx, channel: discord.CategoryChannel, position: Optional[int]):  # noqa: UP045 (non-pep604-annotation-optional)
         '''
         The position in the category list
         This is a number that starts at 0
@@ -103,7 +103,7 @@ class Channel(commands.Cog):
         await ctx.send_help(ctx.command)
 
     @text.command(name = "category", with_app_command = False)
-    async def text_category(self, ctx, channel: discord.TextChannel, *, category: Optional[discord.CategoryChannel]):  # noqa: UP007 (non-pep604-annotation)
+    async def text_category(self, ctx, channel: discord.TextChannel, *, category: Optional[discord.CategoryChannel]):  # noqa: UP045 (non-pep604-annotation-optional)
         '''Category the text channel belongs to'''
         if category:
             await checks.has_permissions_for(channel, manage_channels = True).predicate(ctx)
@@ -122,7 +122,7 @@ class Channel(commands.Cog):
         await ctx.embed_reply(channel.mention + " created")
 
     @text.command(name = "name", with_app_command = False)
-    async def text_name(self, ctx, channel: discord.TextChannel, *, name: Optional[str]):  # noqa: UP007 (non-pep604-annotation)
+    async def text_name(self, ctx, channel: discord.TextChannel, *, name: Optional[str]):  # noqa: UP045 (non-pep604-annotation-optional)
         '''Name of a text channel'''
         if name:
             await checks.has_permissions_for(channel, manage_channels = True).predicate(ctx)
@@ -133,7 +133,7 @@ class Channel(commands.Cog):
             await ctx.embed_reply(channel)
 
     @text.command(name = "nsfw", with_app_command = False)
-    async def text_nsfw(self, ctx, channel: discord.TextChannel, nsfw: Optional[bool]):  # noqa: UP007 (non-pep604-annotation)
+    async def text_nsfw(self, ctx, channel: discord.TextChannel, nsfw: Optional[bool]):  # noqa: UP045 (non-pep604-annotation-optional)
         '''Whether a text channel is NSFW or not'''
         if nsfw is not None:
             await checks.has_permissions_for(channel, manage_channels = True).predicate(ctx)
@@ -144,7 +144,7 @@ class Channel(commands.Cog):
             await ctx.embed_reply(channel.mention + " is {}NSFW".format("" if channel.is_nsfw() else "not "))
 
     @text.command(name = "position", with_app_command = False)
-    async def text_position(self, ctx, channel: discord.TextChannel, position: Optional[int]):  # noqa: UP007 (non-pep604-annotation)
+    async def text_position(self, ctx, channel: discord.TextChannel, position: Optional[int]):  # noqa: UP045 (non-pep604-annotation-optional)
         '''
         The position in the channel list
         This is a number that starts at 0
@@ -159,7 +159,7 @@ class Channel(commands.Cog):
             await ctx.embed_reply(f"{channel.mention}'s position is {channel.position}")
 
     @text.command(name = "slowmode", with_app_command = False)
-    async def text_slowmode(self, ctx, channel: discord.TextChannel, slowmode_delay: Optional[int]):  # noqa: UP007 (non-pep604-annotation)
+    async def text_slowmode(self, ctx, channel: discord.TextChannel, slowmode_delay: Optional[int]):  # noqa: UP045 (non-pep604-annotation-optional)
         '''
         Slowmode setting
         Slowmode delay must be between 0 and 120 inclusive
@@ -191,7 +191,7 @@ class Channel(commands.Cog):
         await ctx.embed_reply("Permissions synced with: " + channel.category.mention)
 
     @text.command(name = "topic", with_app_command = False)
-    async def text_topic(self, ctx, channel: discord.TextChannel, *, topic: Optional[str]):  # noqa: UP007 (non-pep604-annotation)
+    async def text_topic(self, ctx, channel: discord.TextChannel, *, topic: Optional[str]):  # noqa: UP045 (non-pep604-annotation-optional)
         '''Name of a text channel'''
         if topic:
             await checks.has_permissions_for(channel, manage_channels = True).predicate(ctx)
@@ -223,7 +223,7 @@ class Channel(commands.Cog):
         await ctx.send_help(ctx.command)
 
     @voice.command(name = "bitrate", with_app_command = False)
-    async def voice_bitrate(self, ctx, channel: discord.VoiceChannel, bitrate: Optional[int]):  # noqa: UP007 (non-pep604-annotation)
+    async def voice_bitrate(self, ctx, channel: discord.VoiceChannel, bitrate: Optional[int]):  # noqa: UP045 (non-pep604-annotation-optional)
         '''Voice channel's preferred audio bitrate in bits per second'''
         if bitrate is not None:
             await checks.has_permissions_for(channel, manage_channels = True).predicate(ctx)
@@ -234,7 +234,7 @@ class Channel(commands.Cog):
             await ctx.embed_reply(f"{channel.mention}'s bitrate is {channel.bitrate}")
 
     @voice.command(name = "category", with_app_command = False)
-    async def voice_category(self, ctx, channel: discord.VoiceChannel, *, category: Optional[discord.CategoryChannel]):  # noqa: UP007 (non-pep604-annotation)
+    async def voice_category(self, ctx, channel: discord.VoiceChannel, *, category: Optional[discord.CategoryChannel]):  # noqa: UP045 (non-pep604-annotation-optional)
         '''Category the voice channel belongs to'''
         if category:
             await checks.has_permissions_for(channel, manage_channels = True).predicate(ctx)
@@ -253,7 +253,7 @@ class Channel(commands.Cog):
         await ctx.embed_reply(channel.mention + " created")
 
     @voice.command(name = "name", with_app_command = False)
-    async def voice_name(self, ctx, channel: discord.VoiceChannel, *, name: Optional[str]):  # noqa: UP007 (non-pep604-annotation)
+    async def voice_name(self, ctx, channel: discord.VoiceChannel, *, name: Optional[str]):  # noqa: UP045 (non-pep604-annotation-optional)
         '''Name of a voice channel'''
         if name:
             await checks.has_permissions_for(channel, manage_channels = True).predicate(ctx)
@@ -264,7 +264,7 @@ class Channel(commands.Cog):
             await ctx.embed_reply(channel)
 
     @voice.command(name = "position", with_app_command = False)
-    async def voice_position(self, ctx, channel: discord.VoiceChannel, position: Optional[int]):  # noqa: UP007 (non-pep604-annotation)
+    async def voice_position(self, ctx, channel: discord.VoiceChannel, position: Optional[int]):  # noqa: UP045 (non-pep604-annotation-optional)
         '''
         The position in the channel list
         This is a number that starts at 0
@@ -287,7 +287,7 @@ class Channel(commands.Cog):
         await ctx.embed_reply("Permissions synced with: " + channel.category.mention)
 
     @voice.command(name = "user_limit", aliases = ["userlimit"], with_app_command = False)
-    async def voice_user_limit(self, ctx, channel: discord.VoiceChannel, user_limit: Optional[int]):  # noqa: UP007 (non-pep604-annotation)
+    async def voice_user_limit(self, ctx, channel: discord.VoiceChannel, user_limit: Optional[int]):  # noqa: UP045 (non-pep604-annotation-optional)
         '''Limit for number of members that can be in the voice channel'''
         if user_limit is not None:
             await checks.has_permissions_for(channel, manage_channels = True).predicate(ctx)

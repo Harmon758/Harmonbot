@@ -157,7 +157,7 @@ class RPS(commands.Cog):
     async def rps(
         self, ctx,
         rps_object: str,
-        variant: Optional[Literal["RPS", "RPSLS", "RPSLSSBWG", "CFN"]] = "RPS"  # noqa: UP007 (non-pep604-annotation)
+        variant: Optional[Literal["RPS", "RPSLS", "RPSLSSBWG", "CFN"]] = "RPS"  # noqa: UP045 (non-pep604-annotation-optional)
     ):
         '''
         Rock Paper Scissors

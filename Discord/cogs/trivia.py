@@ -51,10 +51,10 @@ class Trivia(commands.Cog):
     @commands.hybrid_group(case_insensitive = True, fallback = "question")
     async def trivia(
         self, ctx,
-        betting: Optional[bool] = False,  # noqa: UP007 (non-pep604-annotation)
-        override_modal_answers: Optional[bool] = False,  # noqa: UP007 (non-pep604-annotation)
-        react: Optional[bool] = True,  # noqa: UP007 (non-pep604-annotation)
-        seconds: Optional[commands.Range[int, 1, 60]] = 15  # noqa: UP007 (non-pep604-annotation)
+        betting: Optional[bool] = False,  # noqa: UP045 (non-pep604-annotation-optional)
+        override_modal_answers: Optional[bool] = False,  # noqa: UP045 (non-pep604-annotation-optional)
+        react: Optional[bool] = True,  # noqa: UP045 (non-pep604-annotation-optional)
+        seconds: Optional[commands.Range[int, 1, 60]] = 15  # noqa: UP045 (non-pep604-annotation-optional)
     ):
         """
         Trivia question
@@ -187,11 +187,11 @@ class Trivia(commands.Cog):
     @trivia.command(aliases = ["jeopardy"])
     async def board(
         self, ctx,
-        buzzer: Optional[bool] = False,  # noqa: UP007 (non-pep604-annotation)
-        delete_selection_messages: Optional[bool] = True,  # noqa: UP007 (non-pep604-annotation)
-        react: Optional[bool] = False,  # noqa: UP007 (non-pep604-annotation)
-        seconds: Optional[commands.Range[int, 1, 60]] = 15,  # noqa: UP007 (non-pep604-annotation)
-        turns: Optional[bool] = False  # noqa: UP007 (non-pep604-annotation)
+        buzzer: Optional[bool] = False,  # noqa: UP045 (non-pep604-annotation-optional)
+        delete_selection_messages: Optional[bool] = True,  # noqa: UP045 (non-pep604-annotation-optional)
+        react: Optional[bool] = False,  # noqa: UP045 (non-pep604-annotation-optional)
+        seconds: Optional[commands.Range[int, 1, 60]] = 15,  # noqa: UP045 (non-pep604-annotation-optional)
+        turns: Optional[bool] = False  # noqa: UP045 (non-pep604-annotation-optional)
     ):
         """
         Trivia board
