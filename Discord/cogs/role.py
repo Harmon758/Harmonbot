@@ -3,6 +3,7 @@ import discord
 from discord.ext import commands
 
 from operator import attrgetter
+from typing import Optional
 
 from utilities import checks
 
@@ -28,7 +29,7 @@ class Role(commands.Cog):
 
     @role.command(aliases = ["colour"], with_app_command = False)
     async def color(
-        self, ctx, role: discord.Role, *, color: discord.Color = None
+        self, ctx, role: discord.Role, *, color: Optional[discord.Color]  # noqa: UP045 (non-pep604-annotation-optional)
     ):
         '''The color of a role'''
         if color:
