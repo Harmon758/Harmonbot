@@ -60,7 +60,7 @@ class Role(commands.Cog):
         await ctx.embed_reply(role.mention + " is {}the default role".format("" if role.is_default() else "not "))
 
     @role.command(aliases = ["hoist"], with_app_command = False)
-    async def hoisted(self, ctx, role: discord.Role, hoist: bool = None):
+    async def hoisted(self, ctx, role: discord.Role, hoist: Optional[bool]):  # noqa: UP045 (non-pep604-annotation-optional)
         '''Whether a role is displayed separately from other members or not'''
         if hoist is not None:
             await commands.check_any(commands.has_guild_permissions(manage_roles = True), commands.is_owner()).predicate(ctx)
