@@ -99,7 +99,7 @@ class Role(commands.Cog):
         await ctx.embed_reply(role.mention + " is {}managed".format("" if role.managed else "not "))
 
     @role.command(with_app_command = False)
-    async def mentionable(self, ctx, role: discord.Role, mentionable: bool = None):
+    async def mentionable(self, ctx, role: discord.Role, mentionable: Optional[bool]):  # noqa: UP045 (non-pep604-annotation-optional)
         '''Whether a role is mentionable or not'''
         if mentionable is not None:
             await commands.check_any(commands.has_guild_permissions(manage_roles = True), commands.is_owner()).predicate(ctx)
