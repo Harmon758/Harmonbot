@@ -110,7 +110,7 @@ class Role(commands.Cog):
             await ctx.embed_reply(role.mention + " is {}mentionable".format("" if role.mentionable else "not "))
 
     @role.command(with_app_command = False)
-    async def name(self, ctx, role: discord.Role, *, name: str = ""):
+    async def name(self, ctx, role: discord.Role, *, name: Optional[str]):  # noqa: UP045 (non-pep604-annotation-optional)
         '''The name of a role'''
         if name:
             await commands.check_any(
