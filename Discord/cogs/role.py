@@ -126,7 +126,7 @@ class Role(commands.Cog):
             await ctx.embed_reply(role.name)
 
     @role.command(with_app_command = False)
-    async def position(self, ctx, role: discord.Role, position: int = None):
+    async def position(self, ctx, role: discord.Role, position: Optional[int]):  # noqa: UP045 (non-pep604-annotation-optional)
         '''
         The position of a role
         This number is usually positive
