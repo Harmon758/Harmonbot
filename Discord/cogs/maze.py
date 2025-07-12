@@ -232,7 +232,7 @@ class MazeCog(commands.Cog, name = "Maze"):
             task = ctx.bot.loop.create_task(ctx.bot.wait_for(
                 "message", 
                 check = lambda message: 
-                    message.channel == ctx.channel and message.content.lower() in self.move_mapping.keys()
+                    message.channel == ctx.channel and message.content.lower() in self.move_mapping
                     # author = ctx.author
             ), name = "Wait for maze move message")
             self.tasks.append(task)
