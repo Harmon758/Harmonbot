@@ -529,7 +529,7 @@ class Meta(commands.Cog):
 
     @harmonbot.command(name = "avatar")
     @checks.not_forbidden()
-    async def harmonbot_avatar(self, ctx, filename: Optional[str]):
+    async def harmonbot_avatar(self, ctx, filename: Optional[str]):  # noqa: UP045 (non-pep604-annotation-optional)
         '''My avatar'''
         if not filename:
             await ctx.embed_reply(
