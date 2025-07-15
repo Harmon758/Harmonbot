@@ -427,7 +427,7 @@ class Meta(commands.Cog):
                         invoke_without_command = True, case_insensitive = True)
     @commands.guild_only()
     @checks.not_forbidden()
-    async def harmonbot_activity(self, ctx, *, name : str = ""):
+    async def harmonbot_activity(self, ctx, *, name: str = ""):
         '''My activity'''
         # TODO: Handle in DMs
         activity = ctx.me.activity
