@@ -474,7 +474,7 @@ class Meta(commands.Cog):
     @harmonbot_activity.command(name = "type")
     @commands.guild_only()
     @checks.not_forbidden()
-    async def harmonbot_activity_type(self, ctx, type : str = ""):
+    async def harmonbot_activity_type(self, ctx, type: str = ""):
         '''
         My activity type
         Valid types: playing, streaming, listening, watching
