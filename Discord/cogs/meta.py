@@ -508,7 +508,7 @@ class Meta(commands.Cog):
     @harmonbot_activity.command(name = "url")
     @commands.guild_only()
     @checks.not_forbidden()
-    async def harmonbot_activty_url(self, ctx, url : str = ""):
+    async def harmonbot_activty_url(self, ctx, url: str = ""):
         '''My activity url'''
         activity = ctx.me.activity
         if not url:
