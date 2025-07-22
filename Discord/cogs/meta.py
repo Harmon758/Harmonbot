@@ -553,7 +553,7 @@ class Meta(commands.Cog):
     @harmonbot.command(name = "nickname")
     @commands.guild_only()
     @checks.not_forbidden()
-    async def harmonbot_nickname(self, ctx, *, nickname: str = ""):
+    async def harmonbot_nickname(self, ctx, *, nickname: Optional[str]):  # noqa: UP045 (non-pep604-annotation-optional)
         """My nickname"""
         if not nickname:
             await ctx.embed_reply(ctx.me.nick)
