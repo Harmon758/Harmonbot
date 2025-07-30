@@ -53,7 +53,7 @@ class Blobs(commands.Cog):
         for menu in self.menus:
             menu.stop()
 
-    @commands.group(aliases = ["blob"], invoke_without_command = True, case_insensitive = True)
+    @commands.group(aliases = ["blob"], case_insensitive = True, invoke_without_command = True)
     @checks.not_forbidden()
     async def blobs(self, ctx, *, blob: str):
         '''Blob/Google Emoji'''
