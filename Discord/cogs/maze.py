@@ -213,7 +213,7 @@ class MazeCog(commands.Cog, name = "Maze"):
         for task in self.tasks:
             task.cancel()
 
-    @commands.group(invoke_without_command = True, case_insensitive = True)
+    @commands.group(case_insensitive = True, invoke_without_command = True)
     async def maze(self, ctx, height: int = 5, width: int = 5, random_start: bool = False, random_end: bool = False):
         '''
         Maze game
