@@ -105,7 +105,7 @@ class RSS(commands.Cog):
     def cog_unload(self):
         self.check_feeds.cancel()
 
-    @commands.group(aliases = ["feed"], invoke_without_command = True, case_insensitive = True)
+    @commands.group(aliases = ["feed"], case_insensitive = True, invoke_without_command = True)
     @checks.not_forbidden()
     async def rss(self, ctx):
         '''RSS'''
