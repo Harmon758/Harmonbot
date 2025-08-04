@@ -29,7 +29,7 @@ class DotA(commands.Cog):
 		'''Get Dotabuff link'''
 		await ctx.embed_reply(f"https://www.dotabuff.com/players/{account}")
 	
-	@dota.group(invoke_without_command = True, case_insensitive = True)
+	@dota.group(case_insensitive = True, invoke_without_command = True)
 	async def player(self, ctx, account: SteamID32):
 		'''DotA 2 player'''
 		url = f"https://api.opendota.com/api/players/{account}"
