@@ -51,7 +51,7 @@ class DotA(commands.Cog):
 		await ctx.embed_reply(title = data["profile"]["personaname"], title_url = data["profile"]["profileurl"], 
 								thumbnail_url = data["profile"]["avatarfull"], fields = fields)
 	
-	@player.group(name = "words", invoke_without_command = True, case_insensitive = True)
+	@player.group(name = "words", case_insensitive = True, invoke_without_command = True)
 	async def player_words(self, ctx):
 		'''Words said or read in all chat'''
 		await ctx.send_help(ctx.command)
