@@ -56,7 +56,7 @@ class DotA(commands.Cog):
 		'''Words said or read in all chat'''
 		await ctx.send_help(ctx.command)
 	
-	@player_words.command(name = "said", invoke_without_command = True, case_insensitive = True)
+	@player_words.command(name = "said", case_insensitive = True, invoke_without_command = True)
 	async def player_words_said(self, ctx, account: SteamID32):
 		'''Word cloud of words said in all chat'''
 		url = f"https://api.opendota.com/api/players/{account}/wordcloud"
