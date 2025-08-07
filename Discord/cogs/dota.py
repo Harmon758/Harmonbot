@@ -72,7 +72,7 @@ class DotA(commands.Cog):
 		await ctx.embed_reply(file = discord.File(buffer, filename = "word_cloud.png"), 
 								image_url = "attachment://word_cloud.png")
 	
-	@player_words.command(name = "read", invoke_without_command = True, case_insensitive = True)
+	@player_words.command(name = "read", case_insensitive = True, invoke_without_command = True)
 	async def player_words_read(self, ctx, account: SteamID32):
 		'''Word cloud of words read in all chat'''
 		url = f"https://api.opendota.com/api/players/{account}/wordcloud"
