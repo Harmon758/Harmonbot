@@ -32,14 +32,20 @@ class DotA(commands.Cog):
 	@dota.group(case_insensitive = True, invoke_without_command = True)
 	async def player(self, ctx, account: SteamID32):
 		'''DotA 2 player'''
-		url = f"https://api.opendota.com/api/players/{account}"
-		async with ctx.bot.aiohttp_session.get(url) as resp:
+		async with ctx.bot.aiohttp_session.get(
+			f"https://api.opendota.com/api/players/{account}"
+		) as resp:
 			data = await resp.json()
+		
 		if "profile" not in data:
-			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: DotA 2 profile not found")
-		url = f"https://api.opendota.com/api/players/{account}/wl"
-		async with ctx.bot.aiohttp_session.get(url) as resp:
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: DotA 2 profile not found")
+			return
+		
+		async with ctx.bot.aiohttp_session.get(
+			f"https://api.opendota.com/api/players/{account}/wl"
+		) as resp:
 			wl_data = await resp.json()
+		
 		fields = [("Wins", wl_data["win"]), ("Losses", wl_data["lose"])]
 		if wl_data["win"] or wl_data["lose"]:
 			fields.append(("Wins/Losees", f"{wl_data['win'] / (wl_data['win'] + wl_data['lose']) * 100:.2f}%"))
@@ -48,6 +54,7 @@ class DotA(commands.Cog):
 			fields.append(("Rank Tier", data["rank_tier"]))
 		if data["profile"]["loccountrycode"]:
 			fields.append(("Country", pycountry.countries.get(alpha_2 = data["profile"]["loccountrycode"]).name))
+		
 		await ctx.embed_reply(title = data["profile"]["personaname"], title_url = data["profile"]["profileurl"], 
 								thumbnail_url = data["profile"]["avatarfull"], fields = fields)
 	
