@@ -48,7 +48,7 @@ class DotA(commands.Cog):
 		
 		fields = [("Wins", wl_data["win"]), ("Losses", wl_data["lose"])]
 		if wl_data["win"] or wl_data["lose"]:
-			fields.append(("Wins/Losees", f"{wl_data['win'] / (wl_data['win'] + wl_data['lose']) * 100:.2f}%"))
+			fields.append(("Wins/Losses", f"{wl_data['win'] / (wl_data['win'] + wl_data['lose']) * 100:.2f}%"))
 		fields.append(("MMR Estimate", data["mmr_estimate"]["estimate"]))
 		if data["rank_tier"]:
 			fields.append(("Rank Tier", data["rank_tier"]))
