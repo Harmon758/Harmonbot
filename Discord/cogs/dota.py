@@ -38,7 +38,9 @@ class DotA(commands.Cog):
 			data = await resp.json()
 		
 		if "profile" not in data:
-			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: DotA 2 profile not found")
+			await ctx.embed_reply(
+				f"{ctx.bot.error_emoji} Error: DotA 2 profile not found"
+			)
 			return
 		
 		async with ctx.bot.aiohttp_session.get(
@@ -48,15 +50,29 @@ class DotA(commands.Cog):
 		
 		fields = [("Wins", wl_data["win"]), ("Losses", wl_data["lose"])]
 		if wl_data["win"] or wl_data["lose"]:
-			fields.append(("Wins/Losses", f"{wl_data['win'] / (wl_data['win'] + wl_data['lose']) * 100:.2f}%"))
+			fields.append(
+				(
+					"Wins/Losses",
+					f"{wl_data['win'] / (wl_data['win'] + wl_data['lose']) * 100:.2f}%"
+				)
+			)
 		fields.append(("MMR Estimate", data["mmr_estimate"]["estimate"]))
 		if data["rank_tier"]:
 			fields.append(("Rank Tier", data["rank_tier"]))
 		if data["profile"]["loccountrycode"]:
-			fields.append(("Country", pycountry.countries.get(alpha_2 = data["profile"]["loccountrycode"]).name))
+			fields.append(
+				(
+					"Country",
+					pycountry.countries.get(alpha_2 = data["profile"]["loccountrycode"]).name
+				)
+			)
 		
-		await ctx.embed_reply(title = data["profile"]["personaname"], title_url = data["profile"]["profileurl"], 
-								thumbnail_url = data["profile"]["avatarfull"], fields = fields)
+		await ctx.embed_reply(
+			title = data["profile"]["personaname"],
+			title_url = data["profile"]["profileurl"],
+			thumbnail_url = data["profile"]["avatarfull"],
+			fields = fields
+		)
 	
 	@player.group(name = "words", case_insensitive = True, invoke_without_command = True)
 	async def player_words(self, ctx):
