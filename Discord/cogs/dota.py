@@ -74,7 +74,9 @@ class DotA(commands.Cog):
 			fields = fields
 		)
 	
-	@player.group(name = "words", case_insensitive = True, invoke_without_command = True)
+	@player.group(
+		name = "words", case_insensitive = True, invoke_without_command = True
+	)
 	async def player_words(self, ctx):
 		'''Words said or read in all chat'''
 		await ctx.send_help(ctx.command)
