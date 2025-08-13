@@ -84,16 +84,21 @@ class DotA(commands.Cog):
 	@player_words.command(name = "said", case_insensitive = True, invoke_without_command = True)
 	async def player_words_said(self, ctx, account: SteamID32):
 		'''Word cloud of words said in all chat'''
-		url = f"https://api.opendota.com/api/players/{account}/wordcloud"
-		async with ctx.bot.aiohttp_session.get(url) as resp:
+		async with ctx.bot.aiohttp_session.get(
+			f"https://api.opendota.com/api/players/{account}/wordcloud"
+		) as resp:
 			data = await resp.json()
+		
 		if not data["my_word_counts"]:
-			return await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: No words found")
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: No words found")
+			return
+		
 		word_cloud = WordCloud()
 		word_cloud.fit_words(data["my_word_counts"])
 		buffer = io.BytesIO()
 		word_cloud.to_image().save(buffer, "PNG")
 		buffer.seek(0)
+		
 		await ctx.embed_reply(file = discord.File(buffer, filename = "word_cloud.png"), 
 								image_url = "attachment://word_cloud.png")
 	
