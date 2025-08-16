@@ -108,7 +108,9 @@ class DotA(commands.Cog):
 			image_url = "attachment://word_cloud.png"
 		)
 	
-	@player_words.command(name = "read", case_insensitive = True, invoke_without_command = True)
+	@player_words.command(
+		name = "read", case_insensitive = True, invoke_without_command = True
+	)
 	async def player_words_read(self, ctx, account: SteamID32):
 		'''Word cloud of words read in all chat'''
 		async with ctx.bot.aiohttp_session.get(
@@ -117,7 +119,9 @@ class DotA(commands.Cog):
 			data = await resp.json()
 		
 		if not data["all_word_counts"]:
-			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: No words found")
+			await ctx.embed_reply(
+				f"{ctx.bot.error_emoji} Error: No words found"
+			)
 			return
 		
 		word_cloud = WordCloud()
@@ -126,6 +130,8 @@ class DotA(commands.Cog):
 		word_cloud.to_image().save(buffer, "PNG")
 		buffer.seek(0)
 		
-		await ctx.embed_reply(file = discord.File(buffer, filename = "word_cloud.png"), 
-								image_url = "attachment://word_cloud.png")
+		await ctx.embed_reply(
+			file = discord.File(buffer, filename = "word_cloud.png"),
+			image_url = "attachment://word_cloud.png"
+		)
 
