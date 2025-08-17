@@ -18,7 +18,10 @@ class DotA(commands.Cog):
 	async def cog_check(self, ctx):
 		return await checks.not_forbidden().predicate(ctx)
 	
-	@commands.group(aliases = ["dota2"], case_insensitive = True, invoke_without_command = True)
+	@commands.group(
+		aliases = ["dota2"],
+		case_insensitive = True, invoke_without_command = True
+	)
 	async def dota(self, ctx):
 		'''Defense of the Ancients 2'''
 		await ctx.send_help(ctx.command)
