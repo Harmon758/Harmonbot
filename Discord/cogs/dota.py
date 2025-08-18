@@ -11,130 +11,130 @@ from utilities import checks
 from utilities.converters import SteamID32
 
 async def setup(bot):
-	await bot.add_cog(DotA())
+    await bot.add_cog(DotA())
 
 class DotA(commands.Cog):
-	
-	async def cog_check(self, ctx):
-		return await checks.not_forbidden().predicate(ctx)
-	
-	@commands.group(
-		aliases = ["dota2"],
-		case_insensitive = True, invoke_without_command = True
-	)
-	async def dota(self, ctx):
-		'''Defense of the Ancients 2'''
-		await ctx.send_help(ctx.command)
-	
-	# TODO: Add dota buff subcommand alias
-	@commands.command()
-	async def dotabuff(self, ctx, account: SteamID32):
-		'''Get Dotabuff link'''
-		await ctx.embed_reply(f"https://www.dotabuff.com/players/{account}")
-	
-	@dota.group(case_insensitive = True, invoke_without_command = True)
-	async def player(self, ctx, account: SteamID32):
-		'''DotA 2 player'''
-		async with ctx.bot.aiohttp_session.get(
-			f"https://api.opendota.com/api/players/{account}"
-		) as resp:
-			data = await resp.json()
-		
-		if "profile" not in data:
-			await ctx.embed_reply(
-				f"{ctx.bot.error_emoji} Error: DotA 2 profile not found"
-			)
-			return
-		
-		async with ctx.bot.aiohttp_session.get(
-			f"https://api.opendota.com/api/players/{account}/wl"
-		) as resp:
-			wl_data = await resp.json()
-		
-		fields = [("Wins", wl_data["win"]), ("Losses", wl_data["lose"])]
-		if wl_data["win"] or wl_data["lose"]:
-			fields.append(
-				(
-					"Wins/Losses",
-					f"{wl_data['win'] / (wl_data['win'] + wl_data['lose']) * 100:.2f}%"
-				)
-			)
-		fields.append(("MMR Estimate", data["mmr_estimate"]["estimate"]))
-		if data["rank_tier"]:
-			fields.append(("Rank Tier", data["rank_tier"]))
-		if data["profile"]["loccountrycode"]:
-			fields.append(
-				(
-					"Country",
-					pycountry.countries.get(alpha_2 = data["profile"]["loccountrycode"]).name
-				)
-			)
-		
-		await ctx.embed_reply(
-			title = data["profile"]["personaname"],
-			title_url = data["profile"]["profileurl"],
-			thumbnail_url = data["profile"]["avatarfull"],
-			fields = fields
-		)
-	
-	@player.group(
-		name = "words", case_insensitive = True, invoke_without_command = True
-	)
-	async def player_words(self, ctx):
-		'''Words said or read in all chat'''
-		await ctx.send_help(ctx.command)
-	
-	@player_words.command(
-		name = "said", case_insensitive = True, invoke_without_command = True
-	)
-	async def player_words_said(self, ctx, account: SteamID32):
-		'''Word cloud of words said in all chat'''
-		async with ctx.bot.aiohttp_session.get(
-			f"https://api.opendota.com/api/players/{account}/wordcloud"
-		) as resp:
-			data = await resp.json()
-		
-		if not data["my_word_counts"]:
-			await ctx.embed_reply(
-				f"{ctx.bot.error_emoji} Error: No words found"
-			)
-			return
-		
-		word_cloud = WordCloud()
-		word_cloud.fit_words(data["my_word_counts"])
-		buffer = io.BytesIO()
-		word_cloud.to_image().save(buffer, "PNG")
-		buffer.seek(0)
-		
-		await ctx.embed_reply(
-			file = discord.File(buffer, filename = "word_cloud.png"),
-			image_url = "attachment://word_cloud.png"
-		)
-	
-	@player_words.command(
-		name = "read", case_insensitive = True, invoke_without_command = True
-	)
-	async def player_words_read(self, ctx, account: SteamID32):
-		'''Word cloud of words read in all chat'''
-		async with ctx.bot.aiohttp_session.get(
-			f"https://api.opendota.com/api/players/{account}/wordcloud"
-		) as resp:
-			data = await resp.json()
-		
-		if not data["all_word_counts"]:
-			await ctx.embed_reply(
-				f"{ctx.bot.error_emoji} Error: No words found"
-			)
-			return
-		
-		word_cloud = WordCloud()
-		word_cloud.fit_words(data["all_word_counts"])
-		buffer = io.BytesIO()
-		word_cloud.to_image().save(buffer, "PNG")
-		buffer.seek(0)
-		
-		await ctx.embed_reply(
-			file = discord.File(buffer, filename = "word_cloud.png"),
-			image_url = "attachment://word_cloud.png"
-		)
+
+    async def cog_check(self, ctx):
+        return await checks.not_forbidden().predicate(ctx)
+
+    @commands.group(
+        aliases = ["dota2"],
+        case_insensitive = True, invoke_without_command = True
+    )
+    async def dota(self, ctx):
+        '''Defense of the Ancients 2'''
+        await ctx.send_help(ctx.command)
+
+    # TODO: Add dota buff subcommand alias
+    @commands.command()
+    async def dotabuff(self, ctx, account: SteamID32):
+        '''Get Dotabuff link'''
+        await ctx.embed_reply(f"https://www.dotabuff.com/players/{account}")
+
+    @dota.group(case_insensitive = True, invoke_without_command = True)
+    async def player(self, ctx, account: SteamID32):
+        '''DotA 2 player'''
+        async with ctx.bot.aiohttp_session.get(
+            f"https://api.opendota.com/api/players/{account}"
+        ) as resp:
+            data = await resp.json()
+
+        if "profile" not in data:
+            await ctx.embed_reply(
+                f"{ctx.bot.error_emoji} Error: DotA 2 profile not found"
+            )
+            return
+
+        async with ctx.bot.aiohttp_session.get(
+            f"https://api.opendota.com/api/players/{account}/wl"
+        ) as resp:
+            wl_data = await resp.json()
+
+        fields = [("Wins", wl_data["win"]), ("Losses", wl_data["lose"])]
+        if wl_data["win"] or wl_data["lose"]:
+            fields.append(
+                (
+                    "Wins/Losses",
+                    f"{wl_data['win'] / (wl_data['win'] + wl_data['lose']) * 100:.2f}%"
+                )
+            )
+        fields.append(("MMR Estimate", data["mmr_estimate"]["estimate"]))
+        if data["rank_tier"]:
+            fields.append(("Rank Tier", data["rank_tier"]))
+        if data["profile"]["loccountrycode"]:
+            fields.append(
+                (
+                    "Country",
+                    pycountry.countries.get(alpha_2 = data["profile"]["loccountrycode"]).name
+                )
+            )
+
+        await ctx.embed_reply(
+            title = data["profile"]["personaname"],
+            title_url = data["profile"]["profileurl"],
+            thumbnail_url = data["profile"]["avatarfull"],
+            fields = fields
+        )
+
+    @player.group(
+        name = "words", case_insensitive = True, invoke_without_command = True
+    )
+    async def player_words(self, ctx):
+        '''Words said or read in all chat'''
+        await ctx.send_help(ctx.command)
+
+    @player_words.command(
+        name = "said", case_insensitive = True, invoke_without_command = True
+    )
+    async def player_words_said(self, ctx, account: SteamID32):
+        '''Word cloud of words said in all chat'''
+        async with ctx.bot.aiohttp_session.get(
+            f"https://api.opendota.com/api/players/{account}/wordcloud"
+        ) as resp:
+            data = await resp.json()
+
+        if not data["my_word_counts"]:
+            await ctx.embed_reply(
+                f"{ctx.bot.error_emoji} Error: No words found"
+            )
+            return
+
+        word_cloud = WordCloud()
+        word_cloud.fit_words(data["my_word_counts"])
+        buffer = io.BytesIO()
+        word_cloud.to_image().save(buffer, "PNG")
+        buffer.seek(0)
+
+        await ctx.embed_reply(
+            file = discord.File(buffer, filename = "word_cloud.png"),
+            image_url = "attachment://word_cloud.png"
+        )
+
+    @player_words.command(
+        name = "read", case_insensitive = True, invoke_without_command = True
+    )
+    async def player_words_read(self, ctx, account: SteamID32):
+        '''Word cloud of words read in all chat'''
+        async with ctx.bot.aiohttp_session.get(
+            f"https://api.opendota.com/api/players/{account}/wordcloud"
+        ) as resp:
+            data = await resp.json()
+
+        if not data["all_word_counts"]:
+            await ctx.embed_reply(
+                f"{ctx.bot.error_emoji} Error: No words found"
+            )
+            return
+
+        word_cloud = WordCloud()
+        word_cloud.fit_words(data["all_word_counts"])
+        buffer = io.BytesIO()
+        word_cloud.to_image().save(buffer, "PNG")
+        buffer.seek(0)
+
+        await ctx.embed_reply(
+            file = discord.File(buffer, filename = "word_cloud.png"),
+            image_url = "attachment://word_cloud.png"
+        )
 
