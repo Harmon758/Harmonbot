@@ -1,6 +1,6 @@
 module harmonbot
 
-go 1.20
+go 1.23.0
 
 require (
 	github.com/bwmarrin/dgvoice v0.0.0-20210225172318-caaac756e02e
@@ -10,7 +10,7 @@ require (
 
 require (
 	github.com/gorilla/websocket v1.5.0 // indirect
-	golang.org/x/crypto v0.14.0 // indirect
-	golang.org/x/sys v0.13.0 // indirect
+	golang.org/x/crypto v0.35.0 // indirect
+	golang.org/x/sys v0.30.0 // indirect
 	layeh.com/gopus v0.0.0-20210501142526-1ee02d434e32 // indirect
 )
