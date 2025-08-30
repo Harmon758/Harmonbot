@@ -356,7 +356,7 @@ class Bot(commands.Bot):
         except Exception as e:
             sentry_sdk.capture_exception(e)
             # TODO: Include name of specific cog
-            print(f"Unhandled exception when loading cogs", file = sys.stderr)
+            print("Unhandled exception when loading cogs:", file = sys.stderr)
             traceback.print_exception(
                 type(e), e, e.__traceback__, file = sys.stderr
             )
