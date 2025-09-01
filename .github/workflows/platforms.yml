@@ -91,9 +91,8 @@ jobs:
         cache: true
     - name: Get dependencies
       run: |
-        go get github.com/bwmarrin/discordgo
-        go get github.com/bwmarrin/dgvoice
-        go get github.com/joho/godotenv
+        cd Discord
+        go mod download
     - name: Test Discord Listener
       env:
         DISCORD_LISTENER_BOT_TOKEN: ${{ secrets.DISCORD_LISTENER_BOT_TOKEN }}
