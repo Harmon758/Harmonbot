@@ -7,6 +7,10 @@ from bs4 import BeautifulSoup
 import dotenv
 import psycopg
 import requests
+from rich.progress import (
+    Progress,
+    BarColumn, MofNCompleteColumn, SpinnerColumn, TextColumn, TimeElapsedColumn
+)
 
 
 DEFAULT_DELAY = 20
@@ -57,7 +61,7 @@ connection.execute(
 connection.commit()
 
 
-print("Getting robots.txt ...")
+print("Getting robots.txt:")
 response = session.get("https://www.j-archive.com/robots.txt")
 
 user_agents = {}
@@ -84,13 +88,33 @@ else:
         f"using default delay of {DEFAULT_DELAY} seconds"
     )
 
-time.sleep(delay)
 
+waiting_progress = Progress(
+    SpinnerColumn(),
+    TextColumn("Waiting {task.remaining:.0f} second(s)"),
+    transient = True
+)
+waiting_progress.start()
 
-print("Processing seasons ...")
+for second in waiting_progress.track(range(delay)):
+    time.sleep(1)
+waiting_progress.remove_task(waiting_progress.task_ids[0])
+
+overall_progress = Progress(
+    TextColumn("{task.description}"),
+    BarColumn(),
+    MofNCompleteColumn(),
+    TimeElapsedColumn()
+)
+overall_progress.start()
+
+print("Getting seasons:")
+
 response = session.get("https://j-archive.com/listseasons.php")
 parsed = BeautifulSoup(response.text, "lxml")
-for a in parsed.table.find_all('a'):
+for a in overall_progress.track(
+    parsed.table.find_all('a'), description = "Processing seasons"
+):
     season_name = a.text
     season_url = "https://j-archive.com/" + a["href"]
 
@@ -105,12 +129,24 @@ for a in parsed.table.find_all('a'):
     )
     connection.commit()
 
-    print(f"Processing {season_name} ...")
-    time.sleep(delay)
+    for second in waiting_progress.track(range(delay)):
+        time.sleep(1)
+    waiting_progress.remove_task(waiting_progress.task_ids[0])
+
+    season_progress = Progress(
+        TextColumn("{task.description}"),
+        BarColumn(),
+        MofNCompleteColumn(),
+        TimeElapsedColumn()
+    )
+    season_progress.start()
 
     season_response = session.get(season_url)
     parsed_season = BeautifulSoup(season_response.text, "lxml")
-    for season_a in parsed_season.table.find_all('a'):
+    for season_a in season_progress.track(
+        parsed_season.table.find_all('a'),
+        description = f"Processing games from {season_name}"
+    ):
         game_url = season_a["href"]
         parsed_game_url = urlparse(game_url)
         try:
@@ -142,8 +178,11 @@ for a in parsed.table.find_all('a'):
         if not cursor.fetchone():  # Skip games already processed
             continue
 
+        for second in waiting_progress.track(range(delay)):
+            time.sleep(1)
+        waiting_progress.remove_task(waiting_progress.task_ids[0])
+
         print(f"Processing game: {game_id} ...")
-        time.sleep(delay)
 
         game_response = session.get(
             "https://j-archive.com/showgame.php",
@@ -240,6 +279,21 @@ for a in parsed.table.find_all('a'):
 
         # TODO: Final round?, clue ID not exposed
 
+    season_progress.update(
+        season_progress.task_ids[0],
+        description = f"Processed {season_name}",
+        refresh = True
+    )
+    season_progress.stop()
+
+overall_progress.update(
+    overall_progress.task_ids[0],
+    description = "Processed all seasons",
+    refresh = True
+)
+
+overall_progress.stop()
+waiting_progress.stop()
 connection.close()
 session.close()
 
