@@ -9,6 +9,9 @@ import psycopg
 import requests
 
 
+DEFAULT_DELAY = 20
+
+
 dotenv.load_dotenv()
 
 connection = psycopg.connect(
@@ -53,6 +56,37 @@ connection.execute(
 )
 connection.commit()
 
+
+print("Getting robots.txt ...")
+response = session.get("https://www.j-archive.com/robots.txt")
+
+user_agents = {}
+for user_agent_section in response.text.split("\n\n"):
+    lines = user_agent_section.split('\n')
+    if lines[0].lower().startswith("user-agent:"):
+        user_agents[lines[0].split(':')[1].strip()] = lines[1:]
+    else:
+        print(
+            "Encountered section of robots.txt that doesn't start with "
+            "\"User-Agent:\""
+        )
+
+delay = DEFAULT_DELAY
+
+for line in user_agents.get('*', []):
+    if line.lower().startswith("crawl-delay:"):
+        delay = int(line.split(':')[1])
+        print(f"Using specified crawl delay of {delay} seconds")
+        break
+else:
+    print(
+        "Couldn't find crawl delay directive for wildcard User-Agent; "
+        f"using default delay of {DEFAULT_DELAY} seconds"
+    )
+
+time.sleep(delay)
+
+
 print("Processing seasons ...")
 response = session.get("https://j-archive.com/listseasons.php")
 parsed = BeautifulSoup(response.text, "lxml")
@@ -72,7 +106,7 @@ for a in parsed.table.find_all('a'):
     connection.commit()
 
     print(f"Processing {season_name} ...")
-    time.sleep(10)
+    time.sleep(delay)
 
     season_response = session.get(season_url)
     parsed_season = BeautifulSoup(season_response.text, "lxml")
@@ -109,7 +143,7 @@ for a in parsed.table.find_all('a'):
             continue
 
         print(f"Processing game: {game_id} ...")
-        time.sleep(10)
+        time.sleep(delay)
 
         game_response = session.get(
             "https://j-archive.com/showgame.php",
