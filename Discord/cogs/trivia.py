@@ -833,8 +833,8 @@ class TriviaBoard:
         records = await self.bot.db.fetch(
             """
             SELECT clues.text, clues.answer, clues.value, clues.category,
-                   clues.daily_double, clues.double, clues.acceptable_answers,
-                   games.airdate
+                   clues.daily_double, clues.round_number,
+                   clues.acceptable_answers, games.airdate
             FROM trivia.clues
             JOIN trivia.games
             ON clues.game_id = games.id
@@ -872,8 +872,7 @@ class TriviaBoard:
             value = record["value"]
             if record["airdate"] < transition_date:
                 value *= 2
-            if record["double"]:
-                value //= 2
+            value //= record["round_number"]
 
             if value not in self.VALUES:
                 raise RuntimeError(
