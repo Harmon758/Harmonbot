@@ -570,7 +570,7 @@ class Twitter(commands.Cog):
                                 fragment = ""
                             ).geturl()
                         )
-                        content = f"[{user}]({user_link}) Retweeted:\n{link}"
+                        content = f"[{user}](<{user_link}>) Retweeted:\n{link}"
                     else:
                         content = link
 
