@@ -51,22 +51,22 @@ class Tweepy(commands.Cog):
         self.bot = bot
 
     async def cog_load(self):
-        url = "https://readthedocs.org/api/v3/projects/tweepy/versions/"
-        headers = {
-            "Authorization": "Token " + self.bot.READ_THE_DOCS_API_TOKEN
-        }
         async with self.bot.aiohttp_session.get(
-            url, headers = headers, params = {"built": "true"}
+            "https://readthedocs.org/api/v3/projects/tweepy/versions/",
+            headers = {
+                "Authorization": "Token " + self.bot.READ_THE_DOCS_API_TOKEN
+            },
+            params = {"built": "true"}
         ) as resp:
             data = await resp.json()
 
         self.rtd_version = max(data["results"], key = itemgetter("id"))["slug"]
 
-        url = (
+        async with self.bot.aiohttp_session.get(
             f"https://tweepy.readthedocs.io/en/{self.rtd_version}/objects.inv"
-        )
-        async with self.bot.aiohttp_session.get(url) as resp:
+        ) as resp:
             data = await resp.read()
+
         self.sphinx_inventory = sphobjinv.Inventory(data)
 
     @commands.Cog.listener()
