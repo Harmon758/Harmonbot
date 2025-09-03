@@ -875,9 +875,17 @@ class TriviaBoard:
             value //= record["round_number"]
 
             if value not in self.VALUES:
-                raise RuntimeError(
-                    f"Invalid clue value in trivia board generation: {record}"
-                )
+                # Handle Super Jeopardy! Double Jeopardy! values
+                # being 2.5x rather than 2x
+                # https://en.wikipedia.org/wiki/List_of_Jeopardy!_tournaments_and_events#Super_Jeopardy!
+                value *= 4
+                value //= 5
+
+                if value not in self.VALUES:
+                    raise RuntimeError(
+                        "Invalid clue value in trivia board generation: "
+                        f"{record}"
+                    )
 
             category = record["category"]
             categories[category] = (
