@@ -54,12 +54,16 @@ async def get_best_healthy_rss_instance_url(
 async def get_random_healthy_rss_instance_url(
     *, aiohttp_session: aiohttp.ClientSession | None = None,
     exclude: list[str] | tuple[str, ...] = ()
-) -> str:
-    return random.choice(
+) -> str | None:
+    healthy_rss_instances = (
         await get_healthy_rss_instances(
             aiohttp_session = aiohttp_session, exclude = exclude
         )
-    )["url"]
+    )
+    if healthy_rss_instances:
+        return random.choice(healthy_rss_instances)["url"]
+    else:
+        return None
 
 
 async def confirm_status_code(
