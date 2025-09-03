@@ -3,6 +3,7 @@ import discord
 from discord import ui
 from discord.ext import commands, menus
 
+from operator import itemgetter
 import re
 import textwrap
 
@@ -59,11 +60,7 @@ class Tweepy(commands.Cog):
         ) as resp:
             data = await resp.json()
 
-        highest_id = 0
-        for result in data["results"]:
-            if result["id"] > highest_id:
-                self.rtd_version = result["slug"]
-                highest_id = result["id"]
+        self.rtd_version = max(data["results"], key = itemgetter("id"))["slug"]
 
         url = (
             f"https://tweepy.readthedocs.io/en/{self.rtd_version}/objects.inv"
