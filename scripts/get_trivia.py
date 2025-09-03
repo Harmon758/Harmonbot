@@ -53,7 +53,7 @@ connection.execute(
         value         INT,
         category      TEXT,
         daily_double  BOOL DEFAULT FALSE,
-        double        BOOL DEFAULT FALSE,
+        round_number  INT,
         game_id       INT REFERENCES trivia.games (id)
     )
     """
@@ -197,7 +197,7 @@ for a in overall_progress.track(
             print(f"Airdate mismatch for game {game_id}")
 
         round_tables = parsed_game.find_all("table", class_ = "round")
-        for round, round_table in enumerate(round_tables):
+        for round_number, round_table in enumerate(round_tables, start = 1):
             categories = []
             for categonry_td in round_table.find_all(
                 "td", class_ = "category_name"
@@ -253,23 +253,24 @@ for a in overall_progress.track(
                     """
                     INSERT INTO trivia.clues (
                         id, text, answer, value, category, daily_double,
-                        double, game_id
+                        round_number, game_id
                     )
                     VALUES (
                         %(id)s, %(text)s, %(answer)s, %(value)s, %(category)s,
-                        %(daily_double)s, %(double)s, %(game_id)s
+                        %(daily_double)s, %(round_number)s, %(game_id)s
                     )
                     ON CONFLICT (id) DO
                     UPDATE SET text = %(text)s, answer = %(answer)s,
                                value = %(value)s, category = %(category)s,
                                daily_double = %(daily_double)s,
-                               double = %(double)s, game_id = %(game_id)s
+                               round_number = %(round_number)s,
+                               game_id = %(game_id)s
                     """,
                     {
                         "id": clue_id, "text": clue_text,
                         "answer": clue_answer, "value": clue_value,
                         "category": category, "daily_double": daily_double,
-                        "double": bool(round), "game_id": game_id
+                        "round_number": round_number, "game_id": game_id
                     }
                 )
                 connection.commit()
