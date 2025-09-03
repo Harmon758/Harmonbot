@@ -208,7 +208,8 @@ async def get_articles(
 
             extract = re.sub(
                 '|'.join(replacement_texts.keys()),
-                lambda match: replacement_texts[re.escape(match.group(0))],
+                lambda match: replacement_texts[re.escape(match.group(0))],  # type: ignore[index]
+                # https://github.com/python/mypy/issues/18738
                 extract
             )
 
