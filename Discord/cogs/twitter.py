@@ -430,7 +430,8 @@ class Twitter(commands.Cog):
             try:
                 # TODO: Handle connection errors?
                 async with self.bot.aiohttp_session.get(
-                    f"{nitter_instance_url}/{handle}/rss"
+                    f"{nitter_instance_url}/{handle}/rss",
+                    headers = {"User-Agent": self.bot.simple_user_agent}
                 ) as resp:
                     match resp.status:
                         case 200:
