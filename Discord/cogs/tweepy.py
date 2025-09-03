@@ -55,7 +55,7 @@ class Tweepy(commands.Cog):
             "Authorization": "Token " + self.bot.READ_THE_DOCS_API_TOKEN
         }
         async with self.bot.aiohttp_session.get(
-            url, headers = headers
+            url, headers = headers, params = {"built": "true"}
         ) as resp:
             data = await resp.json()
 
