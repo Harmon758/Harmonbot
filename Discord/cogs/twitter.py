@@ -424,6 +424,8 @@ class Twitter(commands.Cog):
                     exclude = self.nitter_instance_blacklist
                 )
             )
+            if not nitter_instance_url:
+                break
 
             try:
                 # TODO: Handle connection errors?
