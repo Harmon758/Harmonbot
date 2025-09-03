@@ -9,6 +9,7 @@ from pydantic import BaseModel
 
 from .aiohttp_client import ensure_session
 from .cache import async_cache
+from .user_agent import SIMPLE_USER_AGENT as USER_AGENT
 
 if TYPE_CHECKING:
     import aiohttp
@@ -16,8 +17,6 @@ if TYPE_CHECKING:
     from types import NotImplementedType
 
 
-USER_AGENT = "Harmonbot"
-# TODO: USER_AGENT for units
 # TODO: Check passed ClientSessions not already with User-Agent header
 #       Add functionality to aiohttp_client.ensure_session
 
