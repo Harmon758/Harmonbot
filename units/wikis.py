@@ -16,6 +16,12 @@ if TYPE_CHECKING:
     from types import NotImplementedType
 
 
+USER_AGENT = "Harmonbot"
+# TODO: USER_AGENT for units
+# TODO: Check passed ClientSessions not already with User-Agent header
+#       Add functionality to aiohttp_client.ensure_session
+
+
 class WikiInfo(BaseModel):
     name: str
     logo: str
@@ -43,12 +49,12 @@ class WikiArticle(BaseModel):
 async def get_api_endpoint(
     url: str, *, aiohttp_session: aiohttp.ClientSession | None = None
 ) -> str:
-    # TODO: Add User-Agent
     async with ensure_session(aiohttp_session) as aiohttp_session:
         url = url.rstrip('/')
         for script_path in ('/w', ""):
             async with aiohttp_session.get(
-                api_url := f"{url}{script_path}/api.php"
+                api_url := f"{url}{script_path}/api.php",
+                headers = {"User-Agent": USER_AGENT}
             ) as resp:
                 if resp.status == 200:
                     return api_url
@@ -64,7 +70,9 @@ async def get_article_beginning(
     async with ensure_session(aiohttp_session) as aiohttp_session:
         # https://www.mediawiki.org/wiki/API:Parsing_wikitext
         async with aiohttp_session.get(
-            article.wiki.api_url, params = {
+            article.wiki.api_url,
+            headers = {"User-Agent": USER_AGENT},
+            params = {
                 "action": "parse", "page": article.title, "prop": "text",
                 "format": "json"
             }
@@ -111,13 +119,12 @@ async def get_articles(
     redirect: bool = True,
     remove_duplicate: bool = True
 ) -> list[WikiArticle]:
-    # TODO: Add User-Agent
     async with ensure_session(aiohttp_session) as aiohttp_session:
         api_url = await get_api_endpoint(
             url, aiohttp_session = aiohttp_session
         )
         async with aiohttp_session.get(
-            api_url, params = {
+            api_url, headers = {"User-Agent": USER_AGENT}, params = {
                 # https://www.mediawiki.org/wiki/API:Query
                 "action": "query",
                 "prop": "info|extracts|pageimages|revisions",
@@ -302,7 +309,7 @@ async def get_random_article(
                 str(namespace) for namespace in random_namespaces
             )
         async with aiohttp_session.get(
-            api_url, params = {
+            api_url, headers = {"User-Agent": USER_AGENT}, params = {
                 "action": "query", "list": "random",
                 "rnnamespace": random_namespaces, "format": "json"
             }
@@ -322,13 +329,12 @@ async def get_random_article(
 async def get_wiki_info(
     url: str, *, aiohttp_session: aiohttp.ClientSession | None = None
 ) -> WikiInfo:
-    # TODO: Add User-Agent
     async with ensure_session(aiohttp_session) as aiohttp_session:
         api_url = await get_api_endpoint(
             url, aiohttp_session = aiohttp_session
         )
         async with aiohttp_session.get(
-            api_url, params = {
+            api_url, headers = {"User-Agent": USER_AGENT}, params = {
                 "action": "query", "meta": "siteinfo",
                 "format": "json", "formatversion": 2
             }
@@ -353,14 +359,13 @@ async def search_wiki(
     *,
     aiohttp_session: aiohttp.ClientSession | None = None
 ) -> list[WikiArticle]:
-    # TODO: Add User-Agent
     # TODO: Use textwrap
     async with ensure_session(aiohttp_session) as aiohttp_session:
         api_url = await get_api_endpoint(
             url, aiohttp_session = aiohttp_session
         )
         async with aiohttp_session.get(
-            api_url, params = {
+            api_url, headers = {"User-Agent": USER_AGENT}, params = {
                 "action": "query", "list": "search", "srsearch": search,
                 "srinfo": "suggestion", "srlimit": 20, "format": "json"
             }  # max exlimit is 20
