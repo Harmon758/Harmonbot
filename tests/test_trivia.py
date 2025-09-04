@@ -293,6 +293,13 @@ class TestCheckAnswer(unittest.TestCase):
             )
         )
 
+    def test_slash_with_article_prefix(self):
+        self.assertTrue(
+            check_answer(
+                answer = "The Netherlands/Holland", response = "netherlands"
+            )
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -329,13 +329,14 @@ def check_answer(*, answer, response, clue = None, inflect_engine = None):
 
 
 def remove_preceding_words(string: str) -> str:
+    lowercase_string = string.lower()
     for word in (
         ("a ", "an ", "the ") +  # articles
         ("her ", "his ", "its ", "their ", "your ") +  # possessive determiners
         ("to ",) +  # prepositions
         ("dr ", "sir ")  # honorifics
     ):
-        if string.startswith(word):
+        if lowercase_string.startswith(word):
             return string[len(word):]
     return string
 
