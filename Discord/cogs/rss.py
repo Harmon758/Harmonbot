@@ -475,16 +475,20 @@ def parse_thumbnail_url(entry):
     ):
         return thumbnail_url
 
-    if (
-        (content := entry.get("content")) and
-        (content_value := content[0].get("value")) and
-        (content_img := getattr(
-            BeautifulSoup(content_value, "lxml"),
-            "img"
-        )) and
-        (thumbnail_url := content_img.get("src"))
-    ):
-        return thumbnail_url
+    with warnings.catch_warnings():
+        warnings.filterwarnings(
+            "ignore", category = MarkupResemblesLocatorWarning
+        )
+        if (
+            (content := entry.get("content")) and
+            (content_value := content[0].get("value")) and
+            (content_img := getattr(
+                BeautifulSoup(content_value, "lxml"),
+                "img"
+            )) and
+            (thumbnail_url := content_img.get("src"))
+        ):
+            return thumbnail_url
 
     if (
         (media_content := entry.get("media_content")) and
