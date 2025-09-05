@@ -229,16 +229,11 @@ class Trivia(commands.Cog):
             await ctx.embed_reply(description)
             return
 
-        if not (
-            trivia_board := TriviaBoard(
-                seconds, buzzer = buzzer,
-                delete_selection_messages = delete_selection_messages,
-                react = react, turns = turns
-            )
-        ):
-            return
-
-        self.trivia_boards[ctx.channel.id] = trivia_board
+        self.trivia_boards[ctx.channel.id] = TriviaBoard(
+            seconds, buzzer = buzzer,
+            delete_selection_messages = delete_selection_messages,
+            react = react, turns = turns
+        )
         await self.trivia_boards[ctx.channel.id].start(ctx)
         await self.trivia_boards[ctx.channel.id].ended.wait()
         del self.trivia_boards[ctx.channel.id]
@@ -459,9 +454,7 @@ class TriviaBoard:
         if self.turns:
             self.turn = ctx.author  # Command invoker goes first
 
-        if not (await self.generate_board()):
-            await self.stop()
-            return False
+        await self.generate_board()
 
         embed = self.message.embeds[0]
         embed.description = ctx.bot.ANSI_CODE_BLOCK.format(
@@ -479,7 +472,6 @@ class TriviaBoard:
             self.ctx = await ctx.bot.get_context(self.ctx.message)
 
         self.awaiting_selection = True
-        return True
 
     async def answer(self, player, answer = None):
         if self.buzzer:
@@ -921,8 +913,6 @@ class TriviaBoard:
                     text_color = TextColor.BLUE
                 )
             )
-
-        return True
 
     async def send_winner(self):
         highest_score = max(self.scores.values())
