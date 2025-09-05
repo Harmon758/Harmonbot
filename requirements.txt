@@ -155,7 +155,7 @@ pathspec==0.12.1
 pluggy==1.6.0
 preshed==3.0.9
 protobuf==4.25.1
-proto-plus==1.23.0
+proto-plus==1.26.1
 psycopg-binary==3.2.9
 pyasn1==0.6.1
 pyasn1-modules==0.4.2
