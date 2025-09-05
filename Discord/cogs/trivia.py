@@ -825,8 +825,7 @@ class TriviaBoard:
         records = await self.bot.db.fetch(
             """
             SELECT clues.text, clues.answer, clues.value, clues.category,
-                   clues.daily_double, clues.round_number,
-                   clues.acceptable_answers, games.airdate
+                   clues.daily_double, clues.acceptable_answers, games.airdate
             FROM trivia.clues
             JOIN trivia.games
             ON clues.game_id = games.id
@@ -848,47 +847,49 @@ class TriviaBoard:
             """
         )
 
-        # The first round originally ranged from $100 to $500
-        # and was doubled to $200 to $1,000 on November 26, 2001
-        # https://en.wikipedia.org/wiki/Jeopardy!
-        # http://www.j-archive.com/showgame.php?game_id=1062
-        transition_date = datetime.date(2001, 11, 26)
-
         categories = {}
-        daily_doubles = []
         for record in records:
-            if record["daily_double"]:
-                daily_doubles.append(record)
-                continue
+            categories.setdefault(record["category"], []).append(record)
 
-            value = record["value"]
-            if record["airdate"] < transition_date:
-                value *= 2
-            value //= record["round_number"]
+        for category, clues in categories.items():
+            values = {
+                clue["value"] for clue in clues if not clue["daily_double"]
+            }
 
-            if value not in self.VALUES:
-                # Handle Super Jeopardy! Double Jeopardy! values
-                # being 2.5x rather than 2x
-                # https://en.wikipedia.org/wiki/List_of_Jeopardy!_tournaments_and_events#Super_Jeopardy!
-                value *= 4
-                value //= 5
+            # Clue values originally ranged from $100 to $500 in Jeopardy! and
+            # from $200 to $1,000 in Double Jeopardy! These ranges increased
+            # to $200 to $1,000 and $400 to $2,000, respectively, on 2001-11-26
+            # https://en.wikipedia.org/wiki/Jeopardy!
 
-                if value not in self.VALUES:
-                    raise RuntimeError(
-                        "Invalid clue value in trivia board generation: "
-                        f"{record}"
-                    )
+            # Celebrity Jeopardy! Triple Jeopardy! values were
+            # from $300 to $1,500
+            # https://en.wikipedia.org/wiki/Celebrity_Jeopardy!
 
-            category = record["category"]
-            categories[category] = (
-                categories.get(category, {}) | {value: record}
-            )
+            # Super Jeopardy! Double Jeopardy! values were from $500 to $2,500
+            # https://en.wikipedia.org/wiki/List_of_Jeopardy!_tournaments_and_events#Super_Jeopardy!
 
-        for daily_double in daily_doubles:
-            category = daily_double["category"]
-            for value in self.VALUES:
-                if value not in categories[category]:
-                    categories[category][value] = daily_double
+            if values <= (all_values := {100, 200, 300, 400, 500}):
+                multiplier = 2
+            elif values <= (all_values := {200, 400, 600, 800, 1000}):
+                multiplier = 1
+            elif values <= (all_values := {300, 600, 900, 1200, 1500}):
+                multiplier = 2 / 3
+            elif values <= (all_values := {400, 800, 1200, 1600, 2000}):
+                multiplier = 1 / 2
+            elif values <= (all_values := {500, 1000, 1500, 2000, 2500}):
+                multiplier = 2 / 5
+            else:
+                raise RuntimeError(
+                    f"Invalid clue values in trivia board generation: {clues}"
+                )
+
+            categories[category] = {}
+            for clue in clues:
+                if clue["daily_double"]:
+                    value = (all_values - values).pop()
+                else:
+                    value = clue["value"]
+                categories[category][int(value * multiplier)] = clue
 
         self.board = [
             {"title": capwords(category), "clues": clues}
