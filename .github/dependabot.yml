@@ -37,6 +37,9 @@ updates:
       psycopg:
         patterns:
           - "psycopg*"
+      pyasn1:
+        patterns:
+          - "pyasn1*"
       pydantic:
         patterns:
           - "pydantic*"
