@@ -130,7 +130,7 @@ importlib-resources==6.5.2
 iniconfig==2.0.0
 jaraco.collections==5.2.1
 jaraco.context==6.0.1
-jaraco.functools==4.0.0
+jaraco.functools==4.3.0
 jaraco.logging==3.4.0
 jaraco.stream==3.0.3
 jaraco.text==4.0.0
