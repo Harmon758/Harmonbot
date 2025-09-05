@@ -234,9 +234,11 @@ class Trivia(commands.Cog):
             delete_selection_messages = delete_selection_messages,
             react = react, turns = turns
         )
-        await self.trivia_boards[ctx.channel.id].start(ctx)
-        await self.trivia_boards[ctx.channel.id].ended.wait()
-        del self.trivia_boards[ctx.channel.id]
+        try:
+            await self.trivia_boards[ctx.channel.id].start(ctx)
+            await self.trivia_boards[ctx.channel.id].ended.wait()
+        finally:
+            del self.trivia_boards[ctx.channel.id]
 
     @commands.Cog.listener("on_message")
     async def on_trivia_board_message(self, message):
