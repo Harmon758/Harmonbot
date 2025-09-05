@@ -191,7 +191,7 @@ tritonclient==2.34.0
 typeguard==4.4.4
 typer==0.9.0
 tzdata==2023.3
-uritemplate==4.1.1
+uritemplate==4.2.0
 wasabi==1.1.2
 weasel==0.3.4
 websockets==10.4
