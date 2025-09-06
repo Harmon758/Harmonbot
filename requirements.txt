@@ -201,7 +201,7 @@ uritemplate==4.2.0
 wasabi==1.1.2
 weasel==0.3.4
 websockets==10.4
-wrapt==1.16.0
+wrapt==1.17.3
 xmltodict==0.15.0
 yarl==1.20.1
 
