@@ -59,8 +59,7 @@ async def get_ge_data(
             item_id = await get_item_id(item, aiohttp_session = aiohttp_session)
         async with aiohttp_session.get(
             "https://services.runescape.com/m=itemdb_rs/api/catalogue/detail.json",
-            params = {"item": item_id}  # type: ignore[dict-item]
-            # https://github.com/aio-libs/aiohttp/issues/8563
+            params = {"item": item_id}
         ) as resp:
             if resp.status == 404:
                 raise ValueError(f"{item} not found on the Grand Exchange")
