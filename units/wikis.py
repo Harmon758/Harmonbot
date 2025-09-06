@@ -136,7 +136,8 @@ async def get_articles(
                 "exintro": "",
                 "explaintext": "",
                 # https://www.mediawiki.org/wiki/Extension:PageImages
-                "pithumbsize": 9000,
+                "pithumbsize": 9000,  # type: ignore[dict-item]
+                # https://github.com/aio-libs/aiohttp/issues/8563
                 "pilicense": "any",
                 # https://www.mediawiki.org/wiki/API:Revisions
                 "rvprop": "content",
@@ -313,7 +314,9 @@ async def get_random_article(
         async with aiohttp_session.get(
             api_url, params = {
                 "action": "query", "list": "random",
-                "rnnamespace": random_namespaces, "format": "json"
+                "rnnamespace": random_namespaces,  # type: ignore[dict-item]
+                # https://github.com/aio-libs/aiohttp/issues/8563
+                "format": "json"
             }
         ) as resp:  # https://www.mediawiki.org/wiki/API:Random
             data = await resp.json()
@@ -340,7 +343,9 @@ async def get_wiki_info(
         async with aiohttp_session.get(
             api_url, params = {
                 "action": "query", "meta": "siteinfo",
-                "format": "json", "formatversion": 2
+                "format": "json",
+                "formatversion": 2  # type: ignore[dict-item]
+                # https://github.com/aio-libs/aiohttp/issues/8563
             }
         ) as resp:  # https://www.mediawiki.org/wiki/API:Siteinfo
             data = await resp.json()
@@ -373,7 +378,10 @@ async def search_wiki(
         async with aiohttp_session.get(
             api_url, params = {
                 "action": "query", "list": "search", "srsearch": search,
-                "srinfo": "suggestion", "srlimit": 20, "format": "json"
+                "srinfo": "suggestion",
+                "srlimit": 20,  # type: ignore[dict-item]
+                # https://github.com/aio-libs/aiohttp/issues/8563
+                "format": "json"
             }  # max exlimit is 20
         ) as resp:  # https://www.mediawiki.org/wiki/API:Search
             data = await resp.json()
