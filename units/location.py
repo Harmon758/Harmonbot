@@ -16,9 +16,12 @@ async def get_geocode_data(
 ) -> dict:
     # TODO: Add reverse option
     async with ensure_session(aiohttp_session) as aiohttp_session:
+        if not (GOOGLE_API_KEY := os.getenv("GOOGLE_API_KEY")):
+            raise RuntimeError("Unable to get Google API key")
+
         async with aiohttp_session.get(
             "https://maps.googleapis.com/maps/api/geocode/json",
-            params = {"address": location, "key": os.getenv("GOOGLE_API_KEY")}
+            params = {"address": location, "key": GOOGLE_API_KEY}
         ) as resp:
             geocode_data = await resp.json()
 
@@ -52,12 +55,15 @@ async def get_timezone_data(
             latitude = geocode_data["geometry"]["location"]["lat"]
             longitude = geocode_data["geometry"]["location"]["lng"]
 
+        if not (GOOGLE_API_KEY := os.getenv("GOOGLE_API_KEY")):
+            raise RuntimeError("Unable to get Google API key")
+
         async with aiohttp_session.get(
             "https://maps.googleapis.com/maps/api/timezone/json",
             params = {
                 "location": f"{latitude}, {longitude}",
                 "timestamp": str(datetime.datetime.utcnow().timestamp()),
-                "key": os.getenv("GOOGLE_API_KEY")
+                "key": GOOGLE_API_KEY
             }
         ) as resp:
             timezone_data = await resp.json()
