@@ -11,7 +11,7 @@ irc==20.5.0
 python-telegram-bot==22.3
 
 aiocache==0.12.3
-aiohttp==3.9.5
+aiohttp==3.10.0
 async-lru==2.0.5
 asyncpg==0.30.0
 beautifulsoup4==4.13.5
@@ -88,6 +88,7 @@ youtube-dl @ https://github.com/ytdl-org/ytdl-nightly/releases/download/2023.12.
 yt-dlp==2023.11.16
 
 aiodns==3.5.0
+aiohappyeyeballs==2.6.1
 aiosignal==1.4.0
 annotated-types==0.6.0
 anyio==4.10.0
