@@ -231,6 +231,7 @@ class Tools(commands.Cog):
             buffer,
             [imageio.imread(frame) for frame in frames],
             "GIF",
+            disposal = 2,
             duration = 0.5
         )
         buffer.seek(0)
