@@ -290,6 +290,10 @@ class Bot(commands.Bot):
         return self.config["Discord"]["last_resort_notices_channel_id"]
 
     @property
+    def log_channel_id(self):
+        return self.config["Discord"]["log_channel_id"]
+
+    @property
     def mock_ip(self):
         return self.config["mock"]["ip"]
 
@@ -596,9 +600,12 @@ class Bot(commands.Bot):
     async def initialize_constant_objects(self):
         await self.wait_until_ready()
         self.invite_url = discord.utils.oauth_url(self.application_id)
+
         self.last_resort_notices_channel = self.get_channel(
             self.last_resort_notices_channel_id
         )
+        self.log_channel = self.get_channel(self.log_channel_id)
+
         self.listener_bot = await self.fetch_user(self.listener_id)
         # TODO: Handle NotFound and HTTPException?
         self.listing_sites = {

@@ -74,6 +74,7 @@ game_statuses = [
     "with Waste Allocation Load Lifter: Earth-Class", "world domination",
 ]
 last_resort_notices_channel_id = 955950052747137104
+log_channel_id = 359507054056177664
 stream_url = "https://www.twitch.tv/harmonbot"
 
 [Twitter]
