@@ -17,8 +17,8 @@ updates:
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "daily"
-      time: "00:00"
+      interval: "cron"
+      cronjob: "* * * * *"
     labels:
       - "dependency update"
     open-pull-requests-limit: 1000
