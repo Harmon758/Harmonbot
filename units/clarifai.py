@@ -35,6 +35,9 @@ class Concept(BaseModel):
 
 
 def image_color(url: str) -> list[Color]:
+    if not PAT:
+        raise RuntimeError("Unable to get Clarifai Personal Access Token")
+
     model = Model(
         app_id = "main", pat = PAT, user_id = "clarifai",
         model_id = "color-recognition"
@@ -53,6 +56,9 @@ def image_color(url: str) -> list[Color]:
 
 
 def image_nsfw(url: str) -> float:
+    if not PAT:
+        raise RuntimeError("Unable to get Clarifai Personal Access Token")
+
     model = Model(
         app_id = "main", pat = PAT, user_id = "clarifai",
         model_id = "nsfw-recognition"
@@ -70,6 +76,9 @@ def image_nsfw(url: str) -> float:
 
 
 def image_recognition(url: str) -> list[Concept]:
+    if not PAT:
+        raise RuntimeError("Unable to get Clarifai Personal Access Token")
+
     model = Model(
         app_id = "main", pat = PAT, user_id = "clarifai",
         model_id = "general-image-recognition"
