@@ -3,6 +3,7 @@ import discord
 from discord.ext import commands
 
 import asyncio
+import contextlib
 from itertools import zip_longest
 import logging
 import sys
@@ -379,6 +380,7 @@ class Twitch(commands.Cog):
 	async def check_streams(self):
 		try:
 			stream_ids = []
+			self.twitch_notification_text_channel = None
 			# Games
 			records = await self.bot.db.fetch(
 				"SELECT DISTINCT game_id FROM twitch_notifications.games"
@@ -445,7 +447,9 @@ class Twitch(commands.Cog):
 			)
 			for record in records:
 				if record["stream_id"] not in stream_ids:
-					text_channel = self.bot.get_channel(record["channel_id"])
+					self.twitch_notification_text_channel = text_channel = (
+						self.bot.get_channel(record["channel_id"])
+					)
 					# TODO: Handle text channel not existing anymore
 					try:
 						message = await text_channel.fetch_message(
@@ -490,6 +494,13 @@ class Twitch(commands.Cog):
 		except discord.DiscordServerError as e:
 			self.bot.print(f"Twitch Task Discord Server Error: {e}")
 			await asyncio.sleep(60)
+			reason = ' ' + e.response.reason if e.response.reason else ""
+			with contextlib.suppress(discord.DiscordServerError):
+				await self.bot.log_channel.send(
+					f"Encountered {e.status}{reason} Discord server error "
+					"when attempting to send or edit Twitch notification in "
+					f"{self.twitch_notification_text_channel.mention}"
+				)
 		except Exception as e:
 			print("Exception in Twitch Task", file = sys.stderr)
 			traceback.print_exception(
@@ -524,7 +535,9 @@ class Twitch(commands.Cog):
 			# TODO: Handle streams notified already, but followed by new channel
 			for record in records:
 				if not record["live"]:
-					text_channel = self.bot.get_channel(record["channel_id"])
+					self.twitch_notification_text_channel = text_channel = (
+						self.bot.get_channel(record["channel_id"])
+					)
 					# TODO: Handle text channel not existing anymore
 					try:
 						message = await text_channel.fetch_message(
@@ -611,7 +624,10 @@ class Twitch(commands.Cog):
 							break
 				# Send notifications
 				for channel_id in channel_ids:
-					if not (text_channel := self.bot.get_channel(channel_id)):
+					self.twitch_notification_text_channel = text_channel = (
+						self.bot.get_channel(channel_id)
+					)
+					if not text_channel:
 						# TODO: Remove text channel data if now non-existent
 						continue
 					try:
