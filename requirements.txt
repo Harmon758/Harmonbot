@@ -157,7 +157,7 @@ oauthlib==3.2.2
 orjson==3.11.3
 pathspec==0.12.1
 pluggy==1.6.0
-preshed==3.0.9
+preshed==4.0.0
 propcache==0.3.2
 protobuf==6.32.0
 proto-plus==1.26.1
