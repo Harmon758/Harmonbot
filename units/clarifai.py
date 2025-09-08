@@ -1,19 +1,8 @@
 
-import logging
 import os
 
 from clarifai.client.model import Model  # type: ignore[import-untyped]
 from pydantic import BaseModel
-
-
-# Remove root logger handler added by clarifai
-# https://github.com/Clarifai/clarifai-python/issues/220
-def remove_root_logger_handlers():
-    root_logger = logging.getLogger()
-    for handler in root_logger.handlers:
-        root_logger.removeHandler(handler)
-
-remove_root_logger_handlers()
 
 
 # APP_ID = os.getenv("CLARIFAI_APP_ID")
@@ -43,7 +32,7 @@ def image_color(url: str) -> list[Color]:
         model_id = "color-recognition"
     )
     response = model.predict_by_url(url, input_type = "image")
-    remove_root_logger_handlers()
+
     return [
         Color(
             raw_hex = color.raw_hex,
@@ -64,7 +53,7 @@ def image_nsfw(url: str) -> float:
         model_id = "nsfw-recognition"
     )
     response = model.predict_by_url(url, input_type = "image")
-    remove_root_logger_handlers()
+
     for concept in response.outputs[0].data.concepts:
         if concept.name == "nsfw":
             return concept.value
@@ -84,7 +73,7 @@ def image_recognition(url: str) -> list[Concept]:
         model_id = "general-image-recognition"
     )
     response = model.predict_by_url(url, input_type = "image")
-    remove_root_logger_handlers()
+
     return [
         Concept(id = concept.id, name = concept.name, value = concept.value)
         for concept in response.outputs[0].data.concepts
