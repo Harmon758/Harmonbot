@@ -70,14 +70,11 @@ def check_answer(*, answer, response, clue = None, inflect_engine = None):
     answer = ' '.join(answer.split())
     response = ' '.join(response.split())
 
-    # Check removal of/replacement of - with space
-    # (prior to removing article prefixes)
+    # Check hyphen removal and replacement (prior to removing article prefixes)
     # Remove commas and make lowercase beforehand
     answer_copy = answer.replace(',', "").lower()
     response_copy = response.replace(',', "").lower()
-    if answer_copy.replace('-', ' ') == response_copy.replace('-', ' '):
-        return True
-    if answer_copy.replace('-', "") == response_copy.replace('-', ""):
+    if check_hyphen_removal_and_replacement(answer_copy, response_copy):
         return True
 
     # Remove preceding words
@@ -179,10 +176,8 @@ def check_answer(*, answer, response, clue = None, inflect_engine = None):
         set(item.strip() for item in response.split('/'))
     ):
         return True
-    # Check removal of/replacement of - with space
-    if answer.replace('-', ' ') == response.replace('-', ' '):
-        return True
-    if answer.replace('-', "") == response.replace('-', ""):
+    # Check hyphen removal and replacement (with space)
+    if check_hyphen_removal_and_replacement(answer, response):
         return True
     # Check removal of parentheses
     if response == remove_preceding_words(
@@ -308,15 +303,21 @@ def check_answer(*, answer, response, clue = None, inflect_engine = None):
         for noun_chunk in doc.noun_chunks:
             if noun_chunk.text.lower().startswith(("this ", "these ")):
                 subject = noun_chunk.root.text.lower()
-                if remove_preceding_words(answer) in (
+                for combination in (
                     f"{response} {subject}", f"{subject} {response}"
                 ):
-                    return True
-                if response in (
+                    if check_hyphen_removal_and_replacement(
+                        remove_preceding_words(answer), combination
+                    ):
+                        return True
+                for combination in (
                     f"{remove_preceding_words(answer)} {subject}",
                     f"{subject} {remove_preceding_words(answer)}"
                 ):
-                    return True
+                    if check_hyphen_removal_and_replacement(
+                        combination, response
+                    ):
+                        return True
     # Check for matching named entity
     for answer_entity in nlp(case_sensitive_answer)._.linkedEntities:
         if len(answer_entity.get_span().text) == len(case_sensitive_answer):
@@ -325,6 +326,15 @@ def check_answer(*, answer, response, clue = None, inflect_engine = None):
                     return True
             break
 
+    return False
+
+
+def check_hyphen_removal_and_replacement(answer: str, response: str) -> bool:
+    # Check hyphen removal and replacement with space
+    if answer.replace('-', "") == response.replace('-', ""):
+        return True
+    if answer.replace('-', ' ') == response.replace('-', ' '):
+        return True
     return False
 
 

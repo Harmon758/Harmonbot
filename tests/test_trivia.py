@@ -147,6 +147,28 @@ class TestCheckAnswer(unittest.TestCase):
                 check_answer(clue = clue, answer = answer, response = response)
             )
 
+    def test_clue_text_subject_redundancy_in_answer_with_hyphen(self):
+        self.assertTrue(
+            check_answer(
+                clue = (
+                    "This piscene-named 8mm lens can take in a 180-degree "
+                    "angle of view"
+                ),
+                answer = "a fish-eye lens",
+                response = "fisheye"
+            )
+        )
+        self.assertTrue(
+            check_answer(
+                clue = (
+                    "This piscene-named 8mm lens can take in a 180-degree "
+                    "angle of view"
+                ),
+                answer = "a fish-eye lens",
+                response = "fish eye"
+            )
+        )
+
     def test_clue_text_subject_redundancy_in_response(self):
         self.assertTrue(
             check_answer(
