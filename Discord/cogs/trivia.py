@@ -12,7 +12,7 @@ import warnings
 from bs4 import BeautifulSoup, MarkupResemblesLocatorWarning
 
 from units.ansi import affix_ansi, TextColor
-from units.trivia import capwords, check_answer
+from units.trivia import capwords, check_answer, load_nlp
 from utilities import checks
 
 
@@ -26,6 +26,8 @@ class Trivia(commands.Cog):
 
         self.trivia_boards = {}
         self.trivia_questions = {}
+
+        load_nlp()
 
     async def cog_load(self):
         await self.bot.connect_to_database()
