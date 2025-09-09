@@ -1,7 +1,11 @@
 
 import unittest
 
-from units.trivia import check_answer
+from units.trivia import check_answer, load_nlp
+
+
+def setUpModule():
+    load_nlp()
 
 
 class TestCheckAnswer(unittest.TestCase):
