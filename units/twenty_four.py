@@ -45,7 +45,7 @@ def check_solution(numbers, solution):
         for character in solution
     ):
         return False
-    if len(list(filter(None, re.split("\W+", solution)))) != 4:
+    if len(list(filter(None, re.split(r"\W+", solution)))) != 4:
         return False
     for number in set(numbers):
         if solution.count(number) != numbers.count(number):
