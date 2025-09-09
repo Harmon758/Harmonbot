@@ -49,8 +49,16 @@ class Tweepy(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
+        self.sphinx_inventory = None
 
     async def cog_load(self):
+        if not await self.initialize_sphinx_inventory():
+            self.bot.print("Failed to initialize Tweepy Sphinx inventory")
+
+    async def initialize_sphinx_inventory(self):
+        if self.sphinx_inventory:
+            return True
+
         async with self.bot.aiohttp_session.get(
             "https://readthedocs.org/api/v3/projects/tweepy/versions/",
             headers = {
@@ -58,6 +66,9 @@ class Tweepy(commands.Cog):
             },
             params = {"built": "true"}
         ) as resp:
+            if resp.status != 200:
+                return False
+
             data = await resp.json()
 
         self.rtd_version = max(data["results"], key = itemgetter("id"))["slug"]
@@ -65,9 +76,13 @@ class Tweepy(commands.Cog):
         async with self.bot.aiohttp_session.get(
             f"https://tweepy.readthedocs.io/en/{self.rtd_version}/objects.inv"
         ) as resp:
+            if resp.status != 200:
+                return False
+
             data = await resp.read()
 
         self.sphinx_inventory = sphobjinv.Inventory(data)
+        return True
 
     @commands.Cog.listener()
     async def on_message(self, message):
@@ -127,6 +142,12 @@ class Tweepy(commands.Cog):
             The query to search
         """
         await ctx.defer()
+
+        if not await self.initialize_sphinx_inventory():
+            await ctx.embed_reply(
+                "\N{NO ENTRY SIGN} Unable to access Tweepy documentation"
+            )
+            return
 
         suggestions = self.sphinx_inventory.suggest(
             query, thresh = 64, with_index = True
