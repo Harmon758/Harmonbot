@@ -11,11 +11,17 @@ import pydantic
 from pyparsing import (
     Forward, Group, OneOrMore, printables, Suppress, Word, ZeroOrMore
 )
-import spacy
 
 
-nlp = spacy.load("en_core_web_md")
-nlp.add_pipe("entityLinker", last = True)  # spacy-entity-linker
+nlp = None
+
+
+def load_nlp():
+    global nlp
+    if not nlp:
+        import spacy
+        nlp = spacy.load("en_core_web_md")
+        nlp.add_pipe("entityLinker", last = True)  # spacy-entity-linker
 
 
 def capwords(string: str) -> str:
@@ -297,6 +303,8 @@ def check_answer(*, answer, response, clue = None, inflect_engine = None):
             )
         ):
             return True
+    # Ensure nlp is loaded
+    load_nlp()
     # Check for clue text subject redundancy
     if clue:
         doc = nlp(clue)
