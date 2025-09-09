@@ -165,7 +165,7 @@ psycopg-binary==3.2.9
 pyasn1==0.6.1
 pyasn1-modules==0.4.2
 pycares==4.10.0
-pycparser==2.21
+pycparser==2.23
 pydantic-core==2.14.5
 Pygments==2.19.2
 PyJWT[crypto]==2.10.1
