@@ -198,7 +198,7 @@ class Bot(commands.Bot):
 												func = set_response_command_wrapper(record["response"])))
 	
 	async def event_ready(self):
-		print(f"Ready | {self.nick}")
+		print(f"Ready | {self.nick} ({self.user_id})")
 		
 		# Initialize aiohttp Client Session
 		if not self.aiohttp_session:
