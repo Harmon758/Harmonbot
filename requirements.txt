@@ -180,6 +180,7 @@ schema==0.7.5
 setuptools==69.0.2
 setuptools-scm==8.0.4
 sgmllib3k==1.0.0
+shellingham==1.5.4
 six==1.16.0
 smart_open==7.3.1
 smmap==5.0.1
