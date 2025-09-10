@@ -336,7 +336,7 @@ class Bot(commands.Bot):
                 f"Failed to initialize Google Cloud Translation Service Client: {e}"
             )
 
-        self.twitch_client = twitchio.Client(
+        self.twitch_client = twitchio.Client.from_client_credentials(
             client_id = self.TWITCH_CLIENT_ID,
             client_secret = self.TWITCH_CLIENT_SECRET,
             loop = self.loop

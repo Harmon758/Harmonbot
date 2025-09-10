@@ -10,7 +10,6 @@ import sys
 import traceback
 
 import aiohttp
-import dateutil.parser
 import twitchio
 
 from units import colors
@@ -101,7 +100,7 @@ class Twitch(commands.Cog):
 	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	async def add_channel(self, ctx, username: str):
 		'''Add a Twitch channel to follow'''
-		if not (users_data := await ctx.bot.twitch_client.get_users(username)):
+		if not (users_data := await ctx.bot.twitch_client.fetch_users([username])):
 			await ctx.embed_reply(f"{ctx.bot.error_emoji} Channel not found")
 			return
 		
@@ -113,7 +112,7 @@ class Twitch(commands.Cog):
 			ON CONFLICT DO NOTHING
 			RETURNING *
 			""", 
-			ctx.channel.id, username, user.id
+			ctx.channel.id, username, str(user.id)
 		)
 		if not inserted:
 			await ctx.embed_reply(
@@ -121,7 +120,7 @@ class Twitch(commands.Cog):
 			)
 			return
 		await ctx.embed_reply(
-			f"Added the Twitch channel, [`{user.display_name}`](https://www.twitch.tv/{user.login}), to this text channel\n"
+			f"Added the Twitch channel, [`{user.display_name}`](https://www.twitch.tv/{user.name}), to this text channel\n"
 			"I will now announce here when this Twitch channel goes live"
 		)
 	
@@ -153,7 +152,7 @@ class Twitch(commands.Cog):
 	async def add_game(self, ctx, *, game: str):
 		'''Add a Twitch game to follow'''
 		# TODO: Add documentation on 100 limit
-		if not (games := await ctx.bot.twitch_client.get_games(game)):
+		if not (games := await ctx.bot.twitch_client.fetch_games(names = [game])):
 			await ctx.embed_reply(f"{ctx.bot.error_emoji} Game not found")
 			return
 
@@ -165,15 +164,15 @@ class Twitch(commands.Cog):
 			ON CONFLICT DO NOTHING
 			RETURNING *
 			""", 
-			ctx.channel.id, game["id"], game["name"]
+			ctx.channel.id, str(game.id), game.name
 		)
 		if not inserted:
 			await ctx.embed_reply(
-				f"This text channel is already following the game, `{game['name']}`"
+				f"This text channel is already following the game, `{game.name}`"
 			)
 			return
 		await ctx.embed_reply(
-			f"Added the game, [`{game['name']}`](https://www.twitch.tv/directory/game/{game['name']}), to this text channel\n"
+			f"Added the game, [`{game.name}`](https://www.twitch.tv/directory/game/{game.name}), to this text channel\n"
 			"I will now announce here when Twitch streams playing this game go live"
 		)
 	
@@ -214,11 +213,11 @@ class Twitch(commands.Cog):
 		)
 		description = ""
 		for record in records:
-			user_data = await ctx.bot.twitch_client.get_users(record["user_id"])
+			user_data = await ctx.bot.twitch_client.fetch_users(ids = [record["user_id"]])
 			# TODO: Add note about name change to response
 			#       user_data["name"] != record["user_name"]
 			user = user_data[0]
-			link = f"[{user.display_name}](https://www.twitch.tv/{user.login})"
+			link = f"[{user.display_name}](https://www.twitch.tv/{user.name})"
 			if len(description + link) > self.bot.EMBED_DESCRIPTION_CHARACTER_LIMIT:
 				await ctx.embed_reply(description[:-1], title = "Twitch channels being followed in this text channel")
 				description = ""
@@ -286,7 +285,7 @@ class Twitch(commands.Cog):
 	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	async def remove_channel(self, ctx, username: str):
 		'''Remove a Twitch channel being followed'''
-		users_data = await ctx.bot.twitch_client.get_users(username)
+		users_data = await ctx.bot.twitch_client.fetch_users([username])
 		user = users_data[0]
 		deleted = await ctx.bot.db.fetchval(
 			"""
@@ -294,7 +293,7 @@ class Twitch(commands.Cog):
 			WHERE channel_id = $1 AND user_id = $2
 			RETURNING *
 			""", 
-			ctx.channel.id, user.id
+			ctx.channel.id, str(user.id)
 		)
 		
 		if not deleted:
@@ -306,7 +305,7 @@ class Twitch(commands.Cog):
 		
 		await ctx.embed_reply(
 			"Removed the Twitch channel, "
-			f"[`{user.display_name}`](https://www.twitch.tv/{user.login}), "
+			f"[`{user.display_name}`](https://www.twitch.tv/{user.name}), "
 			f"from this text channel"
 		)
 	
@@ -388,10 +387,10 @@ class Twitch(commands.Cog):
 			)
 			for record in records:
 				game_id = record["game_id"]
-				streams = await self.bot.twitch_client.get_streams(
-					game_id = game_id, limit = 100
+				streams = await self.bot.twitch_client.fetch_streams(
+					game_ids = [game_id]
 				)
-				stream_ids += [stream["id"] for stream in streams]
+				stream_ids += [str(stream.id) for stream in streams]
 				await self.process_streams(streams, "games", game = record)
 				await asyncio.sleep(1)
 			# Keywords
@@ -430,20 +429,19 @@ class Twitch(commands.Cog):
 			)
 			for records_chunk in zip_longest(*[iter(records)] * 100):
 				try:
-					streams = await self.bot.twitch_client.get_streams(
-						channels = [
+					streams = await self.bot.twitch_client.fetch_streams(
+						user_ids = [
 							record["user_id"]
 							for record in records_chunk if record
-						],
-						limit = 100
+						]
 					)
 				except twitchio.HTTPException as e:
-					if e.args[2] == 502:
+					if e.status == 502:
 						self.bot.print("Twitch Task Bad Gateway Error")
 						continue
 					else:
 						raise
-				stream_ids += [stream["id"] for stream in streams]
+				stream_ids += [str(stream.id) for stream in streams]
 				await self.process_streams(streams, "streams")
 				await asyncio.sleep(1)
 			# Update streams notified
@@ -539,7 +537,7 @@ class Twitch(commands.Cog):
 				FROM twitch_notifications.notifications
 				WHERE stream_id = $1
 				""", 
-				stream["id"]
+				str(stream.id)
 			)
 			# TODO: Handle streams notified already, but followed by new channel
 			for record in records:
@@ -568,27 +566,30 @@ class Twitch(commands.Cog):
 						SET live = TRUE
 						WHERE stream_id = $1 AND channel_id = $2
 						""", 
-						stream["id"], record["channel_id"]
+						str(stream.id), record["channel_id"]
 					)
 			if not records:
+				# Fetch full User from PartialUser
+				# to get login name instead of display name
+				user = await stream.user.fetch()
 				# Construct embed
-				if len(stream["title"]) <= 256:
-					title = stream["title"]
+				if len(stream.title) <= 256:
+					title = stream.title
 				else:
-					title = stream["title"][:253] + "..."
-				if stream["game_name"]:
-					description = f"{stream['user_name']} is playing {stream['game_name']}"
+					title = stream.title[:253] + "..."
+				if stream.game_name:
+					description = f"{stream.user.name} is playing {stream.game_name}"
 				else:
 					description = None
 				embed = discord.Embed(
 					title = title,
-					url = f"https://www.twitch.tv/{stream['user_login']}",
+					url = f"https://www.twitch.tv/{user.name}",
 					description = description,
-					timestamp = dateutil.parser.parse(stream["started_at"]),
+					timestamp = stream.started_at,
 					color = colors.Twitch.OLD_PURPLE
 				)
 				embed.set_author(
-					name = f"{stream['user_name']} just went live on Twitch",
+					name = f"{stream.user.name} just went live on Twitch",
 					icon_url = self.bot.twitch_icon_url
 				)
 				# TODO: Include profile image (logo), follower count, viewer count?
@@ -607,7 +608,7 @@ class Twitch(commands.Cog):
 						SELECT channel_id FROM twitch_notifications.channels
 						WHERE user_id = $1
 						""", 
-						stream["user_id"]
+						str(stream.user.id)
 					)
 				else:
 					records = await self.bot.db.fetch(
@@ -628,7 +629,7 @@ class Twitch(commands.Cog):
 					)
 					for record in records:
 						# TODO: Make filter case-insensitive?
-						if record["filter"] not in stream["title"]:
+						if record["filter"] not in stream.title:
 							channel_ids.remove(channel_id)
 							break
 				# Send notifications
@@ -662,11 +663,11 @@ class Twitch(commands.Cog):
 									DELETE FROM twitch_notifications.channels
 									WHERE channel_id = $1 AND user_id = $2
 									""", 
-									channel_id, stream["user_id"]
+									channel_id, str(stream.user.id)
 								)
 								await text_channel.send(
 									"I am unable to send the embed notification in this text channel for "
-									f"{stream['user_name']} going live on Twitch, "
+									f"{stream.user.name} going live on Twitch, "
 									"so this text channel is no longer following that Twitch channel."
 								)
 							else:
@@ -693,6 +694,6 @@ class Twitch(commands.Cog):
 						INSERT INTO twitch_notifications.notifications (stream_id, channel_id, message_id, live)
 						VALUES ($1, $2, $3, TRUE)
 						""", 
-						stream["id"], channel_id, message.id
+						str(stream.id), channel_id, message.id
 					)
 
