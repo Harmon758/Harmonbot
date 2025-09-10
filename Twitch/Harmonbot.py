@@ -18,7 +18,7 @@ from utilities import logging
 class Bot(commands.Bot):
 	
 	def __init__(self, loop = None, initial_channels = None, **kwargs):
-		self.version = "4.0.0-b.2"
+		self.version = "4.0.0-b.4"
 		
 		loop = loop or asyncio.get_event_loop()
 		if initial_channels is None:
@@ -32,8 +32,10 @@ class Bot(commands.Bot):
 		self.aiohttp_session = None
 		
 		# Credentials
-		for credential in ("DATABASE_PASSWORD", "OWM_API_KEY", "POSTGRES_HOST", "WORDNIK_API_KEY", 
-							"YANDEX_TRANSLATE_API_KEY"):
+		for credential in (
+			"DATABASE_PASSWORD", "OWM_API_KEY", "POSTGRES_HOST",
+			"WORDNIK_API_KEY", "YANDEX_TRANSLATE_API_KEY"
+		):
 			setattr(self, credential, os.getenv(credential))
 		if not self.POSTGRES_HOST:
 			self.POSTGRES_HOST = "localhost"
@@ -51,9 +53,13 @@ class Bot(commands.Bot):
 		self.connected_to_database.set()
 		loop.run_until_complete(self.initialize_database())
 		
-		records = loop.run_until_complete(self.db.fetch("SELECT channel FROM twitch.channels"))
+		records = loop.run_until_complete(
+			self.db.fetch("SELECT channel FROM twitch.channels")
+		)
 		initial_channels.extend(record["channel"] for record in records)
-		super().__init__(loop = loop, initial_channels = initial_channels, **kwargs)
+		super().__init__(
+			loop = loop, initial_channels = initial_channels, **kwargs
+		)
 		# TODO: Handle channel name changes, store channel ID
 		
 		# Add commands with set responses
@@ -69,9 +75,10 @@ class Bot(commands.Bot):
 			return
 		if self.connected_to_database.is_set():
 			self.connected_to_database.clear()
-			self.database_connection_pool = await asyncpg.create_pool(user = "harmonbot", 
-																		password = self.DATABASE_PASSWORD, 
-																		database = "harmonbot", host = self.DATABASE_HOST)
+			self.database_connection_pool = await asyncpg.create_pool(
+				user = "harmonbot", password = self.DATABASE_PASSWORD,
+				database = "harmonbot", host = self.DATABASE_HOST
+			)
 			self.db = self.database = self.database_connection_pool
 			self.connected_to_database.set()
 		else:
@@ -83,8 +90,8 @@ class Bot(commands.Bot):
 		await self.db.execute(
 			"""
 			CREATE TABLE IF NOT EXISTS twitch.birthdays (
-				channel			TEXT PRIMARY KEY, 
-				month			INT, 
+				channel			TEXT PRIMARY KEY,
+				month			INT,
 				day				INT
 			)
 			"""
@@ -99,9 +106,9 @@ class Bot(commands.Bot):
 		await self.db.execute(
 			"""
 			CREATE TABLE IF NOT EXISTS twitch.commands (
-				channel			TEXT, 
-				name			TEXT, 
-				response		TEXT, 
+				channel			TEXT,
+				name			TEXT,
+				response		TEXT,
 				PRIMARY KEY		(channel, name)
 			)
 			"""
@@ -109,10 +116,10 @@ class Bot(commands.Bot):
 		await self.db.execute(
 			"""
 			CREATE TABLE IF NOT EXISTS twitch.aliases (
-				channel			TEXT, 
-				name			TEXT, 
-				alias			TEXT, 
-				PRIMARY KEY		(channel, alias), 
+				channel			TEXT,
+				name			TEXT,
+				alias			TEXT,
+				PRIMARY KEY		(channel, alias),
 				FOREIGN KEY		(channel, name) REFERENCES twitch.commands (channel, name) ON DELETE CASCADE
 			)
 			"""
@@ -120,9 +127,9 @@ class Bot(commands.Bot):
 		await self.db.execute(
 			"""
 			CREATE TABLE IF NOT EXISTS twitch.counters (
-				channel			TEXT, 
-				name			TEXT, 
-				value			INT, 
+				channel			TEXT,
+				name			TEXT,
+				value			INT,
 				PRIMARY KEY		(channel, name)
 			)
 			"""
@@ -130,10 +137,10 @@ class Bot(commands.Bot):
 		await self.db.execute(
 			"""
 			CREATE TABLE IF NOT EXISTS twitch.messages (
-				timestamp			TIMESTAMPTZ PRIMARY KEY DEFAULT NOW(), 
-				channel				TEXT, 
-				author				TEXT, 
-				message				TEXT, 
+				timestamp			TIMESTAMPTZ PRIMARY KEY DEFAULT NOW(),
+				channel				TEXT,
+				author				TEXT,
+				message				TEXT,
 				message_timestamp	TIMESTAMPTZ
 			)
 			"""
@@ -141,7 +148,7 @@ class Bot(commands.Bot):
 		await self.db.execute(
 			"""
 			CREATE TABLE IF NOT EXISTS twitch.locations (
-				channel		TEXT PRIMARY KEY, 
+				channel		TEXT PRIMARY KEY,
 				location	TEXT
 			)
 			"""
@@ -149,9 +156,9 @@ class Bot(commands.Bot):
 		await self.db.execute(
 			"""
 			CREATE TABLE IF NOT EXISTS twitch.toggles (
-				channel			TEXT, 
-				name			TEXT, 
-				status			BOOLEAN, 
+				channel			TEXT,
+				name			TEXT,
+				status			BOOLEAN,
 				PRIMARY KEY		(channel, name)
 			)
 			"""
@@ -172,7 +179,7 @@ class Bot(commands.Bot):
 							VALUES ($1, $2, $3)
 							ON CONFLICT (channel, name) DO
 							UPDATE SET status = $3
-							""", 
+							""",
 							channel, name, value
 						)
 					elif isinstance(value, int) and not name.startswith("birthday"):
@@ -182,20 +189,26 @@ class Bot(commands.Bot):
 							VALUES ($1, $2, $3)
 							ON CONFLICT (channel, name) DO
 							UPDATE SET value = $3
-							""", 
+							""",
 							channel, name, value
 						)
 	
 	async def add_set_response_commands(self):
 		"""Add commands with set responses"""
-		records = await self.db.fetch("SELECT name, response FROM twitch.commands WHERE channel = 'harmonbot'")
+		records = await self.db.fetch(
+			"SELECT name, response FROM twitch.commands WHERE channel = 'harmonbot'"
+		)
 		def set_response_command_wrapper(response):
 			async def set_response_command(ctx):
 				await ctx.reply(response)
 			return set_response_command
 		for record in records:
-			self.add_command(commands.Command(name = record["name"], 
-												func = set_response_command_wrapper(record["response"])))
+			self.add_command(
+				commands.Command(
+					name = record["name"],
+					func = set_response_command_wrapper(record["response"])
+				)
+			)
 	
 	async def event_ready(self):
 		print(f"Ready | {self.nick} ({self.user_id})")
@@ -210,8 +223,10 @@ class Bot(commands.Bot):
 			"""
 			INSERT INTO twitch.messages (timestamp, channel, author, message, message_timestamp)
 			VALUES ($1, $2, $3, $4, $5)
-			""", 
-			datetime.datetime.now(), message.channel.name, "harmonbot" if message.echo else message.author.name, message.content, 
+			""",
+			datetime.datetime.now(), message.channel.name,
+			"harmonbot" if message.echo else message.author.name,
+			message.content,
 			None if message.echo else message.timestamp.replace(tzinfo = datetime.UTC)
 		)
 		# Ignore own messages
@@ -229,7 +244,7 @@ class Bot(commands.Bot):
 					SELECT name
 					from twitch.aliases
 					WHERE channel = $1 AND alias = $2
-					""", 
+					""",
 					ctx.channel.name, command
 				)
 				if aliased:
@@ -239,7 +254,7 @@ class Bot(commands.Bot):
 					SELECT response
 					FROM twitch.commands
 					WHERE channel = $1 AND name = $2
-					""", 
+					""",
 					ctx.channel.name, command
 				)
 				if response:
@@ -278,9 +293,11 @@ class Bot(commands.Bot):
 		await ctx.reply(f"\N{BILLIARDS} {eightball()}")
 
 dotenv.load_dotenv()
-bot = Bot(token = os.getenv("TWITCH_BOT_ACCOUNT_OAUTH_TOKEN"), 
-			client_id = os.getenv("TWITCH_CLIENT_ID"), 
-			client_secret = os.getenv("TWITCH_CLIENT_SECRET"), 
-			nick = "harmonbot", prefix = '!')
+bot = Bot(
+	token = os.getenv("TWITCH_BOT_ACCOUNT_OAUTH_TOKEN"),
+	client_id = os.getenv("TWITCH_CLIENT_ID"),
+	client_secret = os.getenv("TWITCH_CLIENT_SECRET"),
+	nick = "harmonbot", prefix = '!'
+)
 bot.run()
 
