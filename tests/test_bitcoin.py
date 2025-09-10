@@ -23,3 +23,6 @@ class TestGetSupportedCurrencies(unittest.IsolatedAsyncioTestCase):
         # https://docs.aiohttp.org/en/stable/client_advanced.html#graceful-shutdown
         await asyncio.sleep(0.25)
 
+
+if __name__ == "__main__":
+    unittest.main()

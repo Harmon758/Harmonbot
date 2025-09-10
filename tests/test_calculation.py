@@ -100,3 +100,6 @@ class TestCalculate(unittest.TestCase):
     def test_division_by_zero(self, dividend):
         self.assertRaises(ZeroDivisionError, calculate, f"{dividend}/0")
 
+
+if __name__ == "__main__":
+    unittest.main()
