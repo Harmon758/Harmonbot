@@ -42,7 +42,7 @@ class Location(commands.Cog):
                 """,
                 ctx.channel.name, location
             )
-            await ctx.send(f"Location set to {location}")
+            await ctx.reply(f"Location set to {location}")
             return
 
         location = await self.bot.db.fetchval(
@@ -51,10 +51,10 @@ class Location(commands.Cog):
         )
 
         if not location:
-            await ctx.send("Error: Location not specified")
+            await ctx.reply("Error: Location not specified")
             return
 
-        await ctx.send(location)
+        await ctx.reply(location)
 
     @commands.command()
     async def forecast(self, ctx, *, location = ""):
@@ -65,7 +65,7 @@ class Location(commands.Cog):
                 ctx.channel.name
             )
             if not location:
-                await ctx.send("Error: Location not specified")
+                await ctx.reply("Error: Location not specified")
                 return
         try:
             forecaster = self.bot.weather_manager.forecast_at_place(
@@ -75,7 +75,7 @@ class Location(commands.Cog):
             pyowm.commons.exceptions.NotFoundError,
             pyowm.commons.exceptions.BadGatewayError
         ) as e:  # TODO: Catch base exceptions?
-            await ctx.send(f"Error: {e}")
+            await ctx.reply(f"Error: {e}")
             return
         output = f"{forecaster.forecast.location.name}, {forecaster.forecast.location.country}"
         for weather in forecaster.forecast:
@@ -92,7 +92,7 @@ class Location(commands.Cog):
             if len(output + weather_output) > self.bot.character_limit:
                 break
             output += weather_output
-        await ctx.send(output)
+        await ctx.reply(output)
 
     @commands.command()
     async def weather(self, ctx, *, location = ""):
@@ -102,7 +102,7 @@ class Location(commands.Cog):
                 ctx.channel.name
             )
             if not location:
-                await ctx.send("Error: Location not specified")
+                await ctx.reply("Error: Location not specified")
                 return
         try:
             observation = self.bot.weather_manager.weather_at_place(location)
@@ -110,7 +110,7 @@ class Location(commands.Cog):
             pyowm.commons.exceptions.NotFoundError,
             pyowm.commons.exceptions.BadGatewayError
         ) as e:  # TODO: Catch base exceptions?
-            await ctx.send(f"Error: {e}")
+            await ctx.reply(f"Error: {e}")
             return
         output = (
             f"{observation.location.name}, {observation.location.country}: "
@@ -132,5 +132,5 @@ class Location(commands.Cog):
         # TODO: Heat Index [°C/°F], not possible to get from weather.heat_index?
         # TODO: Windchill [°C/°F]?
         # TODO: Dew (point) [°C/°F]?
-        await ctx.send(output)
+        await ctx.reply(output)
 

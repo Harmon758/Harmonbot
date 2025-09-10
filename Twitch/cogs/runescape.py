@@ -85,19 +85,19 @@ class Runescape(commands.Cog):
 	async def cache(self, ctx):
 		seconds = int(10800 - time.time() % 10800)
 		# 10800 = seconds in 3 hours
-		await ctx.send(f"{duration_to_string(datetime.timedelta(seconds = seconds))} until Guthixian Cache.")
+		await ctx.reply(f"{duration_to_string(datetime.timedelta(seconds = seconds))} until Guthixian Cache.")
 	
 	@commands.command()
 	async def ehp(self, ctx, skill, xp : int):
 		# TODO: Handle negative xp input
 		if xp > 200000000:
-			return await ctx.send(f"You can't have that much xp, {ctx.author.name.capitalize()}! Reported.")
+			return await ctx.reply(f"You can't have that much xp, {ctx.author.name.capitalize()}! Reported.")
 		skill = self.osrs_skill_aliases.get(skill, skill)
 		if skill in self.ehp_responses:
-			await ctx.send(self.ehp_responses[skill])
+			await ctx.reply(self.ehp_responses[skill])
 		elif skill in self.ehp_data:
 			index = bisect.bisect([boundary[0] for boundary in self.ehp_data[skill]], xp) - 1
-			await ctx.send(f"At {xp} {skill.capitalize()} xp: 1 ehp = {self.ehp_data[skill][index][1]:,} xp/h")
+			await ctx.reply(f"At {xp} {skill.capitalize()} xp: 1 ehp = {self.ehp_data[skill][index][1]:,} xp/h")
 		# TODO: Handle skill not found
 	
 	@commands.command()
@@ -105,8 +105,8 @@ class Runescape(commands.Cog):
 		try:
 			data = await get_ge_data(item, aiohttp_session = self.bot.aiohttp_session)
 		except ValueError as e:
-			return await ctx.send(f"Error: {e}")
-		await ctx.send(f"Price of {data['name']}: {data['current']['price']} gp")
+			return await ctx.reply(f"Error: {e}")
+		await ctx.reply(f"Price of {data['name']}: {data['current']['price']} gp")
 	
 	@commands.command(aliases = ("hiscore", "highscore", "highscores"))
 	async def hiscores(self, ctx, username, skill_or_total = "total", hiscores_type = "", stat_type = "level"):
@@ -116,13 +116,13 @@ class Runescape(commands.Cog):
 		skill = skill_or_total.lower()
 		skill = self.rs3_skill_aliases.get(skill, skill)
 		if skill not in self.skill_order:
-			return await ctx.send("Invalid skill. Use _'s for spaces in usernames.")
+			return await ctx.reply("Invalid skill. Use _'s for spaces in usernames.")
 		hiscores_type = hiscores_type.lower()
 		for alias, name in self.hiscores_type_aliases.items():
 			hiscores_type = hiscores_type.replace(alias, name)
 		hiscores_type = hiscores_type.lstrip('_')
 		if skill in ("dungeoneering", "divination", "invention") and hiscores_type.startswith("oldschool"):
-			return await ctx.send("Invalid skill for OSRS.")
+			return await ctx.reply("Invalid skill for OSRS.")
 		if hiscores_type not in self.hiscores_types:
 			valid_types = []
 			for valid_type in self.hiscores_types:
@@ -130,7 +130,7 @@ class Runescape(commands.Cog):
 					valid_type = "runescape_3_" + valid_type
 					valid_type = valid_type.rstrip('_')
 				valid_types.append(valid_type)
-			return await ctx.send(f"Invalid hiscores type. Valid types: {', '.join(valid_types)}")
+			return await ctx.reply(f"Invalid hiscores type. Valid types: {', '.join(valid_types)}")
 		hiscores_name = self.hiscores_names[hiscores_type]
 		if hiscores_type:
 			hiscores_type = '_' + hiscores_type
@@ -144,7 +144,7 @@ class Runescape(commands.Cog):
 		params = {"player": username}
 		async with self.bot.aiohttp_session.get(hiscores_url, params = params) as resp:
 			if resp.status == 404:
-				return await ctx.send("Username not found.")
+				return await ctx.reply("Username not found.")
 			data = await resp.text()
 		data = data.split()
 		skill_data = data[self.skill_order.index(skill)].split(',')
@@ -163,29 +163,29 @@ class Runescape(commands.Cog):
 			if skill != "total":
 				skill = skill.capitalize()
 			stat_text = f"'s {skill} level is {stat:,}"
-		await ctx.send(f"{username.capitalize()}{stat_text} on {hiscores_name}.")
+		await ctx.reply(f"{username.capitalize()}{stat_text} on {hiscores_name}.")
 	
 	@commands.command()
 	async def level(self, ctx, level : int):
 		if 1 <= level <= 126:
 			xp = sum(int(i + 300 * 2 ** (i / 7)) for i in range(1, level)) // 4
-			await ctx.send(f"Runescape Level {level} = {xp:,} xp")
+			await ctx.reply(f"Runescape Level {level} = {xp:,} xp")
 		elif 126 < level < 9000:
-			await ctx.send(f"I was gonna calculate xp at Level {level}. Then I took an arrow to the knee.")
+			await ctx.reply(f"I was gonna calculate xp at Level {level}. Then I took an arrow to the knee.")
 		elif level == 9000:
-			await ctx.send("Almost there.")
+			await ctx.reply("Almost there.")
 		elif level > 9000:
-			await ctx.send("It's over 9000!")
+			await ctx.reply("It's over 9000!")
 		else:
-			await ctx.send(f"Level {level} does not exist.")
+			await ctx.reply(f"Level {level} does not exist.")
 	
 	@commands.command()
 	async def monster(self, ctx, *, monster):
 		try:
 			data = await get_monster_data(monster, aiohttp_session = self.bot.aiohttp_session)
 		except ValueError as e:
-			return await ctx.send(f"Error: {e}")
-		await ctx.send(f"{data['name']}: {data['description']}, "
+			return await ctx.reply(f"Error: {e}")
+		await ctx.reply(f"{data['name']}: {data['description']}, "
 						f"Level: {data.get('level', 'N/A')}, "
 						f"Weakness: {data.get('weakness', 'N/A')}, "
 						f"XP/Kill: {data['xp']}, "
@@ -195,43 +195,43 @@ class Runescape(commands.Cog):
 	
 	@commands.command(aliases = ("07rswiki", "rswiki07", "rswikios"))
 	async def osrswiki(self, ctx, *search):
-		await ctx.send("https://oldschool.runescape.wiki/w/" + '_'.join(search))
+		await ctx.reply("https://oldschool.runescape.wiki/w/" + '_'.join(search))
 	
 	@commands.command()
 	async def reset(self, ctx):
 		seconds = int(86400 - time.time() % 86400)
 		# 86400 = seconds in 24 hours
-		await ctx.send(f"{duration_to_string(datetime.timedelta(seconds = seconds))} until reset.")
+		await ctx.reply(f"{duration_to_string(datetime.timedelta(seconds = seconds))} until reset.")
 	
 	@commands.command()
 	async def rswiki(self, ctx, *search):
-		await ctx.send("https://runescape.wiki/w/" + '_'.join(search))
+		await ctx.reply("https://runescape.wiki/w/" + '_'.join(search))
 	
 	@commands.command()
 	async def warbands(self, ctx):
 		seconds = int(25200 - time.time() % 25200)
 		# 25200 = seconds in 7 hours
-		await ctx.send(f"{duration_to_string(datetime.timedelta(seconds = seconds))} until Warbands.")
+		await ctx.reply(f"{duration_to_string(datetime.timedelta(seconds = seconds))} until Warbands.")
 	
 	@commands.command()
 	async def xpat(self, ctx, xp : int):
 		if not 0 <= xp <= 200000000:
-			return await ctx.send("You can't have that much xp!")
+			return await ctx.reply("You can't have that much xp!")
 		level = 0
 		level_xp = 0
 		while xp >= level_xp // 4:
 			level += 1
 			level_xp += int(level + 300 * 2 ** (level / 7))
-		await ctx.send(f"{xp:,} xp = level {level}")
+		await ctx.reply(f"{xp:,} xp = level {level}")
 	
 	@commands.command()
 	async def xpbetween(self, ctx, start_level : int, end_level : int):
 		start_xp = sum(int(level + 300 * 2 ** (level / 7)) for level in range(1, start_level))
 		end_xp = (start_xp + sum(int(level + 300 * 2 ** (level / 7)) for level in range(start_level, end_level))) // 4
 		start_xp //= 4
-		await ctx.send(f"{end_xp - start_xp:,} xp between level {start_level} and level {end_level}")
+		await ctx.reply(f"{end_xp - start_xp:,} xp between level {start_level} and level {end_level}")
 	
 	@commands.command()
 	async def zybez(self, ctx):
-		return await ctx.send("See https://forums.zybez.net/topic/1783583-exit-post-the-end/")
+		return await ctx.reply("See https://forums.zybez.net/topic/1783583-exit-post-the-end/")
 

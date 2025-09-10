@@ -25,18 +25,18 @@ class Twitch(commands.Cog):
 			data = await resp.json()
 		stream = data.get("stream")
 		if not stream:
-			return await ctx.send("Average FPS not found.")
-		await ctx.send(f"Average FPS: {stream['average_fps']}")
+			return await ctx.reply("Average FPS not found.")
+		await ctx.reply(f"Average FPS: {stream['average_fps']}")
 	
 	@commands.command(aliases = ("followed", "howlong"))
 	async def followage(self, ctx):
 		users = await self.bot.get_users(ctx.channel.name)
 		follow = await self.bot.get_follow(ctx.author.id, users[0].id)
 		if not follow:
-			return await ctx.send(f"{ctx.author.name.capitalize()}, you haven't followed yet!")
+			return await ctx.reply(f"{ctx.author.name.capitalize()}, you haven't followed yet!")
 		followed_at = dateutil.parser.parse(follow["followed_at"])
 		ago = duration_to_string(datetime.datetime.now(datetime.UTC) - followed_at)
-		await ctx.send(f"{ctx.author.name.capitalize()} followed on {followed_at.strftime('%B %#d %Y')}, {ago} ago")
+		await ctx.reply(f"{ctx.author.name.capitalize()} followed on {followed_at.strftime('%B %#d %Y')}, {ago} ago")
 		# %#d for removal of leading zero on Windows with native Python executable
 	
 	@commands.command()
@@ -47,35 +47,35 @@ class Twitch(commands.Cog):
 		# https://discuss.dev.twitch.tv/t/helix-get-user-missing-total-followers/15449
 		users = await self.bot.get_users(ctx.channel.name)
 		count = await self.bot.get_followers(users[0].id, count = True)
-		await ctx.send(f"There are currently {count:,} people following {ctx.channel.name.capitalize()}.")
+		await ctx.reply(f"There are currently {count:,} people following {ctx.channel.name.capitalize()}.")
 	
 	@commands.command(aliases = ("shout",))
 	async def shoutout(self, ctx, channel = None):
 		if not channel:
-			return await ctx.send('\N{SPEAKING HEAD IN SILHOUETTE}')
-		await ctx.send("https://www.twitch.tv/" + channel)
+			return await ctx.reply('\N{SPEAKING HEAD IN SILHOUETTE}')
+		await ctx.reply("https://www.twitch.tv/" + channel)
 	
 	@commands.command()
 	async def title(self, ctx):
 		stream = await ctx.get_stream()
 		if not stream or not stream.get("title"):
-			return await ctx.send("Title not found.")
-		await ctx.send(stream["title"])
+			return await ctx.reply("Title not found.")
+		await ctx.reply(stream["title"])
 	
 	@commands.command()
 	async def uptime(self, ctx):
 		stream = await ctx.get_stream()
 		if not stream:
-			return await ctx.send("Uptime not found.")
+			return await ctx.reply("Uptime not found.")
 		duration = datetime.datetime.now(datetime.UTC) - dateutil.parser.parse(stream["started_at"])
-		await ctx.send(duration_to_string(duration))
+		await ctx.reply(duration_to_string(duration))
 	
 	@commands.command()
 	async def viewers(self, ctx):
 		stream = await ctx.get_stream()
 		if not stream:
-			return await ctx.send("Stream is offline.")
-		await ctx.send(f"{stream['viewer_count']} viewers watching now.")
+			return await ctx.reply("Stream is offline.")
+		await ctx.reply(f"{stream['viewer_count']} viewers watching now.")
 		# TODO: Handle single viewer
 		# TODO: Handle no viewers: No one is watching right now :-/
 	

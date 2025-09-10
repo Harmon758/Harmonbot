@@ -13,47 +13,47 @@ class Interactions(commands.Cog):
     @commands.command(aliases = ("goodbye",))
     async def bye(self, ctx, *, user = None):
         if not user or user.lower() == "harmonbot":
-            await ctx.send(f"Bye, {ctx.author.name.capitalize()}!")
+            await ctx.reply(f"Bye, {ctx.author.name.capitalize()}!")
         else:
-            await ctx.send(f"{user.title().lstrip('/')}, {ctx.author.name.capitalize()} says goodbye!")
+            await ctx.reply(f"{user.title().lstrip('/')}, {ctx.author.name.capitalize()} says goodbye!")
 
     @commands.command(aliases = ("hi",))
     async def hello(self, ctx, *, user = None):
         if not user or user.lower() == "harmonbot":
-            await ctx.send(f"Hello, {ctx.author.name.capitalize()}!")
+            await ctx.reply(f"Hello, {ctx.author.name.capitalize()}!")
         else:
-            await ctx.send(f"{user.title().lstrip('/')}, {ctx.author.name.capitalize()} says hello!")
+            await ctx.reply(f"{user.title().lstrip('/')}, {ctx.author.name.capitalize()} says hello!")
 
     @commands.command(aliases = ("congrats", "grats", "gz"))
     async def congratulations(self, ctx, *, user = None):
         if not user:
-            await ctx.send("Congratulations!!!!!")
+            await ctx.reply("Congratulations!!!!!")
         else:
-            await ctx.send(f"Congratulations, {user.title()}!!!!!")
+            await ctx.reply(f"Congratulations, {user.title()}!!!!!")
 
     @commands.command()
     async def highfive(self, ctx, *, user = None):
         if not user:
-            await ctx.send(f"{ctx.author.name.capitalize()} highfives no one. :-/")
+            await ctx.reply(f"{ctx.author.name.capitalize()} highfives no one. :-/")
         elif user.lower() == "random":
-            await ctx.send(f"{ctx.author.name.capitalize()} highfives {ctx.random_viewer().name.capitalize()}!")
+            await ctx.reply(f"{ctx.author.name.capitalize()} highfives {ctx.random_viewer().name.capitalize()}!")
         elif user.lower() == ctx.author.name:
-            await ctx.send(f"{ctx.author.name.capitalize()} highfives themselves. o_O")
+            await ctx.reply(f"{ctx.author.name.capitalize()} highfives themselves. o_O")
         elif user.lower() == "harmonbot":
-            await ctx.send(f"!highfive {ctx.author.name.capitalize()}")
+            await ctx.reply(f"!highfive {ctx.author.name.capitalize()}")
         else:
-            await ctx.send(f"{ctx.author.name.capitalize()} highfives {user.title()}!")
+            await ctx.reply(f"{ctx.author.name.capitalize()} highfives {user.title()}!")
 
     @commands.command()
     async def hug(self, ctx, *, user = None):
         if not user:
-            await ctx.send(f"{ctx.author.name.capitalize()} hugs no one. :-/")
+            await ctx.reply(f"{ctx.author.name.capitalize()} hugs no one. :-/")
         elif user.lower() == "random":
-            await ctx.send(f"{ctx.author.name.capitalize()} hugs {ctx.random_viewer().name.capitalize()}!")
+            await ctx.reply(f"{ctx.author.name.capitalize()} hugs {ctx.random_viewer().name.capitalize()}!")
         elif user.lower() == ctx.author.name:
-            await ctx.send(f"{ctx.author.name.capitalize()} hugs themselves. o_O")
+            await ctx.reply(f"{ctx.author.name.capitalize()} hugs themselves. o_O")
         elif user.lower() == "harmonbot":
-            await ctx.send(f"!hug {ctx.author.name.capitalize()}")
+            await ctx.reply(f"!hug {ctx.author.name.capitalize()}")
         else:
-            await ctx.send(f"{ctx.author.name.capitalize()} hugs {user.title()}!")
+            await ctx.reply(f"{ctx.author.name.capitalize()} hugs {user.title()}!")
 

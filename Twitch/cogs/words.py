@@ -21,11 +21,11 @@ class Words(commands.Cog):
 					"api_key": self.bot.WORDNIK_API_KEY}
 		async with self.bot.aiohttp_session.get(url, params = params) as resp:
 			if resp.status == 404:
-				return await ctx.send("Error: Not found")
+				return await ctx.reply("Error: Not found")
 			data = await resp.json()
 		if not data:
-			return await ctx.send("Definition not found.")
-		await ctx.send(f"{data[0]['word']}: {data[0]['text']}")
+			return await ctx.reply("Definition not found.")
+		await ctx.reply(f"{data[0]['word']}: {data[0]['text']}")
 	
 	@commands.command(aliases = ("audiodefine", "pronounce"))
 	async def pronunciation(self, ctx, word):
@@ -34,14 +34,14 @@ class Words(commands.Cog):
 		params = {"useCanonical": "false", "limit": 1, "api_key": self.bot.WORDNIK_API_KEY}
 		async with self.bot.aiohttp_session.get(url, params = params) as resp:
 			if resp.status == 404:
-				return await ctx.send("Error: Not found")
+				return await ctx.reply("Error: Not found")
 			data = await resp.json()
 			if resp.status == 429:
-				return await ctx.send(f"Error: {data['message']}")
+				return await ctx.reply(f"Error: {data['message']}")
 		if data:
-			await ctx.send(f"{data[0]['word'].capitalize()}: {data[0]['fileUrl']}")
+			await ctx.reply(f"{data[0]['word'].capitalize()}: {data[0]['fileUrl']}")
 		else:
-			await ctx.send("Word or audio not found.")
+			await ctx.reply("Word or audio not found.")
 	
 	@commands.command()
 	async def randomword(self, ctx):
@@ -51,7 +51,7 @@ class Words(commands.Cog):
 					"api_key": self.bot.WORDNIK_API_KEY}
 		async with self.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
-		await ctx.send(data["word"].capitalize())
+		await ctx.reply(data["word"].capitalize())
 	
 	@commands.command()
 	async def translate(self, ctx, *, words):
@@ -61,8 +61,8 @@ class Words(commands.Cog):
 		async with self.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		if data["code"] != 200:
-			return await ctx.send(f"Error: {data['message']}")
-		await ctx.send(data["text"][0])
+			return await ctx.reply(f"Error: {data['message']}")
+		await ctx.reply(data["text"][0])
 	
 	@commands.command(aliases = ("urband",))
 	async def urbandictionary(self, ctx, *, word):
@@ -71,10 +71,10 @@ class Words(commands.Cog):
 		async with self.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		if not data or not data.get("list"):
-			return await ctx.send("No results found.")
+			return await ctx.reply("No results found.")
 		definition = data["list"][0]
 		message = textwrap.shorten(f"{definition['word']}: {definition['definition']}", 
 									width = self.bot.char_limit - len(definition["permalink"]) - 1, 
 									placeholder = "...")
-		await ctx.send(f"{message} {definition['permalink']}")
+		await ctx.reply(f"{message} {definition['permalink']}")
 

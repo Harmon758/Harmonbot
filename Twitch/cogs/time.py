@@ -28,7 +28,7 @@ class Time(commands.Cog):
             try:
                 date = datetime.date(year = now.year, month = month, day = day)
             except ValueError as e:
-                await ctx.send(f"Error: {e}")
+                await ctx.reply(f"Error: {e}")
                 return
             await self.bot.db.execute(
                 """
@@ -39,7 +39,7 @@ class Time(commands.Cog):
                 """,
                 ctx.channel.name, month, day
             )
-            await ctx.send(f"Birthday set to {date.strftime('%B %#d')}")
+            await ctx.reply(f"Birthday set to {date.strftime('%B %#d')}")
             return
             # %#d for removal of leading zero on Windows with native Python
             # executable
@@ -48,7 +48,7 @@ class Time(commands.Cog):
             ctx.channel.name
         )
         if not record or not record["month"] or not record["day"]:
-            await ctx.send("Error: Birthday not set")
+            await ctx.reply("Error: Birthday not set")
             return
         location = await self.bot.db.fetchval(
             "SELECT location FROM twitch.locations WHERE channel = $1",
@@ -61,7 +61,7 @@ class Time(commands.Cog):
                     aiohttp_session = self.bot.aiohttp_session
                 )
             except ValueError as e:
-                await ctx.send(f"Error: {e}")
+                await ctx.reply(f"Error: {e}")
                 return
             now = datetime.datetime.fromtimestamp(
                 datetime.datetime.utcnow().timestamp() +
@@ -70,7 +70,7 @@ class Time(commands.Cog):
         birthday = datetime.datetime(now.year, record["month"], record["day"])
         if now > birthday:
             birthday = birthday.replace(year = birthday.year + 1)
-        await ctx.send(
+        await ctx.reply(
             f"{duration_to_string(birthday - now)} until {ctx.channel.name.capitalize()}'s birthday!"
         )
 
@@ -81,7 +81,7 @@ class Time(commands.Cog):
         christmas = datetime.datetime(now.year, 12, 25)
         if now > christmas:
             christmas = christmas.replace(year = christmas.year + 1)
-        await ctx.send(f"{duration_to_string(christmas - now)} until Christmas!")
+        await ctx.reply(f"{duration_to_string(christmas - now)} until Christmas!")
 
     @commands.command()
     async def easter(self, ctx):
@@ -90,7 +90,7 @@ class Time(commands.Cog):
         easter = datetime.datetime.combine(dateutil.easter.easter(now.year), datetime.time.min)
         if now > easter:
             easter = datetime.datetime.combine(dateutil.easter.easter(now.year + 1), datetime.time.min)
-        await ctx.send(f"{duration_to_string(easter - now)} until Easter!")
+        await ctx.reply(f"{duration_to_string(easter - now)} until Easter!")
 
     @commands.command()
     async def time(self, ctx, *, location = ""):
@@ -100,7 +100,7 @@ class Time(commands.Cog):
                 ctx.channel.name
             )
             if not location:
-                await ctx.send("Error: Location not specified")
+                await ctx.reply("Error: Location not specified")
                 return
         try:
             geocode_data = await get_geocode_data(
@@ -113,7 +113,7 @@ class Time(commands.Cog):
                 aiohttp_session = self.bot.aiohttp_session
             )
         except ValueError as e:
-            await ctx.send(f"Error: {e}")
+            await ctx.reply(f"Error: {e}")
             return
         location_time = datetime.datetime.now(
             datetime.timezone(
@@ -128,5 +128,5 @@ class Time(commands.Cog):
         )
         # %#I and %#d for removal of leading zero on Windows with native Python
         # executable
-        await ctx.send(f"It is currently {time_string}.")
+        await ctx.reply(f"It is currently {time_string}.")
 

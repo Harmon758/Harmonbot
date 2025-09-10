@@ -191,7 +191,7 @@ class Bot(commands.Bot):
 		records = await self.db.fetch("SELECT name, response FROM twitch.commands WHERE channel = 'harmonbot'")
 		def set_response_command_wrapper(response):
 			async def set_response_command(ctx):
-				await ctx.send(response)
+				await ctx.reply(response)
 			return set_response_command
 		for record in records:
 			self.add_command(commands.Command(name = record["name"], 
@@ -243,7 +243,7 @@ class Bot(commands.Bot):
 					ctx.channel.name, command
 				)
 				if response:
-					await ctx.send(response)
+					await ctx.reply(response)
 					ctx.channel_command = command
 					# Return? Override main commands?
 		# Handle commands
@@ -251,17 +251,17 @@ class Bot(commands.Bot):
 		# TODO: command on/off settings
 		# TODO: help command, command help?
 		if message.content.startswith('\N{BILLIARDS}'):
-			await ctx.send(f"\N{BILLIARDS} {eightball()}")
+			await ctx.reply(f"\N{BILLIARDS} {eightball()}")
 	
 	async def event_command_error(self, ctx, error):
 		if isinstance(error, commands.BadArgument):
-			await ctx.send(str(error).replace('`', "'").replace("<class ", "").replace('>', ""))
+			await ctx.reply(str(error).replace('`', "'").replace("<class ", "").replace('>', ""))
 		elif isinstance(error, commands.CommandNotFound):
 			# TODO: Handle command not found
 			if ctx.channel_command:
 				return
 		elif isinstance(error, commands.MissingRequiredArgument):
-			await ctx.send(str(error).rstrip('.').replace("argument", "input"))
+			await ctx.reply(str(error).rstrip('.').replace("argument", "input"))
 		else:
 			# TODO: Sentry
 			await super().event_command_error(ctx, error)
@@ -275,7 +275,7 @@ class Bot(commands.Bot):
 	
 	@commands.command(aliases = ("8ball", '\N{BILLIARDS}'))
 	async def eightball(self, ctx):
-		await ctx.send(f"\N{BILLIARDS} {eightball()}")
+		await ctx.reply(f"\N{BILLIARDS} {eightball()}")
 
 dotenv.load_dotenv()
 bot = Bot(token = os.getenv("TWITCH_BOT_ACCOUNT_OAUTH_TOKEN"), 
