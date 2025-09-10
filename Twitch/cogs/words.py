@@ -6,8 +6,10 @@ import textwrap
 # TODO: Create words unit
 # TODO: Use wordnik library?
 
-@commands.cog()
-class Words:
+def prepare(bot):
+    bot.add_cog(Words(bot))
+
+class Words(commands.Cog):
 	
 	def __init__(self, bot):
 		self.bot = bot

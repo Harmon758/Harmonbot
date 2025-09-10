@@ -1,9 +1,9 @@
 
-import twitchio
+from twitchio.ext import commands
 
 import random
 
-class Context(twitchio.Context):
+class Context(commands.Context):
 	
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)

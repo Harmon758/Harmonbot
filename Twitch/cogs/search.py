@@ -2,8 +2,10 @@
 from twitchio.ext import commands
 
 
-@commands.cog()
-class Search:
+def prepare(bot):
+    bot.add_cog(Search(bot))
+
+class Search(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot

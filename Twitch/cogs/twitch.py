@@ -7,8 +7,10 @@ import dateutil.parser
 
 from units.time import duration_to_string
 
-@commands.cog()
-class Twitch:
+def prepare(bot):
+    bot.add_cog(Twitch(bot))
+
+class Twitch(commands.Cog):
 	
 	def __init__(self, bot):
 		self.bot = bot

@@ -8,8 +8,10 @@ import time
 from units.runescape import get_ge_data, get_monster_data
 from units.time import duration_to_string
 
-@commands.cog()
-class Runescape:
+def prepare(bot):
+    bot.add_cog(Runescape(bot))
+
+class Runescape(commands.Cog):
 	
 	def __init__(self, bot):
 		self.bot = bot

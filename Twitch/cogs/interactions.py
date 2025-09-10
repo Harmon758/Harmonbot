@@ -2,8 +2,10 @@
 from twitchio.ext import commands
 
 
-@commands.cog()
-class Interactions:
+def prepare(bot):
+    bot.add_cog(Interactions(bot))
+
+class Interactions(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot

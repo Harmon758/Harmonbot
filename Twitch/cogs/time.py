@@ -9,8 +9,10 @@ from units.location import get_geocode_data, get_timezone_data
 from units.time import duration_to_string
 
 
-@commands.cog()
-class Time:
+def prepare(bot):
+    bot.add_cog(Time(bot))
+
+class Time(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot

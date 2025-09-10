@@ -18,7 +18,7 @@ from utilities import logging
 class Bot(commands.Bot):
 	
 	def __init__(self, loop = None, initial_channels = None, **kwargs):
-		self.version = "3.0.0-b.138"
+		self.version = "4.0.0-b.0"
 		
 		loop = loop or asyncio.get_event_loop()
 		if initial_channels is None:
@@ -247,7 +247,7 @@ class Bot(commands.Bot):
 					ctx.channel_command = command
 					# Return? Override main commands?
 		# Handle commands
-		await self.handle_commands(message, ctx = ctx)
+		await self.handle_commands(message)
 		# TODO: command on/off settings
 		# TODO: help command, command help?
 		if message.content.startswith('\N{BILLIARDS}'):
@@ -278,7 +278,7 @@ class Bot(commands.Bot):
 		await ctx.send(f"\N{BILLIARDS} {eightball()}")
 
 dotenv.load_dotenv()
-bot = Bot(irc_token = os.getenv("TWITCH_BOT_ACCOUNT_OAUTH_TOKEN"), 
+bot = Bot(token = os.getenv("TWITCH_BOT_ACCOUNT_OAUTH_TOKEN"), 
 			client_id = os.getenv("TWITCH_CLIENT_ID"), 
 			client_secret = os.getenv("TWITCH_CLIENT_SECRET"), 
 			nick = "harmonbot", prefix = '!')

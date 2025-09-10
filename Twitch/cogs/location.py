@@ -8,8 +8,10 @@ import pyowm
 from units.location import wind_degrees_to_direction
 
 
-@commands.cog()
-class Location:
+def prepare(bot):
+    bot.add_cog(Location(bot))
+
+class Location(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
