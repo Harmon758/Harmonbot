@@ -18,7 +18,7 @@ from utilities import logging
 class Bot(commands.Bot):
 	
 	def __init__(self, loop = None, initial_channels = None, **kwargs):
-		self.version = "4.0.0-b.1"
+		self.version = "4.0.0-b.2"
 		
 		loop = loop or asyncio.get_event_loop()
 		if initial_channels is None:
@@ -247,7 +247,7 @@ class Bot(commands.Bot):
 					ctx.channel_command = command
 					# Return? Override main commands?
 		# Handle commands
-		await self.handle_commands(message)
+		await self.invoke(ctx)
 		# TODO: command on/off settings
 		# TODO: help command, command help?
 		if message.content.startswith('\N{BILLIARDS}'):
