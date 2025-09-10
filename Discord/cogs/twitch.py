@@ -11,6 +11,7 @@ import traceback
 
 import aiohttp
 import dateutil.parser
+import twitchio
 
 from units import colors
 from utilities import checks, tasks
@@ -428,12 +429,20 @@ class Twitch(commands.Cog):
 				"SELECT DISTINCT user_id FROM twitch_notifications.channels"
 			)
 			for records_chunk in zip_longest(*[iter(records)] * 100):
-				streams = await self.bot.twitch_client.get_streams(
-					channels = [
-						record["user_id"] for record in records_chunk if record
-					],
-					limit = 100
-				)
+				try:
+					streams = await self.bot.twitch_client.get_streams(
+						channels = [
+							record["user_id"]
+							for record in records_chunk if record
+						],
+						limit = 100
+					)
+				except twitchio.HTTPException as e:
+					if e.args[2] == 502:
+						self.bot.print("Twitch Task Bad Gateway Error")
+						continue
+					else:
+						raise
 				stream_ids += [stream["id"] for stream in streams]
 				await self.process_streams(streams, "streams")
 				await asyncio.sleep(1)
