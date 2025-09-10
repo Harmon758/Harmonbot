@@ -91,7 +91,6 @@ aiohappyeyeballs==2.6.1
 aiosignal==1.4.0
 annotated-types==0.6.0
 anyio==4.10.0
-async-timeout==4.0.3
 attrs==23.1.0
 autocommand==2.2.2
 backports.tarfile==1.2.0
