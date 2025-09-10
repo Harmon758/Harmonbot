@@ -18,7 +18,7 @@ from utilities import logging
 class Bot(commands.Bot):
 
     def __init__(self, loop = None, initial_channels = None, **kwargs):
-        self.version = "4.0.0-b.4"
+        self.version = "4.0.0-b.5"
 
         loop = loop or asyncio.get_event_loop()
         if initial_channels is None:
@@ -215,6 +215,9 @@ class Bot(commands.Bot):
         # Initialize aiohttp Client Session
         if not self.aiohttp_session:
             self.aiohttp_session = aiohttp.ClientSession(loop = self.loop)
+
+    async def event_channel_joined(self, channel):
+        print(f"Joined channel: {channel.name}")
 
     async def event_message(self, message):
         # Log messages
