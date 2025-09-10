@@ -5,7 +5,7 @@
 discord.py[speed,voice] @ git+https://github.com/Rapptz/discord.py.git@ebc1bc3
 # discord-ext-menus==1.0.0a
 discord-ext-menus @ git+https://github.com/Rapptz/discord-ext-menus.git@8686b5d
-twitchio==2.0.0b6
+twitchio==2.0.0b7
 irc==20.5.0
 python-telegram-bot==22.3
 
