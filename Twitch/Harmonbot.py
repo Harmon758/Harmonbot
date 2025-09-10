@@ -18,7 +18,7 @@ from utilities import logging
 class Bot(commands.Bot):
 	
 	def __init__(self, loop = None, initial_channels = None, **kwargs):
-		self.version = "4.0.0-b.0"
+		self.version = "4.0.0-b.1"
 		
 		loop = loop or asyncio.get_event_loop()
 		if initial_channels is None:
@@ -211,11 +211,11 @@ class Bot(commands.Bot):
 			INSERT INTO twitch.messages (timestamp, channel, author, message, message_timestamp)
 			VALUES ($1, $2, $3, $4, $5)
 			""", 
-			datetime.datetime.now(), message.channel.name, message.author.name, message.content, 
+			datetime.datetime.now(), message.channel.name, "harmonbot" if message.echo else message.author.name, message.content, 
 			None if message.echo else message.timestamp.replace(tzinfo = datetime.UTC)
 		)
 		# Ignore own messages
-		if message.author.name == "harmonbot":
+		if message.echo:
 			return
 		# Get Context
 		ctx = await self.get_context(message, cls = context.Context)
