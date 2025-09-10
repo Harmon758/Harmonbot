@@ -164,7 +164,7 @@ proto-plus==1.26.1
 psycopg-binary==3.2.9
 pyasn1==0.6.1
 pyasn1-modules==0.4.2
-pycares==4.10.0
+pycares==4.11.0
 pycparser==2.21
 pydantic-core==2.14.5
 Pygments==2.19.2
