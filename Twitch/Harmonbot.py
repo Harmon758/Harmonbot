@@ -171,8 +171,7 @@ class Bot(commands.Bot):
                 variables = json.load(variables_file)
                 for name, value in variables.items():
                     if isinstance(value, bool) or value is None:
-                        if name.endswith(".status"):
-                            name = name[:-7]
+                        name = name.removesuffix(".status")
                         await self.db.execute(
                             """
                             INSERT INTO twitch.toggles (channel, name, status)
