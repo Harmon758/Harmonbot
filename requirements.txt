@@ -57,7 +57,7 @@ pytest==8.4.2
 python-aiml==0.9.3
 python-dateutil==2.9.0.post0
 python-dotenv==1.1.1
-pytz==2023.3.post1
+pytz==2025.2
 requests[socks]==2.32.5
 rich==14.1.0
 ruff==0.13.0
