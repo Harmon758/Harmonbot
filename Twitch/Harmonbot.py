@@ -2,6 +2,7 @@
 from twitchio.ext import commands
 
 import asyncio
+import contextlib
 import datetime
 import os
 
@@ -294,6 +295,12 @@ class Bot(commands.Bot):
     async def eightball(self, ctx):
         await ctx.reply(f"\N{BILLIARDS} {eightball()}")
 
+    async def shutdown_tasks(self):
+        if self.aiohttp_session:
+            await self.aiohttp_session.close()
+        if self.database_connection_pool:
+            await self.database_connection_pool.close()
+
 
 dotenv.load_dotenv()
 bot = Bot(
@@ -302,5 +309,13 @@ bot = Bot(
     client_secret = os.getenv("TWITCH_CLIENT_SECRET"),
     nick = "harmonbot", prefix = '!'
 )
-bot.run()
+
+async def main():
+    try:
+        await bot.start()
+    finally:
+        await bot.shutdown_tasks()
+
+with contextlib.suppress(KeyboardInterrupt):
+    bot.loop.run_until_complete(main())
 
