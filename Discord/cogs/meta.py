@@ -1051,7 +1051,8 @@ class Meta(commands.Cog):
                     """,
                     message.id
                 )
-            self.bot.print(f"Published {count} #github messages")
+            if count:
+                self.bot.print(f"Published {count} #github messages")
         else:
             async for message in github_channel.history(limit = 1):
                 await self.bot.db.execute(
