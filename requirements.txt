@@ -47,7 +47,7 @@ psycopg[binary]==3.2.10
 py-cpuinfo==9.0.0
 pycountry==23.12.11
 pycryptodomex==3.19.0
-pydantic==2.11.8
+pydantic==2.11.9
 pydealer==1.4.0
 # pygost==5.6  # No longer on PyPI
 pyowm==3.5.0
@@ -166,7 +166,7 @@ pyasn1==0.6.1
 pyasn1-modules==0.4.2
 pycares==4.11.0
 pycparser==2.21
-pydantic-core==2.33.2
+pydantic-core==2.39.0
 Pygments==2.19.2
 PyJWT[crypto]==2.10.1
 PyNaCl==1.5.0
