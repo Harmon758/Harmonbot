@@ -110,10 +110,10 @@ class RPS(commands.Cog):
         await self.bot.db.execute(
             """
             CREATE TABLE IF NOT EXISTS games.erps (
-                object			TEXT, 
-                against			TEXT, 
-                action			TEXT, 
-                PRIMARY KEY 	(object, against)
+                object       TEXT,
+                against      TEXT,
+                action       TEXT,
+                PRIMARY KEY  (object, against)
             )
             """
         )
@@ -142,7 +142,7 @@ class RPS(commands.Cog):
                         VALUES ($1, $2, $3)
                         ON CONFLICT (object, against) DO
                         UPDATE SET action = $3
-                        """, 
+                        """,
                         object, words[-1], ' '.join(words[:-1])
                     )
             # TODO: Properly handle object against not at end
