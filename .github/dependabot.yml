@@ -26,8 +26,8 @@ updates:
   - package-ecosystem: "pip"
     directory: "/"
     schedule:
-      interval: "daily"
-      time: "00:00"
+      interval: "cron"
+      cronjob: "0 0 * * *"
     allow:
       - dependency-type: "all"
     groups:
