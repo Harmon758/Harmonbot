@@ -33,7 +33,7 @@ class TestGetCharacter(unittest.IsolatedAsyncioTestCase):
 
     @vcr.use_cassette("genshin_impact/get_character/get_amber_data.yaml")
     async def test_get_amber_data(self):
-        self.assertEqual((await get_character("Amber")).name, "Amber")
+        assert (await get_character("Amber")).name == "Amber"
 
     async def asyncTearDown(self):
         # Wait 250 ms for the underlying SSL connections to close

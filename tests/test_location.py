@@ -67,71 +67,71 @@ class TestWindDegreesToDirection(unittest.TestCase):
 
     @given(floats(min_value = 0, max_value = 360))
     def test_output_type(self, degrees):
-        self.assertIsInstance(wind_degrees_to_direction(degrees), str)
+        assert isinstance(wind_degrees_to_direction(degrees), str)
 
     @given(floats(min_value = 0, max_value = 11.25))
     def test_low_n_output(self, degrees):
-        self.assertEqual(wind_degrees_to_direction(degrees), 'N')
+        assert wind_degrees_to_direction(degrees) == 'N'
 
     @given(floats(min_value = 33.75, max_value = 56.25, exclude_min = True))
     def test_ne_output(self, degrees):
-        self.assertEqual(wind_degrees_to_direction(degrees), "NE")
+        assert wind_degrees_to_direction(degrees) == "NE"
 
     @given(floats(min_value = 56.25, max_value = 78.75, exclude_min = True))
     def test_ene_output(self, degrees):
-        self.assertEqual(wind_degrees_to_direction(degrees), "ENE")
+        assert wind_degrees_to_direction(degrees) == "ENE"
 
     @given(floats(min_value = 78.75, max_value = 101.25, exclude_min = True))
     def test_e_output(self, degrees):
-        self.assertEqual(wind_degrees_to_direction(degrees), 'E')
+        assert wind_degrees_to_direction(degrees) == 'E'
 
     @given(floats(min_value = 101.25, max_value = 123.75, exclude_min = True))
     def test_ese_output(self, degrees):
-        self.assertEqual(wind_degrees_to_direction(degrees), "ESE")
+        assert wind_degrees_to_direction(degrees) == "ESE"
 
     @given(floats(min_value = 123.75, max_value = 146.25, exclude_min = True))
     def test_se_output(self, degrees):
-        self.assertEqual(wind_degrees_to_direction(degrees), "SE")
+        assert wind_degrees_to_direction(degrees) == "SE"
 
     @given(floats(min_value = 146.25, max_value = 168.75, exclude_min = True))
     def test_sse_output(self, degrees):
-        self.assertEqual(wind_degrees_to_direction(degrees), "SSE")
+        assert wind_degrees_to_direction(degrees) == "SSE"
 
     @given(floats(min_value = 168.75, max_value = 191.25, exclude_min = True))
     def test_s_output(self, degrees):
-        self.assertEqual(wind_degrees_to_direction(degrees), 'S')
+        assert wind_degrees_to_direction(degrees) == 'S'
 
     @given(floats(min_value = 191.25, max_value = 213.75, exclude_min = True))
     def test_ssw_output(self, degrees):
-        self.assertEqual(wind_degrees_to_direction(degrees), "SSW")
+        assert wind_degrees_to_direction(degrees) == "SSW"
 
     @given(floats(min_value = 213.75, max_value = 236.25, exclude_min = True))
     def test_sw_output(self, degrees):
-        self.assertEqual(wind_degrees_to_direction(degrees), "SW")
+        assert wind_degrees_to_direction(degrees) == "SW"
 
     @given(floats(min_value = 236.25, max_value = 258.75, exclude_min = True))
     def test_wsw_output(self, degrees):
-        self.assertEqual(wind_degrees_to_direction(degrees), "WSW")
+        assert wind_degrees_to_direction(degrees) == "WSW"
 
     @given(floats(min_value = 258.75, max_value = 281.25, exclude_min = True))
     def test_w_output(self, degrees):
-        self.assertEqual(wind_degrees_to_direction(degrees), 'W')
+        assert wind_degrees_to_direction(degrees) == 'W'
 
     @given(floats(min_value = 281.25, max_value = 303.75, exclude_min = True))
     def test_wnw_output(self, degrees):
-        self.assertEqual(wind_degrees_to_direction(degrees), "WNW")
+        assert wind_degrees_to_direction(degrees) == "WNW"
 
     @given(floats(min_value = 303.75, max_value = 326.25, exclude_min = True))
     def test_nw_output(self, degrees):
-        self.assertEqual(wind_degrees_to_direction(degrees), "NW")
+        assert wind_degrees_to_direction(degrees) == "NW"
 
     @given(floats(min_value = 326.25, max_value = 348.75, exclude_min = True))
     def test_nnw_output(self, degrees):
-        self.assertEqual(wind_degrees_to_direction(degrees), "NNW")
+        assert wind_degrees_to_direction(degrees) == "NNW"
 
     @given(floats(min_value = 348.75, max_value = 360, exclude_min = True))
     def test_high_n_output(self, degrees):
-        self.assertEqual(wind_degrees_to_direction(degrees), 'N')
+        assert wind_degrees_to_direction(degrees) == 'N'
 
 
 if __name__ == "__main__":

@@ -20,53 +20,41 @@ def setUpModule():
 class TestCheckAnswer(unittest.TestCase):
 
     def test_correct_answer(self):
-        self.assertTrue(check_answer(answer = "correct", response = "correct"))
+        assert check_answer(answer = "correct", response = "correct")
 
     def test_incorrect_answer(self):
-        self.assertFalse(
-            check_answer(answer = "correct", response = "incorrect")
-        )
+        assert not check_answer(answer = "correct", response = "incorrect")
 
     def test_correct_encoding(self):
-        self.assertTrue(
-            check_answer(
-                answer = "Brontë Sisters (The Brontës)", response = "Brontes"
-            )
+        assert check_answer(
+            answer = "Brontë Sisters (The Brontës)", response = "Brontes"
         )
-        self.assertFalse(
-            check_answer(
-                answer = "(Antonín) Dvořák", response = "stravinsky"
-            )
+        assert not check_answer(
+            answer = "(Antonín) Dvořák", response = "stravinsky"
         )
 
     def test_incorrect_encoding(self):
-        self.assertTrue(
-            check_answer(answer = "a rÃ©sumÃ©", response = "resume")
-        )
-        self.assertTrue(
-            check_answer(answer = "TenochtitlÃ¡n", response = "Tenochtitlan")
+        assert check_answer(answer = "a rÃ©sumÃ©", response = "resume")
+        assert check_answer(
+            answer = "TenochtitlÃ¡n", response = "Tenochtitlan"
         )
 
     def test_abbreviation_with_parentheses(self):
-        self.assertTrue(
-            check_answer(answer = "(Mount) Olympus", response = "mt olympus")
+        assert check_answer(
+            answer = "(Mount) Olympus", response = "mt olympus"
         )
 
     def test_and_with_and_in_item(self):
-        self.assertTrue(
-            check_answer(
-                answer = "Rhode Island & Delaware",
-                response = "delaware and rhode island"
-            )
+        assert check_answer(
+            answer = "Rhode Island & Delaware",
+            response = "delaware and rhode island"
         )
 
     def test_ampersand(self):
-        self.assertTrue(check_answer(answer = "AT&T", response = "at&t"))
+        assert check_answer(answer = "AT&T", response = "at&t")
 
     def test_asterisks(self):
-        self.assertTrue(
-            check_answer(answer = "*a pine (**a fir)", response = "pine")
-        )
+        assert check_answer(answer = "*a pine (**a fir)", response = "pine")
 
     def test_clue_text_plural_subject_redundancy_in_answer(self):
         for clue, answer, response in (
@@ -79,22 +67,20 @@ class TestCheckAnswer(unittest.TestCase):
                 "sebaceous"
             ),
         ):
-            self.assertTrue(
-                check_answer(clue = clue, answer = answer, response = response)
+            assert check_answer(
+                clue = clue, answer = answer, response = response
             )
 
     @unittest.expectedFailure
     def test_regressed_clue_text_plural_subject_redundancy_in_answer(self):
         # Regression due to spaCy model update
-        self.assertTrue(
-            check_answer(
-                clue = (
-                    "From the Latin for \"thigh\", these main arteries of the "
-                    "thigh supply blood to the lower extremities"
-                ),
-                answer = "the femoral arteries",
-                response = "femoral"
-            )
+        assert check_answer(
+            clue = (
+                "From the Latin for \"thigh\", these main arteries of the "
+                "thigh supply blood to the lower extremities"
+            ),
+            answer = "the femoral arteries",
+            response = "femoral"
         )
 
     def test_clue_text_subject_redundancy_in_answer(self):
@@ -156,84 +142,68 @@ class TestCheckAnswer(unittest.TestCase):
                 "thyroid"
             )
         ):
-            self.assertTrue(
-                check_answer(clue = clue, answer = answer, response = response)
+            assert check_answer(
+                clue = clue, answer = answer, response = response
             )
 
     def test_clue_text_subject_redundancy_in_answer_with_hyphen(self):
-        self.assertTrue(
-            check_answer(
-                clue = (
-                    "This piscene-named 8mm lens can take in a 180-degree "
-                    "angle of view"
-                ),
-                answer = "a fish-eye lens",
-                response = "fisheye"
-            )
+        assert check_answer(
+            clue = (
+                "This piscene-named 8mm lens can take in a 180-degree "
+                "angle of view"
+            ),
+            answer = "a fish-eye lens",
+            response = "fisheye"
         )
-        self.assertTrue(
-            check_answer(
-                clue = (
-                    "This piscene-named 8mm lens can take in a 180-degree "
-                    "angle of view"
-                ),
-                answer = "a fish-eye lens",
-                response = "fish eye"
-            )
+        assert check_answer(
+            clue = (
+                "This piscene-named 8mm lens can take in a 180-degree "
+                "angle of view"
+            ),
+            answer = "a fish-eye lens",
+            response = "fish eye"
         )
 
     def test_clue_text_subject_redundancy_in_response(self):
-        self.assertTrue(
-            check_answer(
-                clue = (
-                    "The Peace of Nicias in 421 B.C. brought a temporary end "
-                    "to the fighting in this Greek war"
-                ),
-                answer = "Peloponnesian",
-                response = "peloponnesian war"
-            )
+        assert check_answer(
+            clue = (
+                "The Peace of Nicias in 421 B.C. brought a temporary end "
+                "to the fighting in this Greek war"
+            ),
+            answer = "Peloponnesian",
+            response = "peloponnesian war"
         )
 
     def test_clue_text_subject_redundancy_in_response_with_preceding_word(
         self
     ):
-        self.assertTrue(
-            check_answer(
-                clue = (
-                    "Sure, my skull's been growing & my jaw's protruding a "
-                    "tad--I doubt I have acromegaly, a disorder of this gland"
-                ),
-                answer = "the pituitary",
-                response = "pituitary gland"
-            )
+        assert check_answer(
+            clue = (
+                "Sure, my skull's been growing & my jaw's protruding a "
+                "tad--I doubt I have acromegaly, a disorder of this gland"
+            ),
+            answer = "the pituitary",
+            response = "pituitary gland"
         )
 
     def test_dash_removal_with_article_prefix(self):
-        self.assertTrue(
-            check_answer(
-                answer = '"A-Tisket, A-Tasket"', response = "a tisket a tasket"
-            )
+        assert check_answer(
+            answer = '"A-Tisket, A-Tasket"', response = "a tisket a tasket"
         )
 
     def test_honorific(self):
-        self.assertTrue(
-            check_answer(
-                answer = "Sir Isaac Newton", response = "Isaac Newton"
-            )
+        assert check_answer(
+            answer = "Sir Isaac Newton", response = "Isaac Newton"
         )
-        self.assertTrue(
-            check_answer(
-                answer = "Dr. (Martin Luther) King (Jr.)",
-                response = "martin luther king jr"
-            )
+        assert check_answer(
+            answer = "Dr. (Martin Luther) King (Jr.)",
+            response = "martin luther king jr"
         )
 
     def test_large_number(self):
-        self.assertFalse(
-            check_answer(
-                answer = "33 1/3",
-                response = "128347192834719283561293847129384719238471234"
-            )
+        assert not check_answer(
+            answer = "33 1/3",
+            response = "128347192834719283561293847129384719238471234"
         )
 
     def test_matching_named_entity(self):
@@ -251,94 +221,72 @@ class TestCheckAnswer(unittest.TestCase):
             ("Theodore Roosevelt", "teddy roosevelt"),
             ("the University of Southern California", "usc")
         ):
-            self.assertTrue(
-                check_answer(answer = answer, response = response),
-                f'answer: "{answer}", response: "{response}"'
-            )
+            assert check_answer(answer = answer, response = response)
 
     def test_one_of_in_answer(self):
-        self.assertFalse(
-            check_answer(
-                answer = "(1 of) James Lovell, Fred Haise, & Jack Swigert",
-                response = "1 of"
-            )
+        assert not check_answer(
+            answer = "(1 of) James Lovell, Fred Haise, & Jack Swigert",
+            response = "1 of"
         )
-        self.assertTrue(
-            check_answer(
-                answer = "(1 of) James Lovell, Fred Haise, & Jack Swigert",
-                response = "Jack Swigert"
-            )
+        assert check_answer(
+            answer = "(1 of) James Lovell, Fred Haise, & Jack Swigert",
+            response = "Jack Swigert"
         )
 
     def test_partial_matching_named_entity(self):
-        self.assertFalse(
-            check_answer(answer = "bean sprouts", response = "soy beans")
+        assert not check_answer(
+            answer = "bean sprouts", response = "soy beans"
         )
 
     def test_only_comma(self):
-        self.assertFalse(check_answer(answer = "colon", response = ','))
+        assert not check_answer(answer = "colon", response = ',')
 
     def test_parentheses_with_article_prefix(self):
-        self.assertTrue(
-            check_answer(
-                answer = "the ISS (the International Space Station)",
-                response = "International Space Station"
-            )
+        assert check_answer(
+            answer = "the ISS (the International Space Station)",
+            response = "International Space Station"
         )
-        self.assertTrue(
-            check_answer(
-                answer = "Holland (The Netherlands)", response = "Netherlands"
-            )
+        assert check_answer(
+            answer = "Holland (The Netherlands)", response = "Netherlands"
         )
 
     def test_preceding_possessive_determiner_removal(self):
-        self.assertTrue(check_answer(answer = "its head", response = "head"))
+        assert check_answer(answer = "its head", response = "head")
 
     def test_preceding_preposition_removal(self):
-        self.assertTrue(check_answer(answer = "to carp", response = "carp"))
+        assert check_answer(answer = "to carp", response = "carp")
 
     def test_plurality_validation_handling(self):
-        self.assertFalse(check_answer(answer = "Kellogg's", response = "'s"))
+        assert not check_answer(answer = "Kellogg's", response = "'s")
 
     def test_plurality_with_partial_slash(self):
-        self.assertTrue(
-            check_answer(
-                answer = "Junior/Community Colleges",
-                response = "community college"
-            )
+        assert check_answer(
+            answer = "Junior/Community Colleges",
+            response = "community college"
         )
-        self.assertTrue(
-            check_answer(
-                answer = "Junior/Community Colleges",
-                response = "junior college"
-            )
+        assert check_answer(
+            answer = "Junior/Community Colleges",
+            response = "junior college"
         )
 
     def test_plurality_with_parentheses(self):
-        self.assertTrue(check_answer(answer = "pigs (hogs)", response = "pig"))
-        self.assertTrue(check_answer(answer = "pigs (hogs)", response = "hog"))
+        assert check_answer(answer = "pigs (hogs)", response = "pig")
+        assert check_answer(answer = "pigs (hogs)", response = "hog")
 
     def test_rearranged_list_with_following_word(self):
-        self.assertTrue(
-            check_answer(
-                answer = "North and South Carolina",
-                response = "South and North Carolina"
-            )
+        assert check_answer(
+            answer = "North and South Carolina",
+            response = "South and North Carolina"
         )
 
     def test_serial_commas_in_response(self):
-        self.assertTrue(
-            check_answer(
-                answer = "Elaine, George & Kramer",
-                response = "elaine, kramer, and george"
-            )
+        assert check_answer(
+            answer = "Elaine, George & Kramer",
+            response = "elaine, kramer, and george"
         )
-
     def test_slash_with_article_prefix(self):
-        self.assertTrue(
-            check_answer(
-                answer = "The Netherlands/Holland", response = "netherlands"
-            )
+        assert check_answer(
+            answer = "The Netherlands/Holland", response = "netherlands"
         )
 
 

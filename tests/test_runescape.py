@@ -14,7 +14,7 @@ class TestGetItemID(unittest.IsolatedAsyncioTestCase):
 
     @vcr.use_cassette("runescape/get_item_id/get_vial_id.yaml")
     async def test_get_vial_id(self):
-        self.assertEqual(await get_item_id("vial"), 229)
+        assert await get_item_id("vial") == 229
 
     @vcr.use_cassette("runescape/get_item_id/get_nonexistent_item_id.yaml")
     async def test_get_nonexistent_item_id(self):
@@ -39,7 +39,7 @@ class TestGetGEData(unittest.IsolatedAsyncioTestCase):
 
     @vcr.use_cassette("runescape/get_ge_data/get_vial_ge_data.yaml")
     async def test_get_vial_ge_data(self):
-        self.assertEqual((await get_ge_data("vial"))["name"], "Vial")
+        assert (await get_ge_data("vial"))["name"] == "Vial"
 
     @vcr.use_cassette(
         "runescape/get_ge_data/get_nonexistent_item_ge_data.yaml"
@@ -68,7 +68,7 @@ class TestGetMonsterData(unittest.IsolatedAsyncioTestCase):
 
     @vcr.use_cassette("runescape/get_monster_data/get_cow_data.yaml")
     async def test_get_cow_data(self):
-        self.assertEqual((await get_monster_data("cow"))["name"], "Cow")
+        assert (await get_monster_data("cow"))["name"] == "Cow"
 
     @vcr.use_cassette(
         "runescape/get_monster_data/get_nonexistent_monster_data.yaml"

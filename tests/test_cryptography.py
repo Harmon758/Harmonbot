@@ -34,9 +34,8 @@ class TestCaesarCipher(unittest.TestCase):
 
     @given(text(), integers())
     def test_decode_inverts_encode(self, message, key):
-        self.assertEqual(
-            message,
-            decode_caesar_cipher(encode_caesar_cipher(message, key), key)
+        assert message == decode_caesar_cipher(
+            encode_caesar_cipher(message, key), key
         )
 
 
@@ -91,8 +90,8 @@ class TestMorseCode(unittest.TestCase):
         )
     ))
     def test_decode_inverts_encode(self, message):
-        self.assertEqual(
-            message.upper(), decode_morse_code(encode_morse_code(message))
+        assert message.upper() == decode_morse_code(
+            encode_morse_code(message)
         )
 
 
