@@ -1033,11 +1033,13 @@ class Meta(commands.Cog):
             ORDER BY timestamp DESC LIMIT 1
             """
         ):
+            count = 0
             async for message in github_channel.history(
                 after = discord.Object(message_id), limit = 10
             ):
                 try:
                     await message.publish()
+                    count += 1
                 except discord.HTTPException as e:
                     if e.code != 40033:
                     # 40033 - This message has already been crossposted
@@ -1049,6 +1051,7 @@ class Meta(commands.Cog):
                     """,
                     message.id
                 )
+            self.bot.print(f"Published {count} #github messages")
         else:
             async for message in github_channel.history(limit = 1):
                 await self.bot.db.execute(
