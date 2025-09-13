@@ -7,8 +7,9 @@
 # https://github.com/Harmon758/Harmonbot/pull/2511
 # https://docs.github.com/en/code-security/supply-chain-security/keeping-your-dependencies-updated-automatically/configuration-options-for-dependency-updates#open-pull-requests-limit
 
-# Necessary to specify time now so as not to be random:
-# https://github.blog/changelog/2021-06-16-dependabot-now-schedules-version-updates-uniformly/
+# "The cron expression at property '#/updates/0/schedule/interval/cronjob' must have a minimum period of 24 hours between next job run."
+# https://github.com/dependabot/dependabot-core/issues/6339#issuecomment-2772911033
+# https://github.com/dependabot/dependabot-core/issues/6339#issuecomment-2810799331
 
 version: 2
 
