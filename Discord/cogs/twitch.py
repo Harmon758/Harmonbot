@@ -3,7 +3,6 @@ import discord
 from discord.ext import commands
 
 import asyncio
-import contextlib
 from itertools import zip_longest
 import logging
 import sys
@@ -499,14 +498,17 @@ class Twitch(commands.Cog):
 			)
 			await asyncio.sleep(10)
 		except discord.DiscordServerError as e:
-			self.bot.print(f"Twitch Task Discord Server Error: {e}")
 			await asyncio.sleep(60)
 			reason = ' ' + e.response.reason if e.response.reason else ""
-			with contextlib.suppress(discord.DiscordServerError):
+			try:
 				await self.bot.log_channel.send(
 					f"Encountered {e.status}{reason} Discord server error "
 					"when attempting to send or edit Twitch notification in "
 					f"{self.twitch_notification_text_channel.mention}"
+				)
+			except discord.DiscordServerError:
+				self.bot.print(
+					f"Twitch Task Discord Server Error: {e.status}{reason}"
 				)
 		except Exception as e:
 			print("Exception in Twitch Task", file = sys.stderr)
