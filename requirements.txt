@@ -10,7 +10,7 @@ irc==20.5.0
 python-telegram-bot==22.3
 
 aiocache==0.12.3
-aiohttp==3.12.13
+aiohttp==3.12.14
 async-lru==2.0.5
 asyncpg==0.30.0
 beautifulsoup4==4.13.5
