@@ -1003,7 +1003,7 @@ class Random(commands.Cog):
         name = "question", aliases = ["why"], with_app_command = False
     )
     async def random_question(self, ctx):
-        '''Random question'''
+        """Random question"""
         # Note: question command invokes this command
         # https://xkcd.com/why.txt
         # https://web.archive.org/web/20180729163548/https://xkcd.com/why.txt
