@@ -80,10 +80,10 @@ class Twitter(commands.Cog):
     def cog_unload(self):
         self.check_tweets.cancel()
 
-    @commands.hybrid_group(case_insensitive = True)
+    @commands.hybrid_group(aliases = ['x'], case_insensitive = True)
     @checks.not_forbidden()
     async def twitter(self, ctx):
-        """Twitter"""
+        """Twitter / X"""
         await ctx.send_help(ctx.command)
 
     @twitter.command(name = "status")
