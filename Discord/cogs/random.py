@@ -1007,16 +1007,16 @@ class Random(commands.Cog):
         # Note: question command invokes this command
         # https://xkcd.com/why.txt
         # https://web.archive.org/web/20180729163548/https://xkcd.com/why.txt
-        if not os.path.isfile(f"{self.bot.data_path}/why.txt"):
-            with open(f"{self.bot.data_path}/why.txt", "wb") as why_file:
+        filepath = f"{self.bot.data_path}/why.txt"
+
+        if not os.path.isfile(filepath):
+            with open(filepath, "wb") as why_file:
                 async with ctx.bot.aiohttp_session.get(
                     "https://web.archive.org/web/20180729163548if_/https://xkcd.com/why.txt"
                 ) as response:
                     why_file.write(await response.read())
 
-        with open(
-            f"{self.bot.data_path}/why.txt", 'r', encoding = "UTF-8"
-        ) as why_file:
+        with open(filepath, 'r', encoding = "UTF-8") as why_file:
             questions = why_file.read().split('\n')
 
         await ctx.embed_reply(f"{random.choice(questions).capitalize()}?")
