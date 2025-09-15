@@ -8,6 +8,7 @@ import calendar
 import csv
 import datetime
 import multiprocessing
+import os
 import random
 import string
 from typing import Literal, Optional
@@ -1006,12 +1007,18 @@ class Random(commands.Cog):
         # Note: question command invokes this command
         # https://xkcd.com/why.txt
         # https://web.archive.org/web/20180729163548/https://xkcd.com/why.txt
-        # TODO: Cache / Save
-        async with ctx.bot.aiohttp_session.get(
-            "https://web.archive.org/web/20180729163548if_/https://xkcd.com/why.txt"
-        ) as resp:
-            data = await resp.text()
-        questions = data.split('\n')
+        if not os.path.isfile(f"{self.bot.data_path}/why.txt"):
+            with open(f"{self.bot.data_path}/why.txt", "wb") as why_file:
+                async with ctx.bot.aiohttp_session.get(
+                    "https://web.archive.org/web/20180729163548if_/https://xkcd.com/why.txt"
+                ) as resp:
+                    why_file.write(await resp.read())
+
+        with open(
+            f"{self.bot.data_path}/why.txt", 'r', encoding = "UTF-8"
+        ) as why_file:
+            questions = why_file.read().split('\n')
+
         await ctx.embed_reply(f"{random.choice(questions).capitalize()}?")
 
     @commands.command(aliases = ["why"])
