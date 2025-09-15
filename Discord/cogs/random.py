@@ -1010,7 +1010,7 @@ class Random(commands.Cog):
         async with ctx.bot.aiohttp_session.get("https://web.archive.org/web/20180729163548if_/https://xkcd.com/why.txt") as resp:
             data = await resp.text()
         questions = data.split('\n')
-        await ctx.embed_reply("{}?".format(random.choice(questions).capitalize()))
+        await ctx.embed_reply(f"{random.choice(questions).capitalize()}?")
 
     @commands.command(aliases = ["why"])
     async def question(self, ctx):
