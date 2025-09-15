@@ -1007,7 +1007,9 @@ class Random(commands.Cog):
         # https://xkcd.com/why.txt
         # https://web.archive.org/web/20180729163548/https://xkcd.com/why.txt
         # TODO: Cache / Save
-        async with ctx.bot.aiohttp_session.get("https://web.archive.org/web/20180729163548if_/https://xkcd.com/why.txt") as resp:
+        async with ctx.bot.aiohttp_session.get(
+            "https://web.archive.org/web/20180729163548if_/https://xkcd.com/why.txt"
+        ) as resp:
             data = await resp.text()
         questions = data.split('\n')
         await ctx.embed_reply(f"{random.choice(questions).capitalize()}?")
