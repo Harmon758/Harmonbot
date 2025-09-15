@@ -1004,7 +1004,10 @@ class Random(commands.Cog):
     async def random_question(self, ctx):
         '''Random question'''
         # Note: question command invokes this command
-        async with ctx.bot.aiohttp_session.get("http://xkcd.com/why.txt") as resp:
+        # https://xkcd.com/why.txt
+        # https://web.archive.org/web/20180729163548/https://xkcd.com/why.txt
+        # TODO: Cache / Save
+        async with ctx.bot.aiohttp_session.get("https://web.archive.org/web/20180729163548if_/https://xkcd.com/why.txt") as resp:
             data = await resp.text()
         questions = data.split('\n')
         await ctx.embed_reply("{}?".format(random.choice(questions).capitalize()))
