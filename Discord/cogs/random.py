@@ -1011,8 +1011,8 @@ class Random(commands.Cog):
             with open(f"{self.bot.data_path}/why.txt", "wb") as why_file:
                 async with ctx.bot.aiohttp_session.get(
                     "https://web.archive.org/web/20180729163548if_/https://xkcd.com/why.txt"
-                ) as resp:
-                    why_file.write(await resp.read())
+                ) as response:
+                    why_file.write(await response.read())
 
         with open(
             f"{self.bot.data_path}/why.txt", 'r', encoding = "UTF-8"
