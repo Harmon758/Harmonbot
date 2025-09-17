@@ -11,12 +11,12 @@ import sentry_sdk
 
 def loop(
     *, seconds = MISSING, minutes = MISSING, hours = MISSING, time = MISSING,
-    count = None, reconnect = True
+    count = None, reconnect = True, name = None
 ):
     def decorator(function):
         loop_instance = Loop(
             function, seconds = seconds, minutes = minutes, hours = hours,
-            count = count, time = time, reconnect = reconnect
+            count = count, time = time, reconnect = reconnect, name = name
         )
 
         @loop_instance.error
