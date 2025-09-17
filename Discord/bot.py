@@ -730,24 +730,43 @@ class Bot(commands.Bot):
     async def startup_tasks(self):
         await self.wait_until_ready()
         print(f"Started up Discord {self.user} ({self.user.id})")
-        if (record := await self.db.fetchrow(
-            """
-            DELETE FROM meta.restart_channels
-            WHERE player_text_channel_id IS NULL
-            RETURNING *
-            """
-        )) and (restart_channel := self.get_channel(record["channel_id"])) and (restart_message_id := record["restart_message_id"]):
+        if (
+            record := await self.db.fetchrow(
+                """
+                DELETE FROM meta.restart_channels
+                WHERE player_text_channel_id IS NULL
+                RETURNING *
+                """
+            )
+        ) and (
+            restart_channel := self.get_channel(record["channel_id"])
+        ) and (
+            restart_message_id := record["restart_message_id"]
+        ):
             try:
-                restart_message = await restart_channel.fetch_message(restart_message_id)
+                restart_message = await restart_channel.fetch_message(
+                    restart_message_id
+                )
                 embed = restart_message.embeds[0]
-                embed.description += f"\n\N{THUMBS UP SIGN}{self.emoji_skin_tone} Restarted"
+                embed.description += (
+                    f"\n\N{THUMBS UP SIGN}{self.emoji_skin_tone} Restarted"
+                )
                 await restart_message.edit(embed = embed)
             except discord.NotFound:
-                await self.send_embed(restart_channel, f"\N{THUMBS UP SIGN}{self.emoji_skin_tone} Restarted")
+                await self.send_embed(
+                    restart_channel,
+                    f"\N{THUMBS UP SIGN}{self.emoji_skin_tone} Restarted"
+                )
         if audio_cog := self.get_cog("Audio"):
-            for record in await self.db.fetch("DELETE FROM meta.restart_channels RETURNING *"):
-                if text_channel := self.get_channel(record["player_text_channel_id"]):
-                    audio_cog.players[text_channel.guild.id] = AudioPlayer(self, text_channel)
+            for record in await self.db.fetch(
+                "DELETE FROM meta.restart_channels RETURNING *"
+            ):
+                if text_channel := self.get_channel(
+                    record["player_text_channel_id"]
+                ):
+                    audio_cog.players[text_channel.guild.id] = AudioPlayer(
+                        self, text_channel
+                    )
                     await self.get_channel(record["channel_id"]).connect()
         # TODO: DM if joined new server
         # TODO: DM if left server
