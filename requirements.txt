@@ -42,7 +42,7 @@ packaging==23.2
 pandas==2.3.2
 parsedatetime==2.6
 pillow==10.1.0
-psutil==7.0.0
+psutil==7.1.0
 psycopg[binary]==3.2.10
 py-cpuinfo==9.0.0
 pycountry==23.12.11
