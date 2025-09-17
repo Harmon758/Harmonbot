@@ -23,7 +23,7 @@ class Twitch(commands.Cog):
 	
 	def __init__(self, bot):
 		self.bot = bot
-		self.check_streams.start().set_name("Twitch")
+		self.check_streams.start()
 	
 	def cog_unload(self):
 		self.check_streams.cancel()
@@ -375,7 +375,7 @@ class Twitch(commands.Cog):
 		await ctx.embed_reply(f"Removed the Twitch keyword search, `{keyword}`, from this text channel")
 	
 	# R/PT60S
-	@tasks.loop(seconds = 60)
+	@tasks.loop(name = "Twitch", seconds = 60)
 	async def check_streams(self):
 		try:
 			stream_ids = []

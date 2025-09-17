@@ -64,7 +64,7 @@ class RSS(commands.Cog):
                     matching_timezones[0]
                 )
 
-        self.check_feeds.start().set_name("RSS")
+        self.check_feeds.start()
 
     async def cog_load(self):
         # Initialize database
@@ -227,7 +227,7 @@ class RSS(commands.Cog):
         ctx.bot.views.append(paginator)
 
     # R/PT60S
-    @tasks.loop(seconds = 60)
+    @tasks.loop(name = "RSS", seconds = 60)
     async def check_feeds(self):
         records = await self.bot.db.fetch(
             """

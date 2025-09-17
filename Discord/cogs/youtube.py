@@ -134,7 +134,6 @@ class YouTube(commands.Cog):
 			self.bot.add_command(command)
 		
 		self.streams_task = self.check_streams.start()
-		self.streams_task.set_name("YouTube streams")
 		
 		# TODO: Use database
 		create_file("youtube_uploads", content = {})
@@ -202,7 +201,7 @@ class YouTube(commands.Cog):
 			await asyncio.sleep(5)  # Google PubSubHubbub rate limit?
 	
 	# R/PT60S
-	@tasks.loop(seconds = 60)
+	@tasks.loop(name = "YouTube Streams", seconds = 60)
 	async def check_streams(self):
 		try:
 			records = await self.bot.db.fetch("SELECT DISTINCT youtube_channel_id FROM youtube.streams")

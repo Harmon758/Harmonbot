@@ -37,9 +37,7 @@ class Meta(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
-        self.github_publication.start().set_name(
-            "GitHub channel message publication"
-        )
+        self.github_publication.start()
 
     async def inititalize_database(self):
         await self.bot.connect_to_database()
@@ -1020,7 +1018,7 @@ class Meta(commands.Cog):
         )
 
     # R/PT1H
-    @tasks.loop(hours = 1)
+    @tasks.loop(name = "GitHub channel message publication", hours = 1)
     async def github_publication(self):
         if not (
             github_channel := self.bot.get_channel(GITHUB_CHANNEL_ID)

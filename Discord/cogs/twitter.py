@@ -36,7 +36,7 @@ class Twitter(commands.Cog):
             "https://nitter.privacydev.net"  # Low rate limit
         ]
 
-        self.check_tweets.start().set_name("Twitter")
+        self.check_tweets.start()
 
     async def cog_load(self):
         # Initialize database
@@ -397,7 +397,7 @@ class Twitter(commands.Cog):
         await ctx.embed_reply("Purge complete")
 
     # R/PT60S
-    @tasks.loop(seconds = 60)
+    @tasks.loop(name = "Twitter", seconds = 60)
     async def check_tweets(self):
         # TODO: Handle case-sensitivity
         # TODO: Optimize

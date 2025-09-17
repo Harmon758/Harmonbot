@@ -26,7 +26,7 @@ class Reminders(commands.Cog):
 		self.current_timer = None
 		self.new_reminder = asyncio.Event()
 		self.restarting_timer = False
-		self.timer.start().set_name("Reminders")
+		self.timer.start()
 	
 	def cog_unload(self):
 		self.timer.cancel()
@@ -120,7 +120,6 @@ class Reminders(commands.Cog):
 		if self.current_timer and parsed_datetime < self.current_timer["remind_time"]:
 			self.restarting_timer = True
 			self.timer.restart()
-			self.timer.get_task().set_name("Reminders")
 		else:
 			self.new_reminder.set()
 	
@@ -144,7 +143,6 @@ class Reminders(commands.Cog):
 		if self.current_timer and self.current_timer["id"] == reminder_id:
 			self.restarting_timer = True
 			self.timer.restart()
-			self.timer.get_task().set_name("Reminders")
 		await ctx.embed_reply(
 			fields = (
 				("Cancelled Reminder", cancelled["reminder"] or ctx.bot.ZWS),
@@ -179,7 +177,7 @@ class Reminders(commands.Cog):
 	# TODO: clear subcommand
 	
 	# R/PT0S
-	@tasks.loop()
+	@tasks.loop(name = "Reminders")
 	async def timer(self):
 		record = await self.bot.db.fetchrow(
 			"""
