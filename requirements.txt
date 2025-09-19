@@ -38,7 +38,7 @@ more-itertools==10.8.0
 mypy[faster-cache]==1.18.2
 numexpr==2.12.1
 numpy==2.3.3
-packaging==23.2
+packaging==25.0
 pandas==2.3.2
 parsedatetime==2.6
 pillow==10.1.0
