@@ -15,7 +15,7 @@ async-lru==2.0.5
 asyncpg==0.30.0
 beautifulsoup4==4.13.5
 chess==1.11.2
-clarifai==11.5.0
+clarifai==11.8.1
 cryptography==45.0.7
 dice==4.0.0
 emoji==2.9.0
