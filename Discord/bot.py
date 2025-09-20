@@ -32,6 +32,8 @@ import pydealer
 import pyowm
 import requests
 import sentry_sdk
+from sentry_sdk.integrations.httpx import HttpxIntegration
+from sentry_sdk.integrations.sqlalchemy import SqlalchemyIntegration
 import tweepy
 import tweepy.asynchronous
 import twitchio
@@ -155,7 +157,13 @@ class Bot(commands.Bot):
             setattr(self, credential.replace('.', '_'), os.getenv(credential))
 
         # Sentry
-        sentry_sdk.init(self.SENTRY_DSN, release = self.version)
+        sentry_sdk.init(
+            self.SENTRY_DSN,
+            disabled_integrations = [
+                HttpxIntegration(), SqlalchemyIntegration()
+            ],
+            release = self.version
+        )
 
         # External Clients
         ## Google Cloud Translation Service
