@@ -1017,6 +1017,13 @@ class Meta(commands.Cog):
             for task in asyncio.all_tasks())
         )
 
+    @commands.command(name = "threads")
+    @commands.is_owner()
+    async def threads_command(self, ctx):
+        await ctx.embed_reply(
+            ", ".join(thread.name for thread in threading.enumerate())
+        )
+
     # R/PT1H
     @tasks.loop(name = "GitHub channel message publication", hours = 1)
     async def github_publication(self):
