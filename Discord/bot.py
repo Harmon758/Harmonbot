@@ -809,6 +809,9 @@ class Bot(commands.Bot):
     async def on_resumed(self):
         self.print("resumed")
 
+    async def on_connect(self):
+        self.print("connected")
+
     async def on_disconnect(self):
         self.print("disconnected")
 
