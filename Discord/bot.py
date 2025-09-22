@@ -804,16 +804,16 @@ class Bot(commands.Bot):
         return prefixes if prefixes else '!'
 
     async def on_ready(self):
-        self.print("readied")
+        self.print("Readied")
 
     async def on_resumed(self):
-        self.print("resumed")
+        self.print("Resumed")
 
     async def on_connect(self):
-        self.print("connected")
+        self.print("Connected")
 
     async def on_disconnect(self):
-        self.print("disconnected")
+        self.print("Disconnected")
 
     async def on_guild_join(self, guild):
         self.loop.create_task(
