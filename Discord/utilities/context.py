@@ -95,8 +95,9 @@ class Context(commands.Context):
 			else:
 				embed.add_field(name = field[0], value = field[1])
 		if (
-			self.channel.type is discord.ChannelType.private or
-			getattr(
+			self.channel.type in (
+				discord.ChannelType.private, discord.ChannelType.group
+			) or getattr(
 				self.channel.permissions_for(self.channel.guild.me),
 				"embed_links", None
 			)
