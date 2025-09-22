@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 import discord
-from discord import ui
+from discord import app_commands, ui
 from discord.ext import commands
 
 import asyncio
@@ -69,6 +69,7 @@ class Games(commands.Cog):
 	@commands.hybrid_command(
 		name = "8-ball", aliases = ["8ball", "eightball", '\N{BILLIARDS}']
 	)
+	@app_commands.allowed_installs(guilds = True, users = True)
 	@checks.not_forbidden()
 	async def eightball(
 		self, ctx: Context, *,
