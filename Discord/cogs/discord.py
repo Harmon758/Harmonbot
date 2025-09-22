@@ -513,6 +513,9 @@ async def link(interaction, message: discord.Message):
 
 @app_commands.context_menu()
 @app_commands.allowed_installs(guilds = True, users = True)
+@app_commands.allowed_contexts(
+    guilds = True, dms = True, private_channels = True
+)
 async def quote(interaction, message: discord.Message):
     if not message.content:
         await interaction.response.send_message(
