@@ -188,6 +188,7 @@ class Misc(commands.Cog):
         await ctx.embed_reply(utilities.superscript(text))
 
     @app_commands.command()
+    @app_commands.allowed_installs(guilds = True, users = True)
     async def think(self, interaction):
         """🤔"""
         await interaction.response.defer()
