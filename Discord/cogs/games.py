@@ -70,6 +70,9 @@ class Games(commands.Cog):
 		name = "8-ball", aliases = ["8ball", "eightball", '\N{BILLIARDS}']
 	)
 	@app_commands.allowed_installs(guilds = True, users = True)
+	@app_commands.allowed_contexts(
+		guilds = True, dms = True, private_channels = True
+	)
 	@checks.not_forbidden()
 	async def eightball(
 		self, ctx: Context, *,
