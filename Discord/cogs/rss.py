@@ -425,8 +425,18 @@ class RSS(commands.Cog):
                 # TODO: Add variable for sleep time
                 # TODO: Remove persistently erroring feed or exponentially backoff?
             except discord.DiscordServerError as e:
-                self.bot.print(f"RSS Task Discord Server Error: {e}")
                 await asyncio.sleep(60)
+                reason = ' ' + e.response.reason if e.response.reason else ""
+                try:
+                    await self.bot.log_channel.send(
+                        f"Encountered {e.status}{reason} Discord server error "
+                        "when attempting to send RSS entry in "
+                        f"{text_channel.mention}"
+                    )
+                except discord.DiscordServerError:
+                    self.bot.print(
+                        f"RSS Task Discord Server Error: {e.status}{reason}"
+                    )
             except Exception as e:
                 print("Exception in RSS Task", file = sys.stderr)
                 traceback.print_exception(
