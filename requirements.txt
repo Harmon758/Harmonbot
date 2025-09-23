@@ -178,7 +178,7 @@ rpds-py==0.27.1
 rsa==4.9
 schema==0.7.5
 setuptools==80.9.0
-setuptools-scm==8.0.4
+setuptools-scm==9.2.0
 sgmllib3k==1.0.0
 shellingham==1.5.4
 six==1.16.0
