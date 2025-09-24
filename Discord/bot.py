@@ -1275,11 +1275,14 @@ class Bot(commands.Bot):
         if not (site := self.listing_sites.get(site_url)):
             self.print(f"{site_url} listing data not found")
             return
+
         if not (token := site.get("token")):
             self.print(f"{site_url} listing token not found")
             return
+
         site["data"][site["guild_count_name"]] = len(self.guilds)
         # TODO: Add users and voice_connections for discordbotlist.com
+
         async with self.aiohttp_session.post(
             site["url"],
             headers = {
@@ -1287,12 +1290,12 @@ class Bot(commands.Bot):
             },
             data = json.dumps(site["data"])
         ) as response:
-            if response.status in (200, 204):  # TODO: Handle all success codes
-                return
-            self.print(
-                f"{site_url} listing stats update returned {response.status}: "
-                f"{await response.text()}"
-            )
+            if response.status not in (200, 204):
+                # TODO: Handle all success codes
+                self.print(
+                    f"{site_url} listing stats update returned "
+                    f"{response.status}: {await response.text()}"
+                )
 
     async def update_all_listing_stats(self):
         """Update stats on all sites listing Discord bots"""
