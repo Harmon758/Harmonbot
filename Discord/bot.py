@@ -624,10 +624,10 @@ class Bot(commands.Bot):
                 "data": {"guildCount": len(self.guilds)},
                 "guild_count_name": "guildCount"
             },
-            "discordbots.org": {
-                "name": "Discord Bot List",
+            "top.gg": {  # Previously discordbots.org
+                "name": "Top.gg",
                 "token": self.DISCORDBOTS_ORG_API_KEY,
-                "url": f"https://discordbots.org/api/bots/{self.user.id}/stats",
+                "url": f"https://top.gg/api/bots/{self.user.id}/stats",
                 "data": {"server_count": len(self.guilds)},
                 "guild_count_name": "server_count"
             },
