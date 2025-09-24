@@ -1285,7 +1285,9 @@ class Bot(commands.Bot):
         site["data"][site["guild_count_name"]] = len(self.guilds)
         # TODO: Add users and voice_connections for discordbotlist.com
         data = json.dumps(site["data"])
-        async with self.aiohttp_session.post(url, headers = headers, data = data) as resp:
+        async with self.aiohttp_session.post(
+            url, headers = headers, data = data
+        ) as resp:
             if resp.status == 204:
                 return "204 No Content"
             return await resp.text()
