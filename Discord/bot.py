@@ -1276,7 +1276,7 @@ class Bot(commands.Bot):
         if not site:
             self.print(f"{site_url} listing data not found")
             return
-        token = site["token"]
+        token = site.get("token")
         if not token:
             self.print(f"{site_url} listing token not found")
             return
