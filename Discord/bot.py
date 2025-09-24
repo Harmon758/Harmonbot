@@ -1270,8 +1270,8 @@ class Bot(commands.Bot):
         )
         self.guild_settings.setdefault(guild_id, {})[name] = setting
 
-    # Update stats on sites listing Discord bots
     async def update_listing_stats(self, site_url):
+        """Update stats on sites listing Discord bots"""
         site = self.listing_sites.get(site_url)
         if not site:
             self.print(f"{site_url} listing data not found")
