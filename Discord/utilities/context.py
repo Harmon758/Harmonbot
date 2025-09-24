@@ -143,6 +143,8 @@ class Context(commands.Context):
 	async def get_permission(self, permission, *, type = "user", user = None, id = None):
 		if not self.guild:
 			return True
+		if self.interaction and self.interaction.is_user_integration():
+			return True
 		role_ids = []
 		if type == "user":
 			if user:
