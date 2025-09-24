@@ -640,10 +640,8 @@ class Bot(commands.Bot):
             }
         }
         # TODO: Add users and voice_connections for discordbotlist.com
-        # TODO: https://bots.ondiscord.xyz/
-        # TODO: https://botlist.space/
-        #       https://botsfordiscord.com/
-        #       https://discord.boats/
+        # TODO: https://botblock.org/lists
+        #       https://github.com/botblock/data
         await self.update_all_listing_stats()
 
     async def initialize_custom_emoji(self):
