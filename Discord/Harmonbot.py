@@ -132,16 +132,23 @@ if __name__ == "__main__":
 		# Forward DMs
 		if channel.type is discord.ChannelType.private:
 			if not channel.recipient:
-				channel = (
-					ctx.bot.get_channel(channel.id) or
-					await ctx.bot.fetch_channel(channel.id)
-				)
-			# `message.channel` is a `DMChannel` here for an ephemeral message
-			# even if it was not sent as a DM.
-			# This is an issue with discord.py caused by Discord's API not
-			# providing `guild_id` for ephemeral messages for the
-			# `MESSAGE_CREATE` event.
-			# This might eventually be fixed by Discord.
+				try:
+					channel = (
+						ctx.bot.get_channel(channel.id) or
+						await ctx.bot.fetch_channel(channel.id)
+					)
+				except discord.Forbidden:
+					# Forbidden from fetching channel here means this is a user
+					# integration interaction in a guild and this is an
+					# ephemeral message that is an instance of the below issue.
+					ctx.bot.print(
+						f"Ephemeral message with erroneous DMChannel channel attribute: {message.id}"
+					)
+			# message.channel is a DMChannel here for an ephemeral message even
+			# if it was not sent as a DM. This is an issue with discord.py
+			# caused by Discord's API not providing guild_id for ephemeral
+			# messages for the MESSAGE_CREATE event. This might eventually be
+			# fixed by Discord.
 			# https://github.com/Rapptz/discord.py/issues/7370
 			# https://discord.com/channels/336642139381301249/336642776609456130/875382864919797760
 			if channel.type is not discord.ChannelType.private:
