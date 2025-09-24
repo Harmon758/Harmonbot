@@ -1317,16 +1317,17 @@ class Bot(commands.Bot):
         if not (site := self.listing_sites.get(site_url)):
             self.print(f"{site_url} listing data not found")
             return
-
         if not (token := site.get("token")):
             self.print(f"{site_url} listing token not found")
             return
+        if not (stats_url := site.get("stats_url")):
+            self.print(f"{site_url} listing stats API URL not found")
+            return
 
         site["data"][site["guild_count_name"]] = len(self.guilds)
-        # TODO: Add users and voice_connections for discordbotlist.com
 
         async with self.aiohttp_session.post(
-            site["stats_url"],
+            stats_url,
             headers = {
                 "authorization": token, "content-type": "application/json"
             },
