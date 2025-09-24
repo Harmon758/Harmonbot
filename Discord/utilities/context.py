@@ -101,10 +101,8 @@ class Context(commands.Context):
 				self.interaction and
 				self.interaction.app_permissions.embed_links
 			) or (
-				not self.interaction and getattr(
-					self.channel.permissions_for(self.channel.guild.me),
-					"embed_links", None
-				)
+				not self.interaction and
+				self.channel.permissions_for(self.guild.me).embed_links
 			)
 		):
 			if embeds:
