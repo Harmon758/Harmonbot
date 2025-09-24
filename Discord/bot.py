@@ -1296,8 +1296,8 @@ class Bot(commands.Bot):
                 f"{await response.text()}"
             )
 
-    # Update stats on all sites listing Discord bots
     async def update_all_listing_stats(self):
+        """Update stats on all sites listing Discord bots"""
         for site_url in self.listing_sites:
             await self.update_listing_stats(site_url)
 
