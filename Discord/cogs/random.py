@@ -214,7 +214,10 @@ class Random(commands.Cog):
                 "when cat fact command invoked"
             )
 
-    @random.command(name = "choose", aliases = ["choice", "pick"], require_var_positional = True, with_app_command = False)
+    @random.command(
+        name = "choose", aliases = ["choice", "pick"],
+        require_var_positional = True, with_app_command = False
+    )
     async def random_choose(self, ctx, *choices: str):
         '''Randomly choose between multiple options'''
         # Note: choose command invokes this command
