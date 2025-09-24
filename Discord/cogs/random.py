@@ -235,9 +235,7 @@ class Random(commands.Cog):
                 "random choose command not found when choose command invoked"
             )
 
-    @random.command(
-        name = "coin", aliases = ["flip"], with_app_command = False
-    )
+    @random.command(name = "coin", aliases = ["flip"])
     async def random_coin(self, ctx):
         """Flip a coin"""
         # Note: coin command invokes this command
