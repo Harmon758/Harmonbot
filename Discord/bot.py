@@ -1272,12 +1272,10 @@ class Bot(commands.Bot):
 
     async def update_listing_stats(self, site_url):
         """Update stats on sites listing Discord bots"""
-        site = self.listing_sites.get(site_url)
-        if not site:
+        if not (site := self.listing_sites.get(site_url)):
             self.print(f"{site_url} listing data not found")
             return
-        token = site.get("token")
-        if not token:
+        if not (token := site.get("token")):
             self.print(f"{site_url} listing token not found")
             return
         site["data"][site["guild_count_name"]] = len(self.guilds)
