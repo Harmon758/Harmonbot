@@ -138,23 +138,23 @@ class Bot(commands.Bot):
 
         # Credentials
         for credential in (
-            "BRAWLHALLA_API_KEY", "CLEVERBOT_API_KEY",
-            "DISCORDBOTLIST.COM_API_TOKEN", "DISCORD.BOTS.GG_API_TOKEN",
-            "DISCORDBOTS.ORG_API_KEY", "FIXER_API_KEY", "FONO_API_TOKEN",
-            "GIPHY_API_KEY", "GITHUB_PERSONAL_ACCESS_TOKEN", "GOOGLE_API_KEY",
-            "GOOGLE_CUSTOM_SEARCH_ENGINE_ID", "HTTP_SERVER_CALLBACK_URL",
-            "IMGUR_CLIENT_ID", "IMGUR_CLIENT_SECRET", "NEWSAPI.ORG_API_KEY",
-            "OMDB_API_KEY", "OSU_API_KEY", "OWM_API_KEY",
-            "PAGE2IMAGES_REST_API_KEY", "READ_THE_DOCS_API_TOKEN",
-            "SENTRY_DSN", "SPOTIFY_CLIENT_ID", "SPOTIFY_CLIENT_SECRET_KEY",
-            "STEAM_WEB_API_KEY", "TWITCH_CLIENT_ID", "TWITCH_CLIENT_SECRET",
-            "TWITTER_BEARER_TOKEN", "TWITTER_CONSUMER_KEY",
-            "TWITTER_CONSUMER_SECRET", "TWITTER_ACCESS_TOKEN",
-            "TWITTER_ACCESS_TOKEN_SECRET", "UNSPLASH_ACCESS_KEY",
-            "WARGAMING_APPLICATION_ID", "WOLFRAM_ALPHA_APP_ID",
-            "WORDNIK_API_KEY"
+            "BRAWLHALLA_API_KEY", "CLEVERBOT_API_KEY", "FIXER_API_KEY",
+            "FONO_API_TOKEN", "GIPHY_API_KEY", "GITHUB_PERSONAL_ACCESS_TOKEN",
+            "GOOGLE_API_KEY", "GOOGLE_CUSTOM_SEARCH_ENGINE_ID",
+            "HTTP_SERVER_CALLBACK_URL", "IMGUR_CLIENT_ID",
+            "IMGUR_CLIENT_SECRET", "NEWSAPI.ORG_API_KEY", "OMDB_API_KEY",
+            "OSU_API_KEY", "OWM_API_KEY", "PAGE2IMAGES_REST_API_KEY",
+            "READ_THE_DOCS_API_TOKEN", "SENTRY_DSN", "SPOTIFY_CLIENT_ID",
+            "SPOTIFY_CLIENT_SECRET_KEY", "STEAM_WEB_API_KEY",
+            "TWITCH_CLIENT_ID", "TWITCH_CLIENT_SECRET", "TWITTER_BEARER_TOKEN",
+            "TWITTER_CONSUMER_KEY", "TWITTER_CONSUMER_SECRET",
+            "TWITTER_ACCESS_TOKEN", "TWITTER_ACCESS_TOKEN_SECRET",
+            "UNSPLASH_ACCESS_KEY", "WARGAMING_APPLICATION_ID",
+            "WOLFRAM_ALPHA_APP_ID", "WORDNIK_API_KEY"
         ):
             setattr(self, credential.replace('.', '_'), os.getenv(credential))
+        # TODO: Document "DISCORDBOTLIST.COM_API_TOKEN",
+        #       "DISCORD.BOTS.GG_API_TOKEN", "DISCORDBOTS.ORG_API_KEY"
 
         # Sentry
         sentry_sdk.init(
@@ -619,21 +619,21 @@ class Bot(commands.Bot):
         self.listing_sites = {
             "discord.bots.gg": {
                 "name": "Discord Bots",
-                "token": self.DISCORD_BOTS_GG_API_TOKEN,
+                "token": os.getenv("DISCORD.BOTS.GG_API_TOKEN"),
                 "url": f"https://discord.bots.gg/api/v1/bots/{self.user.id}/stats",
                 "data": {"guildCount": len(self.guilds)},
                 "guild_count_name": "guildCount"
             },
             "top.gg": {  # Previously discordbots.org
                 "name": "Top.gg",
-                "token": self.DISCORDBOTS_ORG_API_KEY,
+                "token": os.getenv("DISCORDBOTS.ORG_API_KEY"),
                 "url": f"https://top.gg/api/bots/{self.user.id}/stats",
                 "data": {"server_count": len(self.guilds)},
                 "guild_count_name": "server_count"
             },
             "discordbotlist.com": {
                 "name": "Discord Bot List",
-                "token": f"Bot {self.DISCORDBOTLIST_COM_API_TOKEN}",
+                "token": f"Bot {os.getenv('DISCORDBOTLIST.COM_API_TOKEN')}",
                 "url": f"https://discordbotlist.com/api/bots/{self.user.id}/stats",
                 "data": {"guilds": len(self.guilds)},
                 "guild_count_name": "guilds"
