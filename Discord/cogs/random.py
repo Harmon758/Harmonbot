@@ -214,22 +214,37 @@ class Random(commands.Cog):
                 "when cat fact command invoked"
             )
 
-    @random.command(
-        name = "choose", aliases = ["choice", "pick"],
-        require_var_positional = True, with_app_command = False
-    )
-    async def random_choose(self, ctx, *choices: str):
-        """Randomly choose between multiple options"""
+    @random.command(name = "choose", aliases = ["choice", "pick"])
+    async def random_choose(self, ctx, *, choices: str):
+        """
+        Randomly choose between multiple choices
+
+        Parameters
+        ----------
+        choices
+            Choices to randomly choose between
+            (Use quotation marks for choices with spaces in them)
+        """
         # Note: choose command invokes this command
+        choices = choices.strip()
+        # Shouldn't be necessary, but just in case there's somehow whitespace
+        # at the end
+        string_view = commands.view.StringView(choices)
+        # StringView is undocumented
+        # Best option until Discord supports variadic arguments for slash
+        # commands:
+        # https://github.com/discord/discord-api-docs/discussions/3286
+        choices = []
+        while not string_view.eof:
+            string_view.skip_ws()
+            choices.append(string_view.get_quoted_word())
         await ctx.embed_reply(random.choice(choices))
 
-    @commands.command(
-        aliases = ["choice", "pick"], require_var_positional = True
-    )
-    async def choose(self, ctx, *choices: str):
-        """Randomly choose between multiple options"""
+    @commands.command(aliases = ["choice", "pick"])
+    async def choose(self, ctx, *, choices: str):
+        """Randomly choose between multiple choices"""
         if command := ctx.bot.get_command("random choose"):
-            await ctx.invoke(command, *choices)
+            await ctx.invoke(command, choices = choices)
         else:
             raise RuntimeError(
                 "random choose command not found when choose command invoked"
