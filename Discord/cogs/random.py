@@ -216,10 +216,7 @@ class Random(commands.Cog):
 
     @random.command(name = "choose", aliases = ["choice", "pick"], require_var_positional = True, with_app_command = False)
     async def random_choose(self, ctx, *choices: str):
-        '''
-        Randomly chooses between multiple options
-        choose <option1> <option2> <...>
-        '''
+        '''Randomly choose between multiple options'''
         # Note: choose command invokes this command
         await ctx.embed_reply(random.choice(choices))
 
@@ -227,10 +224,7 @@ class Random(commands.Cog):
         aliases = ["choice", "pick"], require_var_positional = True
     )
     async def choose(self, ctx, *choices: str):
-        """
-        Randomly chooses between multiple options
-        choose <option1> <option2> <...>
-        """
+        """Randomly choose between multiple options"""
         if command := ctx.bot.get_command("random choose"):
             await ctx.invoke(command, *choices)
         else:
