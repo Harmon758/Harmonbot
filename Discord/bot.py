@@ -154,7 +154,8 @@ class Bot(commands.Bot):
         ):
             setattr(self, credential.replace('.', '_'), os.getenv(credential))
         # TODO: Document "DISCORDBOTLIST.COM_API_TOKEN",
-        #       "DISCORD.BOTS.GG_API_TOKEN", "DISCORDBOTS.ORG_API_KEY"
+        #       "DISCORD.BOTS.GG_API_TOKEN",
+        #       "DISCORDBOTS.ORG_API_KEY" or "TOP.GG_API_KEY"
 
         # Sentry
         sentry_sdk.init(
@@ -626,7 +627,10 @@ class Bot(commands.Bot):
             },
             "top.gg": {  # Previously discordbots.org
                 "name": "Top.gg",
-                "token": os.getenv("DISCORDBOTS.ORG_API_KEY"),
+                "token": (
+                    os.getenv("DISCORDBOTS.ORG_API_KEY") or
+                    os.getenv("TOP.GG_API_KEY")
+                ),
                 "url": f"https://top.gg/api/bots/{self.user.id}/stats",
                 "data": {"server_count": len(self.guilds)},
                 "guild_count_name": "server_count"
