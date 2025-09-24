@@ -638,7 +638,7 @@ class Bot(commands.Bot):
             "discordbotlist.com": {
                 "name": "Discord Bot List",
                 "token": f"Bot {os.getenv('DISCORDBOTLIST.COM_API_TOKEN')}",
-                "url": f"https://discordbotlist.com/api/bots/{self.user.id}/stats",
+                "url": f"https://discordbotlist.com/api/v1/bots/{self.user.id}/stats",
                 "data": {"guilds": len(self.guilds)},
                 "guild_count_name": "guilds"
             }
