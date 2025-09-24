@@ -621,24 +621,26 @@ class Bot(commands.Bot):
             "discord.bots.gg": {
                 "name": "Discord Bots",
                 "token": os.getenv("DISCORD.BOTS.GG_API_TOKEN"),
-                "url": f"https://discord.bots.gg/api/v1/bots/{self.user.id}/stats",
+                "stats_url": f"https://discord.bots.gg/api/v1/bots/{self.user.id}/stats",
                 "data": {"guildCount": len(self.guilds)},
                 "guild_count_name": "guildCount"
             },
             "top.gg": {  # Previously discordbots.org
                 "name": "Top.gg",
-                "token": (
+                "token": "Bearer " + (
                     os.getenv("DISCORDBOTS.ORG_API_KEY") or
                     os.getenv("TOP.GG_API_KEY")
                 ),
-                "url": f"https://top.gg/api/bots/{self.user.id}/stats",
+                "commands_url": "https://top.gg/api/v1/projects/@me/commands",
+                "stats_url": f"https://top.gg/api/bots/{self.user.id}/stats",
                 "data": {"server_count": len(self.guilds)},
                 "guild_count_name": "server_count"
             },
             "discordbotlist.com": {
                 "name": "Discord Bot List",
                 "token": f"Bot {os.getenv('DISCORDBOTLIST.COM_API_TOKEN')}",
-                "url": f"https://discordbotlist.com/api/v1/bots/{self.user.id}/stats",
+                "commands_url": f"https://discordbotlist.com/api/v1/bots/{self.user.id}/commands",
+                "stats_url": f"https://discordbotlist.com/api/v1/bots/{self.user.id}/stats",
                 "data": {"guilds": len(self.guilds)},
                 "guild_count_name": "guilds"
             }
@@ -647,6 +649,7 @@ class Bot(commands.Bot):
         # TODO: https://botblock.org/lists
         #       https://github.com/botblock/data
         await self.update_all_listing_stats()
+        await self.update_all_listing_commands()
 
     async def initialize_custom_emoji(self):
         await self.wait_until_ready()
@@ -1272,6 +1275,43 @@ class Bot(commands.Bot):
         )
         self.guild_settings.setdefault(guild_id, {})[name] = setting
 
+    async def update_listing_commands(self, site_url):
+        """Update commands on sites listing Discord bots"""
+        if not (site := self.listing_sites.get(site_url)):
+            self.print(f"{site_url} listing data not found")
+            return
+        if not (token := site.get("token")):
+            self.print(f"{site_url} listing token not found")
+            return
+        if not (commands_url := site.get("commands_url")):
+            self.print(f"{site_url} listing commands API URL not found")
+            return
+
+        async with self.aiohttp_session.post(
+            commands_url,
+            headers = {
+                "authorization": token, "content-type": "application/json"
+            },
+            data = json.dumps(
+                [
+                    command.to_dict(self.tree)
+                    for command in self.tree.get_commands()
+                ]
+            )
+        ) as response:
+            if response.status not in (200, 204):
+                # TODO: Handle all success codes
+                self.print(
+                    f"{site_url} listing commands update returned "
+                    f"{response.status}: {await response.text()}"
+                )
+
+    async def update_all_listing_commands(self):
+        """Update commands on all sites listing Discord bots"""
+        for site_url, site_data in self.listing_sites.items():
+            if "commands_url" in site_data:
+                await self.update_listing_commands(site_url)
+
     async def update_listing_stats(self, site_url):
         """Update stats on sites listing Discord bots"""
         if not (site := self.listing_sites.get(site_url)):
@@ -1286,7 +1326,7 @@ class Bot(commands.Bot):
         # TODO: Add users and voice_connections for discordbotlist.com
 
         async with self.aiohttp_session.post(
-            site["url"],
+            site["stats_url"],
             headers = {
                 "authorization": token, "content-type": "application/json"
             },
