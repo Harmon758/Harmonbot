@@ -1274,12 +1274,12 @@ class Bot(commands.Bot):
     async def update_listing_stats(self, site_url):
         site = self.listing_sites.get(site_url)
         if not site:
-            # TODO: Print/log error
-            return "Site not found"
+            self.print(f"{site_url} listing data not found")
+            return
         token = site["token"]
         if not token:
-            # TODO: Print/log error
-            return "Site token not found"
+            self.print(f"{site_url} listing token not found")
+            return
         site["data"][site["guild_count_name"]] = len(self.guilds)
         # TODO: Add users and voice_connections for discordbotlist.com
         async with self.aiohttp_session.post(
