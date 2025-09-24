@@ -219,7 +219,7 @@ class Random(commands.Cog):
         require_var_positional = True, with_app_command = False
     )
     async def random_choose(self, ctx, *choices: str):
-        '''Randomly choose between multiple options'''
+        """Randomly choose between multiple options"""
         # Note: choose command invokes this command
         await ctx.embed_reply(random.choice(choices))
 
