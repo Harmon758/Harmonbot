@@ -1288,12 +1288,12 @@ class Bot(commands.Bot):
                 "authorization": token, "content-type": "application/json"
             },
             data = json.dumps(site["data"])
-        ) as resp:
-            if resp.status in (200, 204):  # TODO: Handle all success codes
+        ) as response:
+            if response.status in (200, 204):  # TODO: Handle all success codes
                 return
-            response_text = await resp.text()
             self.print(
-                f"{site_url} listing stats update returned {resp.status}: {response_text}"
+                f"{site_url} listing stats update returned {response.status}: "
+                f"{await response.text()}"
             )
 
     # Update stats on all sites listing Discord bots
