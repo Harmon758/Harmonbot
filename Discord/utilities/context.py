@@ -97,9 +97,14 @@ class Context(commands.Context):
 		if (
 			self.channel.type in (
 				discord.ChannelType.private, discord.ChannelType.group
-			) or getattr(
-				self.channel.permissions_for(self.channel.guild.me),
-				"embed_links", None
+			) or (
+				self.interaction and
+				self.interaction.app_permissions.embed_links
+			) or (
+				not self.interaction and getattr(
+					self.channel.permissions_for(self.channel.guild.me),
+					"embed_links", None
+				)
 			)
 		):
 			if embeds:
