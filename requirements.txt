@@ -91,7 +91,7 @@ aiodns==3.5.0
 aiohappyeyeballs==2.6.1
 aiosignal==1.4.0
 annotated-types==0.7.0
-anyio==4.10.0
+anyio==4.11.0
 attrs==25.3.0
 autocommand==2.2.2
 backports.tarfile==1.2.0
