@@ -1271,8 +1271,8 @@ class Bot(commands.Bot):
         self.guild_settings.setdefault(guild_id, {})[name] = setting
 
     # Update stats on sites listing Discord bots
-    async def update_listing_stats(self, site):
-        site = self.listing_sites.get(site)
+    async def update_listing_stats(self, site_url):
+        site = self.listing_sites.get(site_url)
         if not site:
             # TODO: Print/log error
             return "Site not found"
@@ -1289,14 +1289,17 @@ class Bot(commands.Bot):
             },
             data = json.dumps(site["data"])
         ) as resp:
-            if resp.status == 204:
-                return "204 No Content"
-            return await resp.text()
+            if resp.status in (200, 204):  # TODO: Handle all success codes
+                return
+            response_text = await resp.text()
+            self.print(
+                f"{site_url} listing stats update returned {resp.status}: {response_text}"
+            )
 
     # Update stats on all sites listing Discord bots
     async def update_all_listing_stats(self):
-        for site in self.listing_sites:
-            await self.update_listing_stats(site)
+        for site_url in self.listing_sites:
+            await self.update_listing_stats(site_url)
 
     async def restart_tasks(self, channel_id, message_id):
         # Increment restarts counter
