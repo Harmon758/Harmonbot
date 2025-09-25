@@ -41,21 +41,16 @@ class TextSource(menus.PageSource):
         kwargs = {}
 
         embed = discord.Embed(
-            color = menu.bot.bot_color,
+            color = menu.ctx.bot.bot_color,
             title = self.embed_title,
             description = page
         )
 
-        if isinstance(menu.ctx_or_interaction, commands.Context):
+        if not menu.ctx.interaction:
             kwargs["allowed_mentions"] = discord.AllowedMentions.none()
-            message = menu.ctx_or_interaction.message
             kwargs["content"] = (
-                f"In response to {message.author.mention}: "
-                f"`{message.clean_content}`"
-            )
-        elif not isinstance(menu.ctx_or_interaction, discord.Interaction):
-            raise RuntimeError(
-                "TextSource using neither Context nor Interaction"
+                f"In response to {menu.ctx.author.mention}: "
+                f"`{menu.ctx.message.clean_content}`"
             )
 
         kwargs["embed"] = embed
