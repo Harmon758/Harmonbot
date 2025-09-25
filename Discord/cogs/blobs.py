@@ -224,7 +224,7 @@ class BlobsSource(menus.ListPageSource):
         super().__init__(records, per_page = 1)
 
     async def format_page(self, menu, record):
-        embed = discord.Embed(title = record["blob"], color = menu.bot.bot_color)
+        embed = discord.Embed(title = record["blob"], color = menu.ctx.bot.bot_color)
         embed.set_author(name = menu.ctx.author.display_name, icon_url = menu.ctx.author.avatar.url)
         embed.set_image(url = record["image"])
         return {"content": f"In response to: `{menu.ctx.message.clean_content}`", "embed": embed}
