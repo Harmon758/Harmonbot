@@ -137,10 +137,10 @@ class XKCDSource(menus.PageSource):
         self.bot = ctx.bot
 
     async def prepare(self):
-        url = "http://xkcd.com/info.0.json"
-        async with self.bot.aiohttp_session.get(url) as resp:
-            data = await resp.json()
-        self.max_pages = data["num"]
+        async with self.bot.aiohttp_session.get(
+            "http://xkcd.com/info.0.json"
+        ) as response:
+            self.max_pages = (await response.json())["num"]
 
     def is_paginating(self):
         return True
