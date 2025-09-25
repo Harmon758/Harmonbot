@@ -837,7 +837,7 @@ class Search(commands.GroupCog, group_name = "search"):
                 raise
         if hasattr(result, "pod"):
             paginator = ButtonPaginator(
-                interaction,
+                ctx,
                 WolframAlphaSource(
                     result.pods,
                     didyoumean = didyoumean,
@@ -845,7 +845,7 @@ class Search(commands.GroupCog, group_name = "search"):
                 )
             )
             await paginator.start()
-            interaction.client.views.append(paginator)
+            ctx.bot.views.append(paginator)
         elif result.timedout:
             await ctx.embed_reply("Standard computation time exceeded")
         else:
