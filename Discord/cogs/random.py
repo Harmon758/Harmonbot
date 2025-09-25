@@ -771,14 +771,28 @@ class Random(commands.Cog):
                 "random insult command not found when insult command invoked"
             )
 
-    @random.command(name = "joke", with_app_command = False)
+    @random.command(name = "joke")
     async def random_joke(
         self, ctx,
         dad: Optional[bool] = False,  # noqa: UP045 (non-pep604-annotation-optional)
         image: Optional[bool] = False,  # noqa: UP045 (non-pep604-annotation-optional)
         joke_id: Optional[str] = None  # noqa: UP045 (non-pep604-annotation-optional)
     ):
-        '''Random joke'''
+        '''
+        Random joke
+
+        Parameters
+        ----------
+        dad
+            Whether joke should be a dad joke or not
+            (Defaults to False)
+        image
+            Whether dad joke should be an image or not
+            (This is ignored if dad isn't True)
+        joke_id
+            The ID of the dad joke to retrieve
+            (This is ignored if dad isn't True)
+        '''
         # Note: joke command invokes this command
         if dad:
             if image and joke_id:
@@ -815,7 +829,21 @@ class Random(commands.Cog):
         image: Optional[bool] = False,  # noqa: UP045 (non-pep604-annotation-optional)
         joke_id: Optional[str] = None  # noqa: UP045 (non-pep604-annotation-optional)
     ):
-        """Random joke"""
+        """
+        Random joke
+
+        Parameters
+        ----------
+        dad
+            Whether joke should be a dad joke or not
+            (Defaults to False)
+        image
+            Whether dad joke should be an image or not
+            (This is ignored if dad isn't True)
+        joke_id
+            The ID of the dad joke to retrieve
+            (This is ignored if dad isn't True)
+        """
         if command := ctx.bot.get_command("random joke"):
             await ctx.invoke(
                 command, dad = dad, image = image, joke_id = joke_id
