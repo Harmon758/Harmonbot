@@ -20,8 +20,7 @@ import pyparsing
 
 from units.cats import get_random_cat_image
 from units.jokes import (
-    construct_dad_joke_image_url, get_random_dad_joke, load_jokes,
-    DadJokeError, JOKES
+    construct_dad_joke_image_url, get_dad_joke, load_jokes, DadJokeError, JOKES
 )
 from units.insults import generate_elizabethan_insult
 from units.quotes import get_random_quote
@@ -801,7 +800,7 @@ class Random(commands.Cog):
                 )
                 return
 
-            data = await get_random_dad_joke(
+            data = await get_dad_joke(
                 aiohttp_session = ctx.bot.aiohttp_session, joke_id = joke_id
             )
 

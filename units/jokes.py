@@ -47,7 +47,7 @@ class DadJokeError(BaseModel):
     message: str
     status: int
 
-async def get_random_dad_joke(
+async def get_dad_joke(
     *, aiohttp_session: aiohttp.ClientSession | None = None,
     joke_id: str | None = None
 ) -> DadJoke | DadJokeError:
