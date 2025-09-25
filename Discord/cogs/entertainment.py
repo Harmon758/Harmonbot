@@ -352,7 +352,7 @@ class Entertainment(commands.Cog):
 			if not (
 				initial_page := await self.search_for_xkcd(ctx, query)
 			):
-				await interaction.response.send_message("xkcd comic not found")
+				await ctx.embed_reply("xkcd comic not found")
 				return
 		else:
 			initial_page = inf
