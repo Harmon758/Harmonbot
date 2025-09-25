@@ -778,7 +778,7 @@ class Random(commands.Cog):
         image: Optional[bool] = False,  # noqa: UP045 (non-pep604-annotation-optional)
         joke_id: Optional[str] = None  # noqa: UP045 (non-pep604-annotation-optional)
     ):
-        '''
+        """
         Random joke
 
         Parameters
@@ -792,7 +792,7 @@ class Random(commands.Cog):
         joke_id
             The ID of the dad joke to retrieve
             (This is ignored if dad isn't True)
-        '''
+        """
         # Note: joke command invokes this command
         if dad:
             if image and joke_id:
