@@ -427,18 +427,13 @@ class DefineSource(menus.ListPageSource):
             text = definition.attributionText
         )
 
-        if isinstance(menu.ctx_or_interaction, commands.Context):
-            if not menu.ctx_or_interaction.interaction:
-                embed.set_author(
-                    name = menu.ctx.author.display_name,
-                    icon_url = menu.ctx.author.display_avatar.url
-                )
-                kwargs["content"] = (
-                    f"In response to: `{menu.ctx.message.clean_content}`"
-                )
-        elif not isinstance(menu.ctx_or_interaction, discord.Interaction):
-            raise RuntimeError(
-                "DefineSource using neither Context nor Interaction"
+        if not menu.ctx.interaction:
+            embed.set_author(
+                name = menu.ctx.author.display_name,
+                icon_url = menu.ctx.author.display_avatar.url
+            )
+            kwargs["content"] = (
+                f"In response to: `{menu.ctx.message.clean_content}`"
             )
 
         kwargs["embed"] = embed
