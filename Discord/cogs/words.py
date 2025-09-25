@@ -422,7 +422,7 @@ class DefineSource(menus.ListPageSource):
             description = BeautifulSoup(
                 definition.text, "html.parser"
             ).get_text(),
-            color = menu.bot.bot_color
+            color = menu.ctx.bot.bot_color
         ).set_footer(
             text = definition.attributionText
         )
