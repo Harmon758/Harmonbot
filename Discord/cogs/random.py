@@ -19,6 +19,7 @@ import emoji
 import pydealer
 import pyparsing
 
+from units.cats import get_random_cat_image
 from units.insults import generate_elizabethan_insult
 from units.quotes import get_random_quote
 from utilities import checks
@@ -125,28 +126,13 @@ class Random(commands.Cog):
         """Random image of a cat"""
         # Note: cat command invokes this command
         await ctx.defer()
-        async with ctx.bot.aiohttp_session.get(
-            "http://thecatapi.com/api/images/get",
-            params = {"format": "xml", "results_per_page": 1} | (
-                {"category": category} if category else {}
-            )
-        ) as resp:
-            data = await resp.text()
-        try:
-            if (
-                url := xml.etree.ElementTree.fromstring(data).find(".//url")
-            ) is None:
-                await ctx.embed_reply(
-                    f"{ctx.bot.error_emoji} Error: Category not found"
-                )
-                return
-        except xml.etree.ElementTree.ParseError:
-            await ctx.embed_reply(f"{ctx.bot.error_emoji} Error")
-        else:
-            await ctx.embed_reply(
-                description = f"[\N{CAT FACE}]({url.text})",
-                image_url = url.text
-            )
+        image_url = await get_random_cat_image(
+            aiohttp_session = ctx.bot.aiohttp_session
+        )
+        await ctx.embed_reply(
+            description = f"[\N{CAT FACE}]({image_url})",
+            image_url = image_url
+        )
 
     @commands.group(case_insensitive = True, invoke_without_command = True)
     async def cat(
