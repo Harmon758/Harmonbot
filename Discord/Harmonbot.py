@@ -108,7 +108,6 @@ if __name__ == "__main__":
 		if guild is not None:
 			guild_settings = await ctx.bot.get_guild_settings(guild.id)
 			if guild_settings.get("anti-spam") and len(message.mentions) > 10:
-				global mention_spammers
 				if author.id in mention_spammers:
 					# TODO: Handle across different servers
 					if channel.permissions_for(guild.me).kick_members:
