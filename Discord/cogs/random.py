@@ -771,72 +771,58 @@ class Random(commands.Cog):
                 "random insult command not found when insult command invoked"
             )
 
-    @random.group(
-        name = "joke", case_insensitive = True, with_app_command = False
-    )
-    async def random_joke(self, ctx):
+    @random.command(name = "joke", with_app_command = False)
+    async def random_joke(
+        self, ctx,
+        dad: Optional[bool] = False,  # noqa: UP045 (non-pep604-annotation-optional)
+        image: Optional[bool] = False,  # noqa: UP045 (non-pep604-annotation-optional)
+        joke_id: Optional[str] = None  # noqa: UP045 (non-pep604-annotation-optional)
+    ):
         '''Random joke'''
         # Note: joke command invokes this command
-        if JOKES:
+        if dad:
+            if image and joke_id:
+                await ctx.embed_reply(
+                    image_url = construct_dad_joke_image_url(joke_id)
+                )
+                return
+
+            data = await get_random_dad_joke(
+                aiohttp_session = ctx.bot.aiohttp_session, joke_id = joke_id
+            )
+
+            if isinstance(data, DadJokeError):
+                await ctx.embed_reply(
+                    f"{ctx.bot.error_emoji} Error: {data.message}"
+                )
+                return
+
+            if image:
+                await ctx.embed_reply(
+                    image_url = construct_dad_joke_image_url(data.id)
+                )
+            else:
+                await ctx.embed_reply(
+                    data.joke, footer_text = f"Joke ID: {data.id}"
+                )
+        elif JOKES:
             await ctx.embed_reply(random.choice(JOKES))
 
-    @commands.group(case_insensitive = True, invoke_without_command = True)
-    async def joke(self, ctx):
+    @commands.command()
+    async def joke(
+        self, ctx,
+        dad: Optional[bool] = False,  # noqa: UP045 (non-pep604-annotation-optional)
+        image: Optional[bool] = False,  # noqa: UP045 (non-pep604-annotation-optional)
+        joke_id: Optional[str] = None  # noqa: UP045 (non-pep604-annotation-optional)
+    ):
         """Random joke"""
         if command := ctx.bot.get_command("random joke"):
-            await ctx.invoke(command)
+            await ctx.invoke(
+                command, dad = dad, image = image, joke_id = joke_id
+            )
         else:
             raise RuntimeError(
                 "random joke command not found when joke command invoked"
-            )
-
-    @random_joke.command(name = "dad", with_app_command = False)
-    async def random_joke_dad(
-        self, ctx,
-        image: Optional[bool] = False,  # noqa: UP045 (non-pep604-annotation-optional)
-        joke_id: Optional[str] = None  # noqa: UP045 (non-pep604-annotation-optional)
-    ):
-        '''Random dad joke'''
-        # Note: joke dad command invokes this command
-        # TODO: search, GraphQL?
-        if image and joke_id:
-            await ctx.embed_reply(
-                image_url = construct_dad_joke_image_url(joke_id)
-            )
-            return
-
-        data = await get_random_dad_joke(
-            aiohttp_session = ctx.bot.aiohttp_session, joke_id = joke_id
-        )
-
-        if isinstance(data, DadJokeError):
-            await ctx.embed_reply(
-                f"{ctx.bot.error_emoji} Error: {data.message}"
-            )
-            return
-
-        if image:
-            await ctx.embed_reply(
-                image_url = construct_dad_joke_image_url(data.id)
-            )
-        else:
-            await ctx.embed_reply(
-                data.joke, footer_text = f"Joke ID: {data.id}"
-            )
-
-    @joke.command(name = "dad")
-    async def joke_dad(
-        self, ctx,
-        image: Optional[bool] = False,  # noqa: UP045 (non-pep604-annotation-optional)
-        joke_id: Optional[str] = None  # noqa: UP045 (non-pep604-annotation-optional)
-    ):
-        """Random dad joke"""
-        if command := ctx.bot.get_command("random joke dad"):
-            await ctx.invoke(command, image = image, joke_id = joke_id)
-        else:
-            raise RuntimeError(
-                "random joke dad command not found "
-                "when joke dad command invoked"
             )
 
     @random.command(
