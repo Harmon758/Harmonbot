@@ -38,13 +38,13 @@ class TextSource(menus.PageSource):
         return self.pages[page_number]
 
     async def format_page(self, menu, page):
-        kwargs = {}
-
-        embed = discord.Embed(
-            color = menu.ctx.bot.bot_color,
-            title = self.embed_title,
-            description = page
-        )
+        kwargs = {
+            "embed": discord.Embed(
+                color = menu.ctx.bot.bot_color,
+                title = self.embed_title,
+                description = page
+            )
+        }
 
         if not menu.ctx.interaction:
             kwargs["allowed_mentions"] = discord.AllowedMentions.none()
@@ -53,7 +53,6 @@ class TextSource(menus.PageSource):
                 f"`{menu.ctx.message.clean_content}`"
             )
 
-        kwargs["embed"] = embed
         return kwargs
 
 
