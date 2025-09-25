@@ -852,14 +852,13 @@ class Search(commands.GroupCog, group_name = "search"):
             await ctx.embed_reply(f"{ctx.bot.error_emoji} No results found")
 
     async def process_wolframalpha(self, ctx, search, location = None):
-        # TODO: process asynchronously
-        if not location:
-            location = ctx.bot.mock_location
+        location = location or ctx.bot.mock_location
         try:
             result = await ctx.bot.wolfram_alpha_client.aquery(search.strip('`'), ip = ctx.bot.mock_ip, location = location)
         except Exception as e:
             if str(e).startswith("Error "):
-                return await ctx.embed_reply(f"{ctx.bot.error_emoji} {e}")
+                await ctx.embed_reply(f"{ctx.bot.error_emoji} {e}")
+                return
             raise
         # TODO: other options?
         if not hasattr(result, "pod") and hasattr(result, "didyoumeans"):
@@ -872,13 +871,16 @@ class Search(commands.GroupCog, group_name = "search"):
                 result = await ctx.bot.wolfram_alpha_client.aquery(didyoumean, ip = ctx.bot.mock_ip, location = location)
             except Exception as e:
                 if str(e).startswith("Error "):
-                    return await ctx.embed_reply(f"{ctx.bot.error_emoji} {e}")
+                    await ctx.embed_reply(f"{ctx.bot.error_emoji} {e}")
+                    return
                 raise
         if not hasattr(result, "pod"):
             if result.timedout:
-                return await ctx.embed_reply("Standard computation time exceeded")
+                await ctx.embed_reply("Standard computation time exceeded")
+                return
             else:
-                return await ctx.embed_reply(f"{ctx.bot.error_emoji} No results found")
+                await ctx.embed_reply(f"{ctx.bot.error_emoji} No results found")
+                return
         if ctx.channel.permissions_for(ctx.me).embed_links:
             embeds = []
             for pod_number, pod in enumerate(result.pods):
