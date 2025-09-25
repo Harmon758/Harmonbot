@@ -804,10 +804,9 @@ class Search(commands.GroupCog, group_name = "search"):
         """
         await interaction.response.defer()
         ctx = await interaction.client.get_context(interaction)
-        # TODO: process asynchronously
         location = location or ctx.bot.mock_location
         try:
-            result = ctx.bot.wolfram_alpha_client.query(
+            result = await ctx.bot.wolfram_alpha_client.aquery(
                 query.strip('`'), ip = ctx.bot.mock_ip, location = location
             )
         except Exception as e:
@@ -823,7 +822,7 @@ class Search(commands.GroupCog, group_name = "search"):
             else:
                 didyoumean = result.didyoumeans["didyoumean"][0]["#text"]
             try:
-                result = ctx.bot.wolfram_alpha_client.query(
+                result = await ctx.bot.wolfram_alpha_client.aquery(
                     didyoumean, ip = ctx.bot.mock_ip, location = location
                 )
             except Exception as e:
@@ -856,7 +855,7 @@ class Search(commands.GroupCog, group_name = "search"):
         if not location:
             location = ctx.bot.mock_location
         try:
-            result = ctx.bot.wolfram_alpha_client.query(search.strip('`'), ip = ctx.bot.mock_ip, location = location)
+            result = await ctx.bot.wolfram_alpha_client.aquery(search.strip('`'), ip = ctx.bot.mock_ip, location = location)
         except Exception as e:
             if str(e).startswith("Error "):
                 return await ctx.embed_reply(f"{ctx.bot.error_emoji} {e}")
@@ -869,7 +868,7 @@ class Search(commands.GroupCog, group_name = "search"):
                 didyoumean = result.didyoumeans["didyoumean"][0]["#text"]
             await ctx.embed_reply(f"Using closest Wolfram|Alpha interpretation: `{didyoumean}`")
             try:
-                result = ctx.bot.wolfram_alpha_client.query(didyoumean, ip = ctx.bot.mock_ip, location = location)
+                result = await ctx.bot.wolfram_alpha_client.aquery(didyoumean, ip = ctx.bot.mock_ip, location = location)
             except Exception as e:
                 if str(e).startswith("Error "):
                     return await ctx.embed_reply(f"{ctx.bot.error_emoji} {e}")
