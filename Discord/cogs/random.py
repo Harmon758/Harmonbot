@@ -818,7 +818,10 @@ class Random(commands.Cog):
                 )
             else:
                 await ctx.embed_reply(
-                    data.joke, footer_text = f"Joke ID: {data.id}"
+                    data.joke,
+                    footer_text = (
+                        f"Joke ID: {data.id}" if not joke_id else None
+                    )
                 )
         elif JOKES:
             await ctx.embed_reply(random.choice(JOKES))
