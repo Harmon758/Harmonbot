@@ -363,22 +363,14 @@ class Entertainment(commands.Cog):
 		await paginator.start()
 		ctx.bot.views.append(paginator)
 	
-	async def search_for_xkcd(self, ctx_or_interaction, query):
-		if isinstance(ctx_or_interaction, commands.Context):
-			bot = ctx_or_interaction.bot
-		elif isinstance(ctx_or_interaction, discord.Interaction):
-			bot = ctx_or_interaction.client
-		else:
-			raise RuntimeError(
-				"search_for_xkcd passed neither Context nor Interaction"
-			)
+	async def search_for_xkcd(self, ctx, query):
 		# Query by title
 		url = "https://www.explainxkcd.com/wiki/api.php"
 		params = {
 			"action": "query", "list": "search", "format": "json", 
 			"srsearch": query, "srwhat": "title", "srlimit": "max"
 		}
-		async with bot.aiohttp_session.get(url, params = params) as resp:
+		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		if results := data["query"]["search"]:
 			for result in results:
@@ -386,12 +378,12 @@ class Entertainment(commands.Cog):
 					return int(result['title'].split(':')[0])
 		# Query by text
 		params["srwhat"] = "text"
-		async with bot.aiohttp_session.get(url, params = params) as resp:
+		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		results = data["query"]["search"]
 		# Query by exact text in quotation marks
 		params["srsearch"] = f'"{query}"'
-		async with bot.aiohttp_session.get(url, params = params) as resp:
+		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 			data = await resp.json()
 		exact_results = data["query"]["search"]
 		# Look for query in target sections
@@ -406,7 +398,7 @@ class Entertainment(commands.Cog):
 						"action": "parse", "pageid": page_id,
 						"prop": "sections", "format": "json"
 					}
-					async with bot.aiohttp_session.get(url, params = params) as resp:
+					async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 						data = await resp.json()
 					sections[page_id] = data["parse"]["sections"]
 				# Find target section
@@ -422,7 +414,7 @@ class Entertainment(commands.Cog):
 						"prop": "parsetree", "section": section["index"],
 						"format": "json"
 					}
-					async with bot.aiohttp_session.get(url, params = params) as resp:
+					async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
 						data = await resp.json()
 					section_text = data["parse"]["parsetree"]['*'].lower()
 					# Check for query in section text
