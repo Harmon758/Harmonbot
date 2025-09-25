@@ -1,0 +1,209 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      User-Agent:
+      - Harmonbot Python/3.11.7 aiohttp/3.12.15
+    method: GET
+    uri: https://icanhazdadjoke.com/
+  response:
+    body:
+      string: '{"id":"iVSClyXDQf","joke":"A dad washes his car with his son. But after
+        a while, the son says, \"why can''t you just use a sponge?\"","status":200}
+
+        '
+    headers:
+      Access-Control-Allow-Headers:
+      - User-Agent, Content-Type
+      Access-Control-Allow-Methods:
+      - GET
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Max-Age:
+      - '86400'
+      Access-Control-Request-Method:
+      - GET
+      CF-RAY:
+      - 9847ae3bac1d68ff-DFW
+      Cache-Control:
+      - max-age=0, must-revalidate, no-cache, no-store, public, s-maxage=0
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - br
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 25 Sep 2025 04:11:58 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=Kh%2BeRYRH46%2BDmwskYtWaZQw3eJgU7MJ%2B%2BzbOX5uOwqY25TBrgt%2Bz%2BGdn2239IXmxkxBcTXJBy4GnOetIl%2FY1Ym%2BYzeKwZe14iViz9SdScIJ%2B8BsLWF%2Fu8OXc%2FFaJFg%3D%3D"}]}'
+      Retry-After:
+      - '4'
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Transfer-Encoding:
+      - chunked
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+      x-frame-options:
+      - DENY
+      x-ratelimit-limit:
+      - '100'
+      x-ratelimit-remaining:
+      - '98'
+      x-ratelimit-reset:
+      - '1758773523'
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      User-Agent:
+      - Harmonbot Python/3.11.7 aiohttp/3.12.15
+    method: GET
+    uri: https://icanhazdadjoke.com/
+  response:
+    body:
+      string: '{"id":"IJBAsrrzPmb","joke":"What do you call a cow with two legs? Lean
+        beef.","status":200}
+
+        '
+    headers:
+      Access-Control-Allow-Headers:
+      - User-Agent, Content-Type
+      Access-Control-Allow-Methods:
+      - GET
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Max-Age:
+      - '86400'
+      Access-Control-Request-Method:
+      - GET
+      CF-RAY:
+      - 9847b9636b576b82-DFW
+      Cache-Control:
+      - max-age=0, must-revalidate, no-cache, no-store, public, s-maxage=0
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - br
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 25 Sep 2025 04:19:35 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=moVSzY9Q2GSOlcoGr1pkXIfJOu68jMmAqG4105bzgqbvNem9wb1flzYrknYbSDyRLeakG0pzQWkXyFFd%2BZc1zY8fMv3ZniX%2BGPe3ShOPOXdQd%2FeFtM%2FyVDHV6KMLEg%3D%3D"}]}'
+      Retry-After:
+      - '60'
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Transfer-Encoding:
+      - chunked
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+      x-frame-options:
+      - DENY
+      x-ratelimit-limit:
+      - '100'
+      x-ratelimit-remaining:
+      - '99'
+      x-ratelimit-reset:
+      - '1758774036'
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      User-Agent:
+      - Harmonbot Python/3.11.7 aiohttp/3.12.15
+    method: GET
+    uri: https://icanhazdadjoke.com/
+  response:
+    body:
+      string: '{"id":"dibUSv4ojyd","joke":"What kind of award did the dentist receive?
+        A little plaque.","status":200}
+
+        '
+    headers:
+      Access-Control-Allow-Headers:
+      - User-Agent, Content-Type
+      Access-Control-Allow-Methods:
+      - GET
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Max-Age:
+      - '86400'
+      Access-Control-Request-Method:
+      - GET
+      CF-RAY:
+      - 9847bfbf38056b5a-DFW
+      Cache-Control:
+      - max-age=0, must-revalidate, no-cache, no-store, public, s-maxage=0
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - br
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 25 Sep 2025 04:23:56 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=lhXSCs7TqXb4JiT0bJ3qbi6U%2BQ2XxrrSMaeFn%2FK3DuVrUAagXwC2wpmyWBcs4yB1CY7sakGEW0AiHwiDzo3LEAoJisQB9SKw2qKCuwfOg7U%2B30beg%2FrnjYRXLRVVNg%3D%3D"}]}'
+      Retry-After:
+      - '60'
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Transfer-Encoding:
+      - chunked
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+      x-frame-options:
+      - DENY
+      x-ratelimit-limit:
+      - '100'
+      x-ratelimit-remaining:
+      - '99'
+      x-ratelimit-reset:
+      - '1758774297'
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+version: 1

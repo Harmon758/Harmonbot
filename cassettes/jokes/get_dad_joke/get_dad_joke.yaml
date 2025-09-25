@@ -1,0 +1,71 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      User-Agent:
+      - Harmonbot Python/3.11.7 aiohttp/3.12.15
+    method: GET
+    uri: https://icanhazdadjoke.com/j/2118E69prc
+  response:
+    body:
+      string: '{"id":"2118E69prc","joke":"Dad I\u2019m hungry\u2019 \u2026 \u2018Hi
+        hungry I\u2019m dad","status":200}
+
+        '
+    headers:
+      Access-Control-Allow-Headers:
+      - User-Agent, Content-Type
+      Access-Control-Allow-Methods:
+      - GET
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Max-Age:
+      - '86400'
+      Access-Control-Request-Method:
+      - GET
+      CF-RAY:
+      - 9847b9678f0d6b3b-DFW
+      Cache-Control:
+      - max-age=86400, public, s-maxage=86400
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - br
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 25 Sep 2025 04:19:36 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=Nn7yHm4o4qb1xJbXHktpjH1KOKkYBTWFn3EFVddZaJG6YYz%2BJp9JugVfOWbQVsTSBXhogNwh3yRIcaJc3j0B%2BG1hdc4sC8PO0E32KcqNZSCGT7kCPZboCi0wnwroBQ%3D%3D"}]}'
+      Retry-After:
+      - '60'
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Transfer-Encoding:
+      - chunked
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+      x-frame-options:
+      - DENY
+      x-ratelimit-limit:
+      - '100'
+      x-ratelimit-remaining:
+      - '99'
+      x-ratelimit-reset:
+      - '1758774037'
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+version: 1

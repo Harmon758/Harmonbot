@@ -1,0 +1,70 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      User-Agent:
+      - Harmonbot Python/3.11.7 aiohttp/3.12.15
+    method: GET
+    uri: https://icanhazdadjoke.com/j/invalid_id
+  response:
+    body:
+      string: '{"message":"Joke with id \"invalid_id\" not found","status":404}
+
+        '
+    headers:
+      Access-Control-Allow-Headers:
+      - User-Agent, Content-Type
+      Access-Control-Allow-Methods:
+      - GET
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Max-Age:
+      - '86400'
+      Access-Control-Request-Method:
+      - GET
+      CF-RAY:
+      - 9847bfc26c5ac86f-DFW
+      Cache-Control:
+      - max-age=86400, public, s-maxage=86400
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - br
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 25 Sep 2025 04:23:56 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=z%2FvtCm2e%2FyBTIzNomkpvkfesUtgNABPbG81lPyGVv%2FLSJXk7e5tdP%2FNDBKsMCW3DZmsX6vNrZMGEl2zWR7D0vRtvSzskQ2fhG7G9MlvSzpvWHspSQgWqm2ZlUh0%3D"}]}'
+      Retry-After:
+      - '60'
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Transfer-Encoding:
+      - chunked
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+      x-frame-options:
+      - DENY
+      x-ratelimit-limit:
+      - '100'
+      x-ratelimit-remaining:
+      - '99'
+      x-ratelimit-reset:
+      - '1758774297'
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+version: 1
