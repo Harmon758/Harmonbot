@@ -5,7 +5,6 @@ from discord.ext import commands
 
 import asyncio
 import calendar
-import csv
 import datetime
 import multiprocessing
 import os
@@ -21,7 +20,8 @@ import pyparsing
 
 from units.cats import get_random_cat_image
 from units.jokes import (
-    construct_dad_joke_image_url, get_random_dad_joke, DadJokeError
+    construct_dad_joke_image_url, get_random_dad_joke, load_jokes,
+    DadJokeError, JOKES
 )
 from units.insults import generate_elizabethan_insult
 from units.quotes import get_random_quote
@@ -38,15 +38,8 @@ class Random(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
-        # Import jokes
-        self.jokes = []
-        try:
-            with open(self.bot.data_path + "/jokes.csv", newline = "") as jokes_file:
-                jokes_reader = csv.reader(jokes_file)
-                for row in jokes_reader:
-                    self.jokes.append(row[0])
-        except FileNotFoundError:
-            pass
+
+        load_jokes(self.bot.data_path + "/jokes.csv")
 
     async def cog_check(self, ctx):
         return await checks.not_forbidden().predicate(ctx)
@@ -784,12 +777,8 @@ class Random(commands.Cog):
     async def random_joke(self, ctx):
         '''Random joke'''
         # Note: joke command invokes this command
-        # Sources:
-        # https://github.com/KiaFathi/tambalAPI
-        # https://www.kaggle.com/abhinavmoudgil95/short-jokes
-        # (https://github.com/amoudgl/short-jokes-dataset)
-        if self.jokes:
-            await ctx.embed_reply(random.choice(self.jokes))
+        if JOKES:
+            await ctx.embed_reply(random.choice(JOKES))
 
     @commands.group(case_insensitive = True, invoke_without_command = True)
     async def joke(self, ctx):
