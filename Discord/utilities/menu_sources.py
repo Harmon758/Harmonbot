@@ -132,17 +132,9 @@ class WolframAlphaSource(menus.ListPageSource):
 
 class XKCDSource(menus.PageSource):
 
-    def __init__(self, ctx_or_interaction):
-        self.ctx_or_interaction = ctx_or_interaction
-
-        if isinstance(ctx_or_interaction, commands.Context):
-            self.bot = ctx_or_interaction.bot
-        elif isinstance(ctx_or_interaction, discord.Interaction):
-            self.bot = ctx_or_interaction.client
-        else:
-            raise RuntimeError(
-                "XKCDSource passed neither Context nor Interaction"
-            )
+    def __init__(self, ctx):
+        self.ctx = ctx
+        self.bot = ctx.bot
 
     async def prepare(self):
         url = "http://xkcd.com/info.0.json"
@@ -170,18 +162,14 @@ class XKCDSource(menus.PageSource):
             color = self.bot.bot_color
         )
 
-        if isinstance(self.ctx_or_interaction, commands.Context):
+        if not self.ctx.interaction:
             embed.set_author(
-                name = self.ctx_or_interaction.author.display_name,
-                icon_url = self.ctx_or_interaction.author.avatar.url
+                name = self.ctx.author.display_name,
+                icon_url = self.ctx.author.avatar.url
             )
             kwargs["content"] = (
                 "In response to: "
-                f"`{self.ctx_or_interaction.message.clean_content}`"
-            )
-        elif not isinstance(self.ctx_or_interaction, discord.Interaction):
-            raise RuntimeError(
-                "XKCDSource using neither Context nor Interaction"
+                f"`{self.ctx.message.clean_content}`"
             )
 
         embed.set_image(url = page["img"])
