@@ -10,7 +10,7 @@ class ButtonPaginator(discord.ui.View):
     def __init__(self, ctx, source, initial_page = 1):
         super().__init__(timeout = 600)
 
-        self.ctx = self.ctx_or_interaction = ctx
+        self.ctx = ctx
         self.source = source
         self.current_page = initial_page - 1
 
