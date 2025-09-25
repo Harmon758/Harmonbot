@@ -20,6 +20,9 @@ import pydealer
 import pyparsing
 
 from units.cats import get_random_cat_image
+from units.jokes import (
+    construct_dad_joke_image_url, get_random_dad_joke, DadJokeError
+)
 from units.insults import generate_elizabethan_insult
 from units.quotes import get_random_quote
 from utilities import checks
@@ -809,31 +812,27 @@ class Random(commands.Cog):
         # TODO: search, GraphQL?
         if image and joke_id:
             await ctx.embed_reply(
-                image_url = f"https://icanhazdadjoke.com/j/{joke_id}.png"
+                image_url = construct_dad_joke_image_url(joke_id)
             )
             return
 
-        async with ctx.bot.aiohttp_session.get(
-            f"https://icanhazdadjoke.com/{'j/' + joke_id if joke_id else ''}",
-            headers = {
-                "Accept": "application/json", "User-Agent": ctx.bot.user_agent
-            }
-        ) as resp:
-            data = await resp.json()
+        data = await get_random_dad_joke(
+            aiohttp_session = ctx.bot.aiohttp_session, joke_id = joke_id
+        )
 
-        if data["status"] == 404:
+        if isinstance(data, DadJokeError):
             await ctx.embed_reply(
-                f"{ctx.bot.error_emoji} Error: {data['message']}"
+                f"{ctx.bot.error_emoji} Error: {data.message}"
             )
             return
 
         if image:
             await ctx.embed_reply(
-                image_url = f"https://icanhazdadjoke.com/j/{data['id']}.png"
+                image_url = construct_dad_joke_image_url(data.id)
             )
         else:
             await ctx.embed_reply(
-                data["joke"], footer_text = f"Joke ID: {data['id']}"
+                data.joke, footer_text = f"Joke ID: {data.id}"
             )
 
     @joke.command(name = "dad")
