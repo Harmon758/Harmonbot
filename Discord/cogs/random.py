@@ -813,7 +813,8 @@ class Random(commands.Cog):
 
             if image:
                 await ctx.embed_reply(
-                    image_url = construct_dad_joke_image_url(data.id)
+                    image_url = construct_dad_joke_image_url(data.id),
+                    footer_text = f"Joke ID: {data.id}"
                 )
             else:
                 await ctx.embed_reply(
