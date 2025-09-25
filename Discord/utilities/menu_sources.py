@@ -149,9 +149,10 @@ class XKCDSource(menus.PageSource):
         return self.max_pages
 
     async def get_page(self, page_number):
-        url = f"http://xkcd.com/{page_number + 1}/info.0.json"
-        async with self.bot.aiohttp_session.get(url) as resp:
-            return await resp.json()
+        async with self.bot.aiohttp_session.get(
+            f"http://xkcd.com/{page_number + 1}/info.0.json"
+        ) as response:
+            return await response.json()
 
     async def format_page(self, menu, page):
         kwargs = {}
