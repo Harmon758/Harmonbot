@@ -11,6 +11,7 @@ from typing import Literal, Optional, TYPE_CHECKING
 import youtube_dl
 
 from units.wikis import get_random_article, search_wiki
+from units import wolfram_alpha
 from utilities import checks
 from utilities.menu_sources import WolframAlphaSource
 from utilities.paginators import ButtonPaginator
