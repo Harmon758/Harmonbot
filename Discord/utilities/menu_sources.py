@@ -89,34 +89,29 @@ class WolframAlphaSource(menus.ListPageSource):
         if description:
             embeds.append(
                 discord.Embed(
-                    description = description, color = menu.bot.bot_color
+                    description = description, color = menu.ctx.bot.bot_color
                 )
             )
 
         embeds.append(
             discord.Embed(
-                title = pod.title, color = menu.bot.bot_color
+                title = pod.title, color = menu.ctx.bot.bot_color
             ).set_image(url = subpods[0].img.src)
         )
 
-        if isinstance(menu.ctx_or_interaction, commands.Context):
+        if not menu.ctx.interaction:
             embeds[0].set_author(
-                name = menu.ctx_or_interaction.author.display_name,
-                icon_url = menu.ctx_or_interaction.author.avatar.url
+                name = menu.ctx.author.display_name,
+                icon_url = menu.ctx.author.avatar.url
             )
             kwargs["content"] = (
-                "In response to: "
-                f"`{menu.ctx_or_interaction.message.clean_content}`"
-            )
-        elif not isinstance(menu.ctx_or_interaction, discord.Interaction):
-            raise RuntimeError(
-                "WolframAlphaSource using neither Context nor Interaction"
+                f"In response to: `{menu.ctx.message.clean_content}`"
             )
 
         for subpod in subpods[1:]:
             embeds.append(
                 discord.Embed(
-                    color = menu.bot.bot_color
+                    color = menu.ctx.bot.bot_color
                 ).set_image(url = subpod.img.src)
             )
 
