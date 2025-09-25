@@ -801,7 +801,7 @@ class Random(commands.Cog):
                 return
 
             data = await get_dad_joke(
-                aiohttp_session = ctx.bot.aiohttp_session, joke_id = joke_id
+                joke_id, aiohttp_session = ctx.bot.aiohttp_session
             )
 
             if isinstance(data, DadJokeError):

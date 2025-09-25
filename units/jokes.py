@@ -48,8 +48,8 @@ class DadJokeError(BaseModel):
     status: int
 
 async def get_dad_joke(
-    *, aiohttp_session: aiohttp.ClientSession | None = None,
-    joke_id: str | None = None
+    joke_id: str | None = None, *,
+    aiohttp_session: aiohttp.ClientSession | None = None
 ) -> DadJoke | DadJokeError:
     async with (
         ensure_session(aiohttp_session) as aiohttp_session,
