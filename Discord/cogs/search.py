@@ -851,10 +851,10 @@ class Search(commands.GroupCog, group_name = "search"):
         else:
             await ctx.embed_reply(f"{ctx.bot.error_emoji} No results found")
 
-    async def process_wolframalpha(self, ctx, search, location = None):
+    async def process_wolframalpha(self, ctx, query, location = None):
         location = location or ctx.bot.mock_location
         try:
-            result = await ctx.bot.wolfram_alpha_client.aquery(search.strip('`'), ip = ctx.bot.mock_ip, location = location)
+            result = await ctx.bot.wolfram_alpha_client.aquery(query.strip('`'), ip = ctx.bot.mock_ip, location = location)
         except Exception as e:
             if str(e).startswith("Error "):
                 await ctx.embed_reply(f"{ctx.bot.error_emoji} {e}")
