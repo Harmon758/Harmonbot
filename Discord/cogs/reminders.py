@@ -232,13 +232,13 @@ class RemindersSource(menus.ListPageSource):
 		super().__init__(records, per_page = per_page)
 	
 	async def format_page(self, menu, records):
-		embed = discord.Embed(title = "Reminders", color = menu.bot.bot_color)
+		embed = discord.Embed(title = "Reminders", color = menu.ctx.bot.bot_color)
 		embed.set_author(name = menu.ctx.author.display_name, icon_url = menu.ctx.author.avatar.url)
 		if self.per_page == 1:
 			records = [records]
 		for record in records:
 			value = record["reminder"] or "Reminder"
-			if channel := menu.bot.get_channel(record["channel_id"]):
+			if channel := menu.ctx.bot.get_channel(record["channel_id"]):
 				message = channel.get_partial_message(record["message_id"])
 				value = (
 					f"[{value}]({message.jump_url})\n"
