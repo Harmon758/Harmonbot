@@ -854,7 +854,9 @@ class Search(commands.GroupCog, group_name = "search"):
     async def process_wolframalpha(self, ctx, query, location = None):
         location = location or ctx.bot.mock_location
         try:
-            result = await ctx.bot.wolfram_alpha_client.aquery(query.strip('`'), ip = ctx.bot.mock_ip, location = location)
+            result = await ctx.bot.wolfram_alpha_client.aquery(
+                query.strip('`'), ip = ctx.bot.mock_ip, location = location
+            )
         except Exception as e:
             if str(e).startswith("Error "):
                 await ctx.embed_reply(f"{ctx.bot.error_emoji} {e}")
@@ -866,9 +868,13 @@ class Search(commands.GroupCog, group_name = "search"):
                 didyoumean = result.didyoumeans["didyoumean"]["#text"]
             else:
                 didyoumean = result.didyoumeans["didyoumean"][0]["#text"]
-            await ctx.embed_reply(f"Using closest Wolfram|Alpha interpretation: `{didyoumean}`")
+            await ctx.embed_reply(
+                f"Using closest Wolfram|Alpha interpretation: `{didyoumean}`"
+            )
             try:
-                result = await ctx.bot.wolfram_alpha_client.aquery(didyoumean, ip = ctx.bot.mock_ip, location = location)
+                result = await ctx.bot.wolfram_alpha_client.aquery(
+                    didyoumean, ip = ctx.bot.mock_ip, location = location
+                )
             except Exception as e:
                 if str(e).startswith("Error "):
                     await ctx.embed_reply(f"{ctx.bot.error_emoji} {e}")
@@ -879,7 +885,9 @@ class Search(commands.GroupCog, group_name = "search"):
                 await ctx.embed_reply("Standard computation time exceeded")
                 return
             else:
-                await ctx.embed_reply(f"{ctx.bot.error_emoji} No results found")
+                await ctx.embed_reply(
+                    f"{ctx.bot.error_emoji} No results found"
+                )
                 return
         if ctx.channel.permissions_for(ctx.me).embed_links:
             embeds = []
@@ -896,7 +904,10 @@ class Search(commands.GroupCog, group_name = "search"):
                         embed.set_image(url = subpod.img.src)
                         embeds.append(embed)
                     else:
-                        message = await ctx.embed_reply(title = pod.title, image_url = subpod.img.src, footer_text = None)
+                        message = await ctx.embed_reply(
+                            title = pod.title, image_url = subpod.img.src,
+                            footer_text = None
+                        )
             await message.edit(embeds = message.embeds + embeds[:9])
             for index in range(9, len(embeds), 10):
                 await ctx.send(embeds = embeds[index:index + 10])
@@ -906,12 +917,16 @@ class Search(commands.GroupCog, group_name = "search"):
                 text_output += f"**{pod.title}**\n"
                 for subpod in pod.subpods:
                     if subpod.plaintext:
-                        text_output += ctx.bot.CODE_BLOCK.format(subpod.plaintext)
+                        text_output += ctx.bot.CODE_BLOCK.format(
+                            subpod.plaintext
+                        )
             await ctx.reply(text_output)
             # TODO: Handle message too long
         # TODO: single embed with plaintext version?
         if result.timedout:
-            await ctx.embed_reply(f"Some results timed out: {result.timedout.replace(',', ', ')}")
+            await ctx.embed_reply(
+                f"Some results timed out: {result.timedout.replace(',', ', ')}"
+            )
 
     @search.command(name = "yahoo")
     async def search_yahoo(self, ctx: Context, *search: str):
