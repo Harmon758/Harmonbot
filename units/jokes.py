@@ -1,6 +1,7 @@
 
 from __future__ import annotations
 
+import csv
 from typing import TYPE_CHECKING
 
 from pydantic import BaseModel
@@ -12,9 +13,30 @@ if TYPE_CHECKING:
     import aiohttp
 
 
+# Sources:
+# https://github.com/KiaFathi/tambalAPI
+# https://www.kaggle.com/abhinavmoudgil95/short-jokes
+# (https://github.com/amoudgl/short-jokes-dataset)
+
+# TODO: Go through potential jokes
+# TODO: Move jokes to database
+
+JOKES = []
+
+def load_jokes(file_path: str):
+    global JOKES
+    if not JOKES:
+        try:
+            with open(file_path, newline = "") as jokes_file:
+                jokes_reader = csv.reader(jokes_file)
+                for row in jokes_reader:
+                    JOKES.append(row[0])
+        except FileNotFoundError:
+            pass
+
+
 # https://icanhazdadjoke.com
 # https://icanhazdadjoke.com/api
-
 
 class DadJoke(BaseModel):
     id: str
@@ -23,7 +45,6 @@ class DadJoke(BaseModel):
 class DadJokeError(BaseModel):
     message: str
     status: int
-
 
 async def get_random_dad_joke(
     *, aiohttp_session: aiohttp.ClientSession | None = None,
@@ -42,7 +63,6 @@ async def get_random_dad_joke(
         return (
             DadJoke(**data) if data["status"] == 200 else DadJokeError(**data)
         )
-
 
 def construct_dad_joke_image_url(joke_id: str) -> str:
     return f"https://icanhazdadjoke.com/j/{joke_id}.png"
