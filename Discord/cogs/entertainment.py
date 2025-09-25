@@ -345,11 +345,12 @@ class Entertainment(commands.Cog):
 		query
 			Search query (This is ignored if the comic number is provided)
 		"""
+		ctx = await interaction.client.get_context(interaction)
 		if number is not None:
 			initial_page = number
 		elif query is not None:
 			if not (
-				initial_page := await self.search_for_xkcd(interaction, query)
+				initial_page := await self.search_for_xkcd(ctx, query)
 			):
 				await interaction.response.send_message("xkcd comic not found")
 				return
@@ -357,10 +358,10 @@ class Entertainment(commands.Cog):
 			initial_page = inf
 		
 		paginator = ButtonPaginator(
-			interaction, XKCDSource(interaction), initial_page = initial_page
+			ctx, XKCDSource(ctx), initial_page = initial_page
 		)
 		await paginator.start()
-		interaction.client.views.append(paginator)
+		ctx.bot.views.append(paginator)
 	
 	async def search_for_xkcd(self, ctx_or_interaction, query):
 		if isinstance(ctx_or_interaction, commands.Context):
