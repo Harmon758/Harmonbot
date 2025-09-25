@@ -233,7 +233,15 @@ class Random(commands.Cog):
 
     @commands.command(aliases = ["choice", "pick"])
     async def choose(self, ctx, *, choices: str):
-        """Randomly choose between multiple choices"""
+        """
+        Randomly choose between multiple choices
+
+        Parameters
+        ----------
+        choices
+            Choices to randomly choose between
+            (Use quotation marks for choices with spaces in them)
+        """
         if command := ctx.bot.get_command("random choose"):
             await ctx.invoke(command, choices = choices)
         else:
