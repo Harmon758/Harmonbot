@@ -21,7 +21,7 @@ if TYPE_CHECKING:
 # TODO: Go through potential jokes
 # TODO: Move jokes to database
 
-JOKES = []
+JOKES: list[str] = []
 
 def load_jokes(file_path: str):
     global JOKES
@@ -37,6 +37,8 @@ def load_jokes(file_path: str):
 
 # https://icanhazdadjoke.com
 # https://icanhazdadjoke.com/api
+
+# TODO: Search, GraphQL?
 
 class DadJoke(BaseModel):
     id: str
