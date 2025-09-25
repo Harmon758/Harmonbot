@@ -813,14 +813,12 @@ class Random(commands.Cog):
             )
             return
 
-        url = "https://icanhazdadjoke.com/"
-        headers = {
-            "Accept": "application/json", "User-Agent": ctx.bot.user_agent
-        }
-
-        if joke_id:
-            url += "j/" + joke_id
-        async with ctx.bot.aiohttp_session.get(url, headers = headers) as resp:
+        async with ctx.bot.aiohttp_session.get(
+            f"https://icanhazdadjoke.com/{'j/' + joke_id if joke_id else ''}",
+            headers = {
+                "Accept": "application/json", "User-Agent": ctx.bot.user_agent
+            }
+        ) as resp:
             data = await resp.json()
 
         if data["status"] == 404:
