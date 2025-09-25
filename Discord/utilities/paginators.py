@@ -14,8 +14,6 @@ class ButtonPaginator(discord.ui.View):
         self.source = source
         self.current_page = initial_page - 1
 
-        self.bot = ctx.bot
-
         self.message = None
 
     @discord.ui.button(
