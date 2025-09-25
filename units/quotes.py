@@ -26,11 +26,11 @@ async def get_random_quote(
         async with aiohttp_session.get(
             "http://api.forismatic.com/api/1.0/",
             params = {"method": "getQuote", "format": "json", "lang": "en"}
-        ) as resp:
+        ) as response:
             try:
-                data = await resp.json()
+                data = await response.json()
             except json.JSONDecodeError:  # Handle invalid JSON
-                data = await resp.text()
+                data = await response.text()
 
                 # Unescape single quotes
                 data = data.replace("\\''", "'")
