@@ -24,7 +24,6 @@ if TYPE_CHECKING:
 JOKES: list[str] = []
 
 def load_jokes(file_path: str):
-    global JOKES
     if not JOKES:
         try:
             with open(file_path, newline = "") as jokes_file:
