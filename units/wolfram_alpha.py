@@ -1,9 +1,9 @@
 
-from wolframalpha import Client, Document
+from wolframalpha import Client, Document  # type: ignore[import-untyped]
 
 import httpx
 import multidict
-import xmltodict
+import xmltodict  # type: ignore[import-untyped]
 
 
 # https://github.com/jaraco/wolframalpha/issues/35
