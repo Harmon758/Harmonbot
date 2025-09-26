@@ -53,7 +53,7 @@ class Maze:
         # Generate connections
         self.connections = [[[False] * 4 for column in range(self.columns)] for row in range(self.rows)]
         visited = [[False] * self.columns for row in range(self.rows)]
-        to_visit = [(random.randint(0, self.rows - 1), random.randint(0, self.columns - 1))]
+        to_visit = [(random.randint(0, self.rows - 1), random.randint(0, self.columns - 1))]  # nosec: random  # noqa: S311 (suspicious-non-cryptographic-random-usage)
         while to_visit:
             row, column = to_visit[-1]
             visited[row][column] = True
@@ -73,15 +73,15 @@ class Maze:
 
         # self.visited = [[False] * self.columns for row in range(self.rows)]
         if random_start:
-            self.row = random.randint(0, self.rows - 1)
-            self.column = random.randint(0, self.columns - 1)
+            self.row = random.randint(0, self.rows - 1)  # nosec: random  # noqa: S311 (suspicious-non-cryptographic-random-usage)
+            self.column = random.randint(0, self.columns - 1)  # nosec: random  # noqa: S311 (suspicious-non-cryptographic-random-usage)
         else:
             self.row = 0
             self.column = 0
         # self.visited[self.row][self.column] = True
         if random_end:
-            self.end_row = random.randint(0, self.rows - 1)
-            self.end_column = random.randint(0, self.columns - 1)
+            self.end_row = random.randint(0, self.rows - 1)  # nosec: random  # noqa: S311 (suspicious-non-cryptographic-random-usage)
+            self.end_column = random.randint(0, self.columns - 1)  # nosec: random  # noqa: S311 (suspicious-non-cryptographic-random-usage)
         else:
             self.end_row = self.rows - 1
             self.end_column = self.columns - 1

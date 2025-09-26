@@ -100,7 +100,7 @@ class Random(commands.Cog):
         """Random playing card"""
         # Note: card command invokes this command
         await ctx.embed_reply(
-            f":{random.choice(pydealer.const.SUITS).lower()}: {random.choice(pydealer.const.VALUES)}"
+            f":{random.choice(pydealer.const.SUITS).lower()}: {random.choice(pydealer.const.VALUES)}"  # nosec: random  # noqa: S311 (suspicious-non-cryptographic-random-usage)
         )
 
     @commands.command()
@@ -224,7 +224,7 @@ class Random(commands.Cog):
         while not string_view.eof:
             string_view.skip_ws()
             choices.append(string_view.get_quoted_word())
-        await ctx.embed_reply(random.choice(choices))
+        await ctx.embed_reply(random.choice(choices))  # nosec: random  # noqa: S311 (suspicious-non-cryptographic-random-usage)
 
     @commands.command(aliases = ["choice", "pick"])
     async def choose(self, ctx, *, choices: str):
@@ -248,7 +248,7 @@ class Random(commands.Cog):
     async def random_coin(self, ctx):
         """Flip a coin"""
         # Note: coin command invokes this command
-        await ctx.embed_reply(random.choice(("Heads!", "Tails!")))
+        await ctx.embed_reply(random.choice(("Heads!", "Tails!")))  # nosec: random  # noqa: S311 (suspicious-non-cryptographic-random-usage)
 
     @commands.command(aliases = ["flip"])
     async def coin(self, ctx):
@@ -276,7 +276,7 @@ class Random(commands.Cog):
         """Random command"""
         # Note: command command invokes this command
         await ctx.embed_reply(
-            f"{ctx.prefix}{random.choice(tuple(set(command.name for command in ctx.bot.commands)))}"
+            f"{ctx.prefix}{random.choice(tuple(set(command.name for command in ctx.bot.commands)))}"  # nosec: random  # noqa: S311 (suspicious-non-cryptographic-random-usage)
         )
 
     @commands.command()
@@ -297,7 +297,7 @@ class Random(commands.Cog):
         # Note: date command invokes this command
         await ctx.embed_reply(
             datetime.date.fromordinal(
-                random.randint(1, 365)
+                random.randint(1, 365)  # nosec: random  # noqa: S311 (suspicious-non-cryptographic-random-usage)
             ).strftime("%B %d")
         )
 
@@ -348,7 +348,7 @@ class Random(commands.Cog):
     async def random_day(self, ctx):
         """Random day of the week"""
         # Note: day command invokes this command
-        await ctx.embed_reply(random.choice(calendar.day_name))
+        await ctx.embed_reply(random.choice(calendar.day_name))  # nosec: random  # noqa: S311 (suspicious-non-cryptographic-random-usage)
 
     @commands.command()
     async def day(self, ctx):
@@ -571,7 +571,7 @@ class Random(commands.Cog):
     async def random_emoji(self, ctx):
         """Random emoji"""
         # Note: emoji command invokes this command
-        await ctx.embed_reply(random.choice(list(emoji.EMOJI_DATA)))
+        await ctx.embed_reply(random.choice(list(emoji.EMOJI_DATA)))  # nosec: random  # noqa: S311 (suspicious-non-cryptographic-random-usage)
 
     @commands.command(aliases = ["emote"])
     async def emoji(self, ctx):
@@ -823,7 +823,7 @@ class Random(commands.Cog):
                     )
                 )
         elif JOKES:
-            await ctx.embed_reply(random.choice(JOKES))
+            await ctx.embed_reply(random.choice(JOKES))  # nosec: random  # noqa: S311 (suspicious-non-cryptographic-random-usage)
 
     @commands.command()
     async def joke(
@@ -862,7 +862,7 @@ class Random(commands.Cog):
     async def random_latitude(self, ctx):
         """Random latitude"""
         # Note: latitude command invokes this command
-        await ctx.embed_reply(str(random.uniform(-90, 90)))
+        await ctx.embed_reply(str(random.uniform(-90, 90)))  # nosec: random  # noqa: S311 (suspicious-non-cryptographic-random-usage)
 
     @commands.command(aliases =["lat"])
     async def laititude(self, ctx):
@@ -879,7 +879,7 @@ class Random(commands.Cog):
     async def random_letter(self, ctx):
         """Random letter"""
         # Note: letter command invokes this command
-        await ctx.embed_reply(random.choice(string.ascii_uppercase))
+        await ctx.embed_reply(random.choice(string.ascii_uppercase))  # nosec: random  # noqa: S311 (suspicious-non-cryptographic-random-usage)
 
     @commands.command()
     async def letter(self, ctx):
@@ -896,7 +896,7 @@ class Random(commands.Cog):
         """Random location"""
         # Note: location command invokes this command
         await ctx.embed_reply(
-            f"{random.uniform(-90, 90)}, {random.uniform(-180, 180)}"
+            f"{random.uniform(-90, 90)}, {random.uniform(-180, 180)}"  # nosec: random  # noqa: S311 (suspicious-non-cryptographic-random-usage)
         )
 
     @commands.command()
@@ -916,7 +916,7 @@ class Random(commands.Cog):
     async def random_longitude(self, ctx):
         """Random longitude"""
         # Note: longitude command invokes this command
-        await ctx.embed_reply(str(random.uniform(-180, 180)))
+        await ctx.embed_reply(str(random.uniform(-180, 180)))  # nosec: random  # noqa: S311 (suspicious-non-cryptographic-random-usage)
 
     @commands.command(aliases = ["long"])
     async def longitude(self, ctx):
@@ -960,7 +960,7 @@ class Random(commands.Cog):
         '''
         # Note: number command invokes this command
         try:
-            await ctx.embed_reply(random.randint(1, number))
+            await ctx.embed_reply(random.randint(1, number))  # nosec: random  # noqa: S311 (suspicious-non-cryptographic-random-usage)
         except ValueError:
             await ctx.embed_reply(
                 f"{ctx.bot.error_emoji} Error: Input must be >= 1"
@@ -1035,7 +1035,7 @@ class Random(commands.Cog):
         with open(filepath, 'r', encoding = "UTF-8") as why_file:
             questions = why_file.read().split('\n')
 
-        await ctx.embed_reply(f"{random.choice(questions).capitalize()}?")
+        await ctx.embed_reply(f"{random.choice(questions).capitalize()}?")  # nosec: random  # noqa: S311 (suspicious-non-cryptographic-random-usage)
 
     @commands.command(aliases = ["why"])
     async def question(self, ctx):
@@ -1102,7 +1102,7 @@ class Random(commands.Cog):
         """Random time"""
         # Note: time random command invokes this command
         await ctx.embed_reply(
-            f"{random.randint(0, 23):02}:{random.randint(0, 59):02}"
+            f"{random.randint(0, 23):02}:{random.randint(0, 59):02}"  # nosec: random  # noqa: S311 (suspicious-non-cryptographic-random-usage)
         )
 
     @random.command(with_app_command = False)
@@ -1123,7 +1123,7 @@ class Random(commands.Cog):
     async def user(self, ctx):
         '''Random user/member'''
         # Note: user random command invokes this command
-        await ctx.embed_reply(random.choice(ctx.guild.members).mention)
+        await ctx.embed_reply(random.choice(ctx.guild.members).mention)  # nosec: random  # noqa: S311 (suspicious-non-cryptographic-random-usage)
 
     @random.command(aliases = ["wiki"])
     async def wikipedia(self, ctx):
@@ -1162,7 +1162,7 @@ class Random(commands.Cog):
         url = "http://xkcd.com/info.0.json"
         async with ctx.bot.aiohttp_session.get(url) as resp:
             data = await resp.json()
-        number = random.randint(1, data['num'])
+        number = random.randint(1, data['num'])  # nosec: random  # noqa: S311 (suspicious-non-cryptographic-random-usage)
         # TODO: Optimize random comic / page selection?
         paginator = ButtonPaginator(
             ctx, XKCDSource(ctx), initial_page = number
