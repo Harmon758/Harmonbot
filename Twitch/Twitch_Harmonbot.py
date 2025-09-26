@@ -89,7 +89,7 @@ class TwitchClient(irc.client_aio.AioSimpleIRCClient):
 
     async def bonezone(self):
         while self.connection.connected:
-            wait = random.randint(60, 3600)
+            wait = random.randint(60, 3600)  # nosec: random  # noqa: S311 (suspicious-non-cryptographic-random-usage)
             await asyncio.sleep(wait)
             await self.message("#mikki", "BoneZone")
             await asyncio.sleep(3600 - wait)
@@ -161,9 +161,9 @@ class TwitchClient(irc.client_aio.AioSimpleIRCClient):
                 self.message(target, self.random_viewer(target))
         elif message.startswith("!rng"):
             if len(message.split()) > 1 and is_number(message.split()[1]):
-                self.message(target, str(random.randint(1, int(message.split()[1]))))
+                self.message(target, str(random.randint(1, int(message.split()[1]))))  # nosec: random  # noqa: S311 (suspicious-non-cryptographic-random-usage)
             else:
-                self.message(target, str(random.randint(1, 10)))
+                self.message(target, str(random.randint(1, 10)))  # nosec: random  # noqa: S311 (suspicious-non-cryptographic-random-usage)
         elif message.startswith("!roulette"):
             # TODO: Configurable flood/time limit settings, per channel + per user
             # TODO: Add configurable timeout on loss option
@@ -207,7 +207,7 @@ class TwitchClient(irc.client_aio.AioSimpleIRCClient):
                         f"BANG!... {source.capitalize()} was a great viewer, "
                         f"and now {source.capitalize()} is a dead viewer. R.I.P"
                     )
-                self.message(target, random.choice(choices))
+                self.message(target, random.choice(choices))  # nosec: random  # noqa: S311 (suspicious-non-cryptographic-random-usage)
         elif message.startswith("!rps"):
             if len(message.split()) == 1:
                 self.message(target, "Please specify rock, paper, or scissors.")
@@ -232,7 +232,7 @@ class TwitchClient(irc.client_aio.AioSimpleIRCClient):
                 if message.split()[1].lower() == "rock":
                     self.message(
                         target,
-                        random.choice((
+                        random.choice((  # nosec: random  # noqa: S311 (suspicious-non-cryptographic-random-usage)
                             f"PAPER -- Paper beats Rock! You lose, {source.capitalize()} !",
                             f"SCISSORS -- Hmm, I lose. Congrats, {source.capitalize()}",
                             "ROCK -- Dang it, it's a draw."
@@ -241,7 +241,7 @@ class TwitchClient(irc.client_aio.AioSimpleIRCClient):
                 elif message.split()[1].lower() == "paper":
                     self.message(
                         target,
-                        random.choice((
+                        random.choice((  # nosec: random  # noqa: S311 (suspicious-non-cryptographic-random-usage)
                             f"SCISSORS -- Scissors beats Paper! You lose, {source.capitalize()} !",
                             f"ROCK -- Hmm, I lose. Congrats, {source.capitalize()}",
                             "PAPER -- Dang it, it's a draw."
@@ -250,7 +250,7 @@ class TwitchClient(irc.client_aio.AioSimpleIRCClient):
                 elif message.split()[1].lower() == "scissors":
                     self.message(
                         target,
-                        random.choice((
+                        random.choice((  # nosec: random  # noqa: S311 (suspicious-non-cryptographic-random-usage)
                             f"ROCK -- Rock beats Scissors! You lose, {source.capitalize()} !",
                             f"PAPER -- Hmm, I lose. Congrats, {source.capitalize()}",
                             "SCISSORS -- Dang it, it's a draw."
@@ -647,10 +647,10 @@ class TwitchClient(irc.client_aio.AioSimpleIRCClient):
 
         # Miscellaneous Commands
         if message.startswith(("!kitten", "!kitty")):
-            self.message(target, random.choice(("CoolCat", "DxCat")))
+            self.message(target, random.choice(("CoolCat", "DxCat")))  # nosec: random  # noqa: S311 (suspicious-non-cryptographic-random-usage)
         elif message.startswith("!puppy"):
             self.message(
-                target, random.choice((
+                target, random.choice((  # nosec: random  # noqa: S311 (suspicious-non-cryptographic-random-usage)
                     "BegWan", "ChefFrank", "CorgiDerp", "FrankerZ", "RalpherZ"
                 ))
             )
@@ -782,7 +782,7 @@ class TwitchClient(irc.client_aio.AioSimpleIRCClient):
         return source in self.channels[target]["modes"].get('o', [])
 
     def random_viewer(self, target):
-        return random.choice(
+        return random.choice(  # nosec: random  # noqa: S311 (suspicious-non-cryptographic-random-usage)
             list(self.channels.get(target, {}).get("users", ["N/A"]))
         ).capitalize()
 
