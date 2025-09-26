@@ -5,7 +5,7 @@ from discord import app_commands
 from discord.ext import commands
 
 import functools
-from typing import Literal, Optional, TYPE_CHECKING
+from typing import Optional, TYPE_CHECKING
 
 import youtube_dl
 
@@ -570,16 +570,7 @@ class Search(commands.Cog):
             )
 
     @search.command(name = "fandom", aliases = ["wikia", "wikicities"])
-    async def search_fandom(
-        self, ctx: Context,
-        wiki: Literal[
-            "Disney", "Foundation", "Genshin Impact",
-            "Marvel Cinematic Universe", "Memory Alpha", "Pixar", "Redwall",
-            "Seinfeld", "Suits", "The Hunger Games", "The Lord of the Rings",
-            "Transformers", "Transformers Movie"
-        ],
-        *, query: str
-    ):
+    async def search_fandom(self, ctx: Context, wiki: str, *, query: str):
         """
         Search for an article on a Fandom wiki
 
@@ -598,6 +589,11 @@ class Search(commands.Cog):
                 FANDOM_WIKIS[wiki], query,
                 aiohttp_session = ctx.bot.aiohttp_session
             )
+        except KeyError:
+            await ctx.embed_reply(
+                f"{ctx.bot.error_emoji} Unknown Fandom wiki: `{wiki}`"
+            )
+            return
         except ValueError as e:
             await ctx.embed_reply(f"{ctx.bot.error_emoji} {e}")
             return
@@ -610,17 +606,30 @@ class Search(commands.Cog):
         )
         ctx.bot.views.append(view)
 
+    @search_fandom.autocomplete("wiki")
+    async def search_fandom_wiki_autocomplete(self, interaction, current):
+        current = current.lower()
+
+        wikis = FANDOM_WIKIS.keys()
+
+        primary_matches = set()
+        secondary_matches = set()
+
+        for wiki in wikis:
+            if wiki.lower().startswith(current):
+                primary_matches.add(wiki)
+            elif current in wiki.lower():
+                secondary_matches.add(wiki)
+
+        matches = sorted(primary_matches) + sorted(secondary_matches)
+
+        return [
+            app_commands.Choice(name = match, value = match)
+            for match in matches[:25]
+        ]
+
     @commands.command(aliases = ["wikia", "wikicities"])
-    async def fandom(
-        self, ctx: Context,
-        wiki: Literal[
-            "Disney", "Foundation", "Genshin Impact",
-            "Marvel Cinematic Universe", "Memory Alpha", "Pixar", "Redwall",
-            "Seinfeld", "Suits", "The Hunger Games", "The Lord of the Rings",
-            "Transformers", "Transformers Movie"
-        ],
-        *, query: str
-    ):
+    async def fandom(self, ctx: Context, wiki: str, *, query: str):
         """
         Search for an article on a Fandom wiki
 
