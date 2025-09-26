@@ -48,6 +48,7 @@ class Search(commands.Cog):
         return await checks.not_forbidden().predicate(ctx)
 
     @commands.hybrid_group(case_insensitive = True)
+    @app_commands.allowed_installs(guilds = True, users = True)
     async def search(self, ctx: Context):
         """
         Search things
