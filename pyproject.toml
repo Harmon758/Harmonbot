@@ -32,6 +32,7 @@ select = [
     "PLE",  # Pylint Error
     "PYI",  # flake8-pyi
     "RSE",  # flake8-raise
+    "S",  # flake8-bandit
     "SLOT",  # flake8-slots
     "TC",  # flake8-type-checking
     "TD",  # flake8-todos
