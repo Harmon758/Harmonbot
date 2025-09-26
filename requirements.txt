@@ -63,7 +63,7 @@ rich==14.1.0
 ruff==0.13.2
 scipy==1.16.2
 seaborn==0.13.2
-sentry-sdk==2.38.0
+sentry-sdk==2.39.0
 spacy==3.8.7
 spacy-entity-linker==1.0.3
 speechrecognition==3.10.1
