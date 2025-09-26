@@ -745,7 +745,7 @@ class Search(commands.Cog):
             Search query
         """
         if command := ctx.bot.get_command("search wolframalpha"):
-            await ctx.invoke(command, query = query)
+            await ctx.invoke(command, location = None, query = query)
         else:
             raise RuntimeError(
                 "search wolframalpha command not found "
