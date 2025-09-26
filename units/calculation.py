@@ -28,7 +28,7 @@ operations = {
 
 def evaluate_stack(stack):
     token = stack.pop()
-    if token in "+-*/":
+    if token in "+-*/":  # nosec: hardcoded_password_string  # noqa: S105 (hardcoded-password-string)
         # Operands are pushed onto the stack in reverse order
         operand_2 = evaluate_stack(stack)
         operand_1 = evaluate_stack(stack)
