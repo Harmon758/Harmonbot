@@ -11,5 +11,5 @@ class Context(commands.Context):
         self.channel_command = None
 
     def random_viewer(self):
-        return random.choice(self.channel.chatters)
+        return random.choice(self.channel.chatters)  # nosec: random  # noqa: S311 (suspicious-non-cryptographic-random-usage)
 
