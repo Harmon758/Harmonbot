@@ -4,7 +4,7 @@ import random
 
 def eightball() -> str:
     # https://en.wikipedia.org/wiki/Magic_8-Ball#Possible_answers
-    return random.choice((  # nosec random
+    return random.choice((  # nosec: random  # noqa: S311 (suspicious-non-cryptographic-random-usage)
         "It is certain", "It is decidedly so", "Without a doubt",
         "Yes, definitely", "You may rely on it", "As I see it, yes",
         "Most likely", "Outlook good", "Yes", "Signs point to yes",

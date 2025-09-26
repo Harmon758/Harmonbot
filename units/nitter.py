@@ -61,7 +61,7 @@ async def get_random_healthy_rss_instance_url(
         )
     )
     if healthy_rss_instances:
-        return random.choice(healthy_rss_instances)["url"]
+        return random.choice(healthy_rss_instances)["url"]  # nosec: random  # noqa: S311 (suspicious-non-cryptographic-random-usage)
     else:
         return None
 

@@ -44,11 +44,11 @@ def generate_elizabethan_insult() -> str:
     # https://gist.github.com/quandyfactory/258915
     # https://quandyfactory.com/insult
     # https://quandyfactory.com/insult/json
-    adjective = random.choice(ELIZABETHAN_ADJECTIVES)
+    adjective = random.choice(ELIZABETHAN_ADJECTIVES)  # nosec: random  # noqa: S311 (suspicious-non-cryptographic-random-usage)
     article = "an" if adjective.startswith(('A', 'E', 'I', 'O', 'U')) else 'a'
     return (
         f"Thou art {article} {adjective}, "
-        f"{random.choice(ELIZABETHAN_COMPOUND_ADJECTIVES)} "
-        f"{random.choice(ELIZABETHAN_NOUNS)}."
+        f"{random.choice(ELIZABETHAN_COMPOUND_ADJECTIVES)} "  # nosec: random  # noqa: S311 (suspicious-non-cryptographic-random-usage)
+        f"{random.choice(ELIZABETHAN_NOUNS)}."  # nosec: random  # noqa: S311 (suspicious-non-cryptographic-random-usage)
     )
 
