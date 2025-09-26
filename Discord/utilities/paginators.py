@@ -7,12 +7,13 @@ class ButtonPaginator(discord.ui.View):
 
     # TODO: Track pages paginated and number of paginators
 
-    def __init__(self, ctx, source, initial_page = 1):
+    def __init__(self, ctx, source, *, initial_page = 1, selection = None):
         super().__init__(timeout = 600)
 
         self.ctx = ctx
         self.source = source
         self.current_page = initial_page - 1
+        self.selection = selection
 
         self.message = None
 
@@ -78,6 +79,12 @@ class ButtonPaginator(discord.ui.View):
             return False
         return True
 
+    @discord.ui.select()
+    async def select_menu(self, interaction, select):
+        await interaction.response.defer()
+        selected = int(select.values[0])
+        await self.show_page(interaction, selected)
+
     async def start(self):
         # TODO: Check embed permissions
         await self.source.prepare()
@@ -99,6 +106,18 @@ class ButtonPaginator(discord.ui.View):
         if self.source.is_paginating():
             self.current_button.label = self.current_page + 1
             self.end_button.label = self.source.get_max_pages()
+            if self.selection:
+                options = [
+                    discord.SelectOption(
+                        label = self.selection[page_number],
+                        value = page_number,
+                        default = (page_number == self.current_page)
+                    )
+                    for page_number in range(self.source.get_max_pages())
+                ]
+                self.select_menu.options = options[:25]
+            else:
+                self.remove_item(self.select_menu)
         else:
             self.clear_items()
 
@@ -118,6 +137,9 @@ class ButtonPaginator(discord.ui.View):
         self.next_button.disabled = self.end_button.disabled = (
             page_number + 1 == self.source.get_max_pages()
         )
+        if self.selection:
+            for option in self.select_menu.options:
+                option.default = (int(option.value) == self.current_page)
 
         await interaction.message.edit(**kwargs, view = self)
 
@@ -129,6 +151,7 @@ class ButtonPaginator(discord.ui.View):
         self.previous_button.disabled = True
         self.next_button.disabled = True
         self.end_button.disabled = True
+        self.select_menu.disabled = True
 
         if interaction:
             await interaction.response.edit_message(view = self)
