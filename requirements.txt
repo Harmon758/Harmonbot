@@ -32,7 +32,7 @@ imageio==2.37.0
 imgurpython==1.1.7
 inflect==7.5.0
 isodate==0.7.2
-markdownify==0.11.6
+markdownify==1.2.0
 matplotlib==3.10.6
 more-itertools==10.8.0
 mypy[faster-cache]==1.18.2
