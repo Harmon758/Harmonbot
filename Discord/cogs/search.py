@@ -683,7 +683,7 @@ class Search(commands.Cog):
         case_insensitive = True
     )
     async def search_wolframalpha(
-        self, ctx, location: Optional[str], *, query: str
+        self, ctx, location: Optional[str], *, query: str  # noqa: UP045 (non-pep604-annotation-optional)
     ):
         """
         Query Wolfram|Alpha
@@ -705,6 +705,7 @@ class Search(commands.Cog):
             result = await ctx.bot.wolfram_alpha_client.aquery(
                 query.strip('`'), ip = ctx.bot.mock_ip, location = location
             )
+            # TODO: Handle httpx.ReadTimeout / httpcore.ReadTimeout ?
         except Exception as e:
             if str(e).startswith("Error "):
                 await ctx.embed_reply(f"{ctx.bot.error_emoji} {e}")
