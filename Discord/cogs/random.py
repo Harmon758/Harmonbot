@@ -24,6 +24,7 @@ from units.jokes import (
 )
 from units.insults import generate_elizabethan_insult
 from units.quotes import get_random_quote
+from units.wikis import get_random_article
 from utilities import checks
 from utilities.menu_sources import XKCDSource
 from utilities.paginators import ButtonPaginator
@@ -1128,12 +1129,23 @@ class Random(commands.Cog):
     @random.command(aliases = ["wiki"])
     async def wikipedia(self, ctx):
         """Random Wikipedia article"""
-        if command := ctx.bot.get_command("search wikipedia random"):
-            await ctx.invoke(command)
+        # Note: wikipedia random command invokes this command
+        await ctx.defer()
+        try:
+            article = await get_random_article(
+                "https://en.wikipedia.org/",
+                aiohttp_session = ctx.bot.aiohttp_session
+            )
+        except ValueError as e:
+            await ctx.embed_reply(f"{ctx.bot.error_emoji} {e}")
         else:
             await ctx.embed_reply(
-                title = "Random Wikipedia article",
-                title_url = "https://wikipedia.org/wiki/Special:Random"
+                title = article.title,
+                title_url = article.url,
+                description = article.extract,
+                image_url = article.image_url,
+                footer_icon_url = article.wiki.logo,
+                footer_text = article.wiki.name
             )
 
     @random.command(name = "word")
