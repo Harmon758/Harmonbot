@@ -17,6 +17,23 @@ if TYPE_CHECKING:
     from types import NotImplementedType
 
 
+FANDOM_WIKIS = {
+    "Disney": "https://disney.fandom.com/",
+    "Foundation": "https://foundation.fandom.com/",
+    "Genshin Impact": "https://genshin-impact.fandom.com/",
+    "Marvel Cinematic Universe": "https://marvelcinematicuniverse.fandom.com/",
+    "Memory Alpha": "https://memory-alpha.fandom.com/",
+    "Pixar": "https://pixar.fandom.com/",
+    "Redwall": "https://redwall.fandom.com/",
+    "Seinfeld": "https://seinfeld.fandom.com/",
+    "Suits": "https://suits.fandom.com/",
+    "The Hunger Games": "https://thehungergames.fandom.com/",
+    "The Lord of the Rings": "https://lotr.fandom.com/",
+    "Transformers": "https://transformers.fandom.com/",
+    "Transformers Movie": "https://michaelbaystransformers.fandom.com/"
+}
+
+
 class WikiInfo(BaseModel):
     name: str
     logo: str

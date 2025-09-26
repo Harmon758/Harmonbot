@@ -9,7 +9,7 @@ from typing import Optional, TYPE_CHECKING
 
 import youtube_dl
 
-from units.wikis import get_random_article, search_wiki
+from units.wikis import FANDOM_WIKIS, get_random_article, search_wiki
 from units import wolfram_alpha
 from utilities import checks
 from utilities.menu_sources import WolframAlphaSource
@@ -18,23 +18,6 @@ from utilities.views import WikiArticlesView
 
 if TYPE_CHECKING:
     from utilities.context import Context
-
-
-FANDOM_WIKIS = {
-    "Disney": "https://disney.fandom.com/",
-    "Foundation": "https://foundation.fandom.com/",
-    "Genshin Impact": "https://genshin-impact.fandom.com/",
-    "Marvel Cinematic Universe": "https://marvelcinematicuniverse.fandom.com/",
-    "Memory Alpha": "https://memory-alpha.fandom.com/",
-    "Pixar": "https://pixar.fandom.com/",
-    "Redwall": "https://redwall.fandom.com/",
-    "Seinfeld": "https://seinfeld.fandom.com/",
-    "Suits": "https://suits.fandom.com/",
-    "The Hunger Games": "https://thehungergames.fandom.com/",
-    "The Lord of the Rings": "https://lotr.fandom.com/",
-    "Transformers": "https://transformers.fandom.com/",
-    "Transformers Movie": "https://michaelbaystransformers.fandom.com/"
-}
 
 
 async def setup(bot):
