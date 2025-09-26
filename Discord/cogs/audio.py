@@ -614,7 +614,7 @@ class Audio(commands.Cog):
         ) as resp:
             data = await resp.json()
 
-        song = random.choice([video["id"] for video in data["items"]])
+        song = random.choice([video["id"] for video in data["items"]])  # nosec: random  # noqa: S311 (suspicious-non-cryptographic-random-usage)
 
         response = await ctx.embed_reply(":cd: Loading..")
         embed = response.embeds[0]

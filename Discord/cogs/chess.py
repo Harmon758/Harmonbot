@@ -107,7 +107,7 @@ class ChessCog(commands.Cog, name = "Chess"):
             color = "white"
 
         if color == "random":
-            color = random.choice(("white", "black"))
+            color = random.choice(("white", "black"))  # nosec: random  # noqa: S311 (suspicious-non-cryptographic-random-usage)
 
         if color == "white":
             white_player = ctx.author

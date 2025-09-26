@@ -464,9 +464,9 @@ class Meta(commands.Cog):
         '''Change my activity to a random one'''
         activity = ctx.me.activity
         if not activity:
-            activity = discord.Activity(name = random.choice(self.bot.game_statuses), type = discord.ActivityType.playing)
+            activity = discord.Activity(name = random.choice(self.bot.game_statuses), type = discord.ActivityType.playing)  # nosec: random  # noqa: S311 (suspicious-non-cryptographic-random-usage)
         else:
-            activity.name = random.choice(self.bot.game_statuses)
+            activity.name = random.choice(self.bot.game_statuses)  # nosec: random  # noqa: S311 (suspicious-non-cryptographic-random-usage)
         await self.bot.change_presence(activity = activity)
         await ctx.embed_reply("I changed my activity to a random one")
 
@@ -492,7 +492,7 @@ class Meta(commands.Cog):
             if type.lower() in ("playing", "streaming", "listening", "watching"):
                 activity_type = getattr(discord.ActivityType, type.lower())
                 if not activity:
-                    activity = discord.Activity(name = random.choice(self.bot.game_statuses), type = activity_type)
+                    activity = discord.Activity(name = random.choice(self.bot.game_statuses), type = activity_type)  # nosec: random  # noqa: S311 (suspicious-non-cryptographic-random-usage)
                 else:
                     activity = discord.Activity(name = activity.name, url = activity.url, type = activity_type)
                 if type.lower() == "streaming" and not activity.url:
@@ -518,7 +518,7 @@ class Meta(commands.Cog):
             is_owner = False
         if is_owner:
             if not activity:
-                activity = discord.Streaming(name = random.choice(self.bot.game_statuses), url = url)
+                activity = discord.Streaming(name = random.choice(self.bot.game_statuses), url = url)  # nosec: random  # noqa: S311 (suspicious-non-cryptographic-random-usage)
             else:
                 activity.url = url
             await self.bot.change_presence(activity = activity)

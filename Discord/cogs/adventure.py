@@ -342,10 +342,10 @@ class Adventure(commands.Cog):
                 ":evergreen_tree: Chopping..",
                 footer_text = f"This could take up to {time} seconds"
             )
-            await asyncio.sleep(random.randint(1, time))
+            await asyncio.sleep(random.randint(1, time))  # nosec: random  # noqa: S311 (suspicious-non-cryptographic-random-usage)
             await self.bot.attempt_delete_message(message)
             await self.bot.attempt_delete_message(chopping)
-            prompt = random.choice(("chop", "whack", "swing", "cut"))
+            prompt = random.choice(("chop", "whack", "swing", "cut"))  # nosec: random  # noqa: S311 (suspicious-non-cryptographic-random-usage)
             prompt_message = await ctx.embed_reply(
                 f'Reply with "{prompt}" in the next 10 seconds to continue'
             )
@@ -530,10 +530,10 @@ class AdventurePlayer:
             item_amount = math.floor(time_spent * self.foraging_rate)
             await self.add_to_inventory(item, item_amount)
             secondary_item = FORAGEABLES[item][0]
-            secondary_amount = random.randint(0, item_amount)
+            secondary_amount = random.randint(0, item_amount)  # nosec: random  # noqa: S311 (suspicious-non-cryptographic-random-usage)
             await self.add_to_inventory(secondary_item, secondary_amount)
             tertiary_item = FORAGEABLES[item][1]
-            tertiary_amount = math.floor(random.randint(0, item_amount) / 100)
+            tertiary_amount = math.floor(random.randint(0, item_amount) / 100)  # nosec: random  # noqa: S311 (suspicious-non-cryptographic-random-usage)
             await self.add_to_inventory(tertiary_item, tertiary_amount)
             await self.add_foraging_xp(item_amount)
             return item, time_spent, item_amount, secondary_amount, tertiary_amount

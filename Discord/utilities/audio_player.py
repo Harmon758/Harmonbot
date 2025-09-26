@@ -238,7 +238,7 @@ class AudioPlayer:
 	
 	async def play_file(self, ctx, filename):
 		if not filename and self.audio_files:
-			filename = random.choice(self.audio_files)
+			filename = random.choice(self.audio_files)  # nosec: random  # noqa: S311 (suspicious-non-cryptographic-random-usage)
 		elif filename not in self.audio_files:
 			await ctx.embed_reply(":no_entry: File not found")
 			return True
@@ -264,7 +264,7 @@ class AudioPlayer:
 	
 	async def play_from_library(self, ctx, *, filename = None, clear_flag = True):
 		if not filename and self.library_files:
-			filename = random.choice(self.library_files)
+			filename = random.choice(self.library_files)  # nosec: random  # noqa: S311 (suspicious-non-cryptographic-random-usage)
 		elif filename not in self.library_files:
 			await ctx.embed_reply(":no_entry: Song file not found")
 			return True
@@ -315,7 +315,7 @@ class AudioPlayer:
 					}
 				) as resp:
 					data = await resp.json()
-				videoid = random.choice(data["items"])["id"]["videoId"]
+				videoid = random.choice(data["items"])["id"]["videoId"]  # nosec: random  # noqa: S311 (suspicious-non-cryptographic-random-usage)
 				
 				source = YTDLSource(ctx, videoid, stream = True)
 				await source.get_info()

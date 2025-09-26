@@ -159,7 +159,7 @@ class Games(commands.Cog):
 			await ctx.bot.wait_for("reaction_add", check = lambda r, u: r.message.id == response.id)
 			response = await ctx.channel.fetch_message(response.id)
 		reactions = response.reactions
-		winning_emoji = random.choice(reactions).emoji
+		winning_emoji = random.choice(reactions).emoji  # nosec: random  # noqa: S311 (suspicious-non-cryptographic-random-usage)
 		embed.description = "Please wait.."
 		await response.edit(embed = embed)
 		for reaction in reactions:
@@ -199,7 +199,7 @@ class Games(commands.Cog):
 			await message.add_reaction(circle_emoji)
 		while not embed.description.startswith("Game over."):
 			await asyncio.sleep(1)
-			sequence.append(random.choice(circle_emojis))
+			sequence.append(random.choice(circle_emojis))  # nosec: random  # noqa: S311 (suspicious-non-cryptographic-random-usage)
 			for circle_emoji in sequence:
 				display = ["\N{MEDIUM BLACK CIRCLE}"] * 4
 				embed.description = (
@@ -325,7 +325,7 @@ class GuessGame:
 		self.max_value = max_value
 		
 		self.awaiting_guess = False
-		self.correct_number = random.randint(1, max_value)
+		self.correct_number = random.randint(1, max_value)  # nosec: random  # noqa: S311 (suspicious-non-cryptographic-random-usage)
 		self.guessed = asyncio.Event()
 		self.message = None
 		self.time_limit = 15.0  # TODO: Custom time limit?

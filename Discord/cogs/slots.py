@@ -143,7 +143,7 @@ async def play_slots(ctx_or_interaction, *, message = None, view = None):
         user.id
     )
 
-    emojis = [random.choice(EMOJI) for reel in range(3)]
+    emojis = [random.choice(EMOJI) for reel in range(3)]  # nosec: random  # noqa: S311 (suspicious-non-cryptographic-random-usage)
 
     if points := calculate_slots_points(emojis):
         footer_text = (

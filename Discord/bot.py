@@ -67,7 +67,7 @@ class Bot(commands.Bot):
         intents.message_content = True
         super().__init__(
             activity = discord.Streaming(
-                name = random.choice(self.game_statuses), url = self.stream_url
+                name = random.choice(self.game_statuses), url = self.stream_url  # nosec: random  # noqa: S311 (suspicious-non-cryptographic-random-usage)
             ),
             case_insensitive = True,
             command_prefix = self.get_command_prefix,

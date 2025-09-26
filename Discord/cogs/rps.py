@@ -186,7 +186,7 @@ class RPS(commands.Cog):
             rps_object = normalized_name
         if rps_object not in OBJECTS[variant]:
             raise commands.BadArgument("That's not a valid object")
-        value = random.choice(OBJECTS[variant])
+        value = random.choice(OBJECTS[variant])  # nosec: random  # noqa: S311 (suspicious-non-cryptographic-random-usage)
         if value == rps_object:
             await ctx.embed_reply(
                 f"I chose `{value}`\n"
@@ -322,7 +322,7 @@ class RPS(commands.Cog):
             if key == emote
                 print(key)
         '''
-        value = random.choice(list(emotes.keys()))
+        value = random.choice(list(emotes.keys()))  # nosec: random  # noqa: S311 (suspicious-non-cryptographic-random-usage)
         if erps_object not in emotes:
             raise commands.BadArgument("That's not a valid object")
         standard_value = (

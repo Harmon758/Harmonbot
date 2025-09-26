@@ -231,8 +231,8 @@ class Location(commands.Cog):
         Zoom: 0 - 21+
         '''
         # Note: random map command invokes this command
-        latitude = random.uniform(-90, 90)
-        longitude = random.uniform(-180, 180)
+        latitude = random.uniform(-90, 90)  # nosec: random  # noqa: S311 (suspicious-non-cryptographic-random-usage)
+        longitude = random.uniform(-180, 180)  # nosec: random  # noqa: S311 (suspicious-non-cryptographic-random-usage)
         async with ctx.bot.aiohttp_session.get(
             "https://maps.googleapis.com/maps/api/staticmap",
             params = {
@@ -290,8 +290,8 @@ class Location(commands.Cog):
         Valid values are non-negative integers.
         '''
         # Note: random streetview command invokes this command
-        latitude = random.uniform(-90, 90)
-        longitude = random.uniform(-180, 180)
+        latitude = random.uniform(-90, 90)  # nosec: random  # noqa: S311 (suspicious-non-cryptographic-random-usage)
+        longitude = random.uniform(-180, 180)  # nosec: random  # noqa: S311 (suspicious-non-cryptographic-random-usage)
 
         async with ctx.bot.aiohttp_session.get(
             "https://maps.googleapis.com/maps/api/streetview",
