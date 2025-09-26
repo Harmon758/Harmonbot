@@ -842,7 +842,8 @@ class Search(commands.GroupCog, group_name = "search"):
                     result.pods,
                     didyoumean = didyoumean,
                     timedout = result.timedout
-                )
+                ),
+                selection = [pod.title for pod in result.pods]
             )
             await paginator.start()
             ctx.bot.views.append(paginator)
