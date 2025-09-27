@@ -36,6 +36,7 @@ WIKIS = {
     "Tolkien Gateway": "https://tolkiengateway.net/",
     "Transformers": "https://transformers.fandom.com/",
     "Transformers Movie": "https://michaelbaystransformers.fandom.com/",
+    "Unofficial Elder Scrolls Pages (UESP)": "https://en.uesp.net",
     "Valorant": "https://valorant.fandom.com/",
     "Wikipedia": "https://en.wikipedia.org/",
     # "Wizard101 (Central)": "https://wiki.wizard101central.com/",
