@@ -23,7 +23,8 @@ WIKIS = {
     "Genshin Impact": "https://genshin-impact.fandom.com/",
     "Marvel Cinematic Universe": "https://marvelcinematicuniverse.fandom.com/",
     "Memory Alpha": "https://memory-alpha.fandom.com/",
-    "Pirate101": "https://pirate101.fandom.com/",
+    "Pirate101 (Central)": "https://www.pirate101central.com/",
+    "Pirate101 (Fandom)": "https://pirate101.fandom.com/",
     "Pixar": "https://pixar.fandom.com/",
     "Redwall": "https://redwall.fandom.com/",
     "Seinfeld": "https://seinfeld.fandom.com/",
@@ -36,7 +37,12 @@ WIKIS = {
     "Transformers Movie": "https://michaelbaystransformers.fandom.com/",
     "Valorant": "https://valorant.fandom.com/",
     "Wikipedia": "https://en.wikipedia.org/",
-    "Wizard101": "https://wizard101.fandom.com/",
+    # "Wizard101 (Central)": "https://wiki.wizard101central.com/",
+    # 403 Cloudflare error when accessing ^ + wiki/api.php
+    # Others encountering this:
+    # https://github.com/R-unic/WizWikiAPI/commit/b6e55af833e6cf40e6152adbb9a72d6d5cf73632
+    # https://github.com/R-unic/WizWikiAPI/issues/3
+    "Wizard101 (Fandom)": "https://wizard101.fandom.com/",
 }
 
 
