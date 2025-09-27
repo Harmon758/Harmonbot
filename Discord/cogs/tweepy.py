@@ -97,31 +97,35 @@ class Tweepy(commands.Cog):
         for match in DISCORD_INVITE_REGEX_PATTERN.finditer(
             message.content
         ):
-            invite = await self.bot.fetch_invite(match.group())
-            if invite.guild.id not in (TWEEPY_GUILD_ID, PYTHON_GUILD_ID):
-                ctx = await self.bot.get_context(message)
-                await ctx.embed_reply(
-                    author_name = None,
-                    description = (
-                        ctx.author.mention +
-                        ": Please don't send Discord invites here"
-                    ),
-                    in_response_to = False
-                )
-                await self.bot.get_channel(
-                    TWEEPY_GUILD_MODERATOR_ONLY_CHANNEL_ID
-                ).send(
-                    embed = discord.Embed(
+            try:
+                invite = await self.bot.fetch_invite(match.group())
+            except discord.NotFound:
+                pass
+            else:
+                if invite.guild.id not in (TWEEPY_GUILD_ID, PYTHON_GUILD_ID):
+                    ctx = await self.bot.get_context(message)
+                    await ctx.embed_reply(
+                        author_name = None,
                         description = (
-                            "Deleted message with invite "
-                            f"from {ctx.author.mention} "
-                            f"in {message.channel.mention}:"
-                            f"\n{message.content}"
+                            ctx.author.mention +
+                            ": Please don't send Discord invites here"
                         ),
-                        color = self.bot.bot_color
+                        in_response_to = False
                     )
-                )
-                return
+                    await self.bot.get_channel(
+                        TWEEPY_GUILD_MODERATOR_ONLY_CHANNEL_ID
+                    ).send(
+                        embed = discord.Embed(
+                            description = (
+                                "Deleted message with invite "
+                                f"from {ctx.author.mention} "
+                                f"in {message.channel.mention}:"
+                                f"\n{message.content}"
+                            ),
+                            color = self.bot.bot_color
+                        )
+                    )
+                    return
 
     @commands.hybrid_group(case_insensitive = True)
     async def tweepy(self, ctx):
