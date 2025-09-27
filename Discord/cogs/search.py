@@ -545,15 +545,15 @@ class Search(commands.Cog):
         # Note: tolkien command invokes this command
         # Note: wikipedia command invokes this command
         await ctx.defer()
-        try:
-            articles = await search_wiki(
-                WIKIS[wiki], query, aiohttp_session = ctx.bot.aiohttp_session
-            )
-        except KeyError:
+        if not (wiki_url := WIKIS.get(wiki)):
             await ctx.embed_reply(
                 f"{ctx.bot.error_emoji} Unknown wiki: `{wiki}`"
             )
             return
+        try:
+            articles = await search_wiki(
+                wiki_url, query, aiohttp_session = ctx.bot.aiohttp_session
+            )
         except ValueError as e:
             await ctx.embed_reply(f"{ctx.bot.error_emoji} {e}")
             return
