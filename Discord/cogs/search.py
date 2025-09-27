@@ -412,41 +412,20 @@ class Search(commands.Cog):
                 "when startpage command invoked"
             )
 
-    @search.command(
-        name = "uesp", description = "[UESP](http://uesp.net/wiki/Main_Page)",
-        with_app_command = False
-    )
-    async def search_uesp(self, ctx: Context, *, search: str):
-        """Look something up on the Unofficial Elder Scrolls Pages"""
-        # Note: uesp command invokes this command
-        try:
-            articles = await search_wiki(
-                "https://en.uesp.net/", search,
-                aiohttp_session = ctx.bot.aiohttp_session
-            )
-        except ValueError as e:
-            await ctx.embed_reply(f"{ctx.bot.error_emoji} {e}")
-            return
-
-        view = WikiArticlesView(articles)
-        view.message = await ctx.reply(
-            "",
-            embed = await view.initial_embed(ctx),
-            view = view
-        )
-        ctx.bot.views.append(view)
-
     @commands.group(
         description = "[UESP](http://uesp.net/wiki/Main_Page)",
         case_insensitive = True, invoke_without_command = True
     )
-    async def uesp(self, ctx: Context, *, search: str):
+    async def uesp(self, ctx: Context, *, query: str):
         """Look something up on the Unofficial Elder Scrolls Pages"""
-        if command := ctx.bot.get_command("search uesp"):
-            await ctx.invoke(command, search = search)
+        if command := ctx.bot.get_command("search wiki"):
+            await ctx.invoke(
+                command,
+                wiki = "Unofficial Elder Scrolls Pages (UESP)", query = query
+            )
         else:
             raise RuntimeError(
-                "search uesp command not found when uesp command invoked"
+                "search wiki command not found when uesp command invoked"
             )
 
     @uesp.command(name = "random")
@@ -496,7 +475,9 @@ class Search(commands.Cog):
 
     @search.command(
         name = "wiki",
-        aliases = ["fandom", "tolkien", "wikia", "wikicities", "wikipedia"]
+        aliases = [
+            "fandom", "tolkien", "uesp", "wikia", "wikicities", "wikipedia"
+        ]
     )
     async def search_wiki(
         self, ctx: Context, wiki: str = "Wikipedia", *, query: str
@@ -516,6 +497,7 @@ class Search(commands.Cog):
         # Note: genshin_impact wiki command invokes this command
         # Note: runescape wiki command invokes this command
         # Note: tolkien command invokes this command
+        # Note: uesp command invokes this command
         # Note: wikipedia command invokes this command
         await ctx.defer()
         if not (wiki_url := WIKIS.get(wiki) or OUTDATED_WIKIS.get(wiki)):
