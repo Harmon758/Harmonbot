@@ -29,6 +29,7 @@ WIKIS = {
     "Suits": "https://suits.fandom.com/",
     "The Hunger Games": "https://thehungergames.fandom.com/",
     "The Lord of the Rings": "https://lotr.fandom.com/",
+    "Tolkien Gateway": "https://tolkiengateway.net/",
     "Transformers": "https://transformers.fandom.com/",
     "Transformers Movie": "https://michaelbaystransformers.fandom.com/",
     "Valorant": "https://valorant.fandom.com/",

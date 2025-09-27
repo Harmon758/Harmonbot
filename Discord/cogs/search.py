@@ -523,7 +523,8 @@ class Search(commands.Cog):
             )
 
     @search.command(
-        name = "wiki", aliases = ["fandom", "wikia", "wikicities", "wikipedia"]
+        name = "wiki",
+        aliases = ["fandom", "tolkien", "wikia", "wikicities", "wikipedia"]
     )
     async def search_wiki(
         self, ctx: Context, wiki: str = "Wikipedia", *, query: str
@@ -541,6 +542,7 @@ class Search(commands.Cog):
         """
         # Note: fandom command invokes this command
         # Note: genshin_impact wiki command invokes this command
+        # Note: tolkien command invokes this command
         # Note: wikipedia command invokes this command
         await ctx.defer()
         try:
@@ -605,35 +607,14 @@ class Search(commands.Cog):
                 "search wiki command not found when fandom command invoked"
             )
 
-    @search.command(name = "tolkien", with_app_command = False)
-    async def search_tolkien(self, ctx: Context, *, query: str):
-        """Search for an article on Tolkien Gateway"""
-        # Note: tolkien command invokes this command
-        try:
-            articles = await search_wiki(
-                "https://tolkiengateway.net/", query,
-                aiohttp_session = ctx.bot.aiohttp_session
-            )
-        except ValueError as e:
-            await ctx.embed_reply(f"{ctx.bot.error_emoji} {e}")
-            return
-
-        view = WikiArticlesView(articles)
-        view.message = await ctx.reply(
-            "",
-            embed = await view.initial_embed(ctx),
-            view = view
-        )
-        ctx.bot.views.append(view)
-
     @commands.command()
     async def tolkien(self, ctx: Context, *, query: str):
         """Search for an article on Tolkien Gateway"""
-        if command := ctx.bot.get_command("search tolkien"):
-            await ctx.invoke(command, query = query)
+        if command := ctx.bot.get_command("search wiki"):
+            await ctx.invoke(command, wiki = "Tolkien Gateway", query = query)
         else:
             raise RuntimeError(
-                "search tolkien command not found when tolkien command invoked"
+                "search wiki command not found when tolkien command invoked"
             )
 
     @search.command(
