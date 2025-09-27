@@ -44,6 +44,7 @@ class WikiInfo(BaseModel):
     name: str
     logo: str
     api_url: str
+    article_path: str
 
 
 class WikiArticle(BaseModel):
@@ -385,6 +386,7 @@ async def get_wiki_info(
         name = wiki_info["sitename"],
         logo = logo,
         api_url = f"{wiki_info['server']}{wiki_info['scriptpath']}/api.php",
+        article_path = wiki_info["articlepath"]
     )
 
 
