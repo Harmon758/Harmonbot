@@ -5,9 +5,7 @@ import collections
 import csv
 
 from units.runescape import get_ge_data, get_item_id, get_monster_data
-from units.wikis import search_wiki
 from utilities import checks
-from utilities.views import WikiArticlesView
 
 
 async def setup(bot):
