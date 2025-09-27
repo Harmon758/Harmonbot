@@ -103,26 +103,23 @@ async def get_article_beginning(
 
         text = BeautifulSoup(data["parse"]["text"]['*'], "lxml")
         if text.body and text.body.div:
-            p = (
+            all_p = (
                 text.body.div.find_all('p', recursive = False) or
                 text.body.find_all('p', recursive = False)
             )
         else:
             raise RuntimeError("Unexpected wikitext HTML format")
 
-        first_p = p[0]
+        first_p = all_p[0]
         if first_p.aside:  # type: ignore[union-attr]
             first_p.aside.clear()  # type: ignore[union-attr]
         # https://bugs.launchpad.net/beautifulsoup/+bug/2122019
         beginning = first_p.get_text()
 
-        if len(p) > 1:
-            second_p = p[1]
-            beginning += '\n' + second_p.get_text()
-
-        if len(p) > 2:
-            third_p = p[2]
-            beginning += '\n' + third_p.get_text()
+        for p in all_p:
+            beginning += '\n' + p.get_text()
+            if len(beginning) > 512:
+                break
 
         beginning = re.sub(r"\n\s*\n", "\n\n", beginning)
 
