@@ -9,7 +9,7 @@ from typing import Optional, TYPE_CHECKING
 
 import youtube_dl
 
-from units.wikis import FANDOM_WIKIS, get_random_article, search_wiki
+from units.wikis import get_random_article, search_wiki, WIKIS
 from units import wolfram_alpha
 from utilities import checks
 from utilities.menu_sources import WolframAlphaSource
@@ -491,35 +491,6 @@ class Search(commands.Cog):
                 "when uesp random command invoked"
             )
 
-    @search.command(name = "wikipedia", aliases = ["wiki"])
-    async def search_wikipedia(self, ctx: Context, *, query: str):
-        """
-        Search for an article on Wikipedia
-
-        Parameters
-        ----------
-        query
-            Search query
-        """
-        # Note: wikipedia command invokes this command
-        await ctx.defer()
-        try:
-            articles = await search_wiki(
-                "https://en.wikipedia.org/", query,
-                aiohttp_session = ctx.bot.aiohttp_session
-            )
-        except ValueError as e:
-            await ctx.embed_reply(f"{ctx.bot.error_emoji} {e}")
-            return
-
-        view = WikiArticlesView(articles)
-        view.message = await ctx.reply(
-            "",
-            embed = await view.initial_embed(ctx),
-            view = view
-        )
-        ctx.bot.views.append(view)
-
     @commands.group(
         aliases = ["wiki"],
         case_insensitive = True, invoke_without_command = True
@@ -533,12 +504,11 @@ class Search(commands.Cog):
         query
             Search query
         """
-        if command := ctx.bot.get_command("search wikipedia"):
+        if command := ctx.bot.get_command("search wiki"):
             await ctx.invoke(command, query = query)
         else:
             raise RuntimeError(
-                "search wikipedia command not found "
-                "when wikipedia command invoked"
+                "search wiki command not found when wikipedia command invoked"
             )
 
     @wikipedia.command(name = "random")
@@ -548,33 +518,38 @@ class Search(commands.Cog):
             await ctx.invoke(command)
         else:
             raise RuntimeError(
-                "search wikipedia random command not found "
+                "random wikipedia command not found "
                 "when wikipedia random command invoked"
             )
 
-    @search.command(name = "fandom", aliases = ["wikia", "wikicities"])
-    async def search_fandom(self, ctx: Context, wiki: str, *, query: str):
+    @search.command(
+        name = "wiki", aliases = ["fandom", "wikia", "wikicities", "wikipedia"]
+    )
+    async def search_wiki(
+        self, ctx: Context, wiki: str = "Wikipedia", *, query: str
+    ):
         """
-        Search for an article on a Fandom wiki
+        Search for an article on a wiki
 
         Parameters
         ----------
         query
             Search query
         wiki
-            Fandom wiki to search
+            Wiki to search
+            (Defaults to Wikipedia)
         """
         # Note: fandom command invokes this command
         # Note: genshin_impact wiki command invokes this command
+        # Note: wikipedia command invokes this command
         await ctx.defer()
         try:
             articles = await search_wiki(
-                FANDOM_WIKIS[wiki], query,
-                aiohttp_session = ctx.bot.aiohttp_session
+                WIKIS[wiki], query, aiohttp_session = ctx.bot.aiohttp_session
             )
         except KeyError:
             await ctx.embed_reply(
-                f"{ctx.bot.error_emoji} Unknown Fandom wiki: `{wiki}`"
+                f"{ctx.bot.error_emoji} Unknown wiki: `{wiki}`"
             )
             return
         except ValueError as e:
@@ -589,11 +564,11 @@ class Search(commands.Cog):
         )
         ctx.bot.views.append(view)
 
-    @search_fandom.autocomplete("wiki")
-    async def search_fandom_wiki_autocomplete(self, interaction, current):
+    @search_wiki.autocomplete("wiki")
+    async def search_wiki_wiki_autocomplete(self, interaction, current):
         current = current.lower()
 
-        wikis = FANDOM_WIKIS.keys()
+        wikis = WIKIS.keys()
 
         primary_matches = set()
         secondary_matches = set()
@@ -623,11 +598,11 @@ class Search(commands.Cog):
         wiki
             Fandom wiki to search
         """
-        if command := ctx.bot.get_command("search fandom"):
+        if command := ctx.bot.get_command("search wiki"):
             await ctx.invoke(command, wiki = wiki, query = query)
         else:
             raise RuntimeError(
-                "search fandom command not found when fandom command invoked"
+                "search wiki command not found when fandom command invoked"
             )
 
     @search.command(name = "tolkien", with_app_command = False)

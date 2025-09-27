@@ -17,7 +17,7 @@ if TYPE_CHECKING:
     from types import NotImplementedType
 
 
-FANDOM_WIKIS = {
+WIKIS = {
     "Disney": "https://disney.fandom.com/",
     "Foundation": "https://foundation.fandom.com/",
     "Genshin Impact": "https://genshin-impact.fandom.com/",
@@ -32,6 +32,7 @@ FANDOM_WIKIS = {
     "Transformers": "https://transformers.fandom.com/",
     "Transformers Movie": "https://michaelbaystransformers.fandom.com/",
     "Valorant": "https://valorant.fandom.com/",
+    "Wikipedia": "https://en.wikipedia.org/",
     "Wizard101": "https://wizard101.fandom.com/",
 }
 
