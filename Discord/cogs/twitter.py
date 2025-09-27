@@ -616,8 +616,19 @@ class Twitter(commands.Cog):
                                 f"in #{text_channel.name} in {text_channel.guild.name}"
                             )
             except discord.DiscordServerError as e:
-                self.bot.print(f"Twitter Task Discord Server Error: {e}")
                 await asyncio.sleep(60)
+                reason = ' ' + e.response.reason if e.response.reason else ""
+                try:
+                    await self.bot.log_channel.send(
+                        f"Encountered {e.status}{reason} Discord server error "
+                        "when attempting to send Tweet notification in "
+                        f"{text_channel.mention}"
+                    )
+                except (discord.DiscordServerError, NameError):
+                    self.bot.print(
+                        "Twitter Task Discord Server Error: "
+                        f"{e.status}{reason}"
+                    )
             except (
                 aiohttp.ClientConnectionError, aiohttp.TooManyRedirects,
                 TimeoutError
