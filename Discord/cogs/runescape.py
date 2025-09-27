@@ -158,23 +158,13 @@ class RuneScape(commands.Cog):
         query
             Search query
         """
-        await ctx.defer()
-        try:
-            articles = await search_wiki(
-                "https://runescape.wiki/", query,
-                aiohttp_session = ctx.bot.aiohttp_session
+        if command := ctx.bot.get_command("search wiki"):
+            await ctx.invoke(command, wiki = "RuneScape", query = query)
+        else:
+            raise RuntimeError(
+                "search wiki command not found "
+                "when runescape wiki command invoked"
             )
-        except ValueError as e:
-            await ctx.embed_reply(f"{ctx.bot.error_emoji} {e}")
-            return
-        
-        view = WikiArticlesView(articles)
-        view.message = await ctx.reply(
-            "",
-            embed = await view.initial_embed(ctx),
-            view = view
-        )
-        ctx.bot.views.append(view)
 
     @runescape.command(hidden = True, with_app_command = False)
     async def zybez(self, ctx):

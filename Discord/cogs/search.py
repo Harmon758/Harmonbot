@@ -542,6 +542,7 @@ class Search(commands.Cog):
         """
         # Note: fandom command invokes this command
         # Note: genshin_impact wiki command invokes this command
+        # Note: runescape wiki command invokes this command
         # Note: tolkien command invokes this command
         # Note: wikipedia command invokes this command
         await ctx.defer()
