@@ -6,10 +6,11 @@ from units.wikis import get_article_beginning
 
 class WikiArticlesView(discord.ui.View):
 
-    def __init__(self, articles):
+    def __init__(self, articles, *, user):
         super().__init__(timeout = 600)
 
         self.articles = articles
+        self.user = user
 
         for number, article in enumerate(articles):
             self.article.add_option(label = article.title, value = number)
@@ -72,6 +73,17 @@ class WikiArticlesView(discord.ui.View):
         select.options[selected].default = True
 
         await interaction.message.edit(embed = embed, view = self)
+
+    async def interaction_check(self, interaction):
+        if interaction.user.id not in (
+            self.user.id, interaction.client.owner_id
+        ):
+            await interaction.response.send_message(
+                "You aren't the one making this query.",
+                ephemeral = True
+            )
+            return False
+        return True
 
     async def stop(self):
         self.article.disabled = True
