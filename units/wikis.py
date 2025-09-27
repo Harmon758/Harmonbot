@@ -173,17 +173,7 @@ async def get_articles(
         ) as resp:
             data = await resp.json()
 
-        wiki_info_data = data["query"]["general"]
-
-        logo = wiki_info_data["logo"]
-        if logo.startswith("//"):
-            logo = "https:" + logo
-
-        wiki_info = WikiInfo(
-            name = wiki_info_data["sitename"],
-            logo = logo,
-            api_url = api_url
-        )
+        wiki_info = await get_wiki_info(data = data)
 
         if "pages" not in data["query"]:
             raise ValueError("Error")  # TODO: More descriptive error
@@ -205,7 +195,7 @@ async def get_articles(
             extract = extract if len(extract) <= 512 else extract[:512] + '…'
             # TODO: Update character limit?, Discord now uses 350
 
-            article_path = wiki_info_data["articlepath"]
+            article_path = wiki_info.article_path
             url = url.rstrip('/')
             replacement_texts = {}
 
