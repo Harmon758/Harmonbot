@@ -1469,21 +1469,41 @@ async def unload(ctx, cog: str):
 
 @commands.command()
 @commands.is_owner()
-async def reload(ctx, cog: str):
-    """Reload cog"""
+async def reload(ctx, module: str):
+    """Reload module - unit and/or cog"""
+    unit = False
+    if f"units.{module}" in sys.modules:
+        try:
+            importlib.reload(sys.modules[f"units.{module}"])
+        except Exception as e:
+            await ctx.embed_reply(
+                f"\N{THUMBS DOWN SIGN}{ctx.bot.emoji_skin_tone} "
+                f"Failed to reload `{module}` unit\n"
+                f"{type(e).__name__}: {e}"
+            )
+        else:
+            unit = True
+            await ctx.embed_reply(
+                f"\N{THUMBS UP SIGN}{ctx.bot.emoji_skin_tone} "
+                f"Reloaded `{module}` unit \N{PACKAGE}"
+            )
     try:
-        await ctx.bot.reload_extension("cogs." + cog)
+        await ctx.bot.reload_extension("cogs." + module)
     except commands.ExtensionFailed as e:
         await ctx.embed_reply(
             f"{ctx.bot.error_emoji} Error loading cog: "
             f"{e.original.__class__.__name__}: {e.original}"
         )
     except commands.ExtensionNotFound:
-        await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: Cog not found")
+        if not unit:
+            await ctx.embed_reply(
+                f"{ctx.bot.error_emoji} Error: Cog not found"
+            )
     except commands.ExtensionNotLoaded:
-        await ctx.embed_reply(
-            f"{ctx.bot.error_emoji} Error: Cog not found/loaded"
-        )
+        if not unit:
+            await ctx.embed_reply(
+                f"{ctx.bot.error_emoji} Error: Cog not found/loaded"
+            )
     except commands.NoEntryPointError:
         await ctx.embed_reply(
             f"{ctx.bot.error_emoji} Error: Setup function not found"
@@ -1493,7 +1513,7 @@ async def reload(ctx, cog: str):
     except Exception as e:
         await ctx.embed_reply(
             f"\N{THUMBS DOWN SIGN}{ctx.bot.emoji_skin_tone} "
-            f"Failed to reload `{cog}` cog\n{type(e).__name__}: {e}"
+            f"Failed to reload `{module}` cog\n{type(e).__name__}: {e}"
         )
     else:
         await ctx.bot.db.execute(
@@ -1506,7 +1526,7 @@ async def reload(ctx, cog: str):
         )
         await ctx.embed_reply(
             f"\N{THUMBS UP SIGN}{ctx.bot.emoji_skin_tone} "
-            f"Reloaded `{cog}` cog \N{GEAR}"
+            f"Reloaded `{module}` cog \N{GEAR}"
         )
 
 
