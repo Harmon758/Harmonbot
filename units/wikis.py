@@ -352,32 +352,40 @@ async def get_random_article(
 
 @async_cache(ignore_kwargs = "aiohttp_session")
 async def get_wiki_info(
-    url: str, *, aiohttp_session: aiohttp.ClientSession | None = None
+    *,
+    aiohttp_session: aiohttp.ClientSession | None = None,
+    data: dict | None = None,
+    url: str | None = None,
 ) -> WikiInfo:
-    async with ensure_session(
-        aiohttp_session, default_user_agent = USER_AGENT
-    ) as aiohttp_session:
-        api_url = await get_api_endpoint(
-            url, aiohttp_session = aiohttp_session
-        )
-        async with aiohttp_session.get(
-            api_url, params = {
-                "action": "query", "meta": "siteinfo",
-                "format": "json", "formatversion": 2
-            }
-        ) as resp:  # https://www.mediawiki.org/wiki/API:Siteinfo
-            data = await resp.json()
+    if not data:
+        if not url:
+            raise TypeError("Either data or url must be provided")
 
-        wiki_info = data["query"]["general"]
-        logo = wiki_info["logo"]
-        if logo.startswith("//"):
-            logo = "https:" + logo
+        async with ensure_session(
+            aiohttp_session, default_user_agent = USER_AGENT
+        ) as aiohttp_session:
+            api_url = await get_api_endpoint(
+                url, aiohttp_session = aiohttp_session
+            )
+            async with aiohttp_session.get(
+                api_url, params = {
+                    "action": "query", "meta": "siteinfo",
+                    "format": "json", "formatversion": 2
+                }
+            ) as resp:  # https://www.mediawiki.org/wiki/API:Siteinfo
+                data = await resp.json()
 
-        return WikiInfo(
-            name = wiki_info["sitename"],
-            logo = logo,
-            api_url = api_url
-        )
+    wiki_info = data["query"]["general"]
+
+    logo = wiki_info["logo"]
+    if logo.startswith("//"):
+        logo = "https:" + logo
+
+    return WikiInfo(
+        name = wiki_info["sitename"],
+        logo = logo,
+        api_url = f"{wiki_info['server']}{wiki_info['scriptpath']}/api.php",
+    )
 
 
 async def search_wiki(
