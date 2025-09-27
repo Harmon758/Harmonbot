@@ -607,7 +607,14 @@ class Search(commands.Cog):
 
     @commands.command()
     async def tolkien(self, ctx: Context, *, query: str):
-        """Search for an article on Tolkien Gateway"""
+        """
+        Search for an article on Tolkien Gateway
+
+        Parameters
+        ----------
+        query
+            Search query
+        """
         if command := ctx.bot.get_command("search wiki"):
             await ctx.invoke(command, wiki = "Tolkien Gateway", query = query)
         else:
