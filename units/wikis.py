@@ -27,6 +27,7 @@ WIKIS = {
     "Pirate101 (Fandom)": "https://pirate101.fandom.com/",
     "Pixar": "https://pixar.fandom.com/",
     "Redwall": "https://redwall.fandom.com/",
+    "RuneScape": "https://runescape.wiki/",
     "Seinfeld": "https://seinfeld.fandom.com/",
     "Spiral Games Universe Lore (Wiki101)": "https://101universe.fandom.com/",
     "Suits": "https://suits.fandom.com/",
