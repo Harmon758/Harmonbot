@@ -32,6 +32,7 @@ FANDOM_WIKIS = {
     "Transformers": "https://transformers.fandom.com/",
     "Transformers Movie": "https://michaelbaystransformers.fandom.com/",
     "Valorant": "https://valorant.fandom.com/",
+    "Wizard101": "https://wizard101.fandom.com/",
 }
 
 
