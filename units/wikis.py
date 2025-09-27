@@ -27,6 +27,7 @@ WIKIS = {
     "Pixar": "https://pixar.fandom.com/",
     "Redwall": "https://redwall.fandom.com/",
     "Seinfeld": "https://seinfeld.fandom.com/",
+    "Spiral Games Universe Lore (Wiki101)": "https://101universe.fandom.com/",
     "Suits": "https://suits.fandom.com/",
     "The Hunger Games": "https://thehungergames.fandom.com/",
     "The Lord of the Rings": "https://lotr.fandom.com/",
