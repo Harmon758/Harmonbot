@@ -23,6 +23,7 @@ WIKIS = {
     "Genshin Impact": "https://genshin-impact.fandom.com/",
     "Marvel Cinematic Universe": "https://marvelcinematicuniverse.fandom.com/",
     "Memory Alpha": "https://memory-alpha.fandom.com/",
+    "Pirate101": "https://pirate101.fandom.com/",
     "Pixar": "https://pixar.fandom.com/",
     "Redwall": "https://redwall.fandom.com/",
     "Seinfeld": "https://seinfeld.fandom.com/",
