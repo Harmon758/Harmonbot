@@ -1112,12 +1112,25 @@ class Random(commands.Cog):
         Random UESP page
         [UESP](http://uesp.net/wiki/Main_Page)
         """
-        if command := ctx.bot.get_command("search uesp random"):
-            await ctx.invoke(command)
+        # Note: uesp random command invokes this command
+        try:
+            article = await get_random_article(
+                "https://en.uesp.net/",
+                aiohttp_session = ctx.bot.aiohttp_session,
+                random_namespaces = [0] + list(range(100, 152)) + [200, 201]
+                # https://en.uesp.net/wiki/UESPWiki:Namespaces
+                # https://en.uesp.net/w/api.php?action=query&meta=siteinfo&siprop=namespaces&formatversion=2
+            )
+        except ValueError as e:
+            await ctx.embed_reply(f"{ctx.bot.error_emoji} {e}")
         else:
             await ctx.embed_reply(
-                title = "Random UESP page",
-                title_url = "http://uesp.net/wiki/Special:Random"
+                title = article.title,
+                title_url = article.url,
+                description = article.extract,
+                image_url = article.image_url,
+                footer_icon_url = article.wiki.logo,
+                footer_text = article.wiki.name
             )
 
     @random.command(aliases = ["member"], with_app_command = False)
