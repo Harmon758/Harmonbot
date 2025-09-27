@@ -103,8 +103,9 @@ async def get_article_beginning(
 
         text = BeautifulSoup(data["parse"]["text"]['*'], "lxml")
         if text.body and text.body.div:
-            p = text.body.div.find_all(
-                'p', recursive = False
+            p = (
+                text.body.div.find_all('p', recursive = False) or
+                text.body.find_all('p', recursive = False)
             )
         else:
             raise RuntimeError("Unexpected wikitext HTML format")
