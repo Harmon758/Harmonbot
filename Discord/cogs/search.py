@@ -570,12 +570,10 @@ class Search(commands.Cog):
     async def search_wiki_wiki_autocomplete(self, interaction, current):
         current = current.lower()
 
-        wikis = WIKIS.keys()
-
         primary_matches = set()
         secondary_matches = set()
 
-        for wiki in wikis:
+        for wiki in WIKIS:
             if wiki.lower().startswith(current):
                 primary_matches.add(wiki)
             elif current in wiki.lower():
