@@ -427,19 +427,12 @@ class Twitch(commands.Cog):
 				"SELECT DISTINCT user_id FROM twitch_notifications.channels"
 			)
 			for records_chunk in zip_longest(*[iter(records)] * 100):
-				try:
-					streams = await self.bot.twitch_client.fetch_streams(
-						user_ids = [
-							record["user_id"]
-							for record in records_chunk if record
-						]
-					)
-				except twitchio.HTTPException as e:
-					if e.status == 502:
-						self.bot.print("Twitch Task Bad Gateway Error")
-						continue
-					else:
-						raise
+				streams = await self.bot.twitch_client.fetch_streams(
+					user_ids = [
+						record["user_id"]
+						for record in records_chunk if record
+					]
+				)
 				stream_ids += [str(stream.id) for stream in streams]
 				await self.process_streams(streams, "streams")
 				await asyncio.sleep(1)
@@ -487,6 +480,12 @@ class Twitch(commands.Cog):
 						record["stream_id"], record["channel_id"]
 					)
 				# TODO: Handle no longer being followed?
+		except twitchio.HTTPException as e:
+			if e.status == 502:
+				self.bot.print("Twitch Task Bad Gateway Error")
+				await asyncio.sleep(10)
+			else:
+				raise
 		except aiohttp.ClientConnectionError as e:
 			self.bot.print(
 				f"Twitch Task Connection Error: {type(e).__name__}: {e}"
