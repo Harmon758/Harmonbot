@@ -412,9 +412,9 @@ class Search(commands.Cog):
                 "when startpage command invoked"
             )
 
-    @search.group(
+    @search.command(
         name = "uesp", description = "[UESP](http://uesp.net/wiki/Main_Page)",
-        case_insensitive = True, with_app_command = False
+        with_app_command = False
     )
     async def search_uesp(self, ctx: Context, *, search: str):
         """Look something up on the Unofficial Elder Scrolls Pages"""
@@ -449,46 +449,18 @@ class Search(commands.Cog):
                 "search uesp command not found when uesp command invoked"
             )
 
-    @search_uesp.command(name = "random", with_app_command = False)
-    async def search_uesp_random(self, ctx: Context):
-        '''
-        Random UESP page
-        [UESP](http://uesp.net/wiki/Main_Page)
-        '''
-        # Note: random uesp command invokes this command
-        # Note: uesp random command invokes this command
-        try:
-            article = await get_random_article(
-                "https://en.uesp.net/",
-                aiohttp_session = ctx.bot.aiohttp_session,
-                random_namespaces = [0] + list(range(100, 152)) + [200, 201]
-                # https://en.uesp.net/wiki/UESPWiki:Namespaces
-                # https://en.uesp.net/w/api.php?action=query&meta=siteinfo&siprop=namespaces&formatversion=2
-            )
-        except ValueError as e:
-            await ctx.embed_reply(f"{ctx.bot.error_emoji} {e}")
-        else:
-            await ctx.embed_reply(
-                title = article.title,
-                title_url = article.url,
-                description = article.extract,
-                image_url = article.image_url,
-                footer_icon_url = article.wiki.logo,
-                footer_text = article.wiki.name
-            )
-
     @uesp.command(name = "random")
     async def uesp_random(self, ctx: Context):
         '''
         Random UESP page
         [UESP](http://uesp.net/wiki/Main_Page)
         '''
-        if command := ctx.bot.get_command("search uesp random"):
+        if command := ctx.bot.get_command("random uesp"):
             await ctx.invoke(command)
         else:
-            raise RuntimeError(
-                "search uesp random command not found "
-                "when uesp random command invoked"
+            await ctx.embed_reply(
+                title = "Random UESP page",
+                title_url = "http://uesp.net/wiki/Special:Random"
             )
 
     @commands.group(
