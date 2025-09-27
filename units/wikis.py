@@ -42,6 +42,7 @@ WIKIS = {
 
 class WikiInfo(BaseModel):
     name: str
+    favicon: str
     logo: str
     api_url: str
     article_path: str
@@ -368,12 +369,21 @@ async def get_wiki_info(
 
     wiki_info = data["query"]["general"]
 
+    favicon = wiki_info["favicon"]
+    if favicon.startswith("$wgUploadPath"):
+        # https://www.mediawiki.org/wiki/Manual:$wgUploadPath
+        favicon = favicon.replace(
+            "$wgUploadPath",
+            f"{wiki_info['server']}{wiki_info['scriptpath']}/images"
+        )
+
     logo = wiki_info["logo"]
     if logo.startswith("//"):
         logo = "https:" + logo
 
     return WikiInfo(
         name = wiki_info["sitename"],
+        favicon = favicon,
         logo = logo,
         api_url = f"{wiki_info['server']}{wiki_info['scriptpath']}/api.php",
         article_path = wiki_info["articlepath"]
