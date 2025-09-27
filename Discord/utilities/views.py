@@ -41,7 +41,7 @@ class WikiArticlesView(discord.ui.View):
 
     @discord.ui.select()
     async def article(self, interaction, select):
-        # TODO: Defer?
+        await interaction.response.defer()
 
         for option in select.options:
             option.default = False
@@ -71,7 +71,7 @@ class WikiArticlesView(discord.ui.View):
 
         select.options[selected].default = True
 
-        await interaction.response.edit_message(embed = embed, view = self)
+        await interaction.message.edit(embed = embed, view = self)
 
     async def stop(self):
         self.article.disabled = True
