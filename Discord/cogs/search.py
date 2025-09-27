@@ -518,7 +518,7 @@ class Search(commands.Cog):
             await ctx.embed_reply(f"{ctx.bot.error_emoji} {e}")
             return
 
-        view = WikiArticlesView(articles)
+        view = WikiArticlesView(articles, user = ctx.author)
         view.message = await ctx.reply(
             "",
             embed = await view.initial_embed(ctx),
