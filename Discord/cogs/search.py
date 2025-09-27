@@ -157,6 +157,25 @@ class Search(commands.Cog):
                 "when duckduckgo command invoked"
             )
 
+    @commands.command(aliases = ["wikia", "wikicities"])
+    async def fandom(self, ctx: Context, wiki: str, *, query: str):
+        """
+        Search for an article on a Fandom wiki
+
+        Parameters
+        ----------
+        query
+            Search query
+        wiki
+            Fandom wiki to search
+        """
+        if command := ctx.bot.get_command("search wiki"):
+            await ctx.invoke(command, wiki = wiki, query = query)
+        else:
+            raise RuntimeError(
+                "search wiki command not found when fandom command invoked"
+            )
+
     @search.group(
         name = "google", case_insensitive = True, with_app_command = False
     )
@@ -412,6 +431,23 @@ class Search(commands.Cog):
                 "when startpage command invoked"
             )
 
+    @commands.command()
+    async def tolkien(self, ctx: Context, *, query: str):
+        """
+        Search for an article on Tolkien Gateway
+
+        Parameters
+        ----------
+        query
+            Search query
+        """
+        if command := ctx.bot.get_command("search wiki"):
+            await ctx.invoke(command, wiki = "Tolkien Gateway", query = query)
+        else:
+            raise RuntimeError(
+                "search wiki command not found when tolkien command invoked"
+            )
+
     @commands.group(
         description = "[UESP](http://uesp.net/wiki/Main_Page)",
         case_insensitive = True, invoke_without_command = True
@@ -440,37 +476,6 @@ class Search(commands.Cog):
             await ctx.embed_reply(
                 title = "Random UESP page",
                 title_url = "http://uesp.net/wiki/Special:Random"
-            )
-
-    @commands.group(
-        aliases = ["wiki"],
-        case_insensitive = True, invoke_without_command = True
-    )
-    async def wikipedia(self, ctx: Context, *, query: str):
-        """
-        Search for an article on Wikipedia
-
-        Parameters
-        ----------
-        query
-            Search query
-        """
-        if command := ctx.bot.get_command("search wiki"):
-            await ctx.invoke(command, query = query)
-        else:
-            raise RuntimeError(
-                "search wiki command not found when wikipedia command invoked"
-            )
-
-    @wikipedia.command(name = "random")
-    async def wikipedia_random(self, ctx: Context):
-        """Random Wikipedia article"""
-        if command := ctx.bot.get_command("random wikipedia"):
-            await ctx.invoke(command)
-        else:
-            raise RuntimeError(
-                "random wikipedia command not found "
-                "when wikipedia random command invoked"
             )
 
     @search.command(
@@ -541,40 +546,35 @@ class Search(commands.Cog):
             for match in matches[:25]
         ]
 
-    @commands.command(aliases = ["wikia", "wikicities"])
-    async def fandom(self, ctx: Context, wiki: str, *, query: str):
+    @commands.group(
+        aliases = ["wiki"],
+        case_insensitive = True, invoke_without_command = True
+    )
+    async def wikipedia(self, ctx: Context, *, query: str):
         """
-        Search for an article on a Fandom wiki
+        Search for an article on Wikipedia
 
         Parameters
         ----------
         query
             Search query
-        wiki
-            Fandom wiki to search
         """
         if command := ctx.bot.get_command("search wiki"):
-            await ctx.invoke(command, wiki = wiki, query = query)
+            await ctx.invoke(command, query = query)
         else:
             raise RuntimeError(
-                "search wiki command not found when fandom command invoked"
+                "search wiki command not found when wikipedia command invoked"
             )
 
-    @commands.command()
-    async def tolkien(self, ctx: Context, *, query: str):
-        """
-        Search for an article on Tolkien Gateway
-
-        Parameters
-        ----------
-        query
-            Search query
-        """
-        if command := ctx.bot.get_command("search wiki"):
-            await ctx.invoke(command, wiki = "Tolkien Gateway", query = query)
+    @wikipedia.command(name = "random")
+    async def wikipedia_random(self, ctx: Context):
+        """Random Wikipedia article"""
+        if command := ctx.bot.get_command("random wikipedia"):
+            await ctx.invoke(command)
         else:
             raise RuntimeError(
-                "search wiki command not found when tolkien command invoked"
+                "random wikipedia command not found "
+                "when wikipedia random command invoked"
             )
 
     @search.command(
