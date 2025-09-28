@@ -51,6 +51,7 @@ WIKIS = {
 
 OUTDATED_WIKIS = {
     "RuneScape (Fandom)": "https://runescape.fandom.com/",  # Superseded by https://runescape.wiki/
+    "Stardew Valley (Fandom)": "https://stardewvalley.fandom.com/",  # Superseded by https://stardewvalleywiki.com/
 }
 
 
