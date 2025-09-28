@@ -389,15 +389,22 @@ async def get_wiki_info(
             "$wgUploadPath",
             f"{wiki_info['server']}{wiki_info['scriptpath']}/images"
         )
+    if favicon and favicon.startswith("//"):
+        favicon = "https:" + favicon
 
     if (logo := wiki_info.get("logo")) and logo.startswith("//"):
         logo = "https:" + logo
+
+    if (
+        api_url := f"{wiki_info['server']}{wiki_info['scriptpath']}/api.php"
+    ).startswith("//"):
+        api_url = "https:" + api_url
 
     return WikiInfo(
         name = wiki_info["sitename"],
         favicon = favicon,
         logo = logo,
-        api_url = f"{wiki_info['server']}{wiki_info['scriptpath']}/api.php",
+        api_url = api_url,
         article_path = wiki_info["articlepath"]
     )
 
