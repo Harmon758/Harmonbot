@@ -49,7 +49,7 @@ WIKIS = {
     "Wizard101 (Fandom)": "https://wizard101.fandom.com/",
 }
 
-OUTDATED_WIKIS = {
+OBSOLETE_WIKIS = {
     "RuneScape (Fandom)": "https://runescape.fandom.com/",  # Superseded by https://runescape.wiki/
     "Stardew Valley (Fandom)": "https://stardewvalley.fandom.com/",  # Superseded by https://stardewvalleywiki.com/
 }
