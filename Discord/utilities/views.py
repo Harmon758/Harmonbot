@@ -13,7 +13,10 @@ class WikiArticlesView(discord.ui.View):
         self.user = user
 
         for number, article in enumerate(articles):
-            self.article.add_option(label = article.title, value = number)
+            if len(label := article.title) > 100:
+                # TODO: Use constant for max label length
+                label = article.title[:97] + "..."
+            self.article.add_option(label = label, value = number)
 
         self.article.options[0].default = True
 
