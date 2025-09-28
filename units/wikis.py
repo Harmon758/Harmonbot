@@ -30,6 +30,7 @@ WIKIS = {
     "RuneScape": "https://runescape.wiki/",
     "Seinfeld": "https://seinfeld.fandom.com/",
     "Spiral Games Universe Lore (Wiki101)": "https://101universe.fandom.com/",
+    "Stardew Valley": "https://stardewvalleywiki.com/",
     "Suits": "https://suits.fandom.com/",
     "The Hunger Games": "https://thehungergames.fandom.com/",
     "The Lord of the Rings": "https://lotr.fandom.com/",
