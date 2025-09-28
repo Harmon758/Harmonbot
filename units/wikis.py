@@ -86,7 +86,7 @@ async def get_api_endpoint(
         aiohttp_session, default_user_agent = USER_AGENT
     ) as aiohttp_session:
         url = url.rstrip('/')
-        for script_path in ('/w', "", "/wiki"):
+        for script_path in ('/w', "", "/wiki", "/mediawiki"):
             async with aiohttp_session.get(
                 api_url := f"{url}{script_path}/api.php"
             ) as resp:
