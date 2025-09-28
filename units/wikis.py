@@ -21,6 +21,7 @@ WIKIS = {
     "Disney": "https://disney.fandom.com/",
     "Foundation": "https://foundation.fandom.com/",
     "Genshin Impact": "https://genshin-impact.fandom.com/",
+    "Harry Potter": "https://harrypotter.fandom.com/",
     "Marvel Cinematic Universe": "https://marvelcinematicuniverse.fandom.com/",
     "Memory Alpha": "https://memory-alpha.fandom.com/",
     "Pirate101 (Central)": "https://www.pirate101central.com/",
