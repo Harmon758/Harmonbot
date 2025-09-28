@@ -9,7 +9,7 @@ from typing import Optional, TYPE_CHECKING
 
 import youtube_dl
 
-from units.wikis import search_wiki, WIKIS, OUTDATED_WIKIS
+from units.wikis import search_wiki, WIKIS, OBSOLETE_WIKIS
 from units import wolfram_alpha
 from utilities import checks
 from utilities.menu_sources import WolframAlphaSource
@@ -505,7 +505,7 @@ class Search(commands.Cog):
         # Note: uesp command invokes this command
         # Note: wikipedia command invokes this command
         await ctx.defer()
-        if not (wiki_url := WIKIS.get(wiki) or OUTDATED_WIKIS.get(wiki)):
+        if not (wiki_url := WIKIS.get(wiki) or OBSOLETE_WIKIS.get(wiki)):
             await ctx.embed_reply(
                 f"{ctx.bot.error_emoji} Unknown wiki: `{wiki}`"
             )
