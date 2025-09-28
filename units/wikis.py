@@ -34,6 +34,7 @@ WIKIS = {
     "Suits": "https://suits.fandom.com/",
     "The Hunger Games": "https://thehungergames.fandom.com/",
     "The Lord of the Rings": "https://lotr.fandom.com/",
+    "The Newsroom": "https://thenewsroom.fandom.com/",
     "The West Wing": "https://westwing.fandom.com/",
     "Tolkien Gateway": "https://tolkiengateway.net/",
     "Transformers": "https://transformers.fandom.com/",
