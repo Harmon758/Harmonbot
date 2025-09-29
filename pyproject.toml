@@ -74,7 +74,6 @@ dependencies = [
     "tweepy[async]",
     "typing-extensions",
     "unicodedata2",
-    "urllib3",
     "vcrpy",
     "wand",
     "wolframalpha",
