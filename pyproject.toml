@@ -19,10 +19,10 @@ dependencies = [
     "cryptography",
     "dice",
     "emoji",
-    "en-core-web-md",
+    "en_core_web_md",
     "feedparser",
     "gidgethub",
-    "gitpython",
+    "GitPython",
     "google-api-core[grpc]",
     "google-cloud-translate",
     "hypothesis",
@@ -48,6 +48,7 @@ dependencies = [
     "pycryptodomex",
     "pydantic",
     "pydealer",
+    # pygost==5.6  # No longer on PyPI
     "pyowm",
     "pyparsing",
     "pyspellchecker",
@@ -66,7 +67,7 @@ dependencies = [
     "spacy-entity-linker",
     "speechrecognition",
     "sphobjinv",
-    "sqlalchemy",
+    "SQLAlchemy",
     "sympy",
     "tabulate",
     "treys",
@@ -146,5 +147,8 @@ environments = [
 [tool.uv.sources]
 discord-py = { git = "https://github.com/Rapptz/discord.py.git", rev = "71358b8" }
 discord-ext-menus = { git = "https://github.com/Rapptz/discord-ext-menus.git", rev = "8686b5d" }
-en-core-web-md = { url = "https://github.com/explosion/spacy-models/releases/download/en_core_web_md-3.8.0/en_core_web_md-3.8.0-py3-none-any.whl" }
+# https://github.com/explosion/spacy-models/releases/tag/en_core_web_md-3.8.0
+en_core_web_md = { url = "https://github.com/explosion/spacy-models/releases/download/en_core_web_md-3.8.0/en_core_web_md-3.8.0-py3-none-any.whl" }
+# https://github.com/ytdl-org/youtube-dl/issues/31585
+# https://github.com/ytdl-org/ytdl-nightly/releases/tag/2023.12.07
 youtube-dl = { url = "https://github.com/ytdl-org/ytdl-nightly/releases/download/2023.12.07/youtube-dl-2023.12.07.tar.gz" }
