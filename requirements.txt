@@ -191,7 +191,7 @@ spacy-legacy==3.0.12
 spacy-loggers==1.0.5
 srsly==2.5.1
 tempora==5.8.1
-thinc==8.3.6
+thinc==9.1.1
 tqdm==4.67.1
 typeguard==4.4.4
 typer==0.19.2
