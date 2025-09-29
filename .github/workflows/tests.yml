@@ -19,7 +19,7 @@ jobs:
       with:
         version-file: "pyproject.toml"
     - name: Install dependencies
-      run: uv pip install -r pylock.toml
+      run: uv pip install -r pylock.toml --system
     - name: Run pytest
       run: pytest
 
@@ -39,7 +39,7 @@ jobs:
       with:
         version-file: "pyproject.toml"
     - name: Install dependencies
-      run: uv pip install -r pylock.toml
+      run: uv pip install -r pylock.toml --system
     - name: Run mypy
       run: mypy
 
@@ -59,6 +59,6 @@ jobs:
       with:
         version-file: "pyproject.toml"
     - name: Install dependencies
-      run: uv pip install -r pylock.toml
+      run: uv pip install -r pylock.toml --system
     - name: Run Ruff
       run: ruff check
