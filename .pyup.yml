@@ -1,5 +1,6 @@
 # https://web.archive.org/web/20230706040832/https://pyup.io/docs/bot/config/
 
-update: False
+update: False  # PyUp spamming branch creation without corresponding PR(s) when handling requirements.txt exported by uv
 pin: False  # https://github.com/pyupio/pyup/issues/396
 label_prs: dependency update
+branch_prefix: pyup/
