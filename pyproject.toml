@@ -143,6 +143,7 @@ environments = [
     # https://github.com/astral-sh/uv/issues/11151
     # https://github.com/astral-sh/uv/issues/14886
 ]
+required-version = "0.8.22"
 
 [tool.uv.sources]
 discord-py = { git = "https://github.com/Rapptz/discord.py.git", rev = "71358b8" }
