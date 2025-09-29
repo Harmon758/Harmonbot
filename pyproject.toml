@@ -40,7 +40,6 @@ dependencies = [
     "parsedatetime",
     "pillow",
     "psutil",
-    "psycopg[binary]",
     "py-cpuinfo",
     "pycountry",
     "pycryptodomex",
@@ -55,7 +54,6 @@ dependencies = [
     "python-dotenv",
     "pytz",
     "requests[socks]",
-    "rich",
     "scipy",
     "seaborn",
     "sentry-sdk",
@@ -63,7 +61,6 @@ dependencies = [
     "spacy-entity-linker",
     "speechrecognition",
     "sphobjinv",
-    "SQLAlchemy",
     "sympy",
     "tabulate",
     "treys",
@@ -79,12 +76,16 @@ dependencies = [
     "yt-dlp[default]",
 ]
 
+[project.optional-dependencies]
+scripts = ["psycopg[binary]", "rich", "SQLAlchemy"]
+
 [build-system]
 requires = ["setuptools==80.9.0", "setuptools-scm==9.2.0"]
 build-backend = "setuptools.build_meta"
 
 [dependency-groups]
 dev = [
+    "Harmonbot[scripts]",
     "uv",
     {include-group = "lint"},
     {include-group = "test"},

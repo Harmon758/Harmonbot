@@ -863,7 +863,6 @@ dependencies = [
     { name = "parsedatetime", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
     { name = "pillow", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
     { name = "psutil", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
-    { name = "psycopg", extra = ["binary"], marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
     { name = "py-cpuinfo", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
     { name = "pycountry", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
     { name = "pycryptodomex", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
@@ -878,7 +877,6 @@ dependencies = [
     { name = "python-telegram-bot", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
     { name = "pytz", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
     { name = "requests", extra = ["socks"], marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
-    { name = "rich", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
     { name = "scipy", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
     { name = "seaborn", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
     { name = "sentry-sdk", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
@@ -886,7 +884,6 @@ dependencies = [
     { name = "spacy-entity-linker", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
     { name = "speechrecognition", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
     { name = "sphobjinv", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
-    { name = "sqlalchemy", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
     { name = "sympy", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
     { name = "tabulate", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
     { name = "treys", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
@@ -903,8 +900,16 @@ dependencies = [
     { name = "yt-dlp", extra = ["default"], marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
 ]
 
+[package.optional-dependencies]
+scripts = [
+    { name = "psycopg", extra = ["binary"], marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
+    { name = "rich", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
+    { name = "sqlalchemy", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
+]
+
 [package.dev-dependencies]
 dev = [
+    { name = "harmonbot", extra = ["scripts"], marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
     { name = "hypothesis", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
     { name = "mypy", extra = ["faster-cache"], marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
     { name = "pytest", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
@@ -958,7 +963,7 @@ requires-dist = [
     { name = "parsedatetime" },
     { name = "pillow" },
     { name = "psutil" },
-    { name = "psycopg", extras = ["binary"] },
+    { name = "psycopg", extras = ["binary"], marker = "extra == 'scripts'" },
     { name = "py-cpuinfo" },
     { name = "pycountry" },
     { name = "pycryptodomex" },
@@ -973,7 +978,7 @@ requires-dist = [
     { name = "python-telegram-bot" },
     { name = "pytz" },
     { name = "requests", extras = ["socks"] },
-    { name = "rich" },
+    { name = "rich", marker = "extra == 'scripts'" },
     { name = "scipy" },
     { name = "seaborn" },
     { name = "sentry-sdk" },
@@ -981,7 +986,7 @@ requires-dist = [
     { name = "spacy-entity-linker" },
     { name = "speechrecognition" },
     { name = "sphobjinv" },
-    { name = "sqlalchemy" },
+    { name = "sqlalchemy", marker = "extra == 'scripts'" },
     { name = "sympy" },
     { name = "tabulate" },
     { name = "treys" },
@@ -997,9 +1002,11 @@ requires-dist = [
     { name = "youtube-dl", url = "https://github.com/ytdl-org/ytdl-nightly/releases/download/2023.12.07/youtube-dl-2023.12.07.tar.gz" },
     { name = "yt-dlp", extras = ["default"] },
 ]
+provides-extras = ["scripts"]
 
 [package.metadata.requires-dev]
 dev = [
+    { name = "harmonbot", extras = ["scripts"] },
     { name = "hypothesis" },
     { name = "mypy", extras = ["faster-cache"] },
     { name = "pytest" },
