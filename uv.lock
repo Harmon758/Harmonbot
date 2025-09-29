@@ -880,7 +880,6 @@ dependencies = [
     { name = "pytz", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
     { name = "requests", extra = ["socks"], marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
     { name = "rich", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
-    { name = "ruff", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
     { name = "scipy", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
     { name = "seaborn", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
     { name = "sentry-sdk", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
@@ -909,7 +908,11 @@ dependencies = [
 dev = [
     { name = "hypothesis", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
     { name = "pytest", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
+    { name = "ruff", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
     { name = "uv", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
+]
+lint = [
+    { name = "ruff", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
 ]
 test = [
     { name = "hypothesis", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
@@ -969,7 +972,6 @@ requires-dist = [
     { name = "pytz" },
     { name = "requests", extras = ["socks"] },
     { name = "rich" },
-    { name = "ruff" },
     { name = "scipy" },
     { name = "seaborn" },
     { name = "sentry-sdk" },
@@ -998,8 +1000,10 @@ requires-dist = [
 dev = [
     { name = "hypothesis" },
     { name = "pytest" },
+    { name = "ruff" },
     { name = "uv" },
 ]
+lint = [{ name = "ruff" }]
 test = [
     { name = "hypothesis" },
     { name = "pytest" },

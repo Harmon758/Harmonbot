@@ -57,7 +57,6 @@ dependencies = [
     "pytz",
     "requests[socks]",
     "rich",
-    "ruff",
     "scipy",
     "seaborn",
     "sentry-sdk",
@@ -86,7 +85,8 @@ requires = ["setuptools==80.9.0", "setuptools-scm==9.2.0"]
 build-backend = "setuptools.build_meta"
 
 [dependency-groups]
-dev = ["uv", {include-group = "test"}]
+dev = ["uv", {include-group = "lint"}, {include-group = "test"}]
+lint = ["ruff"]
 test = ["hypothesis", "pytest"]
 
 [tool.bandit.assert_used]
