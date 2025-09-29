@@ -47,3 +47,27 @@ updates:
     labels:
       - "dependency update"
     open-pull-requests-limit: 1000
+
+  - package-ecosystem: "uv"
+    directory: "/"
+    schedule:
+      interval: "cron"
+      cronjob: "0 0 * * *"
+    allow:
+      - dependency-type: "all"
+    groups:
+      grpcio:
+        patterns:
+          - "grpcio*"
+      psycopg:
+        patterns:
+          - "psycopg*"
+      pyasn1:
+        patterns:
+          - "pyasn1*"
+      pydantic:
+        patterns:
+          - "pydantic*"
+    labels:
+      - "dependency update"
+    open-pull-requests-limit: 1000
