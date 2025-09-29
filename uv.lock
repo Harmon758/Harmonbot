@@ -847,7 +847,6 @@ dependencies = [
     { name = "gitpython", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
     { name = "google-api-core", extra = ["grpc"], marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
     { name = "google-cloud-translate", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
-    { name = "hypothesis", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
     { name = "imageio", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
     { name = "imgurpython", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
     { name = "inflect", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
@@ -874,7 +873,6 @@ dependencies = [
     { name = "pyowm", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
     { name = "pyparsing", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
     { name = "pyspellchecker", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
-    { name = "pytest", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
     { name = "python-aiml", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
     { name = "python-dateutil", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
     { name = "python-dotenv", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
@@ -909,7 +907,13 @@ dependencies = [
 
 [package.dev-dependencies]
 dev = [
+    { name = "hypothesis", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
+    { name = "pytest", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
     { name = "uv", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
+]
+test = [
+    { name = "hypothesis", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
+    { name = "pytest", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
 ]
 
 [package.metadata]
@@ -932,7 +936,6 @@ requires-dist = [
     { name = "gitpython" },
     { name = "google-api-core", extras = ["grpc"] },
     { name = "google-cloud-translate" },
-    { name = "hypothesis" },
     { name = "imageio" },
     { name = "imgurpython" },
     { name = "inflect" },
@@ -959,7 +962,6 @@ requires-dist = [
     { name = "pyowm" },
     { name = "pyparsing" },
     { name = "pyspellchecker" },
-    { name = "pytest" },
     { name = "python-aiml" },
     { name = "python-dateutil" },
     { name = "python-dotenv" },
@@ -993,7 +995,15 @@ requires-dist = [
 ]
 
 [package.metadata.requires-dev]
-dev = [{ name = "uv" }]
+dev = [
+    { name = "hypothesis" },
+    { name = "pytest" },
+    { name = "uv" },
+]
+test = [
+    { name = "hypothesis" },
+    { name = "pytest" },
+]
 
 [[package]]
 name = "httpcore"

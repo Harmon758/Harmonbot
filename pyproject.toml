@@ -25,7 +25,6 @@ dependencies = [
     "GitPython",
     "google-api-core[grpc]",
     "google-cloud-translate",
-    "hypothesis",
     "imageio",
     "imgurpython",
     "inflect",
@@ -52,7 +51,6 @@ dependencies = [
     "pyowm",
     "pyparsing",
     "pyspellchecker",
-    "pytest",
     "python-aiml",
     "python-dateutil",
     "python-dotenv",
@@ -88,7 +86,8 @@ requires = ["setuptools==80.9.0", "setuptools-scm==9.2.0"]
 build-backend = "setuptools.build_meta"
 
 [dependency-groups]
-dev = ["uv"]
+dev = ["uv", {include-group = "test"}]
+test = ["hypothesis", "pytest"]
 
 [tool.bandit.assert_used]
 skips = ["./tests/*.py"]  # https://github.com/PyCQA/bandit/issues/1106
