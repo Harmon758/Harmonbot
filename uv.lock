@@ -856,7 +856,6 @@ dependencies = [
     { name = "markdownify", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
     { name = "matplotlib", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
     { name = "more-itertools", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
-    { name = "mypy", extra = ["faster-cache"], marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
     { name = "numexpr", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
     { name = "numpy", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
     { name = "packaging", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
@@ -907,6 +906,7 @@ dependencies = [
 [package.dev-dependencies]
 dev = [
     { name = "hypothesis", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
+    { name = "mypy", extra = ["faster-cache"], marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
     { name = "pytest", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
     { name = "ruff", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
     { name = "uv", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
@@ -917,6 +917,9 @@ lint = [
 test = [
     { name = "hypothesis", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
     { name = "pytest", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
+]
+type-check = [
+    { name = "mypy", extra = ["faster-cache"], marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
 ]
 
 [package.metadata]
@@ -948,7 +951,6 @@ requires-dist = [
     { name = "markdownify" },
     { name = "matplotlib" },
     { name = "more-itertools" },
-    { name = "mypy", extras = ["faster-cache"] },
     { name = "numexpr" },
     { name = "numpy" },
     { name = "packaging" },
@@ -999,6 +1001,7 @@ requires-dist = [
 [package.metadata.requires-dev]
 dev = [
     { name = "hypothesis" },
+    { name = "mypy", extras = ["faster-cache"] },
     { name = "pytest" },
     { name = "ruff" },
     { name = "uv" },
@@ -1008,6 +1011,7 @@ test = [
     { name = "hypothesis" },
     { name = "pytest" },
 ]
+type-check = [{ name = "mypy", extras = ["faster-cache"] }]
 
 [[package]]
 name = "httpcore"
