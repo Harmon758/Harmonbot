@@ -67,7 +67,6 @@ dependencies = [
     "tweepy[async]",
     "typing-extensions",
     "unicodedata2",
-    "vcrpy",
     "wand",
     "wolframalpha",
     "wordcloud",
@@ -92,7 +91,7 @@ dev = [
     {include-group = "type-check"},
 ]
 lint = ["ruff"]
-test = ["hypothesis", "pytest"]
+test = ["hypothesis", "pytest", "vcrpy"]
 type-check = ["mypy[faster-cache]"]
 
 [tool.bandit.assert_used]

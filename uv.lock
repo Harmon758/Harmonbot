@@ -891,7 +891,6 @@ dependencies = [
     { name = "twitchio", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
     { name = "typing-extensions", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
     { name = "unicodedata2", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
-    { name = "vcrpy", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
     { name = "wand", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
     { name = "wolframalpha", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
     { name = "wordcloud", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
@@ -915,6 +914,7 @@ dev = [
     { name = "pytest", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
     { name = "ruff", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
     { name = "uv", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
+    { name = "vcrpy", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
 ]
 lint = [
     { name = "ruff", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
@@ -922,6 +922,7 @@ lint = [
 test = [
     { name = "hypothesis", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
     { name = "pytest", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
+    { name = "vcrpy", marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
 ]
 type-check = [
     { name = "mypy", extra = ["faster-cache"], marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'" },
@@ -994,7 +995,6 @@ requires-dist = [
     { name = "twitchio" },
     { name = "typing-extensions" },
     { name = "unicodedata2" },
-    { name = "vcrpy" },
     { name = "wand" },
     { name = "wolframalpha" },
     { name = "wordcloud" },
@@ -1012,11 +1012,13 @@ dev = [
     { name = "pytest" },
     { name = "ruff" },
     { name = "uv" },
+    { name = "vcrpy" },
 ]
 lint = [{ name = "ruff" }]
 test = [
     { name = "hypothesis" },
     { name = "pytest" },
+    { name = "vcrpy" },
 ]
 type-check = [{ name = "mypy", extras = ["faster-cache"] }]
 
