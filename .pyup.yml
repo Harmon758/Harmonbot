@@ -1,5 +1,5 @@
-# https://pyup.io/docs/bot/config/
+# https://web.archive.org/web/20230706040832/https://pyup.io/docs/bot/config/
 
-update: all
+update: False
 pin: False  # https://github.com/pyupio/pyup/issues/396
 label_prs: dependency update
