@@ -169,7 +169,7 @@ pycparser==2.23
 pydantic-core==2.33.2
 Pygments==2.19.2
 PyJWT[crypto]==2.10.1
-PyNaCl==1.5.0
+PyNaCl==1.6.0
 pysocks==1.7.1
 PyYAML==6.0.3
 referencing==0.36.2
