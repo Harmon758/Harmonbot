@@ -35,7 +35,7 @@ jobs:
       with:
         version-file: "pyproject.toml"
     - name: Install dependencies
-      run: uv pip install -r pylock.toml
+      run: uv pip install -r pylock.toml --system
     - name: Test Discord Harmonbot
       env:
         DISCORD_BETA_BOT_TOKEN: ${{ secrets.DISCORD_BETA_BOT_TOKEN }}
@@ -66,7 +66,7 @@ jobs:
       with:
         version-file: "pyproject.toml"
     - name: Install dependencies
-      run: uv pip install -r pylock.toml
+      run: uv pip install -r pylock.toml --system
     - name: Test Telegram Harmonbot
       env:
         TELEGRAM_BOT_API_TOKEN: ${{ secrets.TELEGRAM_BOT_API_TOKEN }}
