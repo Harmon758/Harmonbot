@@ -48,26 +48,39 @@ updates:
       - "dependency update"
     open-pull-requests-limit: 1000
 
-  - package-ecosystem: "uv"
-    directory: "/"
-    schedule:
-      interval: "cron"
-      cronjob: "0 0 * * *"
-    allow:
-      - dependency-type: "all"
-    groups:
-      grpcio:
-        patterns:
-          - "grpcio*"
-      psycopg:
-        patterns:
-          - "psycopg*"
-      pyasn1:
-        patterns:
-          - "pyasn1*"
-      pydantic:
-        patterns:
-          - "pydantic*"
-    labels:
-      - "dependency update"
-    open-pull-requests-limit: 1000
+  # https://github.com/dependabot/dependabot-core/issues/12094 (pylock.toml support)
+
+  # https://github.com/dependabot/dependabot-core/issues/13199 (required-version)
+  # https://github.com/dependabot/dependabot-core/issues/12696 (editable)
+  # https://github.com/dependabot/dependabot-core/issues/12428 (indirect dependencies)
+  # https://github.com/dependabot/dependabot-core/issues/11913 (indirect dependencies)
+  # https://github.com/dependabot/dependabot-core/issues/12443 (extras)
+  # https://github.com/dependabot/dependabot-core/issues/12124 (build-system)
+  # https://github.com/dependabot/dependabot-core/issues/12273 (no constraints)
+  # 
+  # https://github.com/dependabot/dependabot-core/issues/10478
+  # https://github.com/astral-sh/uv/issues/2512
+  # 
+  # - package-ecosystem: "uv"
+  #   directory: "/"
+  #   schedule:
+  #     interval: "cron"
+  #     cronjob: "0 0 * * *"
+  #   allow:
+  #     - dependency-type: "all"
+  #   groups:
+  #     grpcio:
+  #       patterns:
+  #         - "grpcio*"
+  #     psycopg:
+  #       patterns:
+  #         - "psycopg*"
+  #     pyasn1:
+  #       patterns:
+  #         - "pyasn1*"
+  #     pydantic:
+  #       patterns:
+  #         - "pydantic*"
+  #   labels:
+  #     - "dependency update"
+  #   open-pull-requests-limit: 1000
