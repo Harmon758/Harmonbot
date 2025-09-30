@@ -1085,9 +1085,9 @@ python-dotenv==1.1.1 ; implementation_name == 'cpython' and platform_python_impl
     --hash=sha256:31f23644fe2602f88ff55e1f5c79ba497e01224ee7737937930c448e4d0e24dc \
     --hash=sha256:a8a6399716257f45be6a007360200409fce5cda2661e3dec71d23dc15f6189ab
     # via harmonbot
-python-telegram-bot==22.4 ; implementation_name == 'cpython' and platform_python_implementation != 'PyPy' \
-    --hash=sha256:5f73d6501fbe9118424dd04213311efec1b442e81a4900f8816102601c83685c \
-    --hash=sha256:ca332925a5ef3815dfba9dac12382232b840c2f57e2c1e660b1a31b5cb7341fe
+python-telegram-bot==22.5 ; implementation_name == 'cpython' and platform_python_implementation != 'PyPy' \
+    --hash=sha256:4b7cd365344a7dce54312cc4520d7fa898b44d1a0e5f8c74b5bd9b540d035d16 \
+    --hash=sha256:82d4efd891d04132f308f0369f5b5929e0b96957901f58bcef43911c5f6f92f8
     # via harmonbot
 pytz==2025.2 ; implementation_name == 'cpython' and platform_python_implementation != 'PyPy' \
     --hash=sha256:360b9e3dbb49a209c21ad61809c7fb453643e048b38924c765813546746e81c3 \

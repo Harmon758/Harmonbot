@@ -1539,11 +1539,11 @@ wheels = [{ url = "https://files.pythonhosted.org/packages/5f/ed/539768cf28c661b
 
 [[packages]]
 name = "python-telegram-bot"
-version = "22.4"
+version = "22.5"
 marker = "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'"
 index = "https://pypi.org/simple"
-sdist = { url = "https://files.pythonhosted.org/packages/05/e6/8e855e18627b7e256a57727344dd5479be0ec25e002233276b8bba7db4da/python_telegram_bot-22.4.tar.gz", upload-time = 2025-09-13T15:16:21Z, size = 1482797, hashes = { sha256 = "ca332925a5ef3815dfba9dac12382232b840c2f57e2c1e660b1a31b5cb7341fe" } }
-wheels = [{ url = "https://files.pythonhosted.org/packages/63/76/f38c7db5a55a176d5e194ad36ba000b6da7d15363f31cb93fa41542bd554/python_telegram_bot-22.4-py3-none-any.whl", upload-time = 2025-09-13T15:16:18Z, size = 729394, hashes = { sha256 = "5f73d6501fbe9118424dd04213311efec1b442e81a4900f8816102601c83685c" } }]
+sdist = { url = "https://files.pythonhosted.org/packages/0b/6b/400f88e5c29a270c1c519a3ca8ad0babc650ec63dbfbd1b73babf625ed54/python_telegram_bot-22.5.tar.gz", upload-time = 2025-09-27T13:50:27Z, size = 1488269, hashes = { sha256 = "82d4efd891d04132f308f0369f5b5929e0b96957901f58bcef43911c5f6f92f8" } }
+wheels = [{ url = "https://files.pythonhosted.org/packages/bc/c3/340c7520095a8c79455fcf699cbb207225e5b36490d2b9ee557c16a7b21b/python_telegram_bot-22.5-py3-none-any.whl", upload-time = 2025-09-27T13:50:25Z, size = 730976, hashes = { sha256 = "4b7cd365344a7dce54312cc4520d7fa898b44d1a0e5f8c74b5bd9b540d035d16" } }]
 
 [[packages]]
 name = "pytz"
