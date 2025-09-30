@@ -370,7 +370,7 @@ fsspec==2025.9.0 ; implementation_name == 'cpython' and platform_python_implemen
     --hash=sha256:19fd429483d25d28b65ec68f9f4adc16c17ea2c7c7bf54ec61360d478fb19c19 \
     --hash=sha256:530dc2a2af60a414a832059574df4a6e10cce927f6f4a78209390fe38955cfb7
     # via clarifai
-geojson==2.5.0 ; implementation_name == 'cpython' and platform_python_implementation != 'PyPy' \
+geojson==3.2.0 ; implementation_name == 'cpython' and platform_python_implementation != 'PyPy' \
     --hash=sha256:6e4bb7ace4226a45d9c8c8b1348b3fc43540658359f93c3f7e03efa9f15f658a \
     --hash=sha256:ccbd13368dd728f4e4f13ffe6aaf725b6e802c692ba0dde628be475040c534ba
     # via pyowm
