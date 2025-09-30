@@ -207,7 +207,7 @@ class Bot(commands.Bot):
             "default_search": "auto", "noplaylist": True, "quiet": True,
             "format": "bestaudio/best", "extractaudio": True,
             "outtmpl": self.data_path + "/audio_cache/%(id)s-%(title)s.%(ext)s",
-            "restrictfilenames": True
+            "restrictfilenames": True, "noprogress": True
         }  # "audioformat": "mp3" ?
         self.ytdl_download = youtube_dl.YoutubeDL(self.ytdl_download_options)
         self.ytdl_info_options = {
