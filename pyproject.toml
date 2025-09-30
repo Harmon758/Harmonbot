@@ -142,7 +142,7 @@ fallback_version = "0.0.0"
 [tool.uv]
 cache-dir = "./.uv_cache"
 environments = [
-    "implementation_name == 'cpython' and platform_python_implementation != 'PyPy'"
+    "implementation_name == 'cpython' and platform_python_implementation == 'CPython'"
     # https://github.com/astral-sh/uv/issues/11151
     # https://github.com/astral-sh/uv/issues/14886
 ]
