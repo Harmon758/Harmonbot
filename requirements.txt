@@ -1335,7 +1335,7 @@ tempora==5.8.1 ; implementation_name == 'cpython' and platform_python_implementa
     # via
     #   irc
     #   jaraco-logging
-thinc==8.3.6 ; implementation_name == 'cpython' and platform_python_implementation != 'PyPy' \
+thinc==9.1.1 ; implementation_name == 'cpython' and platform_python_implementation != 'PyPy' \
     --hash=sha256:169d7c5779f6f1a78fa91b2bc3a6485f7bbe4341bd8064576f8e067b67b6a0b5 \
     --hash=sha256:1c12bf75a375b3b1f7c32a26cbd69255b177daa693c986a27faaf2027439c7ef \
     --hash=sha256:49983f9b7ddc4343a9532694a9118dd216d7a600520a21849a43b6c268ec6cad \
