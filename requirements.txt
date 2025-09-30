@@ -1197,7 +1197,7 @@ ruff==0.13.2 ; implementation_name == 'cpython' and platform_python_implementati
     --hash=sha256:cceac74e7bbc53ed7d15d1042ffe7b6577bf294611ad90393bf9b2a0f0ec7cb6 \
     --hash=sha256:da711b14c530412c827219312b7d7fbb4877fb31150083add7e8c5336549cea7 \
     --hash=sha256:ff7e4dda12e683e9709ac89e2dd436abf31a4d8a8fc3d89656231ed808e231d2
-schema==0.7.5 ; implementation_name == 'cpython' and platform_python_implementation != 'PyPy' \
+schema==0.7.7 ; implementation_name == 'cpython' and platform_python_implementation != 'PyPy' \
     --hash=sha256:f06717112c61895cabc4707752b88716e8420a8819d71404501e114f91043197 \
     --hash=sha256:f3ffdeeada09ec34bf40d7d79996d9f7175db93b7a5065de0faa7f41083c1e6c
     # via clarifai
