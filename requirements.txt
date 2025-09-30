@@ -331,7 +331,7 @@ feedparser==6.0.12 ; implementation_name == 'cpython' and platform_python_implem
     --hash=sha256:64f76ce90ae3e8ef5d1ede0f8d3b50ce26bcce71dd8ae5e82b1cd2d4a5f94228 \
     --hash=sha256:6bbff10f5a52662c00a2e3f86a38928c37c48f77b3c511aedcd51de933549324
     # via harmonbot
-fonttools==4.60.0 ; implementation_name == 'cpython' and platform_python_implementation != 'PyPy' \
+fonttools==4.60.1 ; implementation_name == 'cpython' and platform_python_implementation != 'PyPy' \
     --hash=sha256:1f84de764c6057b2ffd4feb50ddef481d92e348f0c70f2c849b723118d352bf3 \
     --hash=sha256:496d26e4d14dcccdd6ada2e937e4d174d3138e3d73f5c9b6ec6eb2fd1dab4f66 \
     --hash=sha256:53328e3ca9e5c8660ef6de07c35f8f312c189b757535e12141be7a8ec942de6e \
