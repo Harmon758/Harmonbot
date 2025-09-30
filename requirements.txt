@@ -605,7 +605,7 @@ lxml==6.0.2 ; implementation_name == 'cpython' and platform_python_implementatio
     --hash=sha256:cd79f3367bd74b317dda655dc8fcfa304d9eb6e4fb06b7168c5cf27f96e0cd62 \
     --hash=sha256:de496365750cc472b4e7902a485d3f152ecf57bd3ba03ddd5578ed8ceb4c5964 \
     --hash=sha256:e5867f2651016a3afd8dd2c8238baa66f1e2802f44bc17e236f547ace6647078
-    # via harmonbot
+    # via beautifulsoup4
 marisa-trie==1.3.1 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:3834304fdeaa1c9b73596ad5a6c01a44fc19c13c115194704b85f7fbdf0a7b8e \
     --hash=sha256:5ef045f694ef66079b4e00c4c9063a00183d6af7d1ff643de6ea5c3b0d9af01b \
