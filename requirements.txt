@@ -378,7 +378,7 @@ gidgethub==5.4.0 ; implementation_name == 'cpython' and platform_python_implemen
     --hash=sha256:522bd3a846a315c3163925a840930c4c9a0d685d5853afe852fd589cb472daf5 \
     --hash=sha256:7470d7723d7c1743471a2d62e79c8752fba12b1c0972e4bad57252338a501dbd
     # via harmonbot
-gitdb==4.0.11 ; implementation_name == 'cpython' and platform_python_implementation != 'PyPy' \
+gitdb==4.0.12 ; implementation_name == 'cpython' and platform_python_implementation != 'PyPy' \
     --hash=sha256:81a3407ddd2ee8df444cbacea00e2d038e40150acfa3001696fe0dcf1d3adfa4 \
     --hash=sha256:bf5421126136d6d0af55bc1e7c1af1c397a34f5b7bd79e776cd3e89785c2b04b
     # via gitpython
