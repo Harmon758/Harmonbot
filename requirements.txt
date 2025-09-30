@@ -163,7 +163,7 @@ cffi==2.0.0 ; implementation_name == 'cpython' and platform_python_implementatio
     #   cryptography
     #   pycares
     #   pynacl
-charset-normalizer==3.3.2 ; implementation_name == 'cpython' and platform_python_implementation != 'PyPy' \
+charset-normalizer==3.4.3 ; implementation_name == 'cpython' and platform_python_implementation != 'PyPy' \
     --hash=sha256:1ceae2f17a9c33cb48e3263960dc5fc8005351ee19db217e9b1bb15d28c02574 \
     --hash=sha256:3e4d1f6587322d2788836a99c69062fbb091331ec940e02d12d179c1d53e25fc \
     --hash=sha256:4a78b2b446bd7c934f5dcedc588903fb2f5eec172f3d29e52a9096a43722adfc \
