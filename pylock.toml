@@ -1209,16 +1209,18 @@ wheels = [{ url = "https://files.pythonhosted.org/packages/54/20/4d324d65cc6d920
 
 [[packages]]
 name = "preshed"
-version = "3.0.9"
+version = "3.0.10"
 marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'"
 index = "https://pypi.org/simple"
-sdist = { url = "https://files.pythonhosted.org/packages/f2/4e/76dbf784e7d4ed069f91a4c249b1d6ec6856ef0c0b2fd96992895d458b15/preshed-3.0.9.tar.gz", upload-time = 2023-09-15T15:44:32Z, size = 14478, hashes = { sha256 = "721863c5244ffcd2651ad0928951a2c7c77b102f4e11a251ad85d37ee7621660" } }
+sdist = { url = "https://files.pythonhosted.org/packages/4d/3a/db814f67a05b6d7f9c15d38edef5ec9b21415710705b393883de92aee5ef/preshed-3.0.10.tar.gz", upload-time = 2025-05-26T15:18:33Z, size = 15039, hashes = { sha256 = "5a5c8e685e941f4ffec97f1fbf32694b8107858891a4bc34107fac981d8296ff" } }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/c0/1e/05fa559f53b635d96b233b63e93accb75215025b997486f7290991bec6c3/preshed-3.0.9-cp311-cp311-macosx_10_9_x86_64.whl", upload-time = 2023-09-15T15:43:53Z, size = 132972, hashes = { sha256 = "e7c2364da27f2875524ce1ca754dc071515a9ad26eb5def4c7e69129a13c9a59" } },
-    { url = "https://files.pythonhosted.org/packages/a8/b3/1a73ba16bab53043fd19dd0a7838ae05c705dccb329404dd4ad5925767f1/preshed-3.0.9-cp311-cp311-macosx_11_0_arm64.whl", upload-time = 2023-09-15T15:43:54Z, size = 128751, hashes = { sha256 = "182138033c0730c683a6d97e567ceb8a3e83f3bff5704f300d582238dbd384b3" } },
-    { url = "https://files.pythonhosted.org/packages/2c/9a/919d3708f6fa98d9eab1a186e6b30ab25a4595907bbc1fea5c1e8faa9b9d/preshed-3.0.9-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", upload-time = 2023-09-15T15:43:56Z, size = 150050, hashes = { sha256 = "345a10be3b86bcc6c0591d343a6dc2bfd86aa6838c30ced4256dfcfa836c3a64" } },
-    { url = "https://files.pythonhosted.org/packages/db/69/d9ab108dc670b5be9e292bbd555f39e6eb0a4baab25cd28f792850d5e65b/preshed-3.0.9-cp311-cp311-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl", upload-time = 2023-09-15T15:43:58Z, size = 157159, hashes = { sha256 = "51d0192274aa061699b284f9fd08416065348edbafd64840c3889617ee1609de" } },
-    { url = "https://files.pythonhosted.org/packages/e4/fc/78cdbdb79f5d6d45949e72c32445d6c060977ad50a1dcfc0392622165f7c/preshed-3.0.9-cp311-cp311-win_amd64.whl", upload-time = 2023-09-15T15:43:59Z, size = 122323, hashes = { sha256 = "96b857d7a62cbccc3845ac8c41fd23addf052821be4eb987f2eb0da3d8745aa1" } },
+    { url = "https://files.pythonhosted.org/packages/08/99/c3709638f687da339504d1daeca48604cadb338bf3556a1484d1f0cd95e6/preshed-3.0.10-cp311-cp311-macosx_10_9_x86_64.whl", upload-time = 2025-05-26T15:17:52Z, size = 131486, hashes = { sha256 = "d96c4fe2b41c1cdcc8c4fc1fdb10f922a6095c0430a3ebe361fe62c78902d068" } },
+    { url = "https://files.pythonhosted.org/packages/e0/27/0fd36b63caa8bbf57b31a121d9565d385bbd7521771d4eb93e17d326873d/preshed-3.0.10-cp311-cp311-macosx_11_0_arm64.whl", upload-time = 2025-05-26T15:17:54Z, size = 127938, hashes = { sha256 = "cb01ea930b96f3301526a2ab26f41347d07555e4378c4144c6b7645074f2ebb0" } },
+    { url = "https://files.pythonhosted.org/packages/90/54/6a876d9cc8d401a9c1fb6bb8ca5a31b3664d0bcb888a9016258a1ae17344/preshed-3.0.10-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", upload-time = 2025-05-26T15:17:55Z, size = 842263, hashes = { sha256 = "9dd1f0a7b7d150e229d073fd4fe94f72610cae992e907cee74687c4695873a98" } },
+    { url = "https://files.pythonhosted.org/packages/1c/7d/ff19f74d15ee587905bafa3582883cfe2f72b574e6d691ee64dc690dc276/preshed-3.0.10-cp311-cp311-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl", upload-time = 2025-05-26T15:17:56Z, size = 842913, hashes = { sha256 = "9fd7b350c280137f324cd447afbf6ba9a849af0e8898850046ac6f34010e08bd" } },
+    { url = "https://files.pythonhosted.org/packages/f1/3a/1c345a26463345557705b61965e1e0a732cc0e9c6dfd4787845dbfa50b4a/preshed-3.0.10-cp311-cp311-musllinux_1_2_aarch64.whl", upload-time = 2025-05-26T15:17:58Z, size = 820548, hashes = { sha256 = "cf6a5fdc89ad06079aa6ee63621e417d4f4cf2a3d8b63c72728baad35a9ff641" } },
+    { url = "https://files.pythonhosted.org/packages/7f/6b/71f25e2b7a23dba168f43edfae0bb508552dbef89114ce65c73f2ea7172f/preshed-3.0.10-cp311-cp311-musllinux_1_2_x86_64.whl", upload-time = 2025-05-26T15:17:59Z, size = 840379, hashes = { sha256 = "b4c29a7bd66985808ad181c9ad05205a6aa7400cd0f98426acd7bc86588b93f8" } },
+    { url = "https://files.pythonhosted.org/packages/3a/86/d8f32b0b31a36ee8770a9b1a95321430e364cd0ba4bfebb7348aed2f198d/preshed-3.0.10-cp311-cp311-win_amd64.whl", upload-time = 2025-05-26T15:18:00Z, size = 117655, hashes = { sha256 = "1367c1fd6f44296305315d4e1c3fe3171787d4d01c1008a76bc9466bd79c3249" } },
 ]
 
 [[packages]]

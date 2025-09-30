@@ -856,13 +856,15 @@ pluggy==1.6.0 ; implementation_name == 'cpython' and platform_python_implementat
     --hash=sha256:7dcc130b76258d33b90f61b658791dede3486c3e6bfb003ee5c9bfb396dd22f3 \
     --hash=sha256:e920276dd6813095e9377c0bc5566d94c932c33b27a3e3945d8389c374dd4746
     # via pytest
-preshed==3.0.9 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:182138033c0730c683a6d97e567ceb8a3e83f3bff5704f300d582238dbd384b3 \
-    --hash=sha256:345a10be3b86bcc6c0591d343a6dc2bfd86aa6838c30ced4256dfcfa836c3a64 \
-    --hash=sha256:51d0192274aa061699b284f9fd08416065348edbafd64840c3889617ee1609de \
-    --hash=sha256:721863c5244ffcd2651ad0928951a2c7c77b102f4e11a251ad85d37ee7621660 \
-    --hash=sha256:96b857d7a62cbccc3845ac8c41fd23addf052821be4eb987f2eb0da3d8745aa1 \
-    --hash=sha256:e7c2364da27f2875524ce1ca754dc071515a9ad26eb5def4c7e69129a13c9a59
+preshed==3.0.10 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:1367c1fd6f44296305315d4e1c3fe3171787d4d01c1008a76bc9466bd79c3249 \
+    --hash=sha256:5a5c8e685e941f4ffec97f1fbf32694b8107858891a4bc34107fac981d8296ff \
+    --hash=sha256:9dd1f0a7b7d150e229d073fd4fe94f72610cae992e907cee74687c4695873a98 \
+    --hash=sha256:9fd7b350c280137f324cd447afbf6ba9a849af0e8898850046ac6f34010e08bd \
+    --hash=sha256:b4c29a7bd66985808ad181c9ad05205a6aa7400cd0f98426acd7bc86588b93f8 \
+    --hash=sha256:cb01ea930b96f3301526a2ab26f41347d07555e4378c4144c6b7645074f2ebb0 \
+    --hash=sha256:cf6a5fdc89ad06079aa6ee63621e417d4f4cf2a3d8b63c72728baad35a9ff641 \
+    --hash=sha256:d96c4fe2b41c1cdcc8c4fc1fdb10f922a6095c0430a3ebe361fe62c78902d068
     # via
     #   spacy
     #   thinc
