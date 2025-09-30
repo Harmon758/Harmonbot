@@ -811,7 +811,7 @@ packaging==25.0 ; implementation_name == 'cpython' and platform_python_implement
     #   spacy
     #   thinc
     #   weasel
-pandas==2.3.2 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+pandas==2.3.3 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:1333e9c299adcbb68ee89a9bb568fc3f20f9cbb419f1dd5225071e6cddb2a743 \
     --hash=sha256:1d81573b3f7db40d020983f78721e9bfc425f411e616ef019a10ebf597aedb2e \
     --hash=sha256:76972bcbd7de8e91ad5f0ca884a9f2c477a2125354af624e022c49e5bd0dfff4 \
