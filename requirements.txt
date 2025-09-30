@@ -995,7 +995,7 @@ pydantic==2.11.9 ; implementation_name == 'cpython' and platform_python_implemen
     #   spacy
     #   thinc
     #   weasel
-pydantic-core==2.33.2 ; implementation_name == 'cpython' and platform_python_implementation != 'PyPy' \
+pydantic-core==2.39.0 ; implementation_name == 'cpython' and platform_python_implementation != 'PyPy' \
     --hash=sha256:1e063337ef9e9820c77acc768546325ebe04ee38b08703244c1309cccc4f1bab \
     --hash=sha256:235f45e5dbcccf6bd99f9f472858849f73d11120d76ea8707115415f8e5ebebf \
     --hash=sha256:2bfb5112df54209d820d7bf9317c7a6c9025ea52e49f46b6a2060104bba37de7 \
