@@ -197,7 +197,7 @@ clarifai-grpc==11.8.1 ; implementation_name == 'cpython' and platform_python_imp
     # via
     #   clarifai
     #   clarifai-protocol
-clarifai-protocol==0.0.25 ; implementation_name == 'cpython' and platform_python_implementation != 'PyPy' \
+clarifai-protocol==0.0.32 ; implementation_name == 'cpython' and platform_python_implementation != 'PyPy' \
     --hash=sha256:9b27a7928d5996a05d8d09e90de85a8246e68cb9638e9a379739470af4862a55 \
     --hash=sha256:9ecd8a2f7ead7857d5ce2f129e9892326bf998f3db7796c16fd063a867d2d42f \
     --hash=sha256:a6466492d0eedd87064800d7947521314176f22b2a2713e5edc6fd803ab7ddfb \
