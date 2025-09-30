@@ -8,7 +8,9 @@ aiocache==0.12.3 ; implementation_name == 'cpython' and platform_python_implemen
 aiodns==3.5.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:11264edbab51896ecf546c18eb0dd56dff0428c6aa6d2cd87e643e07300eb310 \
     --hash=sha256:6d0404f7d5215849233f6ee44854f2bb2481adf71b336b2279016ea5990ca5c5
-    # via discord-py
+    # via
+    #   aiohttp
+    #   discord-py
 aiohappyeyeballs==2.6.1 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:c3f9d0113123803ccadfdf3f0faa505bc78e6a72d1cc4806cbd719826e943558 \
     --hash=sha256:f349ba8f4b75cb25c99c5c2d84e997e485204d2902a9597802b0371f09331fb8
@@ -121,6 +123,7 @@ brotli==1.1.0 ; implementation_name == 'cpython' and platform_python_implementat
     --hash=sha256:ceb64bbc6eac5a140ca649003756940f8d6a7c444a68af170b3187623b43bebf \
     --hash=sha256:f31859074d57b4639318523d6ffdca586ace54271a73ad23ad021acd807eb14b
     # via
+    #   aiohttp
     #   discord-py
     #   yt-dlp
 cachetools==6.2.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
