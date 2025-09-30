@@ -72,6 +72,12 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/10/97/ad2b18700708452400278039272032170246a1bf8ec5d832772372c71f1a/aiohttp-3.12.15-cp311-cp311-win_amd64.whl", hash = "sha256:edd533a07da85baa4b423ee8839e3e91681c7bfa19b04260a469ee94b778bf6d", size = 453273, upload-time = "2025-07-29T05:50:44.613Z" },
 ]
 
+[package.optional-dependencies]
+speedups = [
+    { name = "aiodns", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "brotli", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+]
+
 [[package]]
 name = "aiosignal"
 version = "1.4.0"
@@ -830,7 +836,7 @@ name = "harmonbot"
 source = { editable = "." }
 dependencies = [
     { name = "aiocache", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
-    { name = "aiohttp", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "aiohttp", extra = ["speedups"], marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
     { name = "async-lru", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
     { name = "asyncpg", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
     { name = "beautifulsoup4", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
@@ -931,7 +937,7 @@ type-check = [
 [package.metadata]
 requires-dist = [
     { name = "aiocache" },
-    { name = "aiohttp" },
+    { name = "aiohttp", extras = ["speedups"] },
     { name = "async-lru" },
     { name = "asyncpg" },
     { name = "beautifulsoup4" },
