@@ -123,9 +123,9 @@ brotli==1.1.0 ; implementation_name == 'cpython' and platform_python_implementat
     # via
     #   discord-py
     #   yt-dlp
-cachetools==5.3.2 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:086ee420196f7b2ab9ca2db2520aca326318b68fe5ba8bc4d49cca91add450f2 \
-    --hash=sha256:861f35a13a451f94e301ce2bec7cac63e881232ccce7ed67fab9b5df4d3beaa1
+cachetools==6.2.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:1c76a8960c0041fcc21097e357f882197c79da0dbff766e7317890a65d7d8ba6 \
+    --hash=sha256:38b328c0889450f05f5e120f56ab68c8abaf424e1275522b138ffc93253f7e32
     # via google-auth
 catalogue==2.0.10 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:4f56daa940913d3f09d589c191c74e5a6d51762b3a9e37dd53b7437afd6cda15 \
