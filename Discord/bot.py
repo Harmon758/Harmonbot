@@ -1120,32 +1120,37 @@ class Bot(commands.Bot):
 
     async def on_message_edit(self, before, after):
         try:
-            if after.edited_at != before.edited_at:
-                if before.content != after.content:
-                    await self.db.execute(
-                        """
-                        INSERT INTO chat.edits (edited_at, message_id, before_content, after_content)
-                        SELECT $1, $2, $3, $4
-                        WHERE EXISTS (SELECT * FROM chat.messages WHERE chat.messages.message_id = $2)
-                        ON CONFLICT (edited_at, message_id) DO
-                        UPDATE SET before_content = $3, after_content = $4
-                        """,
-                        after.edited_at.replace(tzinfo = datetime.UTC), after.id,
-                        before.content.replace('\N{NULL}', ""), after.content.replace('\N{NULL}', "")
-                    )
-                before_embeds = [embed.to_dict() for embed in before.embeds]
-                after_embeds = [embed.to_dict() for embed in after.embeds]
-                if before_embeds != after_embeds:
-                    await self.db.execute(
-                        """
-                        INSERT INTO chat.edits (edited_at, message_id, before_embeds, after_embeds)
-                        SELECT $1, $2, $3, $4
-                        WHERE EXISTS (SELECT * FROM chat.messages WHERE chat.messages.message_id = $2)
-                        ON CONFLICT (edited_at, message_id) DO
-                        UPDATE SET before_embeds = CAST($3 AS jsonb[]), after_embeds = CAST($4 AS jsonb[])
-                        """,
-                        after.edited_at.replace(tzinfo = datetime.UTC), after.id, before_embeds, after_embeds
-                    )
+            if before.edited_at == after.edited_at:
+                return
+            if not after.edited_at:
+                # This seems to occur as a race condition when a message is 
+                # edited too fast
+                return
+            if before.content != after.content:
+                await self.db.execute(
+                    """
+                    INSERT INTO chat.edits (edited_at, message_id, before_content, after_content)
+                    SELECT $1, $2, $3, $4
+                    WHERE EXISTS (SELECT * FROM chat.messages WHERE chat.messages.message_id = $2)
+                    ON CONFLICT (edited_at, message_id) DO
+                    UPDATE SET before_content = $3, after_content = $4
+                    """,
+                    after.edited_at.replace(tzinfo = datetime.UTC), after.id,
+                    before.content.replace('\N{NULL}', ""), after.content.replace('\N{NULL}', "")
+                )
+            before_embeds = [embed.to_dict() for embed in before.embeds]
+            after_embeds = [embed.to_dict() for embed in after.embeds]
+            if before_embeds != after_embeds:
+                await self.db.execute(
+                    """
+                    INSERT INTO chat.edits (edited_at, message_id, before_embeds, after_embeds)
+                    SELECT $1, $2, $3, $4
+                    WHERE EXISTS (SELECT * FROM chat.messages WHERE chat.messages.message_id = $2)
+                    ON CONFLICT (edited_at, message_id) DO
+                    UPDATE SET before_embeds = CAST($3 AS jsonb[]), after_embeds = CAST($4 AS jsonb[])
+                    """,
+                    after.edited_at.replace(tzinfo = datetime.UTC), after.id, before_embeds, after_embeds
+                )
         except OSError as e:
             self.print(f"Error processing message edit: {e}")
 
