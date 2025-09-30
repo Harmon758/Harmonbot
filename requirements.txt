@@ -331,17 +331,17 @@ feedparser==6.0.12 ; implementation_name == 'cpython' and platform_python_implem
     --hash=sha256:64f76ce90ae3e8ef5d1ede0f8d3b50ce26bcce71dd8ae5e82b1cd2d4a5f94228 \
     --hash=sha256:6bbff10f5a52662c00a2e3f86a38928c37c48f77b3c511aedcd51de933549324
     # via harmonbot
-fonttools==4.60.0 ; implementation_name == 'cpython' and platform_python_implementation != 'PyPy' \
-    --hash=sha256:1f84de764c6057b2ffd4feb50ddef481d92e348f0c70f2c849b723118d352bf3 \
-    --hash=sha256:496d26e4d14dcccdd6ada2e937e4d174d3138e3d73f5c9b6ec6eb2fd1dab4f66 \
-    --hash=sha256:53328e3ca9e5c8660ef6de07c35f8f312c189b757535e12141be7a8ec942de6e \
-    --hash=sha256:800b3fa0d5c12ddff02179d45b035a23989a6c597a71c8035c010fff3b2ef1bb \
-    --hash=sha256:8dd68f60b030277f292a582d31c374edfadc60bb33d51ec7b6cd4304531819ba \
-    --hash=sha256:8f5927f049091a0ca74d35cce7f78e8f7775c83a6901a8fbe899babcc297146a \
-    --hash=sha256:9da3a4a3f2485b156bb429b4f8faa972480fc01f553f7c8c80d05d48f17eec89 \
-    --hash=sha256:a9106c202d68ff5f9b4a0094c4d7ad2eaa7e9280f06427b09643215e706eb016 \
-    --hash=sha256:cc2770c9dc49c2d0366e9683f4d03beb46c98042d7ccc8ddbadf3459ecb051a7 \
-    --hash=sha256:d493c175ddd0b88a5376e61163e3e6fde3be8b8987db9b092e0a84650709c9e7
+fonttools==4.60.1 ; implementation_name == 'cpython' and platform_python_implementation != 'PyPy' \
+    --hash=sha256:3630e86c484263eaac71d117085d509cbcf7b18f677906824e4bace598fb70d2 \
+    --hash=sha256:398447f3d8c0c786cbf1209711e79080a40761eb44b27cdafffb48f52bcec258 \
+    --hash=sha256:5c1015318e4fec75dd4943ad5f6a206d9727adf97410d58b7e32ab644a807914 \
+    --hash=sha256:7b4c32e232a71f63a5d00259ca3d88345ce2a43295bb049d21061f338124246f \
+    --hash=sha256:906306ac7afe2156fcf0042173d6ebbb05416af70f6b370967b47f8f00103bbb \
+    --hash=sha256:d066ea419f719ed87bc2c99a4a4bfd77c2e5949cb724588b9dd58f3fd90b92bf \
+    --hash=sha256:e6c58beb17380f7c2ea181ea11e7db8c0ceb474c9dd45f48e71e2cb577d146a1 \
+    --hash=sha256:ec3681a0cb34c255d76dd9d865a55f260164adb9fa02628415cdc2d43ee2c05d \
+    --hash=sha256:ef00af0439ebfee806b25f24c8f92109157ff3fac5731dc7867957812e87b8d9 \
+    --hash=sha256:f4b5c37a5f40e4d733d3bbaaef082149bee5a5ea3156a785ff64d949bd1353fa
     # via matplotlib
 frozenlist==1.7.0 ; implementation_name == 'cpython' and platform_python_implementation != 'PyPy' \
     --hash=sha256:21884e23cffabb157a9dd7e353779077bf5b8f9a58e9b262c6caad2ef5f80a56 \
