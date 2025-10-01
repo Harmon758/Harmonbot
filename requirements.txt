@@ -729,7 +729,7 @@ mypy-extensions==1.1.0 ; implementation_name == 'cpython' and platform_python_im
     --hash=sha256:1be4cccdb0f2482337c4743e60421de3a356cd97508abadd57d47403e94f5505 \
     --hash=sha256:52e68efc3284861e772bbcd66823fde5ae21fd2fdb51c62a211403730b916558
     # via mypy
-numexpr==2.13.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+numexpr==2.13.1 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:1e718d6175064a4218b400e4a48d0743a49f43de13dd124572a0e05003e5a15f \
     --hash=sha256:3363d804f202437586447a49b5c83b01322e8be72279d49e0bf524720edc01b6 \
     --hash=sha256:4215568b42c37b8f1821e7058bc44afd475722adebbaf7f41482c94221758c29 \
