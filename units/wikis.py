@@ -54,8 +54,18 @@ WIKIS = {
 }
 
 OBSOLETE_WIKIS = {
-    "RuneScape (Fandom)": "https://runescape.fandom.com/",  # Superseded by https://runescape.wiki/
-    "Stardew Valley (Fandom)": "https://stardewvalley.fandom.com/",  # Superseded by https://stardewvalleywiki.com/
+    "Minecraft (Fandom)": "https://minecraft.fandom.com/",
+    # Superseded by https://minecraft.wiki/
+    # https://minecraft.fandom.com/wiki/Minecraft_Wiki:Moving_from_Fandom
+    # https://minecraft.wiki/w/Minecraft_Wiki:Moving_from_Fandom
+    "RuneScape (Fandom)": "https://runescape.fandom.com/",
+    # Superseded by https://runescape.wiki/
+    # https://secure.runescape.com/m=news/the-runescape-wiki
+    # https://runescape.wiki/w/Forum:Leaving_Wikia
+    # https://web.archive.org/web/20181104061135/https://runescape.fandom.com/wiki/Forum:Leaving_Wikia
+    "Stardew Valley (Fandom)": "https://stardewvalley.fandom.com/",
+    # Superseded by https://stardewvalleywiki.com/
+    # https://www.stardewvalley.net/stardew-valley-wiki-ownership-change/
 }
 
 
