@@ -24,6 +24,7 @@ WIKIS = {
     "Harry Potter": "https://harrypotter.fandom.com/",
     "Marvel Cinematic Universe": "https://marvelcinematicuniverse.fandom.com/",
     "Memory Alpha": "https://memory-alpha.fandom.com/",
+    "Minecraft": "https://minecraft.wiki",
     "Ni no Kuni: Cross Worlds": "https://ni-no-kuni-cross-worlds.fandom.com/",
     "Pirate101 (Central)": "https://www.pirate101central.com/",
     "Pirate101 (Fandom)": "https://pirate101.fandom.com/",
