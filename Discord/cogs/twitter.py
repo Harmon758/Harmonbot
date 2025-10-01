@@ -15,6 +15,7 @@ import urllib.parse
 import aiohttp
 from more_itertools import chunked
 import feedparser
+import tweepy
 
 from units import nitter
 from utilities import checks, tasks
@@ -628,6 +629,20 @@ class Twitter(commands.Cog):
                     self.bot.print(
                         "Twitter Task Discord Server Error: "
                         f"{e.status}{reason}"
+                    )
+            except tweepy.TwitterServerError as e:
+                await asyncio.sleep(10)
+                reason = ' ' + e.response.reason if e.response.reason else ""
+                try:
+                    await self.bot.log_channel.send(
+                        f"Encountered {e.response.status}{reason} "
+                        "Twitter server error when attempting to check "
+                        "Twitter user in Twitter task"
+                    )
+                except discord.DiscordServerError:
+                    self.bot.print(
+                        "Twitter Task Twitter Server Error: "
+                        f"{e.response.status}{reason}"
                     )
             except (
                 aiohttp.ClientConnectionError, aiohttp.TooManyRedirects,
