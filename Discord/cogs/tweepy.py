@@ -27,7 +27,9 @@ TWEEPY_GUILD_MODERATOR_ONLY_CHANNEL_ID = 758188869941985321
 markdown_converter = MarkdownConverter(
     bullets = '•',
     escape_underscores = False,
-    heading_style = "ATX_CLOSED"
+    heading_style = "ATX_CLOSED",
+    strip = ["dd"],
+    # https://github.com/matthewwithanm/python-markdownify/issues/172
 )
 
 ANCHOR_LINK_REGEX_PATTERN = re.compile(r"\[\uF0C1\]\(.+\)")
@@ -295,7 +297,7 @@ async def format_documentation_section(
 
             embed.description += (
                 '\n' + remove_extra_newlines(
-                    markdown_converter.convert_soup(content.find("dd"))
+                    markdown_converter.convert_soup(content.find("dd")).strip()
                 )
             )
 
