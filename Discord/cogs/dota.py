@@ -50,21 +50,19 @@ class DotA(commands.Cog):
 
         fields = [("Wins", player_wl.win), ("Losses", player_wl.lose)]
         if player_wl.win or player_wl.lose:
-            fields.append(
-                (
-                    "Wins/Losses",
-                    f"{player_wl.win / (player_wl.win + player_wl.lose) * 100:.2f}%"
-                )
-            )
+            fields.append((
+                "Wins/Losses",
+                f"{player_wl.win / (player_wl.win + player_wl.lose) * 100:.2f}%"
+            ))
         if player.rank_tier:
             fields.append(("Rank Tier", player.rank_tier))
         if player.profile.loccountrycode:
-            fields.append(
-                (
-                    "Country",
-                    pycountry.countries.get(alpha_2 = player.profile.loccountrycode).name
-                )
-            )
+            fields.append((
+                "Country",
+                pycountry.countries.get(
+                    alpha_2 = player.profile.loccountrycode
+                ).name
+            ))
 
         await ctx.embed_reply(
             title = player.profile.personaname,
