@@ -729,16 +729,16 @@ mypy-extensions==1.1.0 ; implementation_name == 'cpython' and platform_python_im
     --hash=sha256:1be4cccdb0f2482337c4743e60421de3a356cd97508abadd57d47403e94f5505 \
     --hash=sha256:52e68efc3284861e772bbcd66823fde5ae21fd2fdb51c62a211403730b916558
     # via mypy
-numexpr==2.13.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:1e718d6175064a4218b400e4a48d0743a49f43de13dd124572a0e05003e5a15f \
-    --hash=sha256:3363d804f202437586447a49b5c83b01322e8be72279d49e0bf524720edc01b6 \
-    --hash=sha256:4215568b42c37b8f1821e7058bc44afd475722adebbaf7f41482c94221758c29 \
-    --hash=sha256:55ce79de1085f5cd198904ad4bd8d8e827b331215488a6ec1fddadf6f44ee782 \
-    --hash=sha256:611a69cb4f178808639bf2c7c06c3d11575554313faeb9375cdfbe1c68c370db \
-    --hash=sha256:da78ae6ac87904ec742e6f0f4476f647f5e65ca59d42ab11a9b340ea35f286b5 \
-    --hash=sha256:e6ca00488e3dc367d36f44db291fe2830085599f5d385f9656875494446d1693 \
-    --hash=sha256:f41d5ca0a241155e67d4ba232d2418350fcced70010ad0a3836fb3b7240daf00 \
-    --hash=sha256:fb7535c7e5dbbe1b8288a5c9e1c3187c97687bb7da6f8937b1a062d636e17655
+numexpr==2.13.1 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:58e2f111756fff63e27e495473d950e4c98bbebca55aa1572798b59110d6c84b \
+    --hash=sha256:5a5a37b74561ed8dbd5f9be182d94419fa53f452e2d7d3e8d6dbef35a20f19f7 \
+    --hash=sha256:66d0292f3b9dc5faadb4dd8a89d733321ff01c9699aee0c3cdbf513c9505e39c \
+    --hash=sha256:78cb76676e63f02dcf507e3c563888018a68b6a2e2cd444628e09df270dfd0b2 \
+    --hash=sha256:912488ddbd500937bb6f4dfc010bdb3bf757a76e0b93db2f2c56db49ef6b9351 \
+    --hash=sha256:91cf0521d8fed3f804640c4a6d22b5d9813d7e64b32c38215de163c7f092f7cc \
+    --hash=sha256:bdf62745e072c670151c0705bddfe3f33c341dacb7eb255ddb1e8d2a257bfef5 \
+    --hash=sha256:d29b3351de4c43b56d2ef7f138ab7a8988e797291bcbbd56d545e4e7902f254a \
+    --hash=sha256:ecb722249c2d6ed7fefe8504bb17e056481a5f31233c23a7ee02085c3d661fa1
     # via harmonbot
 numpy==2.3.3 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:0ffc4f5caba7dfcbe944ed674b7eef683c7e94874046454bb79ed7ee0236f59d \
