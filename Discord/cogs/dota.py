@@ -24,7 +24,7 @@ class DotA(commands.Cog):
         case_insensitive = True, invoke_without_command = True
     )
     async def dota(self, ctx):
-        '''Defense of the Ancients 2'''
+        '''Dota 2'''
         await ctx.send_help(ctx.command)
 
     # TODO: Add dota buff subcommand alias
