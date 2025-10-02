@@ -25,6 +25,7 @@ TWEEPY_GUILD_ID = 432685901596852224
 TWEEPY_GUILD_MODERATOR_ONLY_CHANNEL_ID = 758188869941985321
 
 markdown_converter = MarkdownConverter(
+    bs4_options = "lxml",
     bullets = '•',
     escape_underscores = False,
     heading_style = "ATX_CLOSED",
