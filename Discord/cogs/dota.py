@@ -59,7 +59,6 @@ class DotA(commands.Cog):
                     f"{wl_data['win'] / (wl_data['win'] + wl_data['lose']) * 100:.2f}%"
                 )
             )
-        fields.append(("MMR Estimate", data["mmr_estimate"]["estimate"]))
         if data["rank_tier"]:
             fields.append(("Rank Tier", data["rank_tier"]))
         if data["profile"]["loccountrycode"]:
