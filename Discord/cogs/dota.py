@@ -35,7 +35,7 @@ class DotA(commands.Cog):
 
     @dota.group(case_insensitive = True, invoke_without_command = True)
     async def player(self, ctx, account: SteamID32):
-        '''DotA 2 player'''
+        '''Dota 2 player'''
         try:
             player = await get_player(
                 account, aiohttp_session = ctx.bot.aiohttp_session
