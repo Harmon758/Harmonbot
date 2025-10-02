@@ -1484,16 +1484,16 @@ wolframalpha==5.1.3 ; implementation_name == 'cpython' and platform_python_imple
     --hash=sha256:549b44e64595c5845be4c94f2b306a84832157bef422b20937cbca44b48ee117 \
     --hash=sha256:56226efeca0f55acec5e17dd2f6537a178d0bf4feec4df0615165e2968bb49b8
     # via harmonbot
-wordcloud==1.9.3 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:103c9b0465e1cf5b7a38b49ab1c3a0b0301762fa56602ac79287f9d22b46ade3 \
-    --hash=sha256:6e33328044db5c01487f2a3a023b5476947942dacd6a5dc8c217fa039f6c5bd9 \
-    --hash=sha256:6f5499e6360219e61808dc0d2b00cd5104f78a82d2ae8f7986df04731713835f \
-    --hash=sha256:7ced0d5c946d82cfc778febafe3eedeb0bae07dd57ea4f21fe06b9ec8225ab31 \
-    --hash=sha256:998dc0dc8fcbff88f566f17cb5e0eb3bb21fcafd387b0670be6c14feacaf4cdc \
-    --hash=sha256:a9aa738d63ed674a40f0cc31adb83f4ca5fc195f03a6aff6e010d1f5807d1c58 \
-    --hash=sha256:cb1e8bb7d60f7a90fa8439c7b56dd1df60766115fd57480ac0d83ca5204e0117 \
-    --hash=sha256:e1a1c3cfa86b605a19711ec58920ccb694dca9d5c9d00b373f4d5952d63793e9 \
-    --hash=sha256:f504e3291256c0b6fca044602f8f0e5cb56b7c33724cde9d279c4077fa5b6d27
+wordcloud==1.9.4 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:0ac3d87627022fb8cce17297298be96c91185edd55ecf8906f89f981b55974f0 \
+    --hash=sha256:3092bf85cb20158c8b90d78650dc0226985109ac6fe13a0086ac47b9581b62ce \
+    --hash=sha256:57ad8064a634a4870fcd00a9694c0a7839c6dfbac3d32522c69d5e1e9cbfd911 \
+    --hash=sha256:85368249df056527f1b64e80e68636abb61f0f6bd2d1c430894d2af1feea7f73 \
+    --hash=sha256:af168eeaed67a675f35b5668a7804c4d64f8e4f62a273b909eb5cc39efc4c294 \
+    --hash=sha256:b273d8a5ded97d3ead904046b49464dcb71119ee79df875072a4c105cadd347a \
+    --hash=sha256:b27759f12dd235468ff8c1df875b106b23dbf2c74aae05cdcdc3ccd8e23ea89c \
+    --hash=sha256:ddfb852f551681f5e33feb934505e060952b6aa98aaa48c781cdbf101f84e7cc \
+    --hash=sha256:ea14858973ad8561a20a5475eb8d7ad33622bc5f27c60206fbb3e10a036cee26
     # via harmonbot
 wordnik-py3==2.1.2 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:e4a55aeab9d546cb0b76afd6b853a60f96a5553542f89c29b4fcf69dbc237a8b
