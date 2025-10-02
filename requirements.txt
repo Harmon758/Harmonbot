@@ -621,9 +621,9 @@ markdown-it-py==4.0.0 ; implementation_name == 'cpython' and platform_python_imp
     --hash=sha256:87327c59b172c5011896038353a81343b6754500a08cd7a4973bb48c6d578147 \
     --hash=sha256:cb0a2b4aa34f932c007117b194e945bd74e0ec24133ceb5bac59009cda1cb9f3
     # via rich
-markdownify==0.11.6 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:009b240e0c9f4c8eaf1d085625dcd4011e12f0f8cec55dedf9ea6f7655e49bfe \
-    --hash=sha256:ba35fe289d5e9073bcd7d2cad629278fe25f1a93741fcdc0bfb4f009076d8324
+markdownify==1.2.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:48e150a1c4993d4d50f282f725c0111bd9eb25645d41fa2f543708fd44161351 \
+    --hash=sha256:f6c367c54eb24ee953921804dfe6d6575c5e5b42c643955e7242034435de634c
     # via harmonbot
 markupsafe==3.0.3 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:068f375c472b3e7acbe2d5318dea141359e6900156b5b2ba06a30b169086b91a \
