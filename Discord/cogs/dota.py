@@ -7,6 +7,7 @@ import io
 import pycountry
 from wordcloud import WordCloud
 
+from units.dota import get_player, get_player_wl
 from utilities import checks
 from utilities.converters import SteamID32
 
@@ -35,44 +36,40 @@ class DotA(commands.Cog):
     @dota.group(case_insensitive = True, invoke_without_command = True)
     async def player(self, ctx, account: SteamID32):
         '''DotA 2 player'''
-        async with ctx.bot.aiohttp_session.get(
-            f"https://api.opendota.com/api/players/{account}"
-        ) as resp:
-            data = await resp.json()
-
-        if "profile" not in data:
-            await ctx.embed_reply(
-                f"{ctx.bot.error_emoji} Error: DotA 2 profile not found"
+        try:
+            player = await get_player(
+                account, aiohttp_session = ctx.bot.aiohttp_session
             )
+        except ValueError as e:
+            await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {e}")
             return
 
-        async with ctx.bot.aiohttp_session.get(
-            f"https://api.opendota.com/api/players/{account}/wl"
-        ) as resp:
-            wl_data = await resp.json()
+        player_wl = await get_player_wl(
+            account, aiohttp_session = ctx.bot.aiohttp_session
+        )
 
-        fields = [("Wins", wl_data["win"]), ("Losses", wl_data["lose"])]
-        if wl_data["win"] or wl_data["lose"]:
+        fields = [("Wins", player_wl.win), ("Losses", player_wl.lose)]
+        if player_wl.win or player_wl.lose:
             fields.append(
                 (
                     "Wins/Losses",
-                    f"{wl_data['win'] / (wl_data['win'] + wl_data['lose']) * 100:.2f}%"
+                    f"{player_wl.win / (player_wl.win + player_wl.lose) * 100:.2f}%"
                 )
             )
-        if data["rank_tier"]:
-            fields.append(("Rank Tier", data["rank_tier"]))
-        if data["profile"]["loccountrycode"]:
+        if player.rank_tier:
+            fields.append(("Rank Tier", player.rank_tier))
+        if player.profile.loccountrycode:
             fields.append(
                 (
                     "Country",
-                    pycountry.countries.get(alpha_2 = data["profile"]["loccountrycode"]).name
+                    pycountry.countries.get(alpha_2 = player.profile.loccountrycode).name
                 )
             )
 
         await ctx.embed_reply(
-            title = data["profile"]["personaname"],
-            title_url = data["profile"]["profileurl"],
-            thumbnail_url = data["profile"]["avatarfull"],
+            title = player.profile.personaname,
+            title_url = player.profile.profileurl,
+            thumbnail_url = player.profile.avatarfull,
             fields = fields
         )
 
