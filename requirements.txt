@@ -1127,6 +1127,16 @@ pyparsing==3.2.5 ; implementation_name == 'cpython' and platform_python_implemen
     #   harmonbot
     #   matplotlib
     #   pydot
+pyrefly==0.35.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:1494c8b143076f43b36d16ca31b6984391d32ba6834272677e0a96e8ce47e11e \
+    --hash=sha256:2a541cc1c75ee75fba1ffcd0ed297facc15994cf9958050b8f8a8f8f750c002b \
+    --hash=sha256:6df94964bed9a0bccfafdaea6bf69de687adb46bf851b30c28b33810ffa3d27c \
+    --hash=sha256:82affd662b0548a9988c30c7f87970bad0766be452c7f60059c22d852eaf2ec0 \
+    --hash=sha256:a9a148cc41218a0072c952eb0e58709c779fad828a2174846f51015cc844906c \
+    --hash=sha256:af112fff00d79777e5f99f95917d3add1a793730f8e224529f15c9389877b9cd \
+    --hash=sha256:c1644584dd584d7363b3286d0e4340f1aeebe93ddd4b519864fe27c3b28f1559 \
+    --hash=sha256:c60c0e01fe6d254d2e26b5fe6071feebe13f483c2a9a98d4140fc969ae4225da \
+    --hash=sha256:f397b9e981e5d3907c2b5cadd518337345ea4aa12a9801c14736703d041db0b6
 pysocks==1.7.1 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:2725bd0a9925919b9b51739eea5f9e2bae91e83288108a9ad338b2e3a4435ee5 \
     --hash=sha256:3f8804571ebe159c380ac6de37643bb4685970655d3bba243530d6558b799aa0
