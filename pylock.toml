@@ -1556,6 +1556,20 @@ sdist = { url = "https://files.pythonhosted.org/packages/e7/46/bd74733ff23167559
 wheels = [{ name = "pyjwt-2.10.1-py3-none-any.whl", url = "https://files.pythonhosted.org/packages/61/ad/689f02752eeec26aed679477e80e632ef1b682313be70793d798c1d5fc8f/PyJWT-2.10.1-py3-none-any.whl", upload-time = 2024-11-28T03:43:27Z, size = 22997, hashes = { sha256 = "dcdd193e30abefd5debf142f9adfcdd2b58004e644f25406ffaebd50bd98dacb" } }]
 
 [[packages]]
+name = "pylyzer"
+version = "0.0.82"
+marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'"
+index = "https://pypi.org/simple"
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/69/cb/684ea79840ea01fb4916d361732fd42ee169cf6a05ddcb79715fa35c0ff9/pylyzer-0.0.82-py3-none-macosx_11_0_arm64.whl", upload-time = 2025-02-25T09:10:37Z, size = 11931534, hashes = { sha256 = "fc2088c87de1d6e8813d356a7f7e42768976b8dc1416fd7fdf088630e757e7e5" } },
+    { url = "https://files.pythonhosted.org/packages/ae/9e/2c1730bc3ba7725134cb260719952e06d740c885e36280b1c2d2f5924117/pylyzer-0.0.82-py3-none-manylinux_2_17_i686.manylinux2014_i686.whl", upload-time = 2025-02-25T09:10:41Z, size = 14800900, hashes = { sha256 = "2e311b7cf132ebfe3d143e0c19efab9cf1b0628f921601e9794ab15073516fb6" } },
+    { url = "https://files.pythonhosted.org/packages/56/97/fbf47c8fd44e1988e3e072d58803ef2f139bcc61842842bfe5d34cc2cccd/pylyzer-0.0.82-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", upload-time = 2025-02-25T09:10:45Z, size = 13472644, hashes = { sha256 = "d409ec99edcfbdc38fb12cfb0f22ed4586775e5acff4df269dad1c1029c362f3" } },
+    { url = "https://files.pythonhosted.org/packages/17/f6/e9ee045c0f16a445a73567edeb1093429b276f3783f0e9b92dce70a8b787/pylyzer-0.0.82-py3-none-musllinux_1_2_x86_64.whl", upload-time = 2025-02-25T09:10:50Z, size = 13546580, hashes = { sha256 = "1f0e6d81a291a2b8fa3b85403e4b8b704406e52c8b59025a5f84b885dc9e7f03" } },
+    { url = "https://files.pythonhosted.org/packages/ce/e6/c9bc99c3cbe643ceeefca9034a776a7901b2b9c1d739d14d4b9df3e5ea65/pylyzer-0.0.82-py3-none-win32.whl", upload-time = 2025-02-25T09:10:54Z, size = 13054837, hashes = { sha256 = "919ba92368dd6c43236029c68ec4ab33e21ea62b8bda94c9c4c0f2569c61cf57" } },
+    { url = "https://files.pythonhosted.org/packages/10/c3/ab9da76ca458939c1da5fe2186b085c357b64f3526ee7f3f5f2670c11da3/pylyzer-0.0.82-py3-none-win_amd64.whl", upload-time = 2025-02-25T09:10:57Z, size = 15472118, hashes = { sha256 = "80b87c4e24724ef6d94e16e4d7fbe0922b366a77c8f2e88ad64e8d4cf4c70e83" } },
+]
+
+[[packages]]
 name = "pynacl"
 version = "1.5.0"
 marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'"
