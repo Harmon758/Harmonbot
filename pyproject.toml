@@ -147,6 +147,9 @@ packages = ["units"]
 [tool.setuptools_scm]
 fallback_version = "0.0.0"
 
+[tool.ty.src]
+include = ["units"]
+
 [tool.uv]
 cache-dir = "./.uv_cache"
 environments = [
