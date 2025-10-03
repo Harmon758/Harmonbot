@@ -55,7 +55,7 @@ anyio==4.11.0 ; implementation_name == 'cpython' and platform_python_implementat
 ast-decompiler==0.8.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:bc2449883f153788d89b842967dbe871d6db14f53a178bf7ec601f393fe1e1bb \
     --hash=sha256:daef5ca5c2bcb9ba7cf72a9308c7cd596c092d7201c0bbaf28947c721ce26441
-    # via pyanalyze
+    # via pycroscope
 async-lru==2.0.5 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:481d52ccdd27275f42c43a928b4a50c3bfb2d67af4e78b170e3e0bb39c66e5bb \
     --hash=sha256:ab95404d8d2605310d345932697371a5f40def0487c03d6d0ad9138de52c9943
@@ -73,16 +73,6 @@ asyncpg==0.30.0 ; implementation_name == 'cpython' and platform_python_implement
     --hash=sha256:bc6d84136f9c4d24d358f3b02be4b6ba358abd09f80737d1ac7c444f36108454 \
     --hash=sha256:c551e9928ab6707602f44811817f82ba3c446e018bfe1d3abecc8ba5f3eac851
     # via harmonbot
-asynq==1.6.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:10ecf43f0bb3f7c39bcdb560ce4e2bad9f08855ea1e718023a521921619fc524 \
-    --hash=sha256:124dc9215eb9058c7a44965ccc7e8a4c67000ae4b78127e89a8479890e1a966f \
-    --hash=sha256:6f1656d719e4ff1e14b3763e1df8768e2f22b3231552a3cc96cec1e295bf99c9 \
-    --hash=sha256:9d30cde5dbfa5fc5d8b0bbe14c8ffe2d54320ee0db8936fd47da53a2b296a22f \
-    --hash=sha256:acc3e944cfeea459c2de97931af144954cebba4062702228090f9a58a25186bc \
-    --hash=sha256:c28963942bada5f145ec4f65da4e2c5b28ae85d7a77a287ede21f159d83acdb4 \
-    --hash=sha256:e62e3857dff2d0503853956a13d3fb42cda1d6d0cce06998c142006cb396efbe \
-    --hash=sha256:e96bbea2f85825936bb84cb23ad741e9a90b67b32eb032511cd4121d84f8082b
-    # via pyanalyze
 attrs==25.3.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:427318ce031701fea540783410126f03899a97ffc6f61596ad581ac2e40e3bc3 \
     --hash=sha256:75d7cefc7fb576747b2c81b4442d4d4a1ce0900973527c011d1030fd3bf4af1b
@@ -231,7 +221,7 @@ cloudpathlib==0.22.0 ; implementation_name == 'cpython' and platform_python_impl
     # via weasel
 codemod==1.0.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:06e8c75f2b45210dd8270e30a6a88ae464b39abd6d0cab58a3d7bfd1c094e588
-    # via pyanalyze
+    # via pycroscope
 colorama==0.4.6 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' and sys_platform == 'win32' \
     --hash=sha256:08695f5cb7ed6e0531a20572697297273c47b8cae5a63ffc6d6ed5c201be6e44 \
     --hash=sha256:4f1d9991f5acc0ca119f9d443620b77f9d6b33703e51011c16baf57afb285fc6
@@ -1016,9 +1006,6 @@ py-cpuinfo==9.0.0 ; implementation_name == 'cpython' and platform_python_impleme
     --hash=sha256:3cdbbf3fac90dc6f118bfd64384f309edeadd902d7c8fb17f02ffa1fc3f49690 \
     --hash=sha256:859625bc251f64e21f077d099d4162689c762b5d6a4c3c97553d56241c9674d5
     # via harmonbot
-pyanalyze==0.13.1 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:8d2670cf361a0ac3e381da2c8b0efcb708181783f371d7d7c9bbcac461e64042 \
-    --hash=sha256:a5a17b348a1d929e35fd5c37bacb2899d625c8e2cdc9aaad0981213570277b65
 pyasn1==0.6.1 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:0d632f46f2ba09143da3a8afe9e33fb6f92fa2320ab7e886e2d0f7672af84629 \
     --hash=sha256:6f580d2bdd84365380830acf45550f2511469f673cb4a5ae3857a3170128b034
@@ -1057,6 +1044,9 @@ pycparser==2.23 ; implementation_name == 'cpython' and platform_python_implement
     --hash=sha256:78816d4f24add8f10a06d6f05b4d424ad9e96cfebf68a4ddc99c65c0720d00c2 \
     --hash=sha256:e5c6e8d3fbad53479cab09ac03729e0a9faf2bee3db8208a550daf5af81a5934
     # via cffi
+pycroscope==0.2.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:60560c51ffcac9a050f2d9dea59a78afae546545a750c397354d4c624e662547 \
+    --hash=sha256:9b17a9645843b5c7761ac0be045cbf2fb9761f7694a70185912a0a2cc039435f
 pycryptodomex==3.23.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:02d87b80778c171445d67e23d1caef279bf4b25c3597050ccd2e13970b57fd51 \
     --hash=sha256:06698f957fe1ab229a99ba2defeeae1c09af185baa909a31a5d1f9d42b1aaed6 \
@@ -1119,7 +1109,6 @@ pygments==2.19.2 ; implementation_name == 'cpython' and platform_python_implemen
     --hash=sha256:636cb2477cec7f8952536970bc533bc43743542f70392ae026374600add5b887 \
     --hash=sha256:86540386c03d588bb81d44bc3928634ff26449851e99741617ecb9037ee5ec0b
     # via
-    #   asynq
     #   pytest
     #   rich
 pyjwt==2.10.1 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
@@ -1219,18 +1208,6 @@ pyyaml==6.0.3 ; implementation_name == 'cpython' and platform_python_implementat
     #   clarifai
     #   libcst
     #   vcrpy
-qcore==1.11.1 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:0f86ba66ded4971bdacc72dc69e9c416ee80a0a1cbfdaab01c371b5720dff3c3 \
-    --hash=sha256:605a974de4b48845f87eac490e800b65b383cf7d29ecf36db9f5f35a9a847c2a \
-    --hash=sha256:7ba6afc72a05858360c9229d5b52ac8a1d8992aad6bb1a1d6d40622a0e6eb858 \
-    --hash=sha256:8600b9f4c673e8473b95c284b7c26edb010e448f099ddcb6e209f8d956b1fadd \
-    --hash=sha256:a437ecdf663650e0c4f0cf8128bcb76a2362d368cfe92a17c7d39ab07d239d94 \
-    --hash=sha256:c98ef47209a5d2a0f1bedda716e47325b8a42c1f148a36262e038be1a74c1efc \
-    --hash=sha256:cdaf5a8cce5e3e8715f52c235a5f7e2f55c5e392b5d7c30c862d19ec82c8ab05 \
-    --hash=sha256:f9856fe0b2b6b42cfe2dec8262a6ae58bc914e242af5f148db89cee402ed103b
-    # via
-    #   asynq
-    #   pyanalyze
 referencing==0.36.2 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:df2e89862cd09deabbdba16944cc3f10feb6b3e6f18e902f7cc25609a34775aa \
     --hash=sha256:e8699adbbf8b5c7de96d8ffa0eb5c158b3beafce084968e2ea8bb08c6794dcd0
@@ -1484,7 +1461,7 @@ tomli==2.2.1 ; implementation_name == 'cpython' and platform_python_implementati
     --hash=sha256:cd45e1dc79c835ce60f7404ec8119f2eb06d38b1deba146f07ced3bbc44505ff \
     --hash=sha256:e59e304978767a54663af13c07b3d1af22ddee3bb2fb0618ca1593e4f593a106 \
     --hash=sha256:ece47d672db52ac607a3d9599a9d48dcb2f2f735c6c2d1f34130085bb12b112a
-    # via pyanalyze
+    # via pycroscope
 tqdm==4.67.1 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:26445eca388f82e72884e0d580d5464cd801a3ea01e63e5601bdff9ba6a48de2 \
     --hash=sha256:f8aef9c52c08c13a65f30ea34f4e5aac3fd1a34959879d7e59e63027286627f2
@@ -1536,7 +1513,7 @@ typer==0.19.2 ; implementation_name == 'cpython' and platform_python_implementat
 typeshed-client==2.8.2 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:4cf886d976c777689cd31889f13abf5bfb7797c82519b07e5969e541380c75ee \
     --hash=sha256:9d8e29fb74574d87bf9a719f77131dc40f2aeea20e97d25d4a3dc2cc30debd31
-    # via pyanalyze
+    # via pycroscope
 typing-extensions==4.15.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:0cea48d173cc12fa28ecabc3b837ea3cf6f38c6d1136f85cbaaf598984861466 \
     --hash=sha256:f0fa19c6845758ab08074a0cfa8b7aecb71c999ca73d62883bc25cc018c4e548
@@ -1548,7 +1525,7 @@ typing-extensions==4.15.0 ; implementation_name == 'cpython' and platform_python
     #   harmonbot
     #   mypy
     #   psycopg
-    #   pyanalyze
+    #   pycroscope
     #   pydantic
     #   pydantic-core
     #   pytype
