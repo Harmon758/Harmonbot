@@ -131,10 +131,11 @@ async def get_article_beginning(
             data = await resp.json()
 
         text = BeautifulSoup(data["parse"]["text"]['*'], "lxml")
-        if text.body and text.body.div:
+        if text.body and text.body.div:  # type: ignore[attribute-error]
+            # https://github.com/google/pytype/issues/1867
             all_p = (
-                text.body.div.find_all('p', recursive = False) or
-                text.body.find_all('p', recursive = False)
+                text.body.div.find_all('p', recursive = False) or  # type: ignore[attribute-error]
+                text.body.find_all('p', recursive = False)  # type: ignore[attribute-error]
             )
         else:
             raise RuntimeError("Unexpected wikitext HTML format")
