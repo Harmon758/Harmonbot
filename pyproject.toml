@@ -91,7 +91,7 @@ dev = [
 ]
 lint = ["ruff"]
 test = ["hypothesis", "pytest", "vcrpy"]
-type-check = ["mypy[faster-cache]", "pytype"]
+type-check = ["mypy[faster-cache]", "pylyzer", "pytype"]
 
 [tool.bandit.assert_used]
 skips = ["./tests/*.py"]  # https://github.com/PyCQA/bandit/issues/1106
