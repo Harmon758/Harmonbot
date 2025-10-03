@@ -61,7 +61,7 @@ jobs:
     - name: Install dependencies
       run: uv pip install -r pylock.toml --system
     - name: Run pytype
-      run: pytype
+      run: pytype --config pytype.toml
 
   ruff:
     name: Ruff
