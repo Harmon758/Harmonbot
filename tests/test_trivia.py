@@ -140,6 +140,11 @@ class TestCheckAnswer(unittest.TestCase):
                 ),
                 "the thyroid gland",
                 "thyroid"
+            ),
+            (
+                "This type of drill is run by compressed air",
+                "a pneumatic drill",
+                "Pneumatic"
             )
         ):
             assert check_answer(
