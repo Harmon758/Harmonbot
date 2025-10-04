@@ -309,23 +309,22 @@ def check_answer(*, answer, response, clue = None, inflect_engine = None):
     if clue:
         doc = nlp(clue)
         for noun_chunk in doc.noun_chunks:
-            if noun_chunk.text.lower().startswith(("this ", "these ")):
-                subject = noun_chunk.root.text.lower()
-                for combination in (
-                    f"{response} {subject}", f"{subject} {response}"
+            subject = noun_chunk.root.text.lower()
+            for combination in (
+                f"{response} {subject}", f"{subject} {response}"
+            ):
+                if check_hyphen_removal_and_replacement(
+                    remove_preceding_words(answer), combination
                 ):
-                    if check_hyphen_removal_and_replacement(
-                        remove_preceding_words(answer), combination
-                    ):
-                        return True
-                for combination in (
-                    f"{remove_preceding_words(answer)} {subject}",
-                    f"{subject} {remove_preceding_words(answer)}"
+                    return True
+            for combination in (
+                f"{remove_preceding_words(answer)} {subject}",
+                f"{subject} {remove_preceding_words(answer)}"
+            ):
+                if check_hyphen_removal_and_replacement(
+                    combination, response
                 ):
-                    if check_hyphen_removal_and_replacement(
-                        combination, response
-                    ):
-                        return True
+                    return True
     # Check for matching named entity
     for answer_entity in nlp(case_sensitive_answer)._.linkedEntities:
         if len(answer_entity.get_span().text) == len(case_sensitive_answer):
