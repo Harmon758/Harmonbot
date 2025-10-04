@@ -57,19 +57,14 @@ class TestCheckAnswer(unittest.TestCase):
         assert check_answer(answer = "*a pine (**a fir)", response = "pine")
 
     def test_clue_text_plural_subject_redundancy_in_answer(self):
-        for clue, answer, response in (
-            (
-                (
-                    "These glands secrete an oily substance which lubricates "
-                    "your hair & keeps it soft"
-                ),
-                "the sebaceous glands",
-                "sebaceous"
+        assert check_answer(
+            clue = (
+                "These glands secrete an oily substance which lubricates "
+                "your hair & keeps it soft"
             ),
-        ):
-            assert check_answer(
-                clue = clue, answer = answer, response = response
-            )
+            answer = "the sebaceous glands",
+            response = "sebaceous"
+        )
 
     @unittest.expectedFailure
     def test_regressed_clue_text_plural_subject_redundancy_in_answer(self):
