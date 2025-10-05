@@ -1509,11 +1509,11 @@ wheels = [
 
 [[packages]]
 name = "pydantic"
-version = "2.11.9"
+version = "2.11.10"
 marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'"
 index = "https://pypi.org/simple"
-sdist = { url = "https://files.pythonhosted.org/packages/ff/5d/09a551ba512d7ca404d785072700d3f6727a02f6f3c24ecfd081c7cf0aa8/pydantic-2.11.9.tar.gz", upload-time = 2025-09-13T11:26:39Z, size = 788495, hashes = { sha256 = "6b8ffda597a14812a7975c90b82a8a2e777d9257aba3453f973acd3c032a18e2" } }
-wheels = [{ url = "https://files.pythonhosted.org/packages/3e/d3/108f2006987c58e76691d5ae5d200dd3e0f532cb4e5fa3560751c3a1feba/pydantic-2.11.9-py3-none-any.whl", upload-time = 2025-09-13T11:26:36Z, size = 444855, hashes = { sha256 = "c42dd626f5cfc1c6950ce6205ea58c93efa406da65f479dcb4029d5934857da2" } }]
+sdist = { url = "https://files.pythonhosted.org/packages/ae/54/ecab642b3bed45f7d5f59b38443dcb36ef50f85af192e6ece103dbfe9587/pydantic-2.11.10.tar.gz", upload-time = 2025-10-04T10:40:41Z, size = 788494, hashes = { sha256 = "dc280f0982fbda6c38fada4e476dc0a4f3aeaf9c6ad4c28df68a666ec3c61423" } }
+wheels = [{ url = "https://files.pythonhosted.org/packages/bd/1f/73c53fcbfb0b5a78f91176df41945ca466e71e9d9d836e5c522abda39ee7/pydantic-2.11.10-py3-none-any.whl", upload-time = 2025-10-04T10:40:39Z, size = 444823, hashes = { sha256 = "802a655709d49bd004c31e865ef37da30b540786a46bfce02333e0e24b5fe29a" } }]
 
 [[packages]]
 name = "pydantic-core"
