@@ -64,9 +64,7 @@ Discord Listener:
     - mkdir -p $GOPATH/src/$(dirname $REPO_NAME)
     - ln -svf $CI_PROJECT_DIR $GOPATH/src/$REPO_NAME
     - cd $GOPATH/src/$REPO_NAME
-    - go get github.com/bwmarrin/discordgo
-    - go get github.com/bwmarrin/dgvoice
-    - go get github.com/joho/godotenv
+    - go mod download
     - cd Discord
   script:
     - go run Harmonbot_Listener.go
