@@ -142,7 +142,7 @@ catalogue==2.0.10 ; implementation_name == 'cpython' and platform_python_impleme
     #   spacy
     #   srsly
     #   thinc
-certifi==2025.8.3 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+certifi==2025.10.5 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:e564105f78ded564e3ae7c923924435e1daa7463faeab5bb932bc53ffae63407 \
     --hash=sha256:f6c12493cfb1b06ba2ff328595af9350c65d6644968e5d3a2ffd78699af217a5
     # via
