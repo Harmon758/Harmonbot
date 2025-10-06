@@ -91,9 +91,7 @@ jobs:
         go-version: ${{ matrix.go-version }}
         cache: true
     - name: Get dependencies
-      run: |
-        cd Discord
-        go mod download
+      run: go mod download
     - name: Test Discord Listener
       env:
         DISCORD_LISTENER_BOT_TOKEN: ${{ secrets.DISCORD_LISTENER_BOT_TOKEN }}
