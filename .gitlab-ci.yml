@@ -2,7 +2,7 @@
 # the project directory since we can only cache local items.
 # https://gitlab.com/gitlab-org/gitlab/-/issues/14151
 variables:
-  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache"
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
   POSTGRES_HOST: postgres
   POSTGRES_DB: harmonbot
   POSTGRES_USER: harmonbot
