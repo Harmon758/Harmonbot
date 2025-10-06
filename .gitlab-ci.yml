@@ -1,11 +1,16 @@
 # Change pip's cache directory to be inside
 # the project directory since we can only cache local items.
+# https://gitlab.com/gitlab-org/gitlab/-/issues/14151
 variables:
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache"
   POSTGRES_HOST: postgres
   POSTGRES_DB: harmonbot
   POSTGRES_USER: harmonbot
   POSTGRES_PASSWORD: ""
+  # GitLab CI creates a separate mountpoint for the build directory,
+  # so we need to copy instead of using hard links.
+  # https://docs.astral.sh/uv/guides/integration/gitlab/
+  UV_LINK_MODE: copy
 
 Discord:
   # Official language image. Look for the different tagged releases at:
@@ -13,47 +18,37 @@ Discord:
   image: python:3.11.7
   services:
     - postgres:12.1
-  # Pip's cache doesn't store the python packages
-  # https://pip.pypa.io/en/stable/reference/pip_install/#caching
-  # If you want to also cache the installed packages, you have to install
-  # them in a virtualenv and cache it as well.
   cache:
-    key: Discord
-    paths:
-      - .cache/pip
-      - venv/
-  before_script:
-    - python --version  # Print out python version for debugging
-    - pip install virtualenv
-    - virtualenv venv
-    - source venv/bin/activate
+    - key:
+        files:
+          - uv.lock
+      paths:
+        - .cache/pip
+        - .uv-cache
   script:
-    - pip install --upgrade --requirement requirements.txt
+    - pip install --upgrade uv
+    - uv pip install -r pylock.toml --system
     - cd Discord
     - python -u Harmonbot.py
+    - uv cache prune --ci
 
 Telegram:
   # Official language image. Look for the different tagged releases at:
   # https://hub.docker.com/r/library/python/tags/
   image: python:3.11.7
-  # Pip's cache doesn't store the python packages
-  # https://pip.pypa.io/en/stable/reference/pip_install/#caching
-  # If you want to also cache the installed packages, you have to install
-  # them in a virtualenv and cache it as well.
   cache:
-    key: Telegram
-    paths:
-      - .cache/pip
-      - venv/
-  before_script:
-    - python --version  # Print out python version for debugging
-    - pip install virtualenv
-    - virtualenv venv
-    - source venv/bin/activate
+    - key:
+        files:
+          - uv.lock
+      paths:
+        - .cache/pip
+        - .uv-cache
   script:
-    - pip install --upgrade --requirement requirements.txt
+    - pip install --upgrade uv
+    - uv pip install -r pylock.toml --system
     - cd Telegram
     - python Telegram_Harmonbot.py
+    - uv cache prune --ci
 
 Discord Listener:
   variables:
