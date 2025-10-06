@@ -32,8 +32,6 @@ jobs:
         cache: pip
     - name: Set up uv
       uses: astral-sh/setup-uv@v6.8.0
-      with:
-        version-file: "pyproject.toml"
     - name: Install dependencies
       run: uv pip install -r pylock.toml --system
     - name: Test Discord Harmonbot
@@ -63,8 +61,6 @@ jobs:
         cache: pip
     - name: Set up uv
       uses: astral-sh/setup-uv@v6.8.0
-      with:
-        version-file: "pyproject.toml"
     - name: Install dependencies
       run: uv pip install -r pylock.toml --system
     - name: Test Telegram Harmonbot
