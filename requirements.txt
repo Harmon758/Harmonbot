@@ -1666,7 +1666,7 @@ xmltodict==1.0.2 ; implementation_name == 'cpython' and platform_python_implemen
     --hash=sha256:54306780b7c2175a3967cad1db92f218207e5bc1aba697d887807c0fb68b7649 \
     --hash=sha256:62d0fddb0dcbc9f642745d8bbf4d81fd17d6dfaec5a15b5c1876300aad92af0d
     # via wolframalpha
-yarl==1.21.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+yarl==1.22.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:140402fef1f482840fcd4d2ee9bfd07f08bfb2c80dd215220bd47f6f3566b882 \
     --hash=sha256:20b2dca6588f65b5def8e8eae4a087d504eacf34b5b435c021cc233ce82f6c15 \
     --hash=sha256:2227fcc88bebdc90ed87d924bdf8a76a730fc91796641e41ca747aabd13a5074 \
