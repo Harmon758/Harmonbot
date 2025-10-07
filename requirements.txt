@@ -15,7 +15,7 @@ aiohappyeyeballs==2.6.1 ; implementation_name == 'cpython' and platform_python_i
     --hash=sha256:c3f9d0113123803ccadfdf3f0faa505bc78e6a72d1cc4806cbd719826e943558 \
     --hash=sha256:f349ba8f4b75cb25c99c5c2d84e997e485204d2902a9597802b0371f09331fb8
     # via aiohttp
-aiohttp==3.12.15 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+aiohttp==3.13.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:010cc9bbd06db80fe234d9003f67e97a10fe003bfbedb40da7d71c1008eda0fe \
     --hash=sha256:2abbb216a1d3a2fe86dbd2edce20cdc5e9ad0be6378455b05ec7f77361b3ab50 \
     --hash=sha256:3b6f0af863cf17e6222b1735a756d664159e58855da99cfe965134a3ff63b0b0 \
