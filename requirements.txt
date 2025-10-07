@@ -350,7 +350,7 @@ fonttools==4.60.1 ; implementation_name == 'cpython' and platform_python_impleme
     --hash=sha256:ef00af0439ebfee806b25f24c8f92109157ff3fac5731dc7867957812e87b8d9 \
     --hash=sha256:f4b5c37a5f40e4d733d3bbaaef082149bee5a5ea3156a785ff64d949bd1353fa
     # via matplotlib
-frozenlist==1.7.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+frozenlist==1.8.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:21884e23cffabb157a9dd7e353779077bf5b8f9a58e9b262c6caad2ef5f80a56 \
     --hash=sha256:284d233a8953d7b24f9159b8a3496fc1ddc00f4db99c324bd5fb5f22d8698ea7 \
     --hash=sha256:2e310d81923c2437ea8670467121cc3e9b0f76d3043cc1d2331d56c7fb7a3a8f \
