@@ -715,7 +715,7 @@ msgspec==0.19.0 ; implementation_name == 'cpython' and platform_python_implement
     --hash=sha256:e78f46ff39a427e10b4a61614a2777ad69559cc8d603a7c05681f5a595ea98f7 \
     --hash=sha256:f04cad4385e20be7c7176bb8ae3dca54a08e9756cfc97bcdb4f18560c3042063
     # via pytype
-multidict==6.6.4 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+multidict==6.7.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:105245cc6b76f51e408451a844a54e6823bbd5a490ebfe5bdfc79798511ceded \
     --hash=sha256:1a0ccbfe93ca114c5d65a2471d52d8829e56d467c97b0e341cf5ee45410033b3 \
     --hash=sha256:27d8f8e125c07cb954e54d75d04905a9bba8a439c1d84aca94949d4d03d8601c \
