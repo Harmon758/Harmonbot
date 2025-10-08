@@ -300,11 +300,11 @@ wheels = [{ url = "https://files.pythonhosted.org/packages/db/d3/9dcc0f5797f070e
 
 [[packages]]
 name = "cloudpathlib"
-version = "0.22.0"
+version = "0.23.0"
 marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'"
 index = "https://pypi.org/simple"
-sdist = { url = "https://files.pythonhosted.org/packages/05/bc/d7345595a4467144b9e0b32e5eda9e4633ea6e4982262b0696935adb2229/cloudpathlib-0.22.0.tar.gz", upload-time = 2025-08-30T05:20:04Z, size = 52304, hashes = { sha256 = "6c0cb0ceab4f66a3a05a84055f9318fb8316cae5e096819f3f8e4be64feab6e9" } }
-wheels = [{ url = "https://files.pythonhosted.org/packages/f1/72/e8e53d8232e801e040f4b557ff3a453cecbb630d53ae107bd5e66a206bb9/cloudpathlib-0.22.0-py3-none-any.whl", upload-time = 2025-08-30T05:20:03Z, size = 61520, hashes = { sha256 = "2fdfaf5c4f85810ae8374d336d04dee371914d0e41a984695ae67308d7a5a009" } }]
+sdist = { url = "https://files.pythonhosted.org/packages/f4/18/2ac35d6b3015a0c74e923d94fc69baf8307f7c3233de015d69f99e17afa8/cloudpathlib-0.23.0.tar.gz", upload-time = 2025-10-07T22:47:56Z, size = 53126, hashes = { sha256 = "eb38a34c6b8a048ecfd2b2f60917f7cbad4a105b7c979196450c2f541f4d6b4b" } }
+wheels = [{ url = "https://files.pythonhosted.org/packages/ae/8a/c4bb04426d608be4a3171efa2e233d2c59a5c8937850c10d098e126df18e/cloudpathlib-0.23.0-py3-none-any.whl", upload-time = 2025-10-07T22:47:54Z, size = 62755, hashes = { sha256 = "8520b3b01468fee77de37ab5d50b1b524ea6b4a8731c35d1b7407ac0cd716002" } }]
 
 [[packages]]
 name = "codemod"
