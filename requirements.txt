@@ -215,7 +215,7 @@ click==8.3.0 ; implementation_name == 'cpython' and platform_python_implementati
     # via
     #   clarifai
     #   typer
-cloudpathlib==0.22.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+cloudpathlib==0.23.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:2fdfaf5c4f85810ae8374d336d04dee371914d0e41a984695ae67308d7a5a009 \
     --hash=sha256:6c0cb0ceab4f66a3a05a84055f9318fb8316cae5e096819f3f8e4be64feab6e9
     # via weasel
