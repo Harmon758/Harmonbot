@@ -1455,7 +1455,7 @@ toml==0.10.2 ; implementation_name == 'cpython' and platform_python_implementati
     --hash=sha256:806143ae5bfb6a3c6e736a764057db0e6a0e05e338b5630894a5f779cabb4f9b \
     --hash=sha256:b3bda1d108d5dd99f4a20d24d9c348e91c4db7ab1b749200bded2f839ccbe68f
     # via pytype
-tomli==2.2.1 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+tomli==2.3.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:023aa114dd824ade0100497eb2318602af309e5a55595f76b626d6d9f3b7b0a6 \
     --hash=sha256:2d0f2fdd22b02c6d81637a3c95f8cd77f995846af7414c5c4b8d0545afa1bc4b \
     --hash=sha256:33580bccab0338d00994d7f16f4c4ec25b776af3ffaac1ed74e0b3fc95e885a8 \
