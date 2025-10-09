@@ -940,7 +940,7 @@ preshed==3.0.10 ; implementation_name == 'cpython' and platform_python_implement
     # via
     #   spacy
     #   thinc
-propcache==0.4.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+propcache==0.4.1 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:015b2ca2f98ea9e08ac06eecc409d5d988f78c5fd5821b2ad42bc9afcd6b1557 \
     --hash=sha256:02e071548b6a376e173b0102c3f55dc16e7d055b5307d487e844c320e38cacf2 \
     --hash=sha256:075ca32384294434344760fdcb95f7833e1d7cf7c4e55f0e726358140179da35 \
