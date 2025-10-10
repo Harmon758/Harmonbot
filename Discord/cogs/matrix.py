@@ -15,9 +15,9 @@ if TYPE_CHECKING:
 
 
 async def setup(bot):
-    await bot.add_cog(Matrix())
+    await bot.add_cog(MatrixCog())
 
-class Matrix(commands.Cog):
+class MatrixCog(commands.Cog, name = "Matrix"):
 
     # TODO: move to converters file
     class Matrix(commands.Converter):
