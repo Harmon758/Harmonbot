@@ -34,6 +34,14 @@ class Trivia(commands.Cog):
         await self.bot.db.execute("CREATE SCHEMA IF NOT EXISTS trivia")
         await self.bot.db.execute(
             """
+            CREATE TABLE IF NOT EXISTS trivia.boards (
+                channel_id  BIGINT PRIMARY KEY,
+                board       JSONB
+            )
+            """
+        )
+        await self.bot.db.execute(
+            """
             CREATE TABLE IF NOT EXISTS trivia.users (
                 user_id    BIGINT PRIMARY KEY,
                 correct    INT,
@@ -42,10 +50,28 @@ class Trivia(commands.Cog):
             )
             """
         )
+        await self.bot.wait_until_ready()
+        for record in await self.bot.db.fetch(
+            "DELETE FROM trivia.boards RETURNING *"
+        ):
+            trivia_board = await TriviaBoard.from_dict(
+                record["board"], self.bot, record["channel_id"]
+            )
+            self.trivia_boards[record["channel_id"]] = trivia_board
+            self.bot.add_view(
+                TriviaBoardSelectionView(trivia_board),
+                message_id = trivia_board.message.id
+            )
 
     async def cog_unload(self):
-        for trivia_board in self.trivia_boards.values():
-            await trivia_board.stop()
+        for channel_id, trivia_board in self.trivia_boards.items():
+            await self.bot.db.execute(
+                """
+                INSERT INTO trivia.boards (channel_id, board)
+                VALUES ($1, $2)
+                """,
+                channel_id, trivia_board.to_dict()
+            )
 
     async def cog_check(self, ctx):
         return await checks.not_forbidden().predicate(ctx)
@@ -446,6 +472,61 @@ class TriviaBoard:
 
         self.ended = asyncio.Event()
 
+    def to_dict(self):
+        return {
+            "board": self.board,
+            "board_lines": self.board_lines,
+            "buzzer": self.buzzer,
+            "delete_selection_messages": self.delete_selection_messages,
+            "message": self.message.id,
+            "react": self.react,
+            "scores": {
+                player.id: score for player, score in self.scores.items()
+            },
+            "seconds": self.seconds,
+            "turn": self.turn.id if self.turn else None,
+            "turns": self.turns
+        }
+
+    @classmethod
+    async def from_dict(cls, data, bot, channel_id):
+        self = cls(
+            data["seconds"],
+            buzzer = data["buzzer"],
+            delete_selection_messages = data["delete_selection_messages"],
+            react = data["react"],
+            turns = data["turns"]
+        )
+        board = data["board"]
+        for category in board:
+            self.board.append(
+                {
+                    "title": category["title"],
+                    "clues": {
+                        int(clue_value): clue
+                        for clue_value, clue in category["clues"].items()
+                    }
+                }
+            )
+        self.board_lines = data["board_lines"]
+        self.bot = bot
+        channel = (
+            bot.get_channel(channel_id) or await bot.fetch_channel(channel_id)
+        )
+        self.message = await channel.fetch_message(data["message"])
+        self.ctx = await bot.get_context(self.message)
+        for player_id, score in data["scores"].items():
+            player = bot.get_user(player_id) or await bot.fetch_user(player_id)
+            self.scores[player] = score
+        if data["turn"]:
+            self.turn = (
+                bot.get_user(data["turn"]) or
+                await bot.fetch_user(data["turn"])
+            )
+
+        self.awaiting_selection = True
+        return self
+
     async def start(self, ctx):
         self.bot = ctx.bot
         self.ctx = ctx
@@ -729,7 +810,8 @@ class TriviaBoard:
             description = self.clue["text"],
             footer_text = "Air Date",
             timestamp = datetime.datetime.combine(
-                self.clue["airdate"], datetime.time(), datetime.UTC
+                datetime.date.fromisoformat(self.clue["airdate"]),
+                datetime.time(), datetime.UTC
             ),
             embeds = [
                 discord.Embed(
@@ -893,6 +975,8 @@ class TriviaBoard:
                     value = (all_values - values).pop()
                 else:
                     value = clue["value"]
+                clue = dict(clue)
+                clue["airdate"] = clue["airdate"].isoformat()
                 categories[category][int(value * multiplier)] = clue
 
         self.board = [
@@ -950,7 +1034,6 @@ class TriviaBoardSelectionView(ui.View):
 
     def __init__(self, match):
         super().__init__(timeout = None)
-        # TODO: Timeout?
 
         self.match = match
 
@@ -965,7 +1048,10 @@ class TriviaBoardSelectionView(ui.View):
         for value in self.match.VALUES:
             self.add_item(TriviaBoardValueButton(value))
 
-    @ui.select(placeholder = "Select a category")
+    @ui.select(
+        placeholder = "Select a category",
+        custom_id = "trivia_board_selection_category"
+    )
     async def category(self, interaction, select):
         selected = int(select.values[0])
 
@@ -991,7 +1077,8 @@ class TriviaBoardValueButton(ui.Button):
 
     def __init__(self, label):
         super().__init__(
-            style = discord.ButtonStyle.blurple, disabled = True, label = label
+            style = discord.ButtonStyle.blurple, disabled = True,
+            label = label, custom_id = f"trivia_board_selection_button:{label}"
         )
 
     async def callback(self, interaction):
