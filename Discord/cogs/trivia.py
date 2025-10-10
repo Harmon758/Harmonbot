@@ -1063,7 +1063,7 @@ class TriviaBoardSelectionView(ui.View):
         selected = int(select.values[0])
 
         for option in select.options:
-            option.default = option.value == selected
+            option.default = int(option.value) == selected
 
         for item in self.children:
             if isinstance(item, ui.Button):
