@@ -50,6 +50,11 @@ class Trivia(commands.Cog):
             )
             """
         )
+        self.bot.loop.create_task(
+            self.resume_trivia_boards(), name = "Resume trivia boards"
+        )
+
+    async def resume_trivia_boards(self):
         await self.bot.wait_until_ready()
         for record in await self.bot.db.fetch(
             "DELETE FROM trivia.boards RETURNING *"
