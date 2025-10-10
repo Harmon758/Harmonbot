@@ -654,9 +654,11 @@ class Bot(commands.Bot):
     async def initialize_custom_emoji(self):
         await self.wait_until_ready()
         for guild_id in self.emoji_guild_ids:
-            guild = self.get_guild(guild_id)
-            for emoji in guild.emojis:
-                self.custom_emojis[emoji.name] = emoji
+            if guild := self.get_guild(guild_id):
+                for emoji in guild.emojis:
+                    self.custom_emojis[emoji.name] = emoji
+            else:
+                self.print(f"Failed to get emoji guild with ID: {guild_id}")
 
     def cards_to_string(
         self, cards, custom_emoji = False, hidden_card_indexes = ()
