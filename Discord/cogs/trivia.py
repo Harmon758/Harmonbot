@@ -59,14 +59,23 @@ class Trivia(commands.Cog):
         for record in await self.bot.db.fetch(
             "DELETE FROM trivia.boards RETURNING *"
         ):
+            channel_id = record["channel_id"]
             trivia_board = await TriviaBoard.from_dict(
-                record["board"], self.bot, record["channel_id"]
+                record["board"], self.bot, channel_id
             )
             trivia_board.view = TriviaBoardSelectionView(trivia_board)
-            self.trivia_boards[record["channel_id"]] = trivia_board
+            self.trivia_boards[channel_id] = trivia_board
             self.bot.add_view(
                 trivia_board.view, message_id = trivia_board.message.id
             )
+            self.bot.loop.create_task(
+                self.delete_resumed_trivia_boards_when_ended(channel_id),
+                name = "Delete resumed trivia board when it ends"
+            )
+
+    async def delete_resumed_trivia_boards_when_ended(self, channel_id):
+        await self.trivia_boards[channel_id].ended.wait()
+        del self.trivia_boards[channel_id]
 
     async def cog_unload(self):
         for channel_id, trivia_board in self.trivia_boards.items():
