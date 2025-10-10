@@ -377,8 +377,8 @@ class Lichess(commands.Cog):
 		if "uscfRating" in profile:
 			fields.append(("USCF Rating", profile["uscfRating"]))
 		# TODO: Add ECF Rating
-		if "country" in profile:
-			country = profile["country"]
+		if "flag" in profile:
+			country = profile["flag"]
 			country_name = pycountry.countries.get(alpha_2 = country[:2]).name
 			country_flag = emoji.emojize(f":{country_name.replace(' ', '_')}:")
 			if len(country) > 2:  # Subdivision
