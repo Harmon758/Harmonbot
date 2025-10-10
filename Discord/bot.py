@@ -363,9 +363,8 @@ class Bot(commands.Bot):
         # Load cogs
         try:
             for file in sorted(os.listdir("cogs")):
-                if file.endswith(".py") and not file.startswith("reactions"):
+                if file.endswith(".py"):
                     await self.load_extension("cogs." + file[:-3])
-            await self.load_extension("cogs.reactions")
         except Exception as e:
             sentry_sdk.capture_exception(e)
             # TODO: Include name of specific cog
