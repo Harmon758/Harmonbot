@@ -294,8 +294,7 @@ if __name__ == "__main__":
 			try:
 				if ci:
 					client.loop.create_task(client.start(token), name = "Client")
-					await asyncio.sleep(10)
-					# TODO: stop after ready
+					await client.wait_until_ready()
 				else:
 					await client.start(token)
 			finally:
