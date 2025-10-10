@@ -340,16 +340,16 @@ wheels = [
 
 [[package]]
 name = "clarifai-grpc"
-version = "11.8.6"
+version = "11.9.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "googleapis-common-protos", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
     { name = "grpcio", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
     { name = "protobuf", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/6c/11/77c99366a392373bf98c7ddd6d3e3a8dfd0942aa3259c2645f47e96506a4/clarifai_grpc-11.8.6.tar.gz", hash = "sha256:bff2591350401d37ff8c3b712a1d3e7d4fe3948d8bc6a1885f67d9972dfcaf76", size = 286564, upload-time = "2025-09-30T09:39:57.952Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/52/e3/d874c9704bfc1a28e45fdf2b3f3e3307c42d5b6c6015b4ea333207f5b407/clarifai_grpc-11.9.0.tar.gz", hash = "sha256:2ab16f27ffae8053783be72fb588f3c8e45c617ee7f5ac03189561fc3cd248b9", size = 288195, upload-time = "2025-10-08T22:11:36.569Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/a3/36/d2b82a105495d668620248c85398014608e86f1ecd5a00719c2c8d902e22/clarifai_grpc-11.8.6-py3-none-any.whl", hash = "sha256:3dc43f4697ce211c54933808bd17961a1276912e1d40f1c3333256e17961d540", size = 302123, upload-time = "2025-09-30T09:39:56.651Z" },
+    { url = "https://files.pythonhosted.org/packages/98/9e/ea858857673c947b5df0c60af0a06d731e1754bc8a08f23e1f28fa9e63dc/clarifai_grpc-11.9.0-py3-none-any.whl", hash = "sha256:cf2902374e489c5c64cef442e3e1561307aab1ae251c1c35dbd5a3d69f8e6881", size = 303754, upload-time = "2025-10-08T22:11:34.957Z" },
 ]
 
 [[package]]
