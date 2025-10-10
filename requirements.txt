@@ -1576,7 +1576,7 @@ urllib3==2.5.0 ; implementation_name == 'cpython' and platform_python_implementa
     #   sentry-sdk
     #   vcrpy
     #   yt-dlp
-uv==0.8.22 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+uv==0.9.2 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:2a436b941b6e79fe1e1065b705a5689d72210f4367cbe885e19910cbcde2e4a1 \
     --hash=sha256:36c7aecdb0044caf15ace00da00af172759c49c832f0017b7433d80f46552cd3 \
     --hash=sha256:4a982bdd5d239dd6dd2b4219165e209c75af1e1819730454ee46d65b3ccf77a3 \
