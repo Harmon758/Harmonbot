@@ -371,7 +371,6 @@ class Lichess(commands.Cog):
 							profile.get("bio"), False))
 		else:
 			description = profile.get("bio")
-		fields.append(("Online", "Yes" if user_data["online"] else "No"))
 		fields.append(("Patron", "Yes" if user_data.get("patron") else "No"))
 		if "fideRating" in profile:
 			fields.append(("FIDE Rating", profile["fideRating"]))
