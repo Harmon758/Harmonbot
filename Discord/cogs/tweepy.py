@@ -55,6 +55,12 @@ class Tweepy(commands.Cog):
         self.sphinx_inventory = None
 
     async def cog_load(self):
+        self.bot.loop.create_task(
+            self.initial_sphinx_inventory_initialization(),
+            name = "Initial Tweepy Sphinx inventory initialization"
+        )
+
+    async def initial_sphinx_inventory_initialization(self):
         if not await self.initialize_sphinx_inventory():
             self.bot.print("Failed to initialize Tweepy Sphinx inventory")
 
