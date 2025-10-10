@@ -1070,7 +1070,7 @@ pycryptodomex==3.23.0 ; implementation_name == 'cpython' and platform_python_imp
     # via
     #   harmonbot
     #   yt-dlp
-pydantic==2.11.10 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+pydantic==2.12.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:802a655709d49bd004c31e865ef37da30b540786a46bfce02333e0e24b5fe29a \
     --hash=sha256:dc280f0982fbda6c38fada4e476dc0a4f3aeaf9c6ad4c28df68a666ec3c61423
     # via
@@ -1079,7 +1079,7 @@ pydantic==2.11.10 ; implementation_name == 'cpython' and platform_python_impleme
     #   spacy
     #   thinc
     #   weasel
-pydantic-core==2.33.2 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+pydantic-core==2.41.1 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:1e063337ef9e9820c77acc768546325ebe04ee38b08703244c1309cccc4f1bab \
     --hash=sha256:235f45e5dbcccf6bd99f9f472858849f73d11120d76ea8707115415f8e5ebebf \
     --hash=sha256:2bfb5112df54209d820d7bf9317c7a6c9025ea52e49f46b6a2060104bba37de7 \
