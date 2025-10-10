@@ -62,10 +62,10 @@ class Trivia(commands.Cog):
             trivia_board = await TriviaBoard.from_dict(
                 record["board"], self.bot, record["channel_id"]
             )
+            trivia_board.view = TriviaBoardSelectionView(trivia_board)
             self.trivia_boards[record["channel_id"]] = trivia_board
             self.bot.add_view(
-                TriviaBoardSelectionView(trivia_board),
-                message_id = trivia_board.message.id
+                trivia_board.view, message_id = trivia_board.message.id
             )
 
     async def cog_unload(self):
@@ -799,6 +799,8 @@ class TriviaBoard:
         self.category_number = category_number
         self.value = value
 
+        await self.view.stop(edit = False)
+
         self.clue = self.board[category_number - 1]["clues"][self.value]
 
         self.players_answered = []  # This is only used if buzzer is True
@@ -1069,11 +1071,12 @@ class TriviaBoardSelectionView(ui.View):
 
         await interaction.response.edit_message(view = self)
 
-    async def stop(self):
+    async def stop(self, edit = True):
         for item in self.children:
             item.disabled = True
 
-        await self.match.message.edit(view = self)
+        if edit:
+            await self.match.message.edit(view = self)
 
         super().stop()
 
