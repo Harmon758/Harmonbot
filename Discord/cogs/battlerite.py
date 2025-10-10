@@ -29,7 +29,16 @@ class Battlerite(commands.Cog):
         self.mappings = {}
 
     async def cog_load(self):
-        # Load mappings
+        self.bot.loop.create_task(
+            self.load_mappings_and_emoji(),
+            name = "Load Battlerite mappings and emoji"
+        )
+
+    async def load_mappings_and_emoji(self):
+        await self.load_mappings()
+        await self.load_emoji()
+
+    async def load_mappings(self):
         battlerite_folder = self.bot.data_path + "/battlerite"
         create_folder(battlerite_folder)
 
@@ -68,7 +77,8 @@ class Battlerite(commands.Cog):
             self.mappings[str(item["StackableId"])] = {"Name": name, "Type": item["StackableRangeName"]}
         with open(battlerite_folder + "/mappings.json", 'w') as mappings_file:
             json.dump(self.mappings, mappings_file, indent = 4)
-        # Load emoji
+
+    async def load_emoji(self):
         # TODO: Check only within Emoji Server emojis?
         champions = filter(lambda m: m["Type"] == "Characters", self.mappings.values())
         champions = set(c["Name"].lower().replace(' ', '_') for c in champions)
