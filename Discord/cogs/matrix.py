@@ -4,9 +4,10 @@ from __future__ import annotations
 from discord.ext import commands
 
 import ast
+from typing import TYPE_CHECKING
+
 import numpy
 import scipy
-from typing import TYPE_CHECKING
 
 from utilities import checks
 
