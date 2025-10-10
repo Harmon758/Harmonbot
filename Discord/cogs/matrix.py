@@ -17,16 +17,15 @@ if TYPE_CHECKING:
 async def setup(bot):
     await bot.add_cog(MatrixCog())
 
-class MatrixCog(commands.Cog, name = "Matrix"):
+class Matrix(commands.Converter):
+    async def convert(self, ctx, argument):
+        try:
+            return ast.literal_eval(argument)
+        except SyntaxError:
+            raise commands.BadArgument("Syntax Error")
+        # TODO: check matrix
 
-    # TODO: move to converters file
-    class Matrix(commands.Converter):
-        async def convert(self, ctx, argument):
-            try:
-                return ast.literal_eval(argument)
-            except SyntaxError:
-                raise commands.BadArgument("Syntax Error")
-            # TODO: check matrix
+class MatrixCog(commands.Cog, name = "Matrix"):
 
     async def cog_check(self, ctx):
         return await checks.not_forbidden().predicate(ctx)
