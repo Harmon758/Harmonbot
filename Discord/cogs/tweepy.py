@@ -66,7 +66,7 @@ class Tweepy(commands.Cog):
             "https://readthedocs.org/api/v3/projects/tweepy/versions/",
             headers = {
                 "Authorization": "Token " + self.bot.READ_THE_DOCS_API_TOKEN
-            },
+            } if self.bot.READ_THE_DOCS_API_TOKEN else None,
             params = {"built": "true"}
         ) as resp:
             if resp.status != 200:
