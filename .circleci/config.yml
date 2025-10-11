@@ -56,7 +56,7 @@ jobs:
 
   test-golang:
     docker:
-      - image: cimg/go:1.22.12
+      - image: cimg/go:1.23.12
 
     steps:
       - checkout
