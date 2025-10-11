@@ -79,7 +79,7 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest]
         # No Opus on macOS
-        go-version: ['1.21.13']
+        go-version: ['1.22.12']
     runs-on: ${{ matrix.os }}
 
     steps:
