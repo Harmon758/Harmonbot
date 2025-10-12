@@ -3,7 +3,6 @@ import unittest
 
 import asyncio
 import os
-import pytest
 
 from tests import vcr
 from units.jokes import get_dad_joke, DadJokeError
