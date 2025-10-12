@@ -141,9 +141,8 @@ async def get_article_beginning(
             raise RuntimeError("Unexpected wikitext HTML format")
 
         first_p = all_p[0]
-        if first_p.aside:  # type: ignore[union-attr]
-            first_p.aside.clear()  # type: ignore[union-attr]
-        # https://bugs.launchpad.net/beautifulsoup/+bug/2122019
+        if first_p.aside:
+            first_p.aside.clear()
         beginning = first_p.get_text()
 
         for p in all_p:
