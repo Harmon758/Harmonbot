@@ -474,7 +474,7 @@ httpx==0.28.1 ; implementation_name == 'cpython' and platform_python_implementat
 hypothesis==6.140.3 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:4f4a09bf77af21e0cc3dffed1ea639812dc75d38f81308ec9fb0e33f8557b0cb \
     --hash=sha256:a2cfff51641a58a56081f5c90ae1da6ccf3d043404f411805f7f0e0d75742d0e
-idna==3.10 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+idna==3.11 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:12f65c9b470abda6dc35cf8e63cc574b1c52b11df2c86030af0ac09b01b13ea9 \
     --hash=sha256:946d195a0d259cbba61165e88e65941f16e9b36ea6ddb97f00452bae8b1287d3
     # via
