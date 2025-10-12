@@ -14,11 +14,6 @@ class TestGetDadJoke(unittest.IsolatedAsyncioTestCase):
     async def asyncSetUp(self):
         asyncio.get_running_loop().slow_callback_duration = 1
 
-    @pytest.mark.xfail(
-        not os.getenv("CI"),
-        reason = "zstd error from aiohttp"
-        # https://github.com/aio-libs/aiohttp/pull/11604
-    )
     @vcr.use_cassette(
         "jokes/get_dad_joke/get_random_dad_joke.yaml",
         record_mode = "none" if os.getenv("CI") else "all"
