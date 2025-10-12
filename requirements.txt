@@ -872,6 +872,7 @@ packaging==25.0 ; implementation_name == 'cpython' and platform_python_implement
     #   harmonbot
     #   matplotlib
     #   pytest
+    #   setuptools-scm
     #   spacy
     #   thinc
     #   weasel
@@ -1332,8 +1333,12 @@ setuptools==80.9.0 ; implementation_name == 'cpython' and platform_python_implem
     --hash=sha256:f36b47402ecde768dbfafc46e8e4207b4360c654f1f3bb84475f0a28628fb19c
     # via
     #   python-aiml
+    #   setuptools-scm
     #   spacy
     #   thinc
+setuptools-scm==9.2.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:6662c9b9497b6c9bf13bead9d7a9084756f68238302c5ed089fb4dbd29d102d7 \
+    --hash=sha256:c551ef54e2270727ee17067881c9687ca2aedf179fa5b8f3fab9e8d73bdc421f
 sgmllib3k==1.0.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:7868fb1c8bfa764c1ac563d3cf369c381d1325d36124933a726f29fcdaa812e9
     # via feedparser

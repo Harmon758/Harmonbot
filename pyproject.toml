@@ -78,13 +78,15 @@ dependencies = [
 scripts = ["psycopg[binary]", "rich", "SQLAlchemy"]
 
 [build-system]
-requires = ["setuptools==80.9.0", "setuptools-scm==9.2.0"]
+requires = ["setuptools", "setuptools-scm"]
 build-backend = "setuptools.build_meta"
 
 [dependency-groups]
+build = ["setuptools", "setuptools-scm"]
 dev = [
     "Harmonbot[scripts]",
     "uv",
+    {include-group = "build"},
     {include-group = "lint"},
     {include-group = "test"},
     {include-group = "type-check"},
