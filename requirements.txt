@@ -489,7 +489,7 @@ imageio==2.37.0 ; implementation_name == 'cpython' and platform_python_implement
 imgurpython==1.1.7 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:3ac28501c2f699a78f93a4ab34df7443cebd39a170c9de4adecf0f3852cbdc33
     # via harmonbot
-immutabledict==4.2.1 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+immutabledict==4.2.2 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:c56a26ced38c236f79e74af3ccce53772827cef5c3bce7cab33ff2060f756373 \
     --hash=sha256:d91017248981c72eb66c8ff9834e99c2f53562346f23e7f51e7a5ebcf66a3bcc
     # via pytype
