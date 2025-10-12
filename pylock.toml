@@ -711,11 +711,11 @@ sdist = { url = "https://files.pythonhosted.org/packages/d4/76/514defcb05e6d58de
 
 [[packages]]
 name = "immutabledict"
-version = "4.2.1"
+version = "4.2.2"
 marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'"
 index = "https://pypi.org/simple"
-sdist = { url = "https://files.pythonhosted.org/packages/e0/c5/4240186fbabc58fba41bbe17c5f0cd37ffd4c0b85a5029ab104f946df175/immutabledict-4.2.1.tar.gz", upload-time = 2024-11-17T13:25:21Z, size = 6228, hashes = { sha256 = "d91017248981c72eb66c8ff9834e99c2f53562346f23e7f51e7a5ebcf66a3bcc" } }
-wheels = [{ url = "https://files.pythonhosted.org/packages/59/56/25ca7b848164b7d93dbd5fc97dd7751700c93e324fe854afbeb562ee2f98/immutabledict-4.2.1-py3-none-any.whl", upload-time = 2024-11-17T13:25:19Z, size = 4700, hashes = { sha256 = "c56a26ced38c236f79e74af3ccce53772827cef5c3bce7cab33ff2060f756373" } }]
+sdist = { url = "https://files.pythonhosted.org/packages/ce/12/1da8e1a9050d0603ba65fb1796ed8860a705b906701c96e77f85cc7490be/immutabledict-4.2.2.tar.gz", upload-time = 2025-10-12T13:32:59Z, size = 6099, hashes = { sha256 = "cb6ed3090df593148f94cb407d218ca526fd2639694afdb553dc4f50ce6feeca" } }
+wheels = [{ url = "https://files.pythonhosted.org/packages/63/7b/04ab6afa1ff7eb9ccb09049918c0407b205f5009092c0416147d163e4e2b/immutabledict-4.2.2-py3-none-any.whl", upload-time = 2025-10-12T13:32:58Z, size = 4736, hashes = { sha256 = "97c31d098a2c850e93a958badeef765e4736ed7942ec73e439facd764a3a7217" } }]
 
 [[packages]]
 name = "importlab"
