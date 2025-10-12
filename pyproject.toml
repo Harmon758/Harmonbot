@@ -10,7 +10,7 @@ dependencies = [
     "python-telegram-bot",
 
     "aiocache",
-    "aiohttp[speedups]",
+    "aiohttp",  # [speedups] - https://github.com/aio-libs/aiohttp/pull/11623
     "async-lru",
     "asyncpg",
     "beautifulsoup4[lxml]",
