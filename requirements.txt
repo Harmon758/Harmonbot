@@ -128,7 +128,7 @@ brotli==1.1.0 ; implementation_name == 'cpython' and platform_python_implementat
     # via
     #   discord-py
     #   yt-dlp
-cachetools==6.2.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+cachetools==6.2.1 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:1c76a8960c0041fcc21097e357f882197c79da0dbff766e7317890a65d7d8ba6 \
     --hash=sha256:38b328c0889450f05f5e120f56ab68c8abaf424e1275522b138ffc93253f7e32
     # via google-auth
