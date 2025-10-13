@@ -322,6 +322,8 @@ class Location(commands.Cog):
         location
             Location to query
         """
+        await ctx.defer()
+
         try:
             geocode_data = await get_geocode_data(
                 location, aiohttp_session = ctx.bot.aiohttp_session
