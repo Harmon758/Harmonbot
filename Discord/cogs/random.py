@@ -1101,7 +1101,6 @@ class Random(commands.Cog):
     @random.command()
     async def time(self, ctx):
         """Random time"""
-        # Note: time random command invokes this command
         await ctx.embed_reply(
             f"{random.randint(0, 23):02}:{random.randint(0, 59):02}"  # nosec: random  # noqa: S311 (suspicious-non-cryptographic-random-usage)
         )

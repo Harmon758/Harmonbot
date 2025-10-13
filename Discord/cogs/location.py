@@ -308,12 +308,16 @@ class Location(commands.Cog):
             file = discord.File(io.BytesIO(data), filename = "streetview.png")
         )
 
-    @commands.group(
-        aliases = ["timezone"],
-        case_insensitive = True, invoke_without_command = True
-    )
+    @commands.hybrid_command(aliases = ["timezone"])
     async def time(self, ctx: Context, *, location: str):
-        '''Current time of a location'''
+        """
+        Current time at a location
+
+        Parameters
+        ----------
+        location
+            Location to query
+        """
         try:
             geocode_data = await get_geocode_data(
                 location, aiohttp_session = ctx.bot.aiohttp_session
@@ -347,30 +351,6 @@ class Location(commands.Cog):
                 )
             ),)
         )
-
-    @time.command(name = "random")
-    async def time_random(self, ctx: Context):
-        """Random time"""
-        if command := ctx.bot.get_command("random time"):
-            await ctx.invoke(command)
-        else:
-            raise RuntimeError(
-                "random time command not found "
-                "when time random command invoked"
-            )
-
-    @app_commands.command(name = "time")
-    async def slash_time(self, interaction, *, location: str):
-        """
-        Current time at a location
-
-        Parameters
-        ----------
-        location
-            Location to query
-        """
-        ctx = await interaction.client.get_context(interaction)
-        await self.time(ctx, location = location)
 
     @commands.command()
     async def weather(self, ctx: Context, *, location: str):
