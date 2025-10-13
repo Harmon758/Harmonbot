@@ -1012,7 +1012,7 @@ class Meta(commands.Cog):
     @commands.is_owner()
     async def tasks_command(self, ctx):
         await ctx.embed_reply(
-            ', '.join(f"`{task.get_coro().__qualname__}`"
+            ", ".join(f"`{task.get_coro().__qualname__}`"
             if (name := task.get_name()).startswith("Task-")
             else name
             for task in asyncio.all_tasks())
