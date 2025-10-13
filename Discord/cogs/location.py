@@ -309,6 +309,7 @@ class Location(commands.Cog):
         )
 
     @commands.hybrid_command(aliases = ["timezone"])
+    @app_commands.allowed_installs(guilds = True, users = True)
     async def time(self, ctx: Context, *, location: str):
         """
         Current time at a location
