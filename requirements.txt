@@ -1216,7 +1216,7 @@ pyyaml==6.0.3 ; implementation_name == 'cpython' and platform_python_implementat
     #   clarifai
     #   libcst
     #   vcrpy
-referencing==0.36.2 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+referencing==0.37.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:df2e89862cd09deabbdba16944cc3f10feb6b3e6f18e902f7cc25609a34775aa \
     --hash=sha256:e8699adbbf8b5c7de96d8ffa0eb5c158b3beafce084968e2ea8bb08c6794dcd0
     # via
