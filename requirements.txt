@@ -1147,7 +1147,7 @@ pyparsing==3.2.5 ; implementation_name == 'cpython' and platform_python_implemen
     #   harmonbot
     #   matplotlib
     #   pydot
-pyrefly==0.36.2 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+pyrefly==0.37.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:22ea5db2c443f02423e59759791808d6bb06f2d4886736007421a1c98be25a13 \
     --hash=sha256:28c7b52239e95ac7d59882f287f23d0151153bc37af62753efd7534ae6ed7b7f \
     --hash=sha256:83485071e943754ffdeb0223ff5cddc27eec299857a1aad560041ad395c0da86 \
