@@ -793,7 +793,7 @@ ninja==1.13.0 ; implementation_name == 'cpython' and platform_python_implementat
     --hash=sha256:fb46acf6b93b8dd0322adc3a4945452a4e774b75b91293bafcc7b7f8e6517dfa \
     --hash=sha256:fb8ee8719f8af47fed145cced4a85f0755dd55d45b2bddaf7431fa89803c5f3e
     # via pytype
-numexpr==2.13.1 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+numexpr==2.14.1 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:58e2f111756fff63e27e495473d950e4c98bbebca55aa1572798b59110d6c84b \
     --hash=sha256:5a5a37b74561ed8dbd5f9be182d94419fa53f452e2d7d3e8d6dbef35a20f19f7 \
     --hash=sha256:66d0292f3b9dc5faadb4dd8a89d733321ff01c9699aee0c3cdbf513c9505e39c \
