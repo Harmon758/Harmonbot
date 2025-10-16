@@ -213,18 +213,21 @@ class Finance(commands.Cog):
 			params["base"] = against
 		if request:
 			params["symbols"] = request.upper()
-		url = "http://data.fixer.io/api/"
-		url += str(date) if date else "latest"
-		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
+		async with ctx.bot.aiohttp_session.get(
+			"http://data.fixer.io/api/" + str(date) if date else "latest",
+			params = params
+		) as resp:
 			# TODO: use ETags
 			if resp.status in (404, 422):
 				# TODO: handle other errors
 				data = await resp.json(content_type = "text/html")
-				return await ctx.embed_reply(f":no_entry: Error: {data['error']}")
+				await ctx.embed_reply(f":no_entry: Error: {data['error']}")
+				return
 			data = await resp.json()
 		if not data.get("success"):
 			# TODO: Include error message
-			return await ctx.embed_reply(":no_entry: Error: API Response was unsucessful")
+			await ctx.embed_reply(":no_entry: Error: API Response was unsucessful")
+			return
 		rates = list(data["rates"].items())
 		parts = len(tabulate.tabulate(rates, tablefmt = "plain", floatfmt = 'f')) // ctx.bot.EFVCL + 1
 		# EFVCL = Embed Field Value Character Limit
