@@ -240,9 +240,11 @@ class Finance(commands.Cog):
 		await ctx.embed_reply(fields = fields, footer_text = footer_text, timestamp = timestamp)
 	
 	# TODO: Handle ServerDisconnectedError ?
-	@commands.group(aliases = ["stocks"], 
-					description = "Data provided for free by [IEX](https://iextrading.com/developer).", 
-					invoke_without_command = True, case_insensitive = True)
+	@commands.group(
+		aliases = ["stocks"],
+		description = "Data provided for free by [IEX](https://iextrading.com/developer).",
+		invoke_without_command = True, case_insensitive = True
+	)
 	async def stock(self, ctx, symbol: str):
 		'''
 		WIP
