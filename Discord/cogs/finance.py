@@ -163,13 +163,17 @@ class Finance(commands.Cog):
 	@currency.command(name = "symbols", aliases = ["acronyms", "abbreviations"])
 	async def currency_symbols(self, ctx):
 		'''Currency symbols'''
-		url = "http://data.fixer.io/api/symbols"
-		params = {"access_key": ctx.bot.FIXER_API_KEY}
-		async with ctx.bot.aiohttp_session.get(url, params = params) as resp:
-			# TODO: handle errors
+		async with ctx.bot.aiohttp_session.get(
+			"http://data.fixer.io/api/symbols",
+			params = {"access_key": ctx.bot.FIXER_API_KEY}
+		) as resp:
+			# TODO: Handle errors
 			data = await resp.json()
+		
 		if not data.get("success"):
-			return await ctx.embed_reply(":no_entry: Error: API Response was unsucessful")
+			await ctx.embed_reply(":no_entry: Error: API Response was unsucessful")
+			return
+		
 		symbols = list(data["symbols"].items())
 		tabulated_symbols = tabulate.tabulate(symbols, tablefmt = "plain").split('\n')
 		fields = []
@@ -200,7 +204,7 @@ class Finance(commands.Cog):
 				# Zero-width space for empty field title
 			else:
 				fields.append(("Currency Symbols", ctx.bot.CODE_BLOCK.format(formatted_symbols)))
-		# TODO: paginate
+		# TODO: Paginate
 		await ctx.embed_reply(fields = fields)
 	
 	async def process_currency(self, ctx, against, request, date = ""):
