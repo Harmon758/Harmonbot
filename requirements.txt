@@ -256,7 +256,7 @@ contourpy==1.3.3 ; implementation_name == 'cpython' and platform_python_implemen
     --hash=sha256:cd5dfcaeb10f7b7f9dc8941717c6c2ade08f587be2226222c12b25f0483ed497 \
     --hash=sha256:fd907ae12cd483cd83e414b12941c632a969171bf90fc937d0c9f268a31cafff
     # via matplotlib
-cryptography==46.0.2 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+cryptography==46.0.3 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:04911b149eae142ccd8c9a68892a70c21613864afb47aba92d8c7ed9cc001023 \
     --hash=sha256:0b507c8e033307e37af61cb9f7159b416173bdf5b41d11c4df2e499a1d8e007c \
     --hash=sha256:1a88634851d9b8de8bb53726f4300ab191d3b2f42595e2581a54b26aba71b7cc \
