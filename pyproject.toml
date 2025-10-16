@@ -162,7 +162,7 @@ environments = [
 ]
 
 [tool.uv.sources]
-discord-py = { git = "https://github.com/Rapptz/discord.py.git", rev = "b9dc85e" }
+discord-py = { git = "https://github.com/Rapptz/discord.py.git", rev = "f77ba71" }
 discord-ext-menus = { git = "https://github.com/Rapptz/discord-ext-menus.git", rev = "8686b5d" }
 # https://github.com/explosion/spacy-models/releases/tag/en_core_web_md-3.8.0
 en_core_web_md = { url = "https://github.com/explosion/spacy-models/releases/download/en_core_web_md-3.8.0/en_core_web_md-3.8.0-py3-none-any.whl" }
