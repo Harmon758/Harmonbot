@@ -111,7 +111,7 @@ def check_answer(*, answer, response, clue = None, inflect_engine = None):
     response_items[-1:] = [
         item for item in response_items[-1].split(" and ") if item
     ]
-    response_items = [item.strip() for item in response_items]
+    response_items = [item.strip() for item in response_items if item]
     # Return False if only "and"
     if not response_items:
         return False
