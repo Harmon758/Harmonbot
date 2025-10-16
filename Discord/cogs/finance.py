@@ -221,12 +221,12 @@ class Finance(commands.Cog):
 			if resp.status in (404, 422):
 				# TODO: handle other errors
 				data = await resp.json(content_type = "text/html")
-				await ctx.embed_reply(f":no_entry: Error: {data['error']}")
+				await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: {data['error']}")
 				return
 			data = await resp.json()
 		if not data.get("success"):
 			# TODO: Include error message
-			await ctx.embed_reply(":no_entry: Error: API Response was unsucessful")
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: API Response was unsucessful")
 			return
 		rates = list(data["rates"].items())
 		parts = len(tabulate.tabulate(rates, tablefmt = "plain", floatfmt = 'f')) // ctx.bot.EFVCL + 1
