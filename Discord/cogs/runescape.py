@@ -93,7 +93,7 @@ class RuneScape(commands.Cog):
     async def stats(self, ctx, *, username: str):
         """Stats"""
         async with ctx.bot.aiohttp_session.get(
-            "http://services.runescape.com/m=hiscore/index_lite.ws",
+            "https://secure.runescape.com/m=hiscore/index_lite.ws",
             params = {"player": username}
         ) as resp:
             if resp.status == 404:
@@ -123,7 +123,7 @@ class RuneScape(commands.Cog):
         await ctx.embed_reply(
             title = username,
             title_url = (
-                "http://services.runescape.com/m=hiscore/compare?user1=" +
+                "https://secure.runescape.com/m=hiscore/compare?user1=" +
                 username.replace(' ', '+')
             ),
             description = ctx.bot.CODE_BLOCK.format(
