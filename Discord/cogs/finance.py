@@ -171,7 +171,7 @@ class Finance(commands.Cog):
 			data = await resp.json()
 		
 		if not data.get("success"):
-			await ctx.embed_reply(":no_entry: Error: API Response was unsucessful")
+			await ctx.embed_reply(f"{ctx.bot.error_emoji} Error: API Response was unsucessful")
 			return
 		
 		symbols = list(data["symbols"].items())
