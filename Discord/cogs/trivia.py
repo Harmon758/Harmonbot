@@ -29,6 +29,8 @@ class Trivia(commands.Cog):
 
         load_nlp()
 
+        self.delete_resumed_trivia_boards_when_ended_tasks = []
+
     async def cog_load(self):
         await self.bot.connect_to_database()
         await self.bot.db.execute("CREATE SCHEMA IF NOT EXISTS trivia")
@@ -68,9 +70,11 @@ class Trivia(commands.Cog):
             self.bot.add_view(
                 trivia_board.view, message_id = trivia_board.message.id
             )
-            self.bot.loop.create_task(
-                self.delete_resumed_trivia_boards_when_ended(channel_id),
-                name = "Delete resumed trivia board when it ends"
+            self.delete_resumed_trivia_boards_when_ended_tasks.append(
+                self.bot.loop.create_task(
+                    self.delete_resumed_trivia_boards_when_ended(channel_id),
+                    name = "Delete resumed trivia board when it ends"
+                )
             )
 
     async def delete_resumed_trivia_boards_when_ended(self, channel_id):
@@ -86,6 +90,8 @@ class Trivia(commands.Cog):
                 """,
                 channel_id, trivia_board.to_dict()
             )
+        for task in self.delete_resumed_trivia_boards_when_ended_tasks:
+            task.cancel()
 
     async def cog_check(self, ctx):
         return await checks.not_forbidden().predicate(ctx)
