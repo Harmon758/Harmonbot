@@ -271,8 +271,10 @@ class Finance(commands.Cog):
 		title = f"{data['companyName']} ({data['symbol']})"
 		fields = (("Exchange", data["exchange"]), ("Industry", data["industry"]), ("CEO", data["CEO"]))
 		thumbnail_url = logo_data.get("url")
-		await ctx.embed_reply(description + attribution, title = title, 
-								fields = fields, thumbnail_url = thumbnail_url)
+		await ctx.embed_reply(
+			description + attribution, title = title,
+			fields = fields, thumbnail_url = thumbnail_url
+		)
 	
 	@stock.command(name = "earnings")
 	async def stock_earnings(self, ctx, symbol: str):
