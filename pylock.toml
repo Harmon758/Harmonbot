@@ -617,11 +617,11 @@ wheels = [
 
 [[packages]]
 name = "grpc-google-iam-v1"
-version = "0.14.2"
+version = "0.14.3"
 marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'"
 index = "https://pypi.org/simple"
-sdist = { url = "https://files.pythonhosted.org/packages/b9/4e/8d0ca3b035e41fe0b3f31ebbb638356af720335e5a11154c330169b40777/grpc_google_iam_v1-0.14.2.tar.gz", upload-time = 2025-03-17T11:40:23Z, size = 16259, hashes = { sha256 = "b3e1fc387a1a329e41672197d0ace9de22c78dd7d215048c4c78712073f7bd20" } }
-wheels = [{ url = "https://files.pythonhosted.org/packages/66/6f/dd9b178aee7835b96c2e63715aba6516a9d50f6bebbd1cc1d32c82a2a6c3/grpc_google_iam_v1-0.14.2-py3-none-any.whl", upload-time = 2025-03-17T11:40:22Z, size = 19242, hashes = { sha256 = "a3171468459770907926d56a440b2bb643eec1d7ba215f48f3ecece42b4d8351" } }]
+sdist = { url = "https://files.pythonhosted.org/packages/76/1e/1011451679a983f2f5c6771a1682542ecb027776762ad031fd0d7129164b/grpc_google_iam_v1-0.14.3.tar.gz", upload-time = 2025-10-15T21:14:53Z, size = 23745, hashes = { sha256 = "879ac4ef33136c5491a6300e27575a9ec760f6cdf9a2518798c1b8977a5dc389" } }
+wheels = [{ url = "https://files.pythonhosted.org/packages/4a/bd/330a1bbdb1afe0b96311249e699b6dc9cfc17916394fd4503ac5aca2514b/grpc_google_iam_v1-0.14.3-py3-none-any.whl", upload-time = 2025-10-15T21:14:51Z, size = 32690, hashes = { sha256 = "7a7f697e017a067206a3dfef44e4c634a34d3dee135fe7d7a4613fe3e59217e6" } }]
 
 [[packages]]
 name = "grpcio"
