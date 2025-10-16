@@ -332,6 +332,8 @@ class Finance(commands.Cog):
 		iex_last_updated = data.get("iexLastUpdated")
 		if iex_last_updated and iex_last_updated != -1:
 			timestamp = datetime.datetime.utcfromtimestamp(iex_last_updated / 1000)
-		await ctx.embed_reply(description, title = data["symbol"], fields = fields, 
-								footer_text = data["primaryExchange"], timestamp = timestamp)
+		await ctx.embed_reply(
+			description, title = data["symbol"], fields = fields,
+			footer_text = data["primaryExchange"], timestamp = timestamp
+		)
 
