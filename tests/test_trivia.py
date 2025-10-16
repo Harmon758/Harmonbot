@@ -279,6 +279,9 @@ class TestCheckAnswer(unittest.TestCase):
             response = "South and North Carolina"
         )
 
+    def test_repeated_commas_in_response(self):
+        assert not check_answer(answer = "Jellybean", response = "benny ,,,")
+
     def test_serial_commas_in_response(self):
         assert check_answer(
             answer = "Elaine, George & Kramer",
