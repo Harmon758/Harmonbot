@@ -182,9 +182,13 @@ class Finance(commands.Cog):
 				# TODO: Handle possibility of textwrap indents increasing inline field count by 1 when < 3?
 			while tabulated_symbols and len(
 				formatted_symbols + (
-					formatted_line := '\n'.join(textwrap.wrap(tabulated_symbols[0], 
-																ctx.bot.EDCBRCL // inline_field_count, 
-																subsequent_indent = ' ' * 5))
+					formatted_line := '\n'.join(
+						textwrap.wrap(
+							tabulated_symbols[0],
+							ctx.bot.EDCBRCL // inline_field_count,
+							subsequent_indent = ' ' * 5
+						)
+					)
 				)
 			) < ctx.bot.EMBED_FIELD_VALUE_CHARACTER_LIMIT - 8:
 			# EDCBRCL = Embed Description Code Block Row Character Limit
