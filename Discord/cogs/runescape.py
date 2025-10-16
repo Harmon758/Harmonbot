@@ -160,11 +160,11 @@ class RuneScape(commands.Cog):
         """
         This command has been deprecated
         Zybez RuneScape Community was shut down on September 17th, 2018
-        https://forums.zybez.net/topic/1783583-exit-post-the-end/
+        https://web.archive.org/web/20190913153109/https://forums.zybez.net/topic/1783583-exit-post-the-end/
         """
         # Previously used
         # https://forums.zybez.net/runescape-2007-prices/api/?info
         await ctx.embed_reply(
-            "See https://forums.zybez.net/topic/1783583-exit-post-the-end/"
+            "See https://web.archive.org/web/20190913153109/https://forums.zybez.net/topic/1783583-exit-post-the-end/"
         )
 
