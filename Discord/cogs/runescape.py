@@ -92,6 +92,8 @@ class RuneScape(commands.Cog):
     )
     async def stats(self, ctx, *, username: str):
         """Stats"""
+        # RuneScape API response becomes malformed with cookies
+        ctx.bot.aiohttp_session.cookie_jar.clear_domain("runescape.com")
         async with ctx.bot.aiohttp_session.get(
             "https://secure.runescape.com/m=hiscore/index_lite.ws",
             params = {"player": username}
