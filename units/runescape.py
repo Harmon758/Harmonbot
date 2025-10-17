@@ -53,6 +53,8 @@ async def get_ge_data(
     async with ensure_session(aiohttp_session) as aiohttp_session:
         if item_id is None:
             item_id = await get_item_id(item, aiohttp_session = aiohttp_session)
+        # RuneScape API response becomes malformed with cookies
+        aiohttp_session.cookie_jar.clear_domain("runescape.com")
         async with aiohttp_session.get(
             "https://secure.runescape.com/m=itemdb_rs/api/catalogue/detail.json",
             params = {"item": item_id}
