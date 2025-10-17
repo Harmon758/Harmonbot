@@ -1289,7 +1289,7 @@ rsa==4.9 ; implementation_name == 'cpython' and platform_python_implementation =
     --hash=sha256:90260d9058e514786967344d0ef75fa8727eed8a7d2e43ce9f4bcf1b536174f7 \
     --hash=sha256:e38464a49c6c85d7f1351b0126661487a7e0a14a50f1675ec50eb34d4f20ef21
     # via google-auth
-ruff==0.14.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+ruff==0.14.1 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:16b68e183a0e28e5c176d51004aaa40559e8f90065a10a559176713fcf435206 \
     --hash=sha256:30a58c087aef4584c193aebf2700f0fbcfc1e77b89c7385e3139956fa90434e2 \
     --hash=sha256:3ba9a8925e90f861502f7d974cc60e18ca29c72bb0ee8bfeabb6ade35a3abde7 \
