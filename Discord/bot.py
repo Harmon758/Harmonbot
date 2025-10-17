@@ -289,10 +289,6 @@ class Bot(commands.Bot):
             return tomllib.load(config_file)
 
     @property
-    def emoji_guild_ids(self):
-        return self.config["Discord"]["emoji_guild_ids"]
-
-    @property
     def game_statuses(self):
         return self.config["Discord"]["game_statuses"]
 
