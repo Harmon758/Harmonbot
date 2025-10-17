@@ -54,7 +54,7 @@ async def get_ge_data(
         if item_id is None:
             item_id = await get_item_id(item, aiohttp_session = aiohttp_session)
         async with aiohttp_session.get(
-            "https://services.runescape.com/m=itemdb_rs/api/catalogue/detail.json",
+            "https://secure.runescape.com/m=itemdb_rs/api/catalogue/detail.json",
             params = {"item": item_id}
         ) as resp:
             if resp.status == 404:
