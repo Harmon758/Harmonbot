@@ -11,6 +11,7 @@ import importlib
 import json
 import logging
 import os
+from pathlib import Path
 from platform import python_version
 import random
 import sys
@@ -88,6 +89,7 @@ class Bot(commands.Bot):
         self.changelog = "https://discord.gg/a2rbZPu"
         self.console_line_limit = 167
         self.console_message_prefix = "Discord Harmonbot: "
+        self.assets_path = "../assets/"
         self.library_path = "D:/Music/"
         self.simple_user_agent = "Harmonbot (Discord Bot)"
         self.user_agent = (
@@ -121,7 +123,6 @@ class Bot(commands.Bot):
         self.EMBED_TOTAL_CHARACTER_LIMIT = self.EMBED_TOTAL_CHAR_LIMIT = self.EToCL = 6000
         ## Functional
         ### Set on ready
-        self.custom_emojis = {}
         self.invite_url = None
         self.last_resort_notices_channel = None
         self.listener_bot = None  # User object
@@ -326,8 +327,8 @@ class Bot(commands.Bot):
         )
 
         self.loop.create_task(
-            self.initialize_custom_emoji(),
-            name = "Initialize custom emoji as constant attributes of Bot"
+            self.initialize_application_emojis(),
+            name = "Initialize application emojis for Bot"
         )
 
         self.aiohttp_session = aiohttp.ClientSession(loop = self.loop)
@@ -651,14 +652,21 @@ class Bot(commands.Bot):
         await self.update_all_listing_stats()
         await self.update_all_listing_commands()
 
-    async def initialize_custom_emoji(self):
-        await self.wait_until_ready()
-        for guild_id in self.emoji_guild_ids:
-            if guild := self.get_guild(guild_id):
-                for emoji in guild.emojis:
-                    self.custom_emojis[emoji.name] = emoji
-            else:
-                self.print(f"Failed to get emoji guild with ID: {guild_id}")
+    async def initialize_application_emojis(self):
+        self.application_emojis = {
+            emoji.name: emoji
+            for emoji in await self.fetch_application_emojis()
+        }
+        for image_file in (
+            Path(self.assets_path) / "segmented_playing_cards"
+        ).iterdir():
+            if image_file.stem not in self.application_emojis:
+                self.application_emojis[image_file.stem] = (
+                    await self.create_application_emoji(
+                        name = image_file.stem,
+                        image = image_file.read_bytes()
+                    )
+                )
 
     def cards_to_string(
         self, cards, custom_emoji = False, hidden_card_indexes = ()
@@ -668,7 +676,7 @@ class Bot(commands.Bot):
         if isinstance(hidden_card_indexes, int):
             hidden_card_indexes = (hidden_card_indexes,)
 
-        if custom_emoji and self.custom_emojis:
+        if custom_emoji:
             card_count = 0
             first_line = ""
             second_line = ""
@@ -676,17 +684,17 @@ class Bot(commands.Bot):
             for card in cards:
                 while card_count in hidden_card_indexes:
                     first_line += (
-                        str(self.custom_emojis["back_top_left_segment"]) +
-                        str(self.custom_emojis["back_top_right_segment"]) + ' '
+                        str(self.application_emojis["back_top_left_segment"]) +
+                        str(self.application_emojis["back_top_right_segment"]) + ' '
                     )
                     second_line += (
-                        str(self.custom_emojis["back_middle_left_segment"]) +
-                        str(self.custom_emojis["back_middle_right_segment"]) +
+                        str(self.application_emojis["back_middle_left_segment"]) +
+                        str(self.application_emojis["back_middle_right_segment"]) +
                         ' '
                     )
                     third_line += (
-                        str(self.custom_emojis["back_bottom_left_segment"]) +
-                        str(self.custom_emojis["back_bottom_right_segment"]) +
+                        str(self.application_emojis["back_bottom_left_segment"]) +
+                        str(self.application_emojis["back_bottom_right_segment"]) +
                         ' '
                     )
                     card_count += 1
@@ -694,19 +702,19 @@ class Bot(commands.Bot):
                 value = card.value if len(card.value) < 3 else card.value[0]
                 first_line += (
                     str(
-                        self.custom_emojis[f"{color}_top_left_{value}_segment"]
+                        self.application_emojis[f"{color}_top_left_{value}_segment"]
                     ) +
-                    str(self.custom_emojis["blank_top_right_segment"]) + ' '
+                    str(self.application_emojis["blank_top_right_segment"]) + ' '
                 )
                 second_line += (
                     str(
-                        self.custom_emojis[f"{card.suit.lower()}_segment"]
+                        self.application_emojis[f"{card.suit.lower()}_segment"]
                     ) * 2 + ' '
                 )
                 third_line += (
-                    str(self.custom_emojis["blank_bottom_left_segment"]) +
+                    str(self.application_emojis["blank_bottom_left_segment"]) +
                     str(
-                        self.custom_emojis[
+                        self.application_emojis[
                             f"{color}_bottom_right_{value}_segment"
                         ]
                     ) + ' '
@@ -714,17 +722,17 @@ class Bot(commands.Bot):
                 card_count += 1
             while card_count in hidden_card_indexes:
                 first_line += (
-                    str(self.custom_emojis["back_top_left_segment"]) +
-                    str(self.custom_emojis["back_top_right_segment"]) + ' '
+                    str(self.application_emojis["back_top_left_segment"]) +
+                    str(self.application_emojis["back_top_right_segment"]) + ' '
                 )
                 second_line += (
-                    str(self.custom_emojis["back_middle_left_segment"]) +
-                    str(self.custom_emojis["back_middle_right_segment"]) +
+                    str(self.application_emojis["back_middle_left_segment"]) +
+                    str(self.application_emojis["back_middle_right_segment"]) +
                     ' '
                 )
                 third_line += (
-                    str(self.custom_emojis["back_bottom_left_segment"]) +
-                    str(self.custom_emojis["back_bottom_right_segment"]) +
+                    str(self.application_emojis["back_bottom_left_segment"]) +
+                    str(self.application_emojis["back_bottom_right_segment"]) +
                     ' '
                 )
                 card_count += 1
