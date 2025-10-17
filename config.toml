@@ -51,7 +51,6 @@ wear = "a laptop sleeve"
 website = "https://harmon758.github.io/Harmonbot/"
 
 [Discord]
-emoji_guild_ids = [314198658985754625, 436072973061980161, 1027378240106532906]
 game_statuses = [
     " ", "for the other team", "gigs", "Goldbach's conjecture",
     "Goldbach's conjecture solution", "Google Ultron", "hard to get", "music",
