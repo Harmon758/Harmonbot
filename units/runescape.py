@@ -32,7 +32,7 @@ async def get_item_id(
                 "https://runescape.wiki/api.php",
                 params = {
                     "action": "bucket",
-                    "query": f"bucket('item_id').select('id').where('page_name','{item}').run()",
+                    "query": f"bucket(\"item_id\").select(\"id\").where(\"page_name\",\"{item}\").run()",
                     "format": "json"
                 }
             ) as resp:
