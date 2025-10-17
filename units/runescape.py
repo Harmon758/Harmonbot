@@ -26,24 +26,20 @@ async def get_item_id(
             raise ValueError("Item not found")
 
         for item in data[1]:
-            # https://www.semantic-mediawiki.org/wiki/Help:Ask
-            # https://www.semantic-mediawiki.org/wiki/Help:Inline_queries
+            # https://runescape.wiki/w/Help:Editing/Bucket
+            # https://runescape.wiki/w/Bucket:Item_id
             async with aiohttp_session.get(
                 "https://runescape.wiki/api.php",
                 params = {
-                    "action": "ask",
-                    "query": f"[[{item}]]|?Item_ID",
+                    "action": "bucket",
+                    "query": f"bucket('item_id').select('id').where('page_name','{item}').run()",
                     "format": "json"
                 }
             ) as resp:
                 data = await resp.json()
 
-            if item_id := (
-                list(
-                    data["query"]["results"].values()
-                )[0]["printouts"]["Item ID"]
-            ):
-                return item_id[0]
+            if data["bucket"]:
+                return int(data["bucket"][0]["id"][0])
 
         raise ValueError(f"{item} is not an item")
 
