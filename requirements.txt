@@ -8,7 +8,9 @@ aiocache==0.12.3 ; implementation_name == 'cpython' and platform_python_implemen
 aiodns==3.5.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:11264edbab51896ecf546c18eb0dd56dff0428c6aa6d2cd87e643e07300eb310 \
     --hash=sha256:6d0404f7d5215849233f6ee44854f2bb2481adf71b336b2279016ea5990ca5c5
-    # via discord-py
+    # via
+    #   aiohttp
+    #   discord-py
 aiohappyeyeballs==2.6.1 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:c3f9d0113123803ccadfdf3f0faa505bc78e6a72d1cc4806cbd719826e943558 \
     --hash=sha256:f349ba8f4b75cb25c99c5c2d84e997e485204d2902a9597802b0371f09331fb8
@@ -89,6 +91,30 @@ backports-tarfile==1.2.0 ; implementation_name == 'cpython' and platform_python_
     --hash=sha256:77e284d754527b01fb1e6fa8a1afe577858ebe4e9dad8919e34c862cb399bc34 \
     --hash=sha256:d75e02c268746e1b8144c278978b6e98e85de6ad16f8e4b0844a154557eca991
     # via jaraco-context
+backports-zstd==1.0.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:15863463b7f28049d4511f9f123c3b96d66c3de543315c21ef3bc6b001b20d01 \
+    --hash=sha256:1f8b0bc92f5be153a4878188ab0aeab5b9bbff3dc3e9d3ad3b19e29fe4932741 \
+    --hash=sha256:34cd5bdb76448f2259ea371d6cd62a7e339021e1429fe3c386acb3e58c1f6c61 \
+    --hash=sha256:3beab43bfda8e453648b9cce5edcceb5add6c42c331873b41ab1d24232d9c2b0 \
+    --hash=sha256:411da73bb3eadef58da781c55c6399fc6dba9b898ca05009410138fb1d7fef8d \
+    --hash=sha256:479270cd6385775dca98accaf304e5f011d94280ad4681d3e925a1b4dfd19aaf \
+    --hash=sha256:62ab49843fc7761383aa7bea8105ca70941797c7145647f71fa4340bfd3b747a \
+    --hash=sha256:67469b247c99537b77f7d402580cbb7298fa15ebe3ce6984d89a5b65d4d5a6c2 \
+    --hash=sha256:6825598589ef9b8c0c4e574170d29d84400be24c2f172b81403435b33c8d103a \
+    --hash=sha256:6910a9311e7a2987d353f396568f5e401cf4917e2112bf610e62385ad02d8cf4 \
+    --hash=sha256:782923d65aa6d0c8c465c32563df70dbdd3e255532de2a2d26e13598fc5f85ae \
+    --hash=sha256:8191c019cefaf074c3f05ebec5ad19ec606b7ac1dc915b66a0820268e6f0e327 \
+    --hash=sha256:85f08363b7ca504a8bceaa2d4333a1a307d2b2056f77a13036a81d7aa3c87b2a \
+    --hash=sha256:8e99702fd4092c26624b914bcd140d03911a16445ba6a74435b29a190469cce3 \
+    --hash=sha256:a54ea58ddeaab9a1385c368f84fca474b87b052087b62e56ac1ebd10cabac157 \
+    --hash=sha256:b39da619431f4782f3d8bb0d99a6067db571eab50579527ba168bcc12887d328 \
+    --hash=sha256:c28cfbd6217ba4837d35cdd8cfd5dcf84ad54bffcb531734002e27dcc84c87ca \
+    --hash=sha256:c55f842917ac4405a9779476b1ec8219247f35d86673769cf2d3c140799d3e4a \
+    --hash=sha256:d251a49e80e1868e132e6edadfbef8dba7ded7751e59a41684cd6da38bbd3507 \
+    --hash=sha256:d6272730803dc5b212615f50af7395f2b05155d9415e367492d6dac807edc949 \
+    --hash=sha256:f009996762b887d1bf9330ac0ce1e83608db0b881f63644ae30f2b6a290cd36b \
+    --hash=sha256:f6a27510ebb9e1cb877aaa26fc5e0303437bd2023e0a24976da854a3421e60e5
+    # via aiohttp
 beautifulsoup4==4.14.2 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:2a98ab9f944a11acee9cc848508ec28d9228abfd522ef0fad6a02a72e0ded69e \
     --hash=sha256:5ef6fa3a8cbece8488d66985560f97ed091e22bbc4e9c2338508a9d5de6d4515
@@ -126,6 +152,7 @@ brotli==1.1.0 ; implementation_name == 'cpython' and platform_python_implementat
     --hash=sha256:ceb64bbc6eac5a140ca649003756940f8d6a7c444a68af170b3187623b43bebf \
     --hash=sha256:f31859074d57b4639318523d6ffdca586ace54271a73ad23ad021acd807eb14b
     # via
+    #   aiohttp
     #   discord-py
     #   yt-dlp
 cachetools==6.2.1 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
