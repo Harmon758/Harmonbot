@@ -12015,4 +12015,1634 @@ interactions:
     status:
       code: 200
       message: OK
+- request:
+    body: null
+    headers: {}
+    method: GET
+    uri: http://api.forismatic.com/api/1.0/?format=json&lang=en&method=getQuote
+  response:
+    body:
+      string: '{"quoteText":"Small opportunities are often the beginning of great
+        enterprises. ", "quoteAuthor":"Demosthenes", "senderName":"", "senderLink":"",
+        "quoteLink":"http://forismatic.com/en/98c28310f6/"}'
+    headers:
+      CF-RAY:
+      - 985285679b3146c8-DFW
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 26 Sep 2025 11:46:29 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=iMr6g2%2FeFj2khWS4wC7gaBlGbttlCJ9ghyj%2FKZkjfbRb3Ad%2FAzBK%2FnXmaOewIPAb1Mlg5P6gdjATTQcDMZmKZHsHQn3u11fkryUAUrRHwC3NHk8d%2BU9ooLFkReqgZQ%3D%3D"}]}'
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers: {}
+    method: GET
+    uri: http://api.forismatic.com/api/1.0/?format=json&lang=en&method=getQuote
+  response:
+    body:
+      string: "{\"quoteText\":\"When you arise in the morning, think of what a precious
+        privilege it is to be alive \u2014 to breathe, to think, to enjoy, to love.
+        \ \", \"quoteAuthor\":\"Marcus Aurelius \", \"senderName\":\"\", \"senderLink\":\"\",
+        \"quoteLink\":\"http://forismatic.com/en/6519a3438f/\"}"
+    headers:
+      CF-RAY:
+      - 987218ce1a6769bd-DFW
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 30 Sep 2025 07:44:45 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=QRY%2FT19a%2BH2dKdpbO36H0fB1FmUXk18uT%2BGBOvb1Yr8Tl%2B2agWqBGH1CqBGT%2FXDBEqlDhWTGvcff9AqZF0r20acQDpa67Kj4TW6ZQ%2FTRkHdONIlWukXKZs4x2%2FVSqg%3D%3D"}]}'
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers: {}
+    method: GET
+    uri: http://api.forismatic.com/api/1.0/?format=json&lang=en&method=getQuote
+  response:
+    body:
+      string: '{"quoteText":"What lies behind us and what lies before us are small
+        matters compared to what lies within us. ", "quoteAuthor":"Oliver Holmes",
+        "senderName":"", "senderLink":"", "quoteLink":"http://forismatic.com/en/1975e3fa81/"}'
+    headers:
+      CF-RAY:
+      - 98721a8efc73f0a0-DFW
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 30 Sep 2025 07:45:57 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=W%2Frezj30BWSizc6IBMVX379ZEsJYVvCaIdGW51Vz1CMGeKNql56RCOYyZ0Lqb%2F59MifG9U177QQp9FylhlX1v4kFGv34exm25bqg3iYdkJy0yHFm3FE2SpouCc%2F2oQ%3D%3D"}]}'
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers: {}
+    method: GET
+    uri: http://api.forismatic.com/api/1.0/?format=json&lang=en&method=getQuote
+  response:
+    body:
+      string: '{"quoteText":"I am of the opinion that my life belongs to the community,
+        and as long as I live it is my privilege to do for it whatever I can. ", "quoteAuthor":"Bernard
+        Shaw", "senderName":"", "senderLink":"", "quoteLink":"http://forismatic.com/en/ff3953b7a7/"}'
+    headers:
+      CF-RAY:
+      - 987230a20a6f6bec-DFW
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 30 Sep 2025 08:01:01 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=lIvR7f7%2Bp6fqoKOTuicXAMmleRfvTM9w%2BtefL9VX%2F43xp5HZpj5fIzF3%2BNFmaS5C3zFrus5HUV74OlZ8Snxq%2BwcjpLEVL2BCgYviR%2BHlB4KAUDLUbEYOJ6SNx9OK9A%3D%3D"}]}'
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers: {}
+    method: GET
+    uri: http://api.forismatic.com/api/1.0/?format=json&lang=en&method=getQuote
+  response:
+    body:
+      string: '{"quoteText":"Life is thickly sown with thorns, and I know no other
+        remedy than to pass quickly through them. The longer we dwell on our misfortunes,
+        the greater is their power to harm us.", "quoteAuthor":"Voltaire", "senderName":"",
+        "senderLink":"", "quoteLink":"http://forismatic.com/en/2aa3d8153c/"}'
+    headers:
+      CF-RAY:
+      - 9872671c0c9a6c62-DFW
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 30 Sep 2025 08:38:13 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=%2Fdm%2FrBfyNwSI1lb%2FX%2FERRW9bDayoJ0UzTPAl5CtuKMXCU4RQul7ORU%2BF%2FhlOSYYWq731ODMD8H6%2FRR04rcIE8nJOpT%2BwFuyI9M0BKjSPfMhpgszGOKDfbdmt8KuCcQ%3D%3D"}]}'
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers: {}
+    method: GET
+    uri: http://api.forismatic.com/api/1.0/?format=json&lang=en&method=getQuote
+  response:
+    body:
+      string: '{"quoteText":"Fate is in your hands and no one elses ", "quoteAuthor":"Byron
+        Pulsifer", "senderName":"", "senderLink":"", "quoteLink":"http://forismatic.com/en/389f2ed688/"}'
+    headers:
+      CF-RAY:
+      - 98802eddfbca3584-DFW
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 02 Oct 2025 00:46:30 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=h8s%2BL%2Bw%2FZ7VGtuFIL8sV%2FeWIMr96HQISjXLR4b3hPCUSITgDoQ9nezRaZ9Yako05Ywk228s8BqNawL4oUMDuso5nKNwdHx%2BYFl10v1qwonF5szWNIpNctU%2FjQD6VFg%3D%3D"}]}'
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers: {}
+    method: GET
+    uri: http://api.forismatic.com/api/1.0/?format=json&lang=en&method=getQuote
+  response:
+    body:
+      string: '{"quoteText":"Good instincts usually tell you what to do long before
+        your head has figured it out. ", "quoteAuthor":"Michael Burke", "senderName":"",
+        "senderLink":"", "quoteLink":"http://forismatic.com/en/11576c8eb7/"}'
+    headers:
+      CF-RAY:
+      - 988398381a506bc5-DFW
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 02 Oct 2025 10:42:42 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=6d8zOjrYJZmAipX9ar0fIzDN0OJTtP4EcYRfGYC0BHdEvuKNZ3XWOM0jaBE6tp3Hfoxo85f6CHZqb2wBfxjnffY8zFHGTFdh20rpy40%2F8ry9Nenj7xHEHA52t7MdlA%3D%3D"}]}'
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers: {}
+    method: GET
+    uri: http://api.forismatic.com/api/1.0/?format=json&lang=en&method=getQuote
+  response:
+    body:
+      string: '{"quoteText":"The shoe that fits one person pinches another; there
+        is no recipe for living that suits all cases.  ", "quoteAuthor":"Carl Jung
+        ", "senderName":"", "senderLink":"", "quoteLink":"http://forismatic.com/en/5d2e4535ee/"}'
+    headers:
+      CF-RAY:
+      - 98947950ca75f0aa-DFW
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/json
+      Date:
+      - Sat, 04 Oct 2025 11:52:34 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=gk%2Bj92dpitbOAObrI6qAoHXFf9AAhbPwoAxLxx9T9SXCKIk%2BO235HO7a07BfkHrmMaBYwxdcTpX6Gu%2Br1bwtJH%2F8qJTFBuQjIniSR7GOjifMGO2baXS%2BRcJJtuBKRA%3D%3D"}]}'
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers: {}
+    method: GET
+    uri: http://api.forismatic.com/api/1.0/?format=json&lang=en&method=getQuote
+  response:
+    body:
+      string: '{"quoteText":"Count your joys instead of your woes. Count your friends
+        instead of your foes.", "quoteAuthor":"", "senderName":"", "senderLink":"",
+        "quoteLink":"http://forismatic.com/en/9f7945b1dc/"}'
+    headers:
+      CF-RAY:
+      - 98947af1bee97a97-DFW
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/json
+      Date:
+      - Sat, 04 Oct 2025 11:53:41 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=gkVcZvqJtl9qbuD8e0k9U4gXAIdttm4hwVctubvye3CV1Sllt0GLG2O2M1JI2WKfuq5UtrJZlwU5XKh4qSSF3nA%2BowNTcKIOO3C7fzJI0OplH3wzE2uyoNZ0sys%3D"}]}'
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers: {}
+    method: GET
+    uri: http://api.forismatic.com/api/1.0/?format=json&lang=en&method=getQuote
+  response:
+    body:
+      string: '{"quoteText":"Success is getting what you want. Happiness is wanting
+        what you get. ", "quoteAuthor":"Dale Carnegie", "senderName":"", "senderLink":"",
+        "quoteLink":"http://forismatic.com/en/c7e6861385/"}'
+    headers:
+      CF-RAY:
+      - 989ff53ddc94e776-DFW
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/json
+      Date:
+      - Sun, 05 Oct 2025 21:19:34 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=yHu%2FvMc2kI%2FerC0Lvt1ObtVBJvdYOnOFnY5jDpIiVQicS4JBvVsTFC2GfszoLh76%2BPrJaewqAn1Up%2BI%2FfaMmwcWMQR5oHn8dCtbRS6DF0sDr5rGoH276qKm18Sa6iw%3D%3D"}]}'
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers: {}
+    method: GET
+    uri: http://api.forismatic.com/api/1.0/?format=json&lang=en&method=getQuote
+  response:
+    body:
+      string: '{"quoteText":"Whenever something negative happens to you, there is
+        a deep lesson concealed within it.", "quoteAuthor":"Eckhart Tolle", "senderName":"",
+        "senderLink":"", "quoteLink":"http://forismatic.com/en/4485adbde3/"}'
+    headers:
+      CF-RAY:
+      - 98a0002649216f98-DFW
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/json
+      Date:
+      - Sun, 05 Oct 2025 21:27:00 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=qedH5iRk7gG1XwaR0KwLw%2BQjUKtMtSh5ENL7M2BxaTl3sDunC3Lw3FtAW0gfyPpG3FEVKFrm4PVhkuqu7bWwHChSOAzAkdiqOwQOskSgAKOYPyp1bOxoV1PIvLm4BA%3D%3D"}]}'
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers: {}
+    method: GET
+    uri: http://api.forismatic.com/api/1.0/?format=json&lang=en&method=getQuote
+  response:
+    body:
+      string: '{"quoteText":"What separates the winners from the losers is how a person
+        reacts to each new twist of fate. ", "quoteAuthor":"Donald Trump", "senderName":"",
+        "senderLink":"", "quoteLink":"http://forismatic.com/en/91b6a83356/"}'
+    headers:
+      CF-RAY:
+      - 98b1f0f6f8a6f0ae-DFW
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/json
+      Date:
+      - Wed, 08 Oct 2025 01:42:22 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=AuUiXvn2VVH2AynambU4DoiH4ckB84E3o99tNyLxFh78L3Yp7UWY1bD5TVAcR8m9eV3LL1bTbf7vTuJonJ41MgfabWlisWUjW2JT9d%2F1Cdjx3YQZPeKvKPH9Hv%2FRYQ%3D%3D"}]}'
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers: {}
+    method: GET
+    uri: http://api.forismatic.com/api/1.0/?format=json&lang=en&method=getQuote
+  response:
+    body:
+      string: '{"quoteText":"You will not be punished for your anger, you will be
+        punished by your anger.", "quoteAuthor":"Buddha", "senderName":"", "senderLink":"",
+        "quoteLink":"http://forismatic.com/en/5885e3dfb6/"}'
+    headers:
+      CF-RAY:
+      - 98b1f200d81f7a72-DFW
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/json
+      Date:
+      - Wed, 08 Oct 2025 01:43:05 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=7AMnfB7OabBsLZQVymXiwjYfrBzcmSamb0Q6K%2BCgODJV6TVqzcm3yVkAbBGohznnwCOv1TkkUVwfruMFGKPEAfFAQV6aU0uYVAf0ZVOxv7pT5OKafIZBO1md5LCJ%2Bg%3D%3D"}]}'
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers: {}
+    method: GET
+    uri: http://api.forismatic.com/api/1.0/?format=json&lang=en&method=getQuote
+  response:
+    body:
+      string: '{"quoteText":"You can observe a lot just by watching. ", "quoteAuthor":"Yogi
+        Berra", "senderName":"", "senderLink":"", "quoteLink":"http://forismatic.com/en/cd4e6a000f/"}'
+    headers:
+      CF-RAY:
+      - 98bdb2b809e5cb75-DFW
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 09 Oct 2025 11:57:02 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=wMrcW9ROVwb6ymAdSF1l3HWrQCJ8CgxGgAlunaHZJpW14%2Bm4aVpiQqYXdra1fnrpUYhFLjupNv%2BpfejMvFEE9wd9xTLogVEH37vwE9YFKQBSgmaeq5utPDUi47s%3D"}]}'
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers: {}
+    method: GET
+    uri: http://api.forismatic.com/api/1.0/?format=json&lang=en&method=getQuote
+  response:
+    body:
+      string: '{"quoteText":"Courage is not about taking risks unknowingly but putting
+        your own being in front of challenges that others may not be able to. ", "quoteAuthor":"Byron
+        Pulsifer ", "senderName":"", "senderLink":"", "quoteLink":"http://forismatic.com/en/9661f0a738/"}'
+    headers:
+      CF-RAY:
+      - 98bdb3ddb9162e76-DFW
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 09 Oct 2025 11:57:49 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=L2eZzHzmiGMR0DgT6pilNcR%2B%2B4pJSW8QAkbD5O0BVEx7c4LkdP27oqeuaYbc7tX7IUccIWVU9D487j7EHf%2FONGMwNufAmflTkvHVGZWlSqUImq5s02%2BFc41rc3o%3D"}]}'
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers: {}
+    method: GET
+    uri: http://api.forismatic.com/api/1.0/?format=json&lang=en&method=getQuote
+  response:
+    body:
+      string: '{"quoteText":"Ability will never catch up with the demand for it.  ",
+        "quoteAuthor":"Confucius ", "senderName":"", "senderLink":"", "quoteLink":"http://forismatic.com/en/61866dc945/"}'
+    headers:
+      CF-RAY:
+      - 98bdcf89bf2c6c0e-DFW
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 09 Oct 2025 12:16:42 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=dVJ399BemlaBoX1BNVVQVxf58wAGz4aTxtdwjhB8N0NXWPCgNVoeLiQ0utiZ2ilBjsEwZgzRI9JF77i14iNx%2BHUXaDGZfPpaARM2T1lrAuJrCujPYfjNyw3%2BGm9x%2BA%3D%3D"}]}'
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers: {}
+    method: GET
+    uri: http://api.forismatic.com/api/1.0/?format=json&lang=en&method=getQuote
+  response:
+    body:
+      string: '{"quoteText":"There is only one happiness in life, to love and be loved.
+        ", "quoteAuthor":"George Sand", "senderName":"", "senderLink":"", "quoteLink":"http://forismatic.com/en/b99b5d1f5f/"}'
+    headers:
+      CF-RAY:
+      - 98c67ba54ea46b3d-DFW
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 10 Oct 2025 13:32:18 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=D4TNIrT8Nxsxf%2BI1F6OsN0OB0i%2BbfZDsEyX4oXmkyKKZcMmhW02m3o%2BJYyIb%2BJ1fKPQiALZ%2FmB%2BrkPj%2BDGc3y2be9VmOBQJrULpgvVHuDP8XcRk0Wqw%2F0cPccQcmBQ%3D%3D"}]}'
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers: {}
+    method: GET
+    uri: http://api.forismatic.com/api/1.0/?format=json&lang=en&method=getQuote
+  response:
+    body:
+      string: '{"quoteText":"The most complicated achievements of thought are possible
+        without the assistance of consciousness. ", "quoteAuthor":"Sigmund Freud ",
+        "senderName":"", "senderLink":"", "quoteLink":"http://forismatic.com/en/a4bbc754ef/"}'
+    headers:
+      CF-RAY:
+      - 98c6b5260a1a66e9-DFW
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 10 Oct 2025 14:11:33 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=i9jFAbxTUTRNNKeGwmFsUyDcdmLQZ9SPLgIZwJ%2FDjZp6yMVXw3UoH58g05AvAXGZjDFOgU1jKALjPFBOdGpj2fQ%2FajWgN5%2B8Y12via%2BLgplJrc%2F7pWG%2BK5aPRPhHqA%3D%3D"}]}'
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers: {}
+    method: GET
+    uri: http://api.forismatic.com/api/1.0/?format=json&lang=en&method=getQuote
+  response:
+    body:
+      string: '{"quoteText":"Happiness mainly comes from our own attitude, rather
+        than from external factors.", "quoteAuthor":"Dalai Lama", "senderName":"",
+        "senderLink":"", "quoteLink":"http://forismatic.com/en/15089be4ed/"}'
+    headers:
+      CF-RAY:
+      - 98c710051c55f076-DFW
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 10 Oct 2025 15:13:35 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=eVw9BdNlg0hT5YnBc8wL54jhoZgddrxDUfbMyQkX%2FTihVVJ5LoJ832MQzDJ%2BSFGubdBWq8AAfK2SlI2FNGfyCuiI%2F1J7yLcJ9blJtdTllYzLMkS7XcdzwFfTbW4tMA%3D%3D"}]}'
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers: {}
+    method: GET
+    uri: http://api.forismatic.com/api/1.0/?format=json&lang=en&method=getQuote
+  response:
+    body:
+      string: '{"quoteText":"We are what we repeatedly do. Excellence, then, is not
+        an act, but a habit.", "quoteAuthor":"Aristotle", "senderName":"", "senderLink":"",
+        "quoteLink":"http://forismatic.com/en/e35cb8d9d3/"}'
+    headers:
+      CF-RAY:
+      - 98d323ce890a6b76-DFW
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/json
+      Date:
+      - Sun, 12 Oct 2025 02:24:15 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=e2LfJT%2FnXk2OaciVqoX40xlSu7tGW0KVR3YMZ6mmkIu4QmRnIhP1RJFaRwuNrrR8NEqtfAm2RU8azsnQXK34XgUWaqzU6k9rdQBgj%2FujTdj%2Fs8%2B4HzQrVj40JqFMfA%3D%3D"}]}'
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers: {}
+    method: GET
+    uri: http://api.forismatic.com/api/1.0/?format=json&lang=en&method=getQuote
+  response:
+    body:
+      string: '{"quoteText":"Knowing your own darkness is the best method for dealing
+        with the darknesses of other people.  ", "quoteAuthor":"Carl Jung ", "senderName":"",
+        "senderLink":"", "quoteLink":"http://forismatic.com/en/06a1d14cc5/"}'
+    headers:
+      CF-RAY:
+      - 98d342127e16f09c-DFW
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/json
+      Date:
+      - Sun, 12 Oct 2025 02:44:54 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=4vRcX1V2PR9yKhSmkgeox1boqT5A%2B0qpBnozE7ttRnXjlH3%2FKke4xArXpMO98ml0hV5ojZZDwoV5YCy1qwi1AJNn3vA7xoEg8vrpbDLUxJIosrLKfSnP8MaMGeQCzg%3D%3D"}]}'
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers: {}
+    method: GET
+    uri: http://api.forismatic.com/api/1.0/?format=json&lang=en&method=getQuote
+  response:
+    body:
+      string: '{"quoteText":"Be your own hero, it\''s cheaper than a movie ticket.",
+        "quoteAuthor":"Doug Horton", "senderName":"", "senderLink":"", "quoteLink":"http://forismatic.com/en/e5cae462cc/"}'
+    headers:
+      CF-RAY:
+      - 98d7d0beaea8f061-DFW
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/json
+      Date:
+      - Sun, 12 Oct 2025 16:01:21 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=Ic%2F4E94qT%2FWkr8bFAnau0m%2FvQIbSvo%2BaVtZtK%2BLoQhNz5USKyA%2BW%2FMOGsk5uGTLGa1Il%2FQ7etp9c4b5RcsZwLpkXZivlUibQOI%2BwcxkXrTjtxPp5Uc48QuWgKG7cTw%3D%3D"}]}'
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers: {}
+    method: GET
+    uri: http://api.forismatic.com/api/1.0/?format=json&lang=en&method=getQuote
+  response:
+    body:
+      string: '{"quoteText":"It is better to travel well than to arrive.", "quoteAuthor":"Buddha",
+        "senderName":"", "senderLink":"", "quoteLink":"http://forismatic.com/en/6707459d52/"}'
+    headers:
+      CF-RAY:
+      - 98d7f55ce85766b9-DFW
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/json
+      Date:
+      - Sun, 12 Oct 2025 16:26:21 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=%2BclNFISfGBnvClY8poRGGPod0pGVvsAkg5f0AOS6x4g65uvqI9Z%2FE8IJN8l%2B1FiMEuHJmsP0QZVhChuIceyCPGyBcao%2FVxwgsjSmR1taNrrZBeoFgL%2BW1fs9l2rQVg%3D%3D"}]}'
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers: {}
+    method: GET
+    uri: http://api.forismatic.com/api/1.0/?format=json&lang=en&method=getQuote
+  response:
+    body:
+      string: '{"quoteText":"Love vanquishes time. To lovers, a moment can be eternity,
+        eternity can be the tick of a clock. ", "quoteAuthor":"Mary Parrish", "senderName":"",
+        "senderLink":"", "quoteLink":"http://forismatic.com/en/668046346b/"}'
+    headers:
+      CF-RAY:
+      - 98e90cc8dd9f2ff6-PHX
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 14 Oct 2025 18:13:19 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=zzSPP0E1rE0ovfYmB7Sfm43BMZ40bkG69eONs0mX3cL40%2Fli2l%2B4216EP54QcmWjk%2BlwqWx%2FQ5prlM66CxsiESXxwlMayQjx3hJL5LU78p1hDSMiJ3Xkzh71mIIt0g%3D%3D"}]}'
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers: {}
+    method: GET
+    uri: http://api.forismatic.com/api/1.0/?format=json&lang=en&method=getQuote
+  response:
+    body:
+      string: '{"quoteText":"To accomplish great things, we must not only act, but
+        also dream; not only plan, but also believe. ", "quoteAuthor":"Anatole France",
+        "senderName":"", "senderLink":"", "quoteLink":"http://forismatic.com/en/44daf79d61/"}'
+    headers:
+      CF-RAY:
+      - 98e999586c7eb38d-PHX
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 14 Oct 2025 19:49:16 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=uql9tXr0QIT%2F0Hlpa5ne7C2G1lTh5n%2FQVs4YtcqetCT446dIhLmQVs%2BZAR%2Bz0Y4OAUmasoi4RnqmzQRI9pVxMCLixWJ6Yue6Rvc6RqKuPJ%2BYZWbfnnKh%2B8ZMJL0%3D"}]}'
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers: {}
+    method: GET
+    uri: http://api.forismatic.com/api/1.0/?format=json&lang=en&method=getQuote
+  response:
+    body:
+      string: '{"quoteText":"Let the beauty of what you love be what you do.  ", "quoteAuthor":"Rumi
+        ", "senderName":"", "senderLink":"", "quoteLink":"http://forismatic.com/en/165ce7981e/"}'
+    headers:
+      CF-RAY:
+      - 98e9a33eba79c5a9-IAD
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 14 Oct 2025 19:56:01 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=u%2F6suARVQLAXY6%2FVP%2BfODg3tYAsNj%2Bufoe6f59Xe7%2BvnxyA%2FFWaJu9xWGtVVYw9T7oRloEQb%2B2LyIEX%2FQD1DK0WjL6%2BjyXhDriucuGxYNa2bfK4%2B46mC2B1YZEg2mQ%3D%3D"}]}'
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers: {}
+    method: GET
+    uri: http://api.forismatic.com/api/1.0/?format=json&lang=en&method=getQuote
+  response:
+    body:
+      string: '{"quoteText":"Where all think alike, no one thinks very much. ", "quoteAuthor":"Walter
+        Lippmann", "senderName":"", "senderLink":"", "quoteLink":"http://forismatic.com/en/a4927a31d7/"}'
+    headers:
+      CF-RAY:
+      - 98f21d1c3e9c5529-PHX
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/json
+      Date:
+      - Wed, 15 Oct 2025 20:37:19 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=D1UqQYLcjmRhdnT6ffVNGsfIbAW9R0ojfXtrJ92rC7BsEy9vCdDYwF4fzTkBcMGoNKe1xx0MfEFYJw3A1bjNap0ar6MI69Dgwvk%2B9IpF2s5%2FiI50VFykV4FXWdA%3D"}]}'
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers: {}
+    method: GET
+    uri: http://api.forismatic.com/api/1.0/?format=json&lang=en&method=getQuote
+  response:
+    body:
+      string: '{"quoteText":"If you spend your whole life waiting for the storm, you\''ll
+        never enjoy the sunshine.", "quoteAuthor":"Morris West", "senderName":"",
+        "senderLink":"", "quoteLink":"http://forismatic.com/en/3652dd7b56/"}'
+    headers:
+      CF-RAY:
+      - 98f21eb69b5c14f2-LAX
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/json
+      Date:
+      - Wed, 15 Oct 2025 20:38:25 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=zz%2Bv6q2xu5qcK3swZ3ahpGdivRTaOr3y5UqIPHyAPoUKqugcN5KiDXsM8ocsQl5duX0apy5jjp%2F1xT%2FIHRaW%2BqlgLyH5rjOdSIB3B9b%2B4eUDlxnmc1C%2F5X4hTOY%3D"}]}'
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers: {}
+    method: GET
+    uri: http://api.forismatic.com/api/1.0/?format=json&lang=en&method=getQuote
+  response:
+    body:
+      string: '{"quoteText":"It is surprising what a man can do when he has to, and
+        how little most men will do when they don\''t have to.", "quoteAuthor":"Walter
+        Linn", "senderName":"", "senderLink":"", "quoteLink":"http://forismatic.com/en/1f8ee61c87/"}'
+    headers:
+      CF-RAY:
+      - 98f21fdf4b132f3b-LAX
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/json
+      Date:
+      - Wed, 15 Oct 2025 20:39:12 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=BACNymNYpT8pa6wzu4riO7DwyF59mYAG7YY0qnK%2FDYqbU9RQ6MT71diIFVRQ%2Bon7B0j%2BIGb3sytpQOyphu5%2F7spEmokmx2Flsz4WZKrPpS4wC1i8YCB4HAIVsvmRQw%3D%3D"}]}'
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers: {}
+    method: GET
+    uri: http://api.forismatic.com/api/1.0/?format=json&lang=en&method=getQuote
+  response:
+    body:
+      string: '{"quoteText":"Silence is deep as Eternity, Speech is shallow as Time.
+        ", "quoteAuthor":"Carlyle", "senderName":"", "senderLink":"", "quoteLink":"http://forismatic.com/en/b9ea6f31ef/"}'
+    headers:
+      CF-RAY:
+      - 98f22135d9806c16-DFW
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/json
+      Date:
+      - Wed, 15 Oct 2025 20:40:07 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=hsbwagfZGZL9ipe1xxk1LUsmDbdZmvWlBk40gXD9dVys6N%2F1OcsseOAW68krA2K%2BghgxtdwjzO6TKQNjBH7iphBHQ6jiQy2EAGtLAAywWDH%2B1YzGYteKyzfeF7CNpg%3D%3D"}]}'
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers: {}
+    method: GET
+    uri: http://api.forismatic.com/api/1.0/?format=json&lang=en&method=getQuote
+  response:
+    body:
+      string: '{"quoteText":"A really great talent finds its happiness in execution.
+        ", "quoteAuthor":"Johann Wolfgang von Goethe ", "senderName":"", "senderLink":"",
+        "quoteLink":"http://forismatic.com/en/616768967e/"}'
+    headers:
+      CF-RAY:
+      - 98f3d7ea1baa462f-DFW
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 16 Oct 2025 01:39:36 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=6FG%2BrtGKHatt7D1Mm%2FmIk%2BiJFp5R%2BUqCjj0tnPtwaRuxA5106Y%2FKEiVByTKzjjYrutWfJQNOjXg4WT6%2B5ErYuEQ1LmepFo%2B0PSKwpZ0HP3khOddupAMQ3yvu4mBvwg%3D%3D"}]}'
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers: {}
+    method: GET
+    uri: http://api.forismatic.com/api/1.0/?format=json&lang=en&method=getQuote
+  response:
+    body:
+      string: '{"quoteText":"The superior man acts before he speaks, and afterwards
+        speaks according to his action.  ", "quoteAuthor":"Confucius ", "senderName":"",
+        "senderLink":"", "quoteLink":"http://forismatic.com/en/fce9a166c5/"}'
+    headers:
+      CF-RAY:
+      - 98f3d9dbeec426b1-MEM
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 16 Oct 2025 01:40:56 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=kYkIERyhXq2%2BB379JPUgsyTYjQDxDezYcxS%2F6rb4NoXpDFfAtD2c5TfC2ZyM8aWlHJ%2FylKBUnc24k14v%2BMj89lwgCtDWwb0AJP7ipitXukDK5pIfwVUr9Usl1GI%3D"}]}'
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers: {}
+    method: GET
+    uri: http://api.forismatic.com/api/1.0/?format=json&lang=en&method=getQuote
+  response:
+    body:
+      string: '{"quoteText":"Anticipate the difficult by managing the easy.  ", "quoteAuthor":"Lao
+        Tzu", "senderName":"", "senderLink":"", "quoteLink":"http://forismatic.com/en/70fc449981/"}'
+    headers:
+      CF-RAY:
+      - 98f49691cde4b13c-DFW
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 16 Oct 2025 03:49:46 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=UExE5dbPUnlF3bYW12%2FT1yLf%2FoUWfHBlCHnzdWfwjKDP%2B0pqt8wYB4kf0P89paz9cHafHXwiRJspLe1iyuHHJzrtVJfG7%2BTIaxkEdcaHPGgefWZp6HXu8Nd3MQ9JNQ%3D%3D"}]}'
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers: {}
+    method: GET
+    uri: http://api.forismatic.com/api/1.0/?format=json&lang=en&method=getQuote
+  response:
+    body:
+      string: '{"quoteText":"Good instincts usually tell you what to do long before
+        your head has figured it out. ", "quoteAuthor":"Michael Burke", "senderName":"",
+        "senderLink":"", "quoteLink":"http://forismatic.com/en/11576c8eb7/"}'
+    headers:
+      CF-RAY:
+      - 98fc1ffdafc2acd3-DFW
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 17 Oct 2025 01:46:55 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=G7qnuvkqXAXxba6iX1DJrpmgfGgfs1yt8tQ4xwd83Po%2B4Uk1jwsbhoivpRhpCtBa7rxp4h1T9lzG7RD5YuRDgnKh7qSQFlSdLDsyUm4ImjJJrA8lji%2BYUy2OGCwqaQ%3D%3D"}]}'
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers: {}
+    method: GET
+    uri: http://api.forismatic.com/api/1.0/?format=json&lang=en&method=getQuote
+  response:
+    body:
+      string: '{"quoteText":"When performance exceeds ambition, the overlap is called
+        success. ", "quoteAuthor":"Cullen Hightower", "senderName":"", "senderLink":"",
+        "quoteLink":"http://forismatic.com/en/dad2779e36/"}'
+    headers:
+      CF-RAY:
+      - 98fc23fddf15e926-DFW
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 17 Oct 2025 01:49:39 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=aUkVzJvjUXMKCaMGVQnDX1%2B6NmHJqYaBgZijY%2BqHDDMF%2Ffe%2BuCdTRqML1VFynK8l9aZ3KIiY7zduAAreWrXiRHOEWV8k5nPiSgB8dVYQQG6ylZI0m55a0t7QSwLvzg%3D%3D"}]}'
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers: {}
+    method: GET
+    uri: http://api.forismatic.com/api/1.0/?format=json&lang=en&method=getQuote
+  response:
+    body:
+      string: '{"quoteText":"We are what we think. All that we are arises with our
+        thoughts. With our thoughts, we make the world. ", "quoteAuthor":"Buddha",
+        "senderName":"", "senderLink":"", "quoteLink":"http://forismatic.com/en/f7f7630324/"}'
+    headers:
+      CF-RAY:
+      - 98fc282be95a4785-DFW
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 17 Oct 2025 01:52:30 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=IZtLQMeHBZ4pzyCqjA5rMV4tpcbkPUeA47Wl2mIr4wtTL23FUlDx1TdjpNQ3LP5v5ofGErAhMOOu8UI7YBezu%2Fi5diibhyHFtQ9eSDg8v%2Bc1iVXc%2FuVtmlZIke%2FZGw%3D%3D"}]}'
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers: {}
+    method: GET
+    uri: http://api.forismatic.com/api/1.0/?format=json&lang=en&method=getQuote
+  response:
+    body:
+      string: '{"quoteText":"I think there is something, more important than believing:
+        action! The world is full of dreamers, there aren\''t enough who will move
+        ahead and begin to take concrete steps to actualize their vision.", "quoteAuthor":"Clement
+        Stone", "senderName":"", "senderLink":"", "quoteLink":"http://forismatic.com/en/ce6e83cccd/"}'
+    headers:
+      CF-RAY:
+      - 98fc2ebedd6ef05f-DFW
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 17 Oct 2025 01:56:59 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=cvvRb3apKqN4R3OgoX9L%2F4E%2Ff9UYKV4F5W7XHugmmBT5NXpetZonl63yrjBy0r2hgxKvNVi2TStCDs%2B2GHi9LghB7wkDOEpq%2BnQjS2UWdWVQshJ4aV6VDeg4b8DSHg%3D%3D"}]}'
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers: {}
+    method: GET
+    uri: http://api.forismatic.com/api/1.0/?format=json&lang=en&method=getQuote
+  response:
+    body:
+      string: '{"quoteText":"In a controversy the instant we feel anger we have already
+        ceased striving for the truth, and have begun striving for ourselves.  ",
+        "quoteAuthor":"Buddha ", "senderName":"", "senderLink":"", "quoteLink":"http://forismatic.com/en/8af76fbb30/"}'
+    headers:
+      CF-RAY:
+      - 98fc2fa58834f81d-DFW
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 17 Oct 2025 01:57:36 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=hSwGzD1SAtpvcpfQSU2hLmqDnQmFK10JIsUe8%2BUWu95%2B6LMwqZWtsaxIgR%2FCQoJlgiC%2BNZh86F5ALIr5ttkzlCcZIGWifZRQpXqohN9f85lV955vk%2FXQSCrxPjt4uQ%3D%3D"}]}'
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers: {}
+    method: GET
+    uri: http://api.forismatic.com/api/1.0/?format=json&lang=en&method=getQuote
+  response:
+    body:
+      string: '{"quoteText":"Where all think alike, no one thinks very much. ", "quoteAuthor":"Walter
+        Lippmann", "senderName":"", "senderLink":"", "quoteLink":"http://forismatic.com/en/a4927a31d7/"}'
+    headers:
+      CF-RAY:
+      - 98fc310a7ce2eb2f-DFW
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 17 Oct 2025 01:58:33 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=oXKu%2BrlTuAEcTZXDOzpVQhFZagE2729kW9Vkl2Xt%2FliZEQkKfl4nsVoWv%2BNlCI2sAf9kw8BYJ4Y6L6qSoBQk00z0brCIpLV1GT0g572WWeDGScKWMl6kBLcULnJODA%3D%3D"}]}'
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers: {}
+    method: GET
+    uri: http://api.forismatic.com/api/1.0/?format=json&lang=en&method=getQuote
+  response:
+    body:
+      string: '{"quoteText":"Meaning is not what you start with but what you end up
+        with.", "quoteAuthor":"Peter Elbow", "senderName":"", "senderLink":"", "quoteLink":"http://forismatic.com/en/437d42a707/"}'
+    headers:
+      CF-RAY:
+      - 98fc32821b916701-DFW
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 17 Oct 2025 01:59:33 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=skrWxPUQI3jzkO2rFI9upLoDW9%2BWQA5HOoylfshWDuoC4guPgM4xfVS1GWK0AhzqQ35PKK1QmTsfXkIsCgGQmkd3lSGA%2Fc%2Fy4knfeI%2BMVw2NTIYJqjriuIjcunvngw%3D%3D"}]}'
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers: {}
+    method: GET
+    uri: http://api.forismatic.com/api/1.0/?format=json&lang=en&method=getQuote
+  response:
+    body:
+      string: '{"quoteText":"A man\''s dreams are an index to his greatness.", "quoteAuthor":"Zadok
+        Rabinowitz", "senderName":"", "senderLink":"", "quoteLink":"http://forismatic.com/en/ec37301b12/"}'
+    headers:
+      CF-RAY:
+      - 98fcb992a96f6a08-DFW
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 17 Oct 2025 03:31:45 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=kxgTHV7MU5%2BgG7tYTGQOUYAk9XYsp2QQxwuVIlfFwqDTADpmYhZfWEZCQhzq%2BmnL1zCx6yftx3KinIcMzTsvEMPuhRXbDub8rU01qescZBX%2FCoMcV6yiK2EUx3b3bA%3D%3D"}]}'
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+    status:
+      code: 200
+      message: OK
 version: 1

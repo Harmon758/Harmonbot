@@ -206,4 +206,2282 @@ interactions:
     status:
       code: 200
       message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      User-Agent:
+      - Harmonbot Python/3.11.7 aiohttp/3.12.15
+    method: GET
+    uri: https://icanhazdadjoke.com/
+  response:
+    body:
+      string: '{"id":"oOKBsPZ0wc","joke":"I am so good at sleeping I can do it with
+        my eyes closed!","status":200}
+
+        '
+    headers:
+      Access-Control-Allow-Headers:
+      - User-Agent, Content-Type
+      Access-Control-Allow-Methods:
+      - GET
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Max-Age:
+      - '86400'
+      Access-Control-Request-Method:
+      - GET
+      CF-RAY:
+      - 985285dc09a7f058-DFW
+      Cache-Control:
+      - max-age=0, must-revalidate, no-cache, no-store, public, s-maxage=0
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - br
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 26 Sep 2025 11:46:48 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=XQqr00RO2f9SamFzJyJSIgQky51aoHjcOrHZzBarUH9zzs3Xxq9R4bmqoBy1BckNohBOZtf%2FnPXgq9GSF31vPMIvPvL2Zdmj41tt3r3KzcbwOzicOgsygDpfUfRhPQ%3D%3D"}]}'
+      Retry-After:
+      - '60'
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Transfer-Encoding:
+      - chunked
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+      x-frame-options:
+      - DENY
+      x-ratelimit-limit:
+      - '100'
+      x-ratelimit-remaining:
+      - '99'
+      x-ratelimit-reset:
+      - '1758887269'
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      User-Agent:
+      - Harmonbot Python/3.11.7 aiohttp/3.12.15
+    method: GET
+    uri: https://icanhazdadjoke.com/
+  response:
+    body:
+      string: '{"id":"scUvsrORKe","joke":"I asked a frenchman if he played video games.
+        He said \"Wii\"","status":200}
+
+        '
+    headers:
+      Access-Control-Allow-Headers:
+      - User-Agent, Content-Type
+      Access-Control-Allow-Methods:
+      - GET
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Max-Age:
+      - '86400'
+      Access-Control-Request-Method:
+      - GET
+      CF-RAY:
+      - 987218ac59142e69-DFW
+      Cache-Control:
+      - max-age=0, must-revalidate, no-cache, no-store, public, s-maxage=0
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - br
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 30 Sep 2025 07:44:40 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=eBh%2Bl3pT1f5sH5iu%2BaG%2BFlz0mqGTbXY38TxzLcFELXHekkaR8FV%2FHNd18FRBPRnodsGiRcIYOK5y4xJAoxfmruv3s%2FYvWvyvDVUt9blPEXoa79QdeP4CMtj0wv8%3D"}]}'
+      Retry-After:
+      - '60'
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Transfer-Encoding:
+      - chunked
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+      x-frame-options:
+      - DENY
+      x-ratelimit-limit:
+      - '100'
+      x-ratelimit-remaining:
+      - '99'
+      x-ratelimit-reset:
+      - '1759218341'
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      User-Agent:
+      - Harmonbot Python/3.11.7 aiohttp/3.12.15
+    method: GET
+    uri: https://icanhazdadjoke.com/
+  response:
+    body:
+      string: '{"id":"mWS7hVKRSnb","joke":"Past, present, and future walked into a
+        bar.... It was tense.","status":200}
+
+        '
+    headers:
+      Access-Control-Allow-Headers:
+      - User-Agent, Content-Type
+      Access-Control-Allow-Methods:
+      - GET
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Max-Age:
+      - '86400'
+      Access-Control-Request-Method:
+      - GET
+      CF-RAY:
+      - 98721a88c9f246cb-DFW
+      Cache-Control:
+      - max-age=0, must-revalidate, no-cache, no-store, public, s-maxage=0
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - br
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 30 Sep 2025 07:45:56 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=HDtFNspDS%2F5tjVPX5WQjgV%2FK8I8X%2B2hGzBMe0h1YWqPDBaIS5CKHjQfaeXiS21drZfR2CueWgXGU6uHA%2Fs%2FmRxsEPlhBhL%2FRBWovoWZaNSiJKF%2FMJvAa2718hc8ZlA%3D%3D"}]}'
+      Retry-After:
+      - '60'
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Transfer-Encoding:
+      - chunked
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+      x-frame-options:
+      - DENY
+      x-ratelimit-limit:
+      - '100'
+      x-ratelimit-remaining:
+      - '99'
+      x-ratelimit-reset:
+      - '1759218417'
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      User-Agent:
+      - Harmonbot Python/3.11.7 aiohttp/3.12.15
+    method: GET
+    uri: https://icanhazdadjoke.com/
+  response:
+    body:
+      string: '{"id":"wHYgNmrcxc","joke":"I started a new business making yachts in
+        my attic this year...the sails are going through the roof","status":200}
+
+        '
+    headers:
+      Access-Control-Allow-Headers:
+      - User-Agent, Content-Type
+      Access-Control-Allow-Methods:
+      - GET
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Max-Age:
+      - '86400'
+      Access-Control-Request-Method:
+      - GET
+      CF-RAY:
+      - 987230b06e7b144b-DFW
+      Cache-Control:
+      - max-age=0, must-revalidate, no-cache, no-store, public, s-maxage=0
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - br
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 30 Sep 2025 08:01:04 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=y2kOhqn8AETecIru3beLYWDyROe6QuJlKlaNY5v5WwX9VfFp137M5%2FJTjXZuGwIj2c1tlaHTUCxOAhpMSmpACftl4%2BoU3zTXyawO7X%2FUgKoCMPIkmhUTo%2FHu8116Xg%3D%3D"}]}'
+      Retry-After:
+      - '60'
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Transfer-Encoding:
+      - chunked
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+      x-frame-options:
+      - DENY
+      x-ratelimit-limit:
+      - '100'
+      x-ratelimit-remaining:
+      - '99'
+      x-ratelimit-reset:
+      - '1759219325'
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      User-Agent:
+      - Harmonbot Python/3.11.7 aiohttp/3.12.15
+    method: GET
+    uri: https://icanhazdadjoke.com/
+  response:
+    body:
+      string: '{"id":"oORfVv4oOCd","joke":"What are the strongest days of the week?
+        Saturday and Sunday...the rest are weekdays.","status":200}
+
+        '
+    headers:
+      Access-Control-Allow-Headers:
+      - User-Agent, Content-Type
+      Access-Control-Allow-Methods:
+      - GET
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Max-Age:
+      - '86400'
+      Access-Control-Request-Method:
+      - GET
+      CF-RAY:
+      - 987266e8df446fa8-DFW
+      Cache-Control:
+      - max-age=0, must-revalidate, no-cache, no-store, public, s-maxage=0
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - br
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 30 Sep 2025 08:38:04 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=Bm49h83KBIIBt%2B92DYaSkgM3e4KVWdXKliQbacHZGJQMcIVTRHPzKqBXPVw7b9HY5PI%2BQY7cUHr8cFlyAN9HMNzPamSejklGsrJWfSRx756iXKLsPdxBCjtKup%2BC%2Bw%3D%3D"}]}'
+      Retry-After:
+      - '60'
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Transfer-Encoding:
+      - chunked
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+      x-frame-options:
+      - DENY
+      x-ratelimit-limit:
+      - '100'
+      x-ratelimit-remaining:
+      - '99'
+      x-ratelimit-reset:
+      - '1759221545'
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      User-Agent:
+      - Harmonbot Python/3.11.7 aiohttp/3.12.15
+    method: GET
+    uri: https://icanhazdadjoke.com/
+  response:
+    body:
+      string: '{"id":"ZoGQuXgV0ob","joke":"What do you call your friend who stands
+        in a hole? Phil.","status":200}
+
+        '
+    headers:
+      Access-Control-Allow-Headers:
+      - User-Agent, Content-Type
+      Access-Control-Allow-Methods:
+      - GET
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Max-Age:
+      - '86400'
+      Access-Control-Request-Method:
+      - GET
+      CF-RAY:
+      - 98802ec94a322c87-DFW
+      Cache-Control:
+      - max-age=0, must-revalidate, no-cache, no-store, public, s-maxage=0
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - br
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 02 Oct 2025 00:46:26 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=1hcjXqCbIdaKfUaQcKQ4KGaRbAfCX4jm9V3MO%2F%2Fj33OdSTgaMj%2F4fSGlMy4uMVaNQ9wYS%2FmmITZqJFsySXMTXm3TtolRkkOEonGOzQ65goQmJHXZtKjfD4h8t4hbNw%3D%3D"}]}'
+      Retry-After:
+      - '60'
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Transfer-Encoding:
+      - chunked
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+      x-frame-options:
+      - DENY
+      x-ratelimit-limit:
+      - '100'
+      x-ratelimit-remaining:
+      - '99'
+      x-ratelimit-reset:
+      - '1759366047'
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      User-Agent:
+      - Harmonbot Python/3.11.7 aiohttp/3.12.15
+    method: GET
+    uri: https://icanhazdadjoke.com/
+  response:
+    body:
+      string: '{"id":"2118E69prc","joke":"Dad I\u2019m hungry\u2019 \u2026 \u2018Hi
+        hungry I\u2019m dad","status":200}
+
+        '
+    headers:
+      Access-Control-Allow-Headers:
+      - User-Agent, Content-Type
+      Access-Control-Allow-Methods:
+      - GET
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Max-Age:
+      - '86400'
+      Access-Control-Request-Method:
+      - GET
+      CF-RAY:
+      - 98839858884269d0-DFW
+      Cache-Control:
+      - max-age=0, must-revalidate, no-cache, no-store, public, s-maxage=0
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - br
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 02 Oct 2025 10:42:47 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=tH3tKis7fIJcRGePa4Rq8bDqxKQSjxfRcOu5wxvNsPqTdhVkq5TscZJTb4aEcH%2BbmNPqsxD1Tw1JDHXZBOJwNbUX5n77oo7HkKYrYpg1lf%2FxUhVdSmuKeJWbfVbA2Q%3D%3D"}]}'
+      Retry-After:
+      - '60'
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Transfer-Encoding:
+      - chunked
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+      x-frame-options:
+      - DENY
+      x-ratelimit-limit:
+      - '100'
+      x-ratelimit-remaining:
+      - '99'
+      x-ratelimit-reset:
+      - '1759401828'
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      User-Agent:
+      - Harmonbot Python/3.11.7 aiohttp/3.12.15
+    method: GET
+    uri: https://icanhazdadjoke.com/
+  response:
+    body:
+      string: '{"id":"IJBA51Tvcxc","joke":"Did you know that ghosts call their true
+        love their ghoul-friend?","status":200}
+
+        '
+    headers:
+      Access-Control-Allow-Headers:
+      - User-Agent, Content-Type
+      Access-Control-Allow-Methods:
+      - GET
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Max-Age:
+      - '86400'
+      Access-Control-Request-Method:
+      - GET
+      CF-RAY:
+      - 98947915c82945e3-DFW
+      Cache-Control:
+      - max-age=0, must-revalidate, no-cache, no-store, public, s-maxage=0
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - br
+      Content-Type:
+      - application/json
+      Date:
+      - Sat, 04 Oct 2025 11:52:25 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=4%2BTkSCZHKVkY%2FV3mOQZ%2Boqp%2FOcAuupkFVF0X%2BXpSH%2FwZpcOgVG4WtHlgSuqew1L6t884tXe6dNmb%2B5dLuYNyXYIq6Lmiu5p%2FFsr6cWhPPv17cPIZ%2BgQb9O9bLwcDqA%3D%3D"}]}'
+      Retry-After:
+      - '60'
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Transfer-Encoding:
+      - chunked
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+      x-frame-options:
+      - DENY
+      x-ratelimit-limit:
+      - '100'
+      x-ratelimit-remaining:
+      - '99'
+      x-ratelimit-reset:
+      - '1759578806'
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      User-Agent:
+      - Harmonbot Python/3.11.7 aiohttp/3.12.15
+    method: GET
+    uri: https://icanhazdadjoke.com/
+  response:
+    body:
+      string: '{"id":"3gNRuHY89Ed","joke":"What do you call two guys hanging out by
+        your window? Kurt & Rod.","status":200}
+
+        '
+    headers:
+      Access-Control-Allow-Headers:
+      - User-Agent, Content-Type
+      Access-Control-Allow-Methods:
+      - GET
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Max-Age:
+      - '86400'
+      Access-Control-Request-Method:
+      - GET
+      CF-RAY:
+      - 98947b0efe154780-DFW
+      Cache-Control:
+      - max-age=0, must-revalidate, no-cache, no-store, public, s-maxage=0
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - br
+      Content-Type:
+      - application/json
+      Date:
+      - Sat, 04 Oct 2025 11:53:46 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=VUlkSKcQiKJrNiZA7Q9WrDrtSlqO8NQt1WwDfWSs76RsDrSJAV9k0v6%2BWM8cQcM3DysGtnKUbhH3QPZ1SkZxgvUgWRbp57qLQCDa0hL%2BsUd7QQOtgkoYhOSPtpv9mQ%3D%3D"}]}'
+      Retry-After:
+      - '60'
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Transfer-Encoding:
+      - chunked
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+      x-frame-options:
+      - DENY
+      x-ratelimit-limit:
+      - '100'
+      x-ratelimit-remaining:
+      - '99'
+      x-ratelimit-reset:
+      - '1759578887'
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      User-Agent:
+      - Harmonbot Python/3.11.7 aiohttp/3.12.15
+    method: GET
+    uri: https://icanhazdadjoke.com/
+  response:
+    body:
+      string: '{"id":"KmbMJtrjbxc","joke":"I''ve started telling everyone about the
+        benefits of eating dried grapes. It''s all about raisin awareness.","status":200}
+
+        '
+    headers:
+      Access-Control-Allow-Headers:
+      - User-Agent, Content-Type
+      Access-Control-Allow-Methods:
+      - GET
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Max-Age:
+      - '86400'
+      Access-Control-Request-Method:
+      - GET
+      CF-RAY:
+      - 989ff57139cb68ff-DFW
+      Cache-Control:
+      - max-age=0, must-revalidate, no-cache, no-store, public, s-maxage=0
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - br
+      Content-Type:
+      - application/json
+      Date:
+      - Sun, 05 Oct 2025 21:19:42 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=FufcHG9Tlccz6vrJ6ADnTOhOBX3GJ4nMR0GM%2BEtnSsuCXF8wdz3VtKKvadqyD2hOZqM8mQRSspfopGi0K4C9T2TLAPo7NOzCNUqkxkREWnGELVBdmggadgG8NGmAYA%3D%3D"}]}'
+      Retry-After:
+      - '60'
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Transfer-Encoding:
+      - chunked
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+      x-frame-options:
+      - DENY
+      x-ratelimit-limit:
+      - '100'
+      x-ratelimit-remaining:
+      - '99'
+      x-ratelimit-reset:
+      - '1759699243'
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      User-Agent:
+      - Harmonbot Python/3.11.7 aiohttp/3.12.15
+    method: GET
+    uri: https://icanhazdadjoke.com/
+  response:
+    body:
+      string: '{"id":"AIRSSfi3Le","joke":"What''s a ninja''s favorite type of shoes?
+        Sneakers!","status":200}
+
+        '
+    headers:
+      Access-Control-Allow-Headers:
+      - User-Agent, Content-Type
+      Access-Control-Allow-Methods:
+      - GET
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Max-Age:
+      - '86400'
+      Access-Control-Request-Method:
+      - GET
+      CF-RAY:
+      - 98a000744d6168ff-DFW
+      Cache-Control:
+      - max-age=0, must-revalidate, no-cache, no-store, public, s-maxage=0
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - br
+      Content-Type:
+      - application/json
+      Date:
+      - Sun, 05 Oct 2025 21:27:13 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=jGpmgbX2J0e58GWo2um47%2FHGNc27lrkOg9GGT8%2F3PNybFedlc9qyjewuVfhFQoOkbHjVAySl53GRqZp3xeDIcYbuOeLiEGIn4grYmMUKm1vztEPc0uV3cN2%2Fo6Ep9w%3D%3D"}]}'
+      Retry-After:
+      - '60'
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Transfer-Encoding:
+      - chunked
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+      x-frame-options:
+      - DENY
+      x-ratelimit-limit:
+      - '100'
+      x-ratelimit-remaining:
+      - '99'
+      x-ratelimit-reset:
+      - '1759699694'
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      User-Agent:
+      - Harmonbot Python/3.11.7 aiohttp/3.13.0
+    method: GET
+    uri: https://icanhazdadjoke.com/
+  response:
+    body:
+      string: '{"id":"NmbFtH69hFd","joke":"Our wedding was so beautiful, even the
+        cake was in tiers.","status":200}
+
+        '
+    headers:
+      Access-Control-Allow-Headers:
+      - User-Agent, Content-Type
+      Access-Control-Allow-Methods:
+      - GET
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Max-Age:
+      - '86400'
+      Access-Control-Request-Method:
+      - GET
+      CF-RAY:
+      - 98d323d8aabb345e-DFW
+      Cache-Control:
+      - max-age=0, must-revalidate, no-cache, no-store, public, s-maxage=0
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - br
+      Content-Type:
+      - application/json
+      Date:
+      - Sun, 12 Oct 2025 02:24:16 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=lnghHuHAFqpBTeR%2FNFc1qWr%2FLiWYCXhkl1VMof3qOP8eh%2B8pJPzdui7MpGDhM3dUOYoDHNSNk3k7fvnOBC2KF5UhULYTQzidOVzVuLfgmQvYMkiOnE04YLsXKXyx9g%3D%3D"}]}'
+      Retry-After:
+      - '60'
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Transfer-Encoding:
+      - chunked
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+      x-frame-options:
+      - DENY
+      x-ratelimit-limit:
+      - '100'
+      x-ratelimit-remaining:
+      - '99'
+      x-ratelimit-reset:
+      - '1760235917'
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      User-Agent:
+      - Harmonbot Python/3.11.7 aiohttp/3.13.0
+    method: GET
+    uri: https://icanhazdadjoke.com/
+  response:
+    body:
+      string: '{"id":"oGBIRKuPukb","joke":"\"What time is it?\" I don''t know... it
+        keeps changing.","status":200}
+
+        '
+    headers:
+      Access-Control-Allow-Headers:
+      - User-Agent, Content-Type
+      Access-Control-Allow-Methods:
+      - GET
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Max-Age:
+      - '86400'
+      Access-Control-Request-Method:
+      - GET
+      CF-RAY:
+      - 98d341f68bbe47a3-DFW
+      Cache-Control:
+      - max-age=0, must-revalidate, no-cache, no-store, public, s-maxage=0
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - br
+      Content-Type:
+      - application/json
+      Date:
+      - Sun, 12 Oct 2025 02:44:50 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=SmOP2mcDaI1QdRNVfe3qSOUW0pxX7dsUb%2B72zlSJ%2FSwkBCj2sJB%2FV5vCdmisDrPR6v6FyBkJ7ltWfcI4Qs66xBBxnFoV6HddrOBJth6mHBvC0Qzaj6ciUpTVCf%2Fedg%3D%3D"}]}'
+      Retry-After:
+      - '60'
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Transfer-Encoding:
+      - chunked
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+      x-frame-options:
+      - DENY
+      x-ratelimit-limit:
+      - '100'
+      x-ratelimit-remaining:
+      - '99'
+      x-ratelimit-reset:
+      - '1760237151'
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      User-Agent:
+      - Harmonbot Python/3.11.7 aiohttp/3.13.0
+    method: GET
+    uri: https://icanhazdadjoke.com/
+  response:
+    body:
+      string: '{"id":"8UDdUnrzkyd","joke":"What do you call corn that joins the army?
+        Kernel.","status":200}
+
+        '
+    headers:
+      Access-Control-Allow-Headers:
+      - User-Agent, Content-Type
+      Access-Control-Allow-Methods:
+      - GET
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Max-Age:
+      - '86400'
+      Access-Control-Request-Method:
+      - GET
+      CF-RAY:
+      - 98d7d0f6ee5b6c81-DFW
+      Cache-Control:
+      - max-age=0, must-revalidate, no-cache, no-store, public, s-maxage=0
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - br
+      Content-Type:
+      - application/json
+      Date:
+      - Sun, 12 Oct 2025 16:01:30 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=FgfA6XFZsEolROSBTmNpeCXmpND%2Burq42o%2FnPTqSrFH%2F0m18qQydcZGgPvGqa4jNP04RCYv9UUEbbJuqn08F6U5H4dFsikLZpqEWZJeGu%2BkbSM8pwYStX6LnzyzQMQ%3D%3D"}]}'
+      Retry-After:
+      - '60'
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Transfer-Encoding:
+      - chunked
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+      x-frame-options:
+      - DENY
+      x-ratelimit-limit:
+      - '100'
+      x-ratelimit-remaining:
+      - '99'
+      x-ratelimit-reset:
+      - '1760284951'
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      User-Agent:
+      - Harmonbot Python/3.11.7 aiohttp/3.13.0
+    method: GET
+    uri: https://icanhazdadjoke.com/
+  response:
+    body:
+      string: '{"id":"vX8MeFdUDlb","joke":"Dad died because he couldn''t remember
+        his blood type. I will never forget his last words. Be positive.","status":200}
+
+        '
+    headers:
+      Access-Control-Allow-Headers:
+      - User-Agent, Content-Type
+      Access-Control-Allow-Methods:
+      - GET
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Max-Age:
+      - '86400'
+      Access-Control-Request-Method:
+      - GET
+      CF-RAY:
+      - 98d7f56f6f4d4684-DFW
+      Cache-Control:
+      - max-age=0, must-revalidate, no-cache, no-store, public, s-maxage=0
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - br
+      Content-Type:
+      - application/json
+      Date:
+      - Sun, 12 Oct 2025 16:26:24 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=VuOvmRR8StpPj05QenJCJ3hRoZlDldOtz%2Bu860YELneZl5p9IPO5bj0lcNrnnrPDzV34Oum1RSH7KCLj%2B3obJYlNeolMcBzbJfWEUXN7SFuMjRow4HLNUSsaib49vQ%3D%3D"}]}'
+      Retry-After:
+      - '60'
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Transfer-Encoding:
+      - chunked
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+      x-frame-options:
+      - DENY
+      x-ratelimit-limit:
+      - '100'
+      x-ratelimit-remaining:
+      - '99'
+      x-ratelimit-reset:
+      - '1760286445'
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      User-Agent:
+      - Harmonbot Python/3.11.7 aiohttp/3.13.0
+    method: GET
+    uri: https://icanhazdadjoke.com/
+  response:
+    body:
+      string: '{"id":"H6pWvHQKJe","joke":"Guy told me today he did not know what cloning
+        is. I told him, \"that makes 2 of us.\"","status":200}
+
+        '
+    headers:
+      Access-Control-Allow-Headers:
+      - User-Agent, Content-Type
+      Access-Control-Allow-Methods:
+      - GET
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Max-Age:
+      - '86400'
+      Access-Control-Request-Method:
+      - GET
+      CF-RAY:
+      - 98e90c719f88e9df-LAX
+      Cache-Control:
+      - max-age=0, must-revalidate, no-cache, no-store, public, s-maxage=0
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - br
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 14 Oct 2025 18:13:04 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=Duw5TSYUBTkKRqUkwVa%2F0x%2FyITU11VxdkiB89F8nJiKZly5JZxuOeLMZOG6mFQ8zBOUrwDft0DLMWWcKwBuTePLRJMIyKr1qIRAjBucGPoq%2Fe4SfuEPMK6h8wonufQ%3D%3D"}]}'
+      Retry-After:
+      - '60'
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Transfer-Encoding:
+      - chunked
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+      x-frame-options:
+      - DENY
+      x-ratelimit-limit:
+      - '100'
+      x-ratelimit-remaining:
+      - '99'
+      x-ratelimit-reset:
+      - '1760465645'
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      User-Agent:
+      - Harmonbot Python/3.11.7 aiohttp/3.13.0
+    method: GET
+    uri: https://icanhazdadjoke.com/
+  response:
+    body:
+      string: '{"id":"ysHQZvcpbFd","joke":"\"Dad, I''m hungry.\" Hello, Hungry. I''m
+        Dad.","status":200}
+
+        '
+    headers:
+      Access-Control-Allow-Headers:
+      - User-Agent, Content-Type
+      Access-Control-Allow-Methods:
+      - GET
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Max-Age:
+      - '86400'
+      Access-Control-Request-Method:
+      - GET
+      CF-RAY:
+      - 98e999a7a88d69dc-DFW
+      Cache-Control:
+      - max-age=0, must-revalidate, no-cache, no-store, public, s-maxage=0
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - br
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 14 Oct 2025 19:49:28 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=LFOs%2FEB09F6%2BzT3%2FZa1DCiYs%2BXhsDQPPxkKFpdRc3Zp%2FVi0PnwMB8okPgDXVySEXmUc91JXw9tT40BjkA%2FENGMTEvdIfdn1HLZmELq%2FYXJoDqkeQRkRWJvGoV2jvVA%3D%3D"}]}'
+      Retry-After:
+      - '60'
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Transfer-Encoding:
+      - chunked
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+      x-frame-options:
+      - DENY
+      x-ratelimit-limit:
+      - '100'
+      x-ratelimit-remaining:
+      - '99'
+      x-ratelimit-reset:
+      - '1760471429'
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      User-Agent:
+      - Harmonbot Python/3.11.7 aiohttp/3.13.0
+    method: GET
+    uri: https://icanhazdadjoke.com/
+  response:
+    body:
+      string: '{"id":"Xn3wX8hi3Ed","joke":"Did you hear about the Mexican train killer?
+        He had loco motives","status":200}
+
+        '
+    headers:
+      Access-Control-Allow-Headers:
+      - User-Agent, Content-Type
+      Access-Control-Allow-Methods:
+      - GET
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Max-Age:
+      - '86400'
+      Access-Control-Request-Method:
+      - GET
+      CF-RAY:
+      - 98e9a323dae59ae2-JAX
+      Cache-Control:
+      - max-age=0, must-revalidate, no-cache, no-store, public, s-maxage=0
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - br
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 14 Oct 2025 19:55:57 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=%2BPrTGrO%2FrA%2BQZeq%2FfdyV%2BAc9Ekk2FzoNR6oVXQCAXJg2kQrgbEhGl8BOgTTfg2eVebw31SNTjEWDQCndT13h9m1fZce6%2FvdOBAafi0IVwXxONlGAhoCWIMdkANQ%3D"}]}'
+      Retry-After:
+      - '60'
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Transfer-Encoding:
+      - chunked
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+      x-frame-options:
+      - DENY
+      x-ratelimit-limit:
+      - '100'
+      x-ratelimit-remaining:
+      - '99'
+      x-ratelimit-reset:
+      - '1760471818'
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      User-Agent:
+      - Harmonbot Python/3.11.7 aiohttp/3.13.0
+    method: GET
+    uri: https://icanhazdadjoke.com/
+  response:
+    body:
+      string: '{"id":"SKeqOucNeFd","joke":"What time did the man go to the dentist?
+        Tooth hurt-y.","status":200}
+
+        '
+    headers:
+      Access-Control-Allow-Headers:
+      - User-Agent, Content-Type
+      Access-Control-Allow-Methods:
+      - GET
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Max-Age:
+      - '86400'
+      Access-Control-Request-Method:
+      - GET
+      CF-RAY:
+      - 98f21ced3f178bf2-PHX
+      Cache-Control:
+      - max-age=0, must-revalidate, no-cache, no-store, public, s-maxage=0
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - br
+      Content-Type:
+      - application/json
+      Date:
+      - Wed, 15 Oct 2025 20:37:11 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=1MqU4hNs47L6NmKRhr7QxuSLvQYXeEKqmJtYdGU51bD7WueMdFpX2sjFW%2Fa1U83ydWV94izewbKKxpp7oVYNQYx%2FcEyUpHamk%2BudFoZ3AkBMPbJFxFPYKRBCWaqRcw%3D%3D"}]}'
+      Retry-After:
+      - '60'
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Transfer-Encoding:
+      - chunked
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+      x-frame-options:
+      - DENY
+      x-ratelimit-limit:
+      - '100'
+      x-ratelimit-remaining:
+      - '99'
+      x-ratelimit-reset:
+      - '1760560692'
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      User-Agent:
+      - Harmonbot Python/3.11.7 aiohttp/3.13.0
+    method: GET
+    uri: https://icanhazdadjoke.com/
+  response:
+    body:
+      string: '{"id":"RSvzPuzAdpb","joke":"Milk is also the fastest liquid on earth
+        \u2013 its pasteurized before you even see it","status":200}
+
+        '
+    headers:
+      Access-Control-Allow-Headers:
+      - User-Agent, Content-Type
+      Access-Control-Allow-Methods:
+      - GET
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Max-Age:
+      - '86400'
+      Access-Control-Request-Method:
+      - GET
+      CF-RAY:
+      - 98f21f0de9ae7ede-LAX
+      Cache-Control:
+      - max-age=0, must-revalidate, no-cache, no-store, public, s-maxage=0
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - br
+      Content-Type:
+      - application/json
+      Date:
+      - Wed, 15 Oct 2025 20:38:39 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=mo4IR9PruW7GJlBSVM8mJu3NpOl2RtAiS8thCFDFW9VVyDyheYObwxy6A%2F1KoGHpwy59%2F0pJ3ntBg8q6i9b6RxPvOuYoGqB83a9LjctJelKZxbZUCEK6nG%2FS5fH%2FKA%3D%3D"}]}'
+      Retry-After:
+      - '60'
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Transfer-Encoding:
+      - chunked
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+      x-frame-options:
+      - DENY
+      x-ratelimit-limit:
+      - '100'
+      x-ratelimit-remaining:
+      - '99'
+      x-ratelimit-reset:
+      - '1760560780'
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      User-Agent:
+      - Harmonbot Python/3.11.7 aiohttp/3.13.0
+    method: GET
+    uri: https://icanhazdadjoke.com/
+  response:
+    body:
+      string: '{"id":"NucUfVvXLBd","joke":"What did the hat say to the scarf?\r\nYou
+        can hang around. I''ll just go on ahead.\r\n","status":200}
+
+        '
+    headers:
+      Access-Control-Allow-Headers:
+      - User-Agent, Content-Type
+      Access-Control-Allow-Methods:
+      - GET
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Max-Age:
+      - '86400'
+      Access-Control-Request-Method:
+      - GET
+      CF-RAY:
+      - 98f21f9f8def6bb3-DFW
+      Cache-Control:
+      - max-age=0, must-revalidate, no-cache, no-store, public, s-maxage=0
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - br
+      Content-Type:
+      - application/json
+      Date:
+      - Wed, 15 Oct 2025 20:39:02 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=ZbpM3hXCqcHqs9NToy6aa6f%2ByvAaZ3VXcR9izJPj8wW%2FKx43GJwdwkfSmB1G2kc1G0eHxgzjfrqZAfgzRAU3679MdQ3Ys%2Bhpf4apRHGvj%2B43%2F9s%2FoCodUTVuOKqiCA%3D%3D"}]}'
+      Retry-After:
+      - '37'
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Transfer-Encoding:
+      - chunked
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+      x-frame-options:
+      - DENY
+      x-ratelimit-limit:
+      - '100'
+      x-ratelimit-remaining:
+      - '98'
+      x-ratelimit-reset:
+      - '1760560780'
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      User-Agent:
+      - Harmonbot Python/3.11.7 aiohttp/3.13.0
+    method: GET
+    uri: https://icanhazdadjoke.com/
+  response:
+    body:
+      string: '{"id":"Tv4wkVS0gib","joke":"Where do owls go to buy their baby clothes?
+        The owlet malls.","status":200}
+
+        '
+    headers:
+      Access-Control-Allow-Headers:
+      - User-Agent, Content-Type
+      Access-Control-Allow-Methods:
+      - GET
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Max-Age:
+      - '86400'
+      Access-Control-Request-Method:
+      - GET
+      CF-RAY:
+      - 98f2212baa5ff0a8-DFW
+      Cache-Control:
+      - max-age=0, must-revalidate, no-cache, no-store, public, s-maxage=0
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - br
+      Content-Type:
+      - application/json
+      Date:
+      - Wed, 15 Oct 2025 20:40:05 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=9xdA0jYWIuFZTyAg7maPvYzAKNmcLTFERLYwrbtgEw4kVe7%2FJoz5eLhsfHH6yzHFD1qzuPTLhjQ122DA7bDoQ0gIThy5W7NpjK52I1815yej8BPoRNKK7bsX9imZtQ%3D%3D"}]}'
+      Retry-After:
+      - '60'
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Transfer-Encoding:
+      - chunked
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+      x-frame-options:
+      - DENY
+      x-ratelimit-limit:
+      - '100'
+      x-ratelimit-remaining:
+      - '99'
+      x-ratelimit-reset:
+      - '1760560866'
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      User-Agent:
+      - Harmonbot Python/3.11.7 aiohttp/3.13.0
+    method: GET
+    uri: https://icanhazdadjoke.com/
+  response:
+    body:
+      string: '{"id":"fNeVDI6USnb","joke":"I made a playlist for hiking. It has music
+        from Peanuts, The Cranberries, and Eminem. I call it my Trail Mix.","status":200}
+
+        '
+    headers:
+      Access-Control-Allow-Headers:
+      - User-Agent, Content-Type
+      Access-Control-Allow-Methods:
+      - GET
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Max-Age:
+      - '86400'
+      Access-Control-Request-Method:
+      - GET
+      CF-RAY:
+      - 98f3d7f62bcb69d0-DFW
+      Cache-Control:
+      - max-age=0, must-revalidate, no-cache, no-store, public, s-maxage=0
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - br
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 16 Oct 2025 01:39:38 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=NUMdNzdavMDv8bHnigMgQXXxXiBCDV2%2BoqvRgY%2FrCatrjIsLwVaWYmUZC8spOG8i4iy8TzR7zjM1cmdu%2BDHHIgMwgY3K%2FUYwpC%2BjezWcLxvrGBSgQzwQZGKvoP8ggw%3D%3D"}]}'
+      Retry-After:
+      - '60'
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Transfer-Encoding:
+      - chunked
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+      x-frame-options:
+      - DENY
+      x-ratelimit-limit:
+      - '100'
+      x-ratelimit-remaining:
+      - '99'
+      x-ratelimit-reset:
+      - '1760578839'
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      User-Agent:
+      - Harmonbot Python/3.11.7 aiohttp/3.13.0
+    method: GET
+    uri: https://icanhazdadjoke.com/
+  response:
+    body:
+      string: '{"id":"FBskq4MRnrc","joke":"Just watched a documentary about beavers\u2026
+        It was the best damn program I\u2019ve ever seen.","status":200}
+
+        '
+    headers:
+      Access-Control-Allow-Headers:
+      - User-Agent, Content-Type
+      Access-Control-Allow-Methods:
+      - GET
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Max-Age:
+      - '86400'
+      Access-Control-Request-Method:
+      - GET
+      CF-RAY:
+      - 98f3d9d04a3e6bf6-DFW
+      Cache-Control:
+      - max-age=0, must-revalidate, no-cache, no-store, public, s-maxage=0
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - br
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 16 Oct 2025 01:40:54 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=vYWVAIqZQP8vERY6qMk9EUctdobHfRW%2FHg5kQK52Gz7HJoOTsWOzb2pnjcGNmS%2FnBfUnuwhAYekb6mYxpoSEjaAAylywg1CTCKDNcXs7pwWgO3pv%2BLKRdD7ZWeAreQ%3D%3D"}]}'
+      Retry-After:
+      - '60'
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Transfer-Encoding:
+      - chunked
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+      x-frame-options:
+      - DENY
+      x-ratelimit-limit:
+      - '100'
+      x-ratelimit-remaining:
+      - '99'
+      x-ratelimit-reset:
+      - '1760578915'
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      User-Agent:
+      - Harmonbot Python/3.11.7 aiohttp/3.13.0
+    method: GET
+    uri: https://icanhazdadjoke.com/
+  response:
+    body:
+      string: '{"id":"71wsPKeF6h","joke":"What did the dog say to the two trees? Bark
+        bark.","status":200}
+
+        '
+    headers:
+      Access-Control-Allow-Headers:
+      - User-Agent, Content-Type
+      Access-Control-Allow-Methods:
+      - GET
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Max-Age:
+      - '86400'
+      Access-Control-Request-Method:
+      - GET
+      CF-RAY:
+      - 98f4969b3e5f710b-DFW
+      Cache-Control:
+      - max-age=0, must-revalidate, no-cache, no-store, public, s-maxage=0
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - br
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 16 Oct 2025 03:49:47 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=VhseMRQenE%2FYjJx%2F6vmzJNHaq0z0PnFqpPvdCn7M06tdrAeAapscHht2F2ZPApd9mW7Y1XrVNpbCrcxvbp5hW2jdZeSfGe11qL53YxeBkeSU3HO7yAHLFHhx5%2FMdbQ%3D%3D"}]}'
+      Retry-After:
+      - '60'
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Transfer-Encoding:
+      - chunked
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+      x-frame-options:
+      - DENY
+      x-ratelimit-limit:
+      - '100'
+      x-ratelimit-remaining:
+      - '99'
+      x-ratelimit-reset:
+      - '1760586648'
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      User-Agent:
+      - Harmonbot Python/3.11.7 aiohttp/3.13.0
+    method: GET
+    uri: https://icanhazdadjoke.com/
+  response:
+    body:
+      string: '{"id":"D5wAA5o4TCd","joke":"What do you call a careful wolf? Aware
+        wolf.","status":200}
+
+        '
+    headers:
+      Access-Control-Allow-Headers:
+      - User-Agent, Content-Type
+      Access-Control-Allow-Methods:
+      - GET
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Max-Age:
+      - '86400'
+      Access-Control-Request-Method:
+      - GET
+      CF-RAY:
+      - 98fc1fbb192f6b1f-DFW
+      Cache-Control:
+      - max-age=0, must-revalidate, no-cache, no-store, public, s-maxage=0
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - br
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 17 Oct 2025 01:46:44 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=iD5GSqHuxLJhkatpmVy6dU5tyukMiKGX7HQC4TRaRijzscBlFc37ENed%2BsJFb2Sk6SAJxM%2BnRl80VTGhsYu%2BRRYrc%2FsECB5d38WzbI5yWbiQFTPjHx5fQ7yn%2BNuJ6w%3D%3D"}]}'
+      Retry-After:
+      - '60'
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Transfer-Encoding:
+      - chunked
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+      x-frame-options:
+      - DENY
+      x-ratelimit-limit:
+      - '100'
+      x-ratelimit-remaining:
+      - '99'
+      x-ratelimit-reset:
+      - '1760665665'
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      User-Agent:
+      - Harmonbot Python/3.11.7 aiohttp/3.13.0
+    method: GET
+    uri: https://icanhazdadjoke.com/
+  response:
+    body:
+      string: '{"id":"1oOfFlOfaxc","joke":"What do you do on a remote island? Try
+        and find the TV island it belongs to.","status":200}
+
+        '
+    headers:
+      Access-Control-Allow-Headers:
+      - User-Agent, Content-Type
+      Access-Control-Allow-Methods:
+      - GET
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Max-Age:
+      - '86400'
+      Access-Control-Request-Method:
+      - GET
+      CF-RAY:
+      - 98fc2424cb9e4794-DFW
+      Cache-Control:
+      - max-age=0, must-revalidate, no-cache, no-store, public, s-maxage=0
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - br
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 17 Oct 2025 01:49:45 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=kSCjtYpS8wyInWDqe5mIu8mPm6ZTrubdMAkKsCQOHgm8mObKf6Ps7ed875bdT26FhHabI0jBTdAconPfNu3XSeusv3n%2BLohwFFCS7RmIRylFn0cUx7RlpnPjiMZQsw%3D%3D"}]}'
+      Retry-After:
+      - '60'
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Transfer-Encoding:
+      - chunked
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+      x-frame-options:
+      - DENY
+      x-ratelimit-limit:
+      - '100'
+      x-ratelimit-remaining:
+      - '99'
+      x-ratelimit-reset:
+      - '1760665846'
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      User-Agent:
+      - Harmonbot Python/3.11.7 aiohttp/3.13.0
+    method: GET
+    uri: https://icanhazdadjoke.com/
+  response:
+    body:
+      string: '{"id":"7E69M792Tvc","joke":"I''ve got a joke about vegetables for you...
+        but it''s a bit corny.","status":200}
+
+        '
+    headers:
+      Access-Control-Allow-Headers:
+      - User-Agent, Content-Type
+      Access-Control-Allow-Methods:
+      - GET
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Max-Age:
+      - '86400'
+      Access-Control-Request-Method:
+      - GET
+      CF-RAY:
+      - 98fc28259ce24ff9-DFW
+      Cache-Control:
+      - max-age=0, must-revalidate, no-cache, no-store, public, s-maxage=0
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - br
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 17 Oct 2025 01:52:29 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=gAYGkX3ypYhYzunl7HB5sygYD1fBUCt6%2Fdf%2BH6AR00wPSQoq8lk%2BD5dtwmU7tLV05jShDwQSQCrrmB6L5VOw1niYIJ%2FiTrtACU%2FmYpobYP0lDXnmiMWrZkS72H8%3D"}]}'
+      Retry-After:
+      - '60'
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Transfer-Encoding:
+      - chunked
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+      x-frame-options:
+      - DENY
+      x-ratelimit-limit:
+      - '100'
+      x-ratelimit-remaining:
+      - '99'
+      x-ratelimit-reset:
+      - '1760666010'
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      User-Agent:
+      - Harmonbot Python/3.11.7 aiohttp/3.13.0
+    method: GET
+    uri: https://icanhazdadjoke.com/
+  response:
+    body:
+      string: '{"id":"Albp49Mmjyd","joke":"I was wondering why the frisbee was getting
+        bigger, then it hit me.","status":200}
+
+        '
+    headers:
+      Access-Control-Allow-Headers:
+      - User-Agent, Content-Type
+      Access-Control-Allow-Methods:
+      - GET
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Max-Age:
+      - '86400'
+      Access-Control-Request-Method:
+      - GET
+      CF-RAY:
+      - 98fc2e877d0ee18c-DFW
+      Cache-Control:
+      - max-age=0, must-revalidate, no-cache, no-store, public, s-maxage=0
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - br
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 17 Oct 2025 01:56:50 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=BoyGtyH6StuNl4%2FmVci9ZfS%2BHNLL3xw289K1dXezwiFEORqafNyi4GNvcqJ%2Fvsl3eaet6AJUvwxSqm6%2FPEhRHdzuwsNKxIZWfo1ThIrgILW%2FhzCv9AqS3%2BkS4X8%3D"}]}'
+      Retry-After:
+      - '60'
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Transfer-Encoding:
+      - chunked
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+      x-frame-options:
+      - DENY
+      x-ratelimit-limit:
+      - '100'
+      x-ratelimit-remaining:
+      - '99'
+      x-ratelimit-reset:
+      - '1760666271'
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      User-Agent:
+      - Harmonbot Python/3.11.7 aiohttp/3.13.0
+    method: GET
+    uri: https://icanhazdadjoke.com/
+  response:
+    body:
+      string: '{"id":"DImrciqWSCd","joke":"What do you call a cow with no legs? Ground
+        beef.","status":200}
+
+        '
+    headers:
+      Access-Control-Allow-Headers:
+      - User-Agent, Content-Type
+      Access-Control-Allow-Methods:
+      - GET
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Max-Age:
+      - '86400'
+      Access-Control-Request-Method:
+      - GET
+      CF-RAY:
+      - 98fc2ff3ff99e79e-DFW
+      Cache-Control:
+      - max-age=0, must-revalidate, no-cache, no-store, public, s-maxage=0
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - br
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 17 Oct 2025 01:57:48 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=OAjCSGtdTPzm3ln5bz1rZ%2BA7eRSQW7jjY78mpU95FB3st7o%2B3hXkDGrToY1VF%2F8WeWDdN11iljrPS5e80il6uTplE0vUya%2FSBX0ogGWtLkyTBPRnbM7w8t2UucGxzA%3D%3D"}]}'
+      Retry-After:
+      - '2'
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Transfer-Encoding:
+      - chunked
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+      x-frame-options:
+      - DENY
+      x-ratelimit-limit:
+      - '100'
+      x-ratelimit-remaining:
+      - '98'
+      x-ratelimit-reset:
+      - '1760666271'
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      User-Agent:
+      - Harmonbot Python/3.11.7 aiohttp/3.13.0
+    method: GET
+    uri: https://icanhazdadjoke.com/
+  response:
+    body:
+      string: '{"id":"7Uvc29hFIBd","joke":"Why are mummys scared of vacation? They''re
+        afraid to unwind.","status":200}
+
+        '
+    headers:
+      Access-Control-Allow-Headers:
+      - User-Agent, Content-Type
+      Access-Control-Allow-Methods:
+      - GET
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Max-Age:
+      - '86400'
+      Access-Control-Request-Method:
+      - GET
+      CF-RAY:
+      - 98fc312c19504864-DFW
+      Cache-Control:
+      - max-age=0, must-revalidate, no-cache, no-store, public, s-maxage=0
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - br
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 17 Oct 2025 01:58:38 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=EVOqVviEGKzt%2BPVheOCf5UIm%2BNSsIT%2BOjfmq5fuQeRo%2BRwu5skxjpLHI1OJd8grzJnlJdkuxJvxp90gLINmzlbApAmmFRKYZ1NICwE1spNL12OrBobwn2B5I98BWuw%3D%3D"}]}'
+      Retry-After:
+      - '60'
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Transfer-Encoding:
+      - chunked
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+      x-frame-options:
+      - DENY
+      x-ratelimit-limit:
+      - '100'
+      x-ratelimit-remaining:
+      - '99'
+      x-ratelimit-reset:
+      - '1760666379'
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      User-Agent:
+      - Harmonbot Python/3.11.7 aiohttp/3.13.0
+    method: GET
+    uri: https://icanhazdadjoke.com/
+  response:
+    body:
+      string: '{"id":"wcxHJBl3gFd","joke":"I am terrified of elevators. I\u2019m going
+        to start taking steps to avoid them.","status":200}
+
+        '
+    headers:
+      Access-Control-Allow-Headers:
+      - User-Agent, Content-Type
+      Access-Control-Allow-Methods:
+      - GET
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Max-Age:
+      - '86400'
+      Access-Control-Request-Method:
+      - GET
+      CF-RAY:
+      - 98fc32df3d736b77-DFW
+      Cache-Control:
+      - max-age=0, must-revalidate, no-cache, no-store, public, s-maxage=0
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - br
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 17 Oct 2025 01:59:48 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=e3rWnbWO7E7O8zIwlZJvBtWgcbaN4md4WfrZz3vWEcR6eOCPb5zMEPidXbYVWylWt9WMLgNGN%2BkW0oURKnjyVhKOKLKOAnZSwNQIOXjpJN70c8IaT3bmidKrVjqm%2FA%3D%3D"}]}'
+      Retry-After:
+      - '60'
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Transfer-Encoding:
+      - chunked
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+      x-frame-options:
+      - DENY
+      x-ratelimit-limit:
+      - '100'
+      x-ratelimit-remaining:
+      - '99'
+      x-ratelimit-reset:
+      - '1760666449'
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      User-Agent:
+      - Harmonbot Python/3.11.7 aiohttp/3.13.0
+    method: GET
+    uri: https://icanhazdadjoke.com/
+  response:
+    body:
+      string: '{"id":"OfNRfaaUSf","joke":"When I left school, I passed every one of
+        my exams with the exception of Greek Mythology. It always was my achilles
+        elbow","status":200}
+
+        '
+    headers:
+      Access-Control-Allow-Headers:
+      - User-Agent, Content-Type
+      Access-Control-Allow-Methods:
+      - GET
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Max-Age:
+      - '86400'
+      Access-Control-Request-Method:
+      - GET
+      CF-RAY:
+      - 98fcb952082e4605-DFW
+      Cache-Control:
+      - max-age=0, must-revalidate, no-cache, no-store, public, s-maxage=0
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - br
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 17 Oct 2025 03:31:35 GMT
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=5dv3o0PwrtucGt3UOJMkZC0uXr4wiG9HAgAYieq2qebxAVupqrEyqbLLy1sLxzfr%2FOChd8g%2F4pN1v%2BaCp6GtFzY1y9QKL9l9Jw8F22XNRtEw065AJ85o9jCfQL0ZHg%3D%3D"}]}'
+      Retry-After:
+      - '60'
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Transfer-Encoding:
+      - chunked
+      X-Content-Type-Options:
+      - nosniff
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+      x-frame-options:
+      - DENY
+      x-ratelimit-limit:
+      - '100'
+      x-ratelimit-remaining:
+      - '99'
+      x-ratelimit-reset:
+      - '1760671956'
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
 version: 1
