@@ -1100,6 +1100,8 @@ class StatisticsView(ui.View):
         unique_members = set(ctx.bot.get_all_members())
         unique_members_online = sum(1 for m in unique_members if m.status != discord.Status.offline)
 
+        application_info = await ctx.bot.application_info()
+
         self.general_embeds = [
             discord.Embed(
                 color = ctx.bot.bot_color,
@@ -1137,6 +1139,9 @@ class StatisticsView(ui.View):
                     f"{total_members:,} total ({total_members_online:,})\n"
                     f"{len(unique_members):,} unique ({unique_members_online:,})"
                 )
+            ).add_field(
+                name = "Approximate User Installations",
+                value = f"{application_info.approximate_user_install_count:,}"
             )
         ]
 
