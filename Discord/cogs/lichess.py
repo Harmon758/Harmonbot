@@ -212,8 +212,10 @@ class Lichess(commands.Cog):
 			activity = ""
 			if "practice" in day:
 				for practice in day["practice"]:
-					activity += (f"{self.practice_emoji} Practiced {practice['nbPositions']} positions on "
-									f"[{practice['name']}](https://lichess.org{practice['url']})\n")
+					activity += (
+						f"{self.practice_emoji} Practiced {practice['nbPositions']} positions on "
+						f"[{practice['name']}](https://lichess.org{practice['url']})\n"
+					)
 			if "puzzles" in day:
 				puzzle_wins = day["puzzles"]["score"]["win"]
 				puzzle_losses = day["puzzles"]["score"]["loss"]
@@ -222,8 +224,10 @@ class Lichess(commands.Cog):
 				rating_after = day["puzzles"]["score"]["rp"]["after"]
 				total_puzzles = puzzle_wins + puzzle_losses + puzzle_draws
 				rating_change = rating_after - rating_before
-				activity += (f"{self.training_emoji} Solved {total_puzzles} tactical "
-								f"{ctx.bot.inflect_engine.plural('puzzle', total_puzzles)}\t")
+				activity += (
+					f"{self.training_emoji} Solved {total_puzzles} tactical "
+					f"{ctx.bot.inflect_engine.plural('puzzle', total_puzzles)}\t"
+				)
 				if rating_change != 0:
 					activity += str(rating_after)
 					if rating_change > 0:
@@ -248,9 +252,11 @@ class Lichess(commands.Cog):
 					mode_index = self.modes.index(mode)
 					total_matches = mode_wins + mode_losses + mode_draws
 					rating_change = rating_after - rating_before
-					activity += (f"{self.mode_emojis[mode_index]} Played {total_matches} "
-									f"{self.mode_names[mode_index]} "
-									f"{ctx.bot.inflect_engine.plural('game', total_matches)}\t")
+					activity += (
+						f"{self.mode_emojis[mode_index]} Played {total_matches} "
+						f"{self.mode_names[mode_index]} "
+						f"{ctx.bot.inflect_engine.plural('game', total_matches)}\t"
+					)
 					if rating_change != 0:
 						activity += str(rating_after)
 						if rating_change > 0:
@@ -267,12 +273,16 @@ class Lichess(commands.Cog):
 					activity += '\n'
 			if "posts" in day:
 				for post in day["posts"]:
-					activity += (f"{self.forum_emoji} Posted {len(post['posts'])} "
-									f"{ctx.bot.inflect_engine.plural('message', len(post['posts']))}"
-									f" in [{post['topicName']}](https://lichess.org{post['topicUrl']})\n")
+					activity += (
+						f"{self.forum_emoji} Posted {len(post['posts'])} "
+						f"{ctx.bot.inflect_engine.plural('message', len(post['posts']))}"
+						f" in [{post['topicName']}](https://lichess.org{post['topicUrl']})\n"
+					)
 			if "correspondenceMoves" in day:
-				activity += (f"{self.correspondence_emoji} Played {day['correspondenceMoves']['nb']} "
-								f"{ctx.bot.inflect_engine.plural('move', day['correspondenceMoves']['nb'])}")
+				activity += (
+					f"{self.correspondence_emoji} Played {day['correspondenceMoves']['nb']} "
+					f"{ctx.bot.inflect_engine.plural('move', day['correspondenceMoves']['nb'])}"
+				)
 				game_count = len(day["correspondenceMoves"]["games"])
 				activity += f" in {game_count}"
 				if game_count == 15:
@@ -287,8 +297,10 @@ class Lichess(commands.Cog):
 				rating_after = day["correspondenceEnds"]["correspondence"]["score"]["rp"]["after"]
 				total_matches = correspondence_wins + correspondence_losses + correspondence_draws
 				rating_change = rating_after - rating_before
-				activity += (f"{self.correspondence_emoji} Completed {total_matches} correspondence "
-								f"{ctx.bot.inflect_engine.plural('game', total_matches)}\t")
+				activity += (
+					f"{self.correspondence_emoji} Completed {total_matches} correspondence "
+					f"{ctx.bot.inflect_engine.plural('game', total_matches)}\t"
+				)
 				if rating_change != 0:
 					activity += str(rating_after)
 					if rating_change > 0:
@@ -307,28 +319,38 @@ class Lichess(commands.Cog):
 			if "follows" in day:
 				if "in" in day["follows"]:
 					follows_in = day["follows"]["in"]["ids"]
-					activity += (f"{self.thumbsup_emoji} Gained "
-									f"{day['follows']['in'].get('nb', len(follows_in))} new "
-									f"{ctx.bot.inflect_engine.plural('follower', len(follows_in))}"
-									f"\n\t{', '.join(follows_in)}\n")
+					activity += (
+						f"{self.thumbsup_emoji} Gained "
+						f"{day['follows']['in'].get('nb', len(follows_in))} new "
+						f"{ctx.bot.inflect_engine.plural('follower', len(follows_in))}"
+						f"\n\t{', '.join(follows_in)}\n"
+					)
 				if "out" in day["follows"]:
 					follows_out = day["follows"]["out"]["ids"]
-					activity += (f"{self.thumbsup_emoji} Started following "
-									f"{day['follows']['out'].get('nb', len(follows_out))} "
-									f"{ctx.bot.inflect_engine.plural('player', len(follows_out))}"
-									f"\n\t{', '.join(follows_out)}\n")
+					activity += (
+						f"{self.thumbsup_emoji} Started following "
+						f"{day['follows']['out'].get('nb', len(follows_out))} "
+						f"{ctx.bot.inflect_engine.plural('player', len(follows_out))}"
+						f"\n\t{', '.join(follows_out)}\n"
+					)
 			if "tournaments" in day:
-				activity += (f"{self.trophy_emoji} Competed in {day['tournaments']['nb']} "
-								f"{ctx.bot.inflect_engine.plural('tournament', day['tournaments']['nb'])}\n")
+				activity += (
+					f"{self.trophy_emoji} Competed in {day['tournaments']['nb']} "
+					f"{ctx.bot.inflect_engine.plural('tournament', day['tournaments']['nb'])}\n"
+				)
 				for tournament in day["tournaments"]["best"]:
-					activity += (f"\tRanked #{tournament['rank']} (top {tournament['rankPercent']}%) "
-									f"with {tournament['nbGames']} "
-									f"{ctx.bot.inflect_engine.plural('game', tournament['nbGames'])}"
-									f" in [{tournament['tournament']['name']}]"
-									f"(https://lichess.org/tournament/{tournament['tournament']['id']})\n")
+					activity += (
+						f"\tRanked #{tournament['rank']} (top {tournament['rankPercent']}%) "
+						f"with {tournament['nbGames']} "
+						f"{ctx.bot.inflect_engine.plural('game', tournament['nbGames'])}"
+						f" in [{tournament['tournament']['name']}]"
+						f"(https://lichess.org/tournament/{tournament['tournament']['id']})\n"
+					)
 			if "teams" in day:
-				activity += (f"{self.team_emoji} Joined {len(day['teams'])} "
-								f"{ctx.bot.inflect_engine.plural('team', len(day['teams']))}\n\t")
+				activity += (
+					f"{self.team_emoji} Joined {len(day['teams'])} "
+					f"{ctx.bot.inflect_engine.plural('team', len(day['teams']))}\n\t"
+				)
 				teams = [f"[{team['name']}](https://lichess.org{team['url']})" for team in day["teams"]]
 				activity += f"{', '.join(teams)}\n"
 			if day.get("stream"):
