@@ -82,11 +82,13 @@ class Lichess(commands.Cog):
 		self.team_emoji = discord.utils.get(self.bot.emojis, name = "lichess_team") or ""  # TODO: Fallback Emoji
 		self.thumbsup_emoji = discord.utils.get(self.bot.emojis, name = "lichess_thumbsup") or ":thumbsup:"  # TODO: add skin-tone
 		self.trophy_emoji = discord.utils.get(self.bot.emojis, name = "lichess_trophy") or ":trophy:"
-		self.mode_emojis = (self.ultrabullet_emoji, self.bullet_emoji, self.blitz_emoji, 
-							self.rapid_emoji, self.classical_emoji, self.correspondence_emoji, 
-							self.crazyhouse_emoji, self.chess960_emoji, self.kingofthehill_emoji, 
-							self.threecheck_emoji, self.antichess_emoji, self.atomic_emoji, 
-							self.horde_emoji, self.racingkings_emoji, self.training_emoji)
+		self.mode_emojis = (
+			self.ultrabullet_emoji, self.bullet_emoji, self.blitz_emoji,
+			self.rapid_emoji, self.classical_emoji, self.correspondence_emoji,
+			self.crazyhouse_emoji, self.chess960_emoji, self.kingofthehill_emoji,
+			self.threecheck_emoji, self.antichess_emoji, self.atomic_emoji,
+			self.horde_emoji, self.racingkings_emoji, self.training_emoji
+		)
 	
 	def generate_user_mode_commands(self):
 		# Creates user subcommand for a mode
