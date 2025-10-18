@@ -413,7 +413,7 @@ class Lichess(commands.Cog):
         await ctx.embed_reply(title = f"{username}'s Activity", fields = fields)
 
     @user.command(name = "games")
-    async def user_games(self, ctx, username : LichessUser):
+    async def user_games(self, ctx, username: LichessUser):
         '''User games'''
         title = username.get("title", "") + ' ' + username["username"]
         fields = [
