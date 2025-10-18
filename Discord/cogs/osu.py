@@ -1,13 +1,22 @@
 
-import discord
 from discord.ext import commands
 
+import asyncio
 import datetime
 
 import dateutil
 import pycountry
 
 from utilities import checks
+
+
+EMOJIS = {
+    "ssh": "https://raw.githubusercontent.com/ppy/osu-web/33f98cf12eb25b4e6648126ba85c94ab24eb4081/public/images/badges/score-ranks/Score-SSPlus-Small-60%402x.png",
+    "ss": "https://raw.githubusercontent.com/ppy/osu-web/33f98cf12eb25b4e6648126ba85c94ab24eb4081/public/images/badges/score-ranks/Score-SS-Small-60%402x.png",
+    "sh": "https://raw.githubusercontent.com/ppy/osu-web/33f98cf12eb25b4e6648126ba85c94ab24eb4081/public/images/badges/score-ranks/Score-SPlus-Small-60%402x.png",
+    's': "https://raw.githubusercontent.com/ppy/osu-web/33f98cf12eb25b4e6648126ba85c94ab24eb4081/public/images/badges/score-ranks/Score-S-Small-60%402x.png",
+    'a': "https://raw.githubusercontent.com/ppy/osu-web/33f98cf12eb25b4e6648126ba85c94ab24eb4081/public/images/badges/score-ranks/Score-A-Small-60%402x.png",
+}
 
 
 async def setup(bot):
@@ -17,19 +26,23 @@ class Osu(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
-        self.load_emoji()
 
-    @commands.Cog.listener()
-    async def on_ready(self):
-        self.load_emoji()
+    async def cog_load(self):
+        asyncio.create_task(
+            self.initialize_application_emojis(),
+            name = "Initialize osu! application emojis"
+        )
 
-    def load_emoji(self):
-        # TODO: Check only within Emoji Server emojis?
-        self.ssh_emoji = discord.utils.get(self.bot.emojis, name = "osu_ssh") or "SS+"
-        self.ss_emoji = discord.utils.get(self.bot.emojis, name = "osu_ss") or "SS"
-        self.sh_emoji = discord.utils.get(self.bot.emojis, name = "osu_sh") or "S+"
-        self.s_emoji = discord.utils.get(self.bot.emojis, name = "osu_s") or 'S'
-        self.a_emoji = discord.utils.get(self.bot.emojis, name = "osu_a") or 'A'
+    async def initialize_application_emojis(self):
+        for name, url in EMOJIS.items():
+            if f"osu_{name}" not in self.bot.application_emojis:
+                async with self.bot.aiohttp_session.get(url) as resp:
+                    self.bot.application_emojis[f"osu_{name}"] = (
+                        await self.bot.create_application_emoji(
+                            name = f"osu_{name}",
+                            image = await resp.read()
+                        )
+                )
 
     async def cog_check(self, ctx):
         return await checks.not_forbidden().predicate(ctx)
@@ -193,27 +206,27 @@ class Osu(commands.Cog):
             ))
         if (count_rank_ssh := data["count_rank_ssh"]) is not None:
             fields.append((
-                self.ssh_emoji,
+                str(ctx.bot.application_emojis.get("osu_ssh", "SS+")),
                 count_rank_ssh
             ))
         if (count_rank_ss := data["count_rank_ss"]) is not None:
             fields.append((
-                self.ss_emoji,
+                str(ctx.bot.application_emojis.get("osu_ss", "SS")),
                 count_rank_ss
             ))
         if (count_rank_sh := data["count_rank_sh"]) is not None:
             fields.append((
-                self.sh_emoji,
+                str(ctx.bot.application_emojis.get("osu_sh", "S+")),
                 count_rank_sh
             ))
         if (count_rank_s := data["count_rank_s"]) is not None:
             fields.append((
-                self.s_emoji,
+                str(ctx.bot.application_emojis.get("osu_s", 'S')),
                 count_rank_s
             ))
         if (count_rank_a := data["count_rank_a"]) is not None:
             fields.append((
-                self.a_emoji,
+                str(ctx.bot.application_emojis.get("osu_a", 'A')),
                 count_rank_a
             ))
 
