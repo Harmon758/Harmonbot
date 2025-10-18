@@ -102,10 +102,14 @@ class Lichess(commands.Cog):
 					arrow = self.uprightarrow_emoji
 				else:
 					arrow = self.downrightarrow_emoji
-				await ctx.embed_reply(f"{emoji} {name} | **Games**: {mode_data['games']}, "
-										f"**Rating**: {mode_data['rating']}{prov}±{mode_data['rd']} "
-										f"{arrow} {mode_data['prog']}", 
-										title = username["username"])
+				await ctx.embed_reply(
+					(
+						f"{emoji} {name} | **Games**: {mode_data['games']}, "
+						f"**Rating**: {mode_data['rating']}{prov}±{mode_data['rd']} "
+						f"{arrow} {mode_data['prog']}"
+					),
+					title = username["username"]
+				)
 			return user_mode_command
 		# Generate user subcommands for each mode
 		for mode, name, emoji in zip(self.modes, self.mode_names, self.mode_emojis):
@@ -113,9 +117,11 @@ class Lichess(commands.Cog):
 			# Remove existing command in cases where already generated
 			# Such as on ready after cog initialized
 			self.user.remove_command(internal_name)
-			command = commands.Command(user_mode_wrapper(mode, name, emoji), 
-										name = name.lower().replace(' ', "").replace('-', ""), 
-										help = f"User {name} stats", checks = [checks.not_forbidden().predicate])
+			command = commands.Command(
+				user_mode_wrapper(mode, name, emoji),
+				name = name.lower().replace(' ', "").replace('-', ""),
+				help = f"User {name} stats", checks = [checks.not_forbidden().predicate]
+			)
 			setattr(self, "user_" + internal_name, command)
 			self.user.add_command(command)
 	
