@@ -11,11 +11,11 @@ from utilities import checks
 
 
 EMOJIS = {
-    "ssh": "https://raw.githubusercontent.com/ppy/osu-web/33f98cf12eb25b4e6648126ba85c94ab24eb4081/public/images/badges/score-ranks/Score-SSPlus-Small-60%402x.png",
-    "ss": "https://raw.githubusercontent.com/ppy/osu-web/33f98cf12eb25b4e6648126ba85c94ab24eb4081/public/images/badges/score-ranks/Score-SS-Small-60%402x.png",
-    "sh": "https://raw.githubusercontent.com/ppy/osu-web/33f98cf12eb25b4e6648126ba85c94ab24eb4081/public/images/badges/score-ranks/Score-SPlus-Small-60%402x.png",
-    's': "https://raw.githubusercontent.com/ppy/osu-web/33f98cf12eb25b4e6648126ba85c94ab24eb4081/public/images/badges/score-ranks/Score-S-Small-60%402x.png",
-    'a': "https://raw.githubusercontent.com/ppy/osu-web/33f98cf12eb25b4e6648126ba85c94ab24eb4081/public/images/badges/score-ranks/Score-A-Small-60%402x.png",
+    "ssh": "https://raw.githubusercontent.com/ppy/osu-web/33f98cf12eb25b4e6648126ba85c94ab24eb4081/public/images/badges/score-ranks-v2/SS%2B%402x.png",
+    "ss": "https://raw.githubusercontent.com/ppy/osu-web/33f98cf12eb25b4e6648126ba85c94ab24eb4081/public/images/badges/score-ranks-v2/SS%402x.png",
+    "sh": "https://raw.githubusercontent.com/ppy/osu-web/33f98cf12eb25b4e6648126ba85c94ab24eb4081/public/images/badges/score-ranks-v2/S%2B%402x.png",
+    's': "https://raw.githubusercontent.com/ppy/osu-web/33f98cf12eb25b4e6648126ba85c94ab24eb4081/public/images/badges/score-ranks-v2/S%402x.png",
+    'a': "https://raw.githubusercontent.com/ppy/osu-web/33f98cf12eb25b4e6648126ba85c94ab24eb4081/public/images/badges/score-ranks-v2/A%402x.png",
 }
 
 
