@@ -148,8 +148,10 @@ class Lichess(commands.Cog):
 			fields.append((tournament["fullName"], value))
 		await ctx.embed_reply(title = "Current Lichess Tournaments", fields = fields)
 	
-	@lichess.group(aliases = ["stats", "statistics", "stat", "statistic"], 
-					invoke_without_command = True, case_insensitive = True)
+	@lichess.group(
+		aliases = ["stats", "statistics", "stat", "statistic"],
+		invoke_without_command = True, case_insensitive = True
+	)
 	async def user(self, ctx, username : LichessUser):
 		'''User stats'''
 		# TODO: Separate stats subcommand?
@@ -166,16 +168,20 @@ class Lichess(commands.Cog):
 				arrow = self.uprightarrow_emoji
 			else:
 				arrow = self.downrightarrow_emoji
-			value = (f"Games: {mode_data['games']}\nRating:\n"
-						f"{mode_data['rating']}{prov} ± {mode_data['rd']} {arrow} {mode_data['prog']}")
+			value = (
+				f"Games: {mode_data['games']}\nRating:\n"
+				f"{mode_data['rating']}{prov} ± {mode_data['rd']} {arrow} {mode_data['prog']}"
+			)
 			fields.append((str(emoji) + ' ' + name, value))
 		if "seenAt" in username:
 			footer_text = "Last seen"
 			timestamp = datetime.datetime.utcfromtimestamp(username["seenAt"] / 1000.0)
 		else:
 			footer_text = timestamp = None
-		await ctx.embed_reply(title = title, title_url = username["url"], fields = fields, 
-								footer_text = footer_text, timestamp = timestamp)
+		await ctx.embed_reply(
+			title = title, title_url = username["url"], fields = fields,
+			footer_text = footer_text, timestamp = timestamp
+		)
 	
 	@user.command(name = "activity")
 	async def user_activity(self, ctx, username : str):
