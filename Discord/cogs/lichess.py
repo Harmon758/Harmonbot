@@ -38,6 +38,24 @@ EMOJIS = {
     "trophy": "Trophy",
 }
 
+MODES = {
+    "ultraBullet": "Ultrabullet",
+    "bullet": "Bullet",
+    "blitz": "Blitz",
+    "rapid": "Rapid",
+    "classical": "Classical",
+    "correspondence": "Correspondence",
+    "crazyhouse": "Crazyhouse",
+    "chess960": "Chess960",
+    "kingOfTheHill": "King of the Hill",
+    "threeCheck": "Three-Check",
+    "antichess": "Antichess",
+    "atomic": "Atomic",
+    "horde": "Horde",
+    "racingKings": "Racing Kings",
+    "puzzle": "Training",
+}
+
 
 async def setup(bot):
     await bot.add_cog(Lichess(bot))
@@ -59,19 +77,6 @@ class Lichess(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
-
-        self.modes = (
-            "ultraBullet", "bullet", "blitz", "rapid", "classical",
-            "correspondence", "crazyhouse", "chess960", "kingOfTheHill",
-            "threeCheck", "antichess", "atomic", "horde", "racingKings",
-            "puzzle"
-        )
-        self.mode_names = (
-            "Ultrabullet", "Bullet", "Blitz", "Rapid", "Classical",
-            "Correspondence", "Crazyhouse", "Chess960", "King of the Hill",
-            "Three-Check", "Antichess", "Atomic", "Horde", "Racing Kings",
-            "Training"
-        )
 
     async def cog_load(self):
         asyncio.create_task(
@@ -149,7 +154,7 @@ class Lichess(commands.Cog):
                 )
             return user_mode_command
         # Generate user subcommands for each mode
-        for mode, name, emoji in zip(self.modes, self.mode_names, self.mode_emojis):
+        for mode, name, emoji in zip(MODES.keys(), MODES.values(), self.mode_emojis):
             internal_name = name.lower().replace(' ', "").replace('-', "")
             # Remove existing command in cases where already generated
             # Such as on ready after cog initialized
@@ -204,7 +209,7 @@ class Lichess(commands.Cog):
         # TODO: Separate stats subcommand?
         title = username.get("title", "") + ' ' + username["username"]
         fields = []
-        for mode, name, emoji in zip(self.modes, self.mode_names, self.mode_emojis):
+        for mode, name, emoji in zip(MODES.keys(), MODES.values(), self.mode_emojis):
             if not username["perfs"].get(mode, {}).get("games", 0):
                 continue
             mode_data = username["perfs"][mode]
@@ -286,12 +291,12 @@ class Lichess(commands.Cog):
                     mode_draws = mode_data["draw"]
                     rating_before = mode_data["rp"]["before"]
                     rating_after = mode_data["rp"]["after"]
-                    mode_index = self.modes.index(mode)
+                    mode_index = list(MODES.keys()).index(mode)
                     total_matches = mode_wins + mode_losses + mode_draws
                     rating_change = rating_after - rating_before
                     activity += (
                         f"{self.mode_emojis[mode_index]} Played {total_matches} "
-                        f"{self.mode_names[mode_index]} "
+                        f"{MODES[mode]} "
                         f"{ctx.bot.inflect_engine.plural('game', total_matches)}\t"
                     )
                     if rating_change != 0:
