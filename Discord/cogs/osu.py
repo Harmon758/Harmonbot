@@ -10,13 +10,20 @@ import pycountry
 from utilities import checks
 
 
+# Commit prior to removal in https://github.com/ppy/osu-web/commit/151e9bb989a851f4f34b9878ad9756d426316f75
+EMOJIS_COMMIT = "33f98cf12eb25b4e6648126ba85c94ab24eb4081"
+
+EMOJIS_URL_BASE = f"https://raw.githubusercontent.com/ppy/osu-web/{EMOJIS_COMMIT}/public/images/badges/score-ranks-v2/"
+
 EMOJIS = {
-    "ssh": "https://raw.githubusercontent.com/ppy/osu-web/33f98cf12eb25b4e6648126ba85c94ab24eb4081/public/images/badges/score-ranks-v2/SS%2B%402x.png",
-    "ss": "https://raw.githubusercontent.com/ppy/osu-web/33f98cf12eb25b4e6648126ba85c94ab24eb4081/public/images/badges/score-ranks-v2/SS%402x.png",
-    "sh": "https://raw.githubusercontent.com/ppy/osu-web/33f98cf12eb25b4e6648126ba85c94ab24eb4081/public/images/badges/score-ranks-v2/S%2B%402x.png",
-    's': "https://raw.githubusercontent.com/ppy/osu-web/33f98cf12eb25b4e6648126ba85c94ab24eb4081/public/images/badges/score-ranks-v2/S%402x.png",
-    'a': "https://raw.githubusercontent.com/ppy/osu-web/33f98cf12eb25b4e6648126ba85c94ab24eb4081/public/images/badges/score-ranks-v2/A%402x.png",
+    "ssh": f"{EMOJIS_URL_BASE}SS%2B%402x.png",
+    "ss": f"{EMOJIS_URL_BASE}SS%402x.png",
+    "sh": f"{EMOJIS_URL_BASE}S%2B%402x.png",
+    's': f"{EMOJIS_URL_BASE}S%402x.png",
+    'a': f"{EMOJIS_URL_BASE}A%402x.png",
 }
+
+# TODO: Update to https://github.com/ppy/osu-web/tree/master/public/images/badges/score-ranks-v2019 ?
 
 
 async def setup(bot):
