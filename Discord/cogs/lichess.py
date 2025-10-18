@@ -379,7 +379,7 @@ class Lichess(commands.Cog):
 	async def user_games(self, ctx, username : LichessUser):
 		'''User games'''
 		title = username.get("title", "") + ' ' + username["username"]
-		fields = (
+		fields = [
 			("Games", username["count"]["all"]),
 			("Rated", username["count"]["rated"]),
 			("Wins", username["count"]["win"]),
@@ -388,8 +388,9 @@ class Lichess(commands.Cog):
 			("Playing", username["count"]["playing"]),
 			("Bookmarks", username["count"]["bookmark"]),
 			("Imported", username["count"]["import"]),
-			("AI", username["count"]["ai"])
-		)
+		]
+		if "ai" in username["count"]:
+			fields.append(("AI", username["count"]["ai"]))
 		if "seenAt" in username:
 			footer_text = "Last seen"
 			timestamp = datetime.datetime.utcfromtimestamp(username["seenAt"] / 1000.0)
