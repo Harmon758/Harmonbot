@@ -27,7 +27,7 @@ class Osu(commands.Cog):
         # TODO: Check only within Emoji Server emojis?
         self.ssh_emoji = discord.utils.get(self.bot.emojis, name = "osu_ssh") or "SS+"
         self.ss_emoji = discord.utils.get(self.bot.emojis, name = "osu_ss") or "SS"
-        self.sh_emoji = discord.utils.get(self.bot.emojis, name = "osu_sh") or "S:"
+        self.sh_emoji = discord.utils.get(self.bot.emojis, name = "osu_sh") or "S+"
         self.s_emoji = discord.utils.get(self.bot.emojis, name = "osu_s") or 'S'
         self.a_emoji = discord.utils.get(self.bot.emojis, name = "osu_a") or 'A'
 
