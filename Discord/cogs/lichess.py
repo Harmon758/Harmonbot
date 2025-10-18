@@ -199,7 +199,7 @@ class Lichess(commands.Cog):
         aliases = ["stats", "statistics", "stat", "statistic"],
         invoke_without_command = True, case_insensitive = True
     )
-    async def user(self, ctx, username : LichessUser):
+    async def user(self, ctx, username: LichessUser):
         '''User stats'''
         # TODO: Separate stats subcommand?
         title = username.get("title", "") + ' ' + username["username"]
