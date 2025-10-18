@@ -439,7 +439,7 @@ class Lichess(commands.Cog):
         )
 
     @user.command(name = "profile", aliases = ["bio"])
-    async def user_profile(self, ctx, username : LichessUser):
+    async def user_profile(self, ctx, username: LichessUser):
         '''User profile'''
         user_data = username
         title = user_data.get("title", "") + ' ' + user_data["username"]
