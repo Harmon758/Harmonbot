@@ -373,8 +373,10 @@ class Lichess(commands.Cog):
 		fields = []
 		profile = user_data.get("profile", {})
 		if "firstName" in profile or "lastName" in profile:
-			fields.append((f"{profile.get('firstName', '')} {profile.get('lastName', '')}", 
-							profile.get("bio"), False))
+			fields.append((
+				f"{profile.get('firstName', '')} {profile.get('lastName', '')}",
+				profile.get("bio"), False
+			))
 		else:
 			description = profile.get("bio")
 		fields.append(("Patron", "Yes" if user_data.get("patron") else "No"))
@@ -402,11 +404,15 @@ class Lichess(commands.Cog):
 			fields.append(("Game Completion Rate", f"{user_data['completionRate']}%"))
 		playtime = user_data.get("playTime", {})
 		if "total" in playtime:
-			fields.append(("Time Spent Playing", 
-							duration_to_string(datetime.timedelta(seconds = playtime["total"]), abbreviate = True)))
+			fields.append((
+				"Time Spent Playing",
+				duration_to_string(datetime.timedelta(seconds = playtime["total"]), abbreviate = True)
+			))
 		if tv_time := playtime.get("tv"):
-			fields.append(("Time On TV", 
-							duration_to_string(datetime.timedelta(seconds = tv_time), abbreviate = True)))
+			fields.append((
+				"Time On TV",
+				duration_to_string(datetime.timedelta(seconds = tv_time), abbreviate = True)
+			))
 		if "links" in profile:
 			fields.append(("Links", profile["links"], False))
 		if "seenAt" in user_data:
@@ -414,6 +420,8 @@ class Lichess(commands.Cog):
 			timestamp = datetime.datetime.utcfromtimestamp(user_data["seenAt"] / 1000.0)
 		else:
 			footer_text = timestamp = None
-		await ctx.embed_reply(description, title = title, title_url = user_data["url"], 
-								fields = fields, footer_text = footer_text, timestamp = timestamp)
+		await ctx.embed_reply(
+			description, title = title, title_url = user_data["url"],
+			fields = fields, footer_text = footer_text, timestamp = timestamp
+		)
 
