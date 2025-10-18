@@ -280,11 +280,11 @@ class Lichess(commands.Cog):
 				activity += f" correspondence {ctx.bot.inflect_engine.plural('game', game_count)}\n"
 				# TODO: Include game details?
 			if "correspondenceEnds" in day:
-				correspondence_wins = day["correspondenceEnds"]["score"]["win"]
-				correspondence_losses = day["correspondenceEnds"]["score"]["loss"]
-				correspondence_draws = day["correspondenceEnds"]["score"]["draw"]
-				rating_before = day["correspondenceEnds"]["score"]["rp"]["before"]
-				rating_after = day["correspondenceEnds"]["score"]["rp"]["after"]
+				correspondence_wins = day["correspondenceEnds"]["correspondence"]["score"]["win"]
+				correspondence_losses = day["correspondenceEnds"]["correspondence"]["score"]["loss"]
+				correspondence_draws = day["correspondenceEnds"]["correspondence"]["score"]["draw"]
+				rating_before = day["correspondenceEnds"]["correspondence"]["score"]["rp"]["before"]
+				rating_after = day["correspondenceEnds"]["correspondence"]["score"]["rp"]["after"]
 				total_matches = correspondence_wins + correspondence_losses + correspondence_draws
 				rating_change = rating_after - rating_before
 				activity += (f"{self.correspondence_emoji} Completed {total_matches} correspondence "
