@@ -1,14 +1,42 @@
 
-import discord
 from discord.ext import commands
 
+import asyncio
 import datetime
+from pathlib import Path
 
 import emoji
 import pycountry
 
 from units.time import duration_to_string
 from utilities import checks
+
+
+EMOJIS = {
+    "ultrabullet": "UltraBullet",
+    "bullet": "Bullet",
+    "blitz": "FlameBlitz",
+    "rapid": "Rabbit",
+    "classical": "Turtle",
+    "correspondence": "PaperAirplane",
+    "crazyhouse": "Crazyhouse",
+    "chess960": "DieSix",
+    "king_of_the_hill": "FlagKingHill",
+    "three_check": "ThreeCheckStack",
+    "antichess": "Antichess",
+    "atomic": "Atom",
+    "horde": "Keypad",
+    "racing_kings": "FlagRacingKings",
+    "training": "ArcheryTarget",
+    "up_right_arrow": "ArrowUpRight",
+    "down_right_arrow": "ArrowDownRight",
+    "forum": "BubbleConvo",
+    "practice": "Bullseye",
+    "stream": "Mic",
+    "team": "Group",
+    "thumbsup": "ThumbsUp",
+    "trophy": "Trophy",
+}
 
 
 async def setup(bot):
@@ -45,42 +73,52 @@ class Lichess(commands.Cog):
             "Training"
         )
 
-        self.load_emoji()
+    async def cog_load(self):
+        asyncio.create_task(
+            self.initialize_emojis_and_commands(),
+            name = "Initialize Lichess emojis and commands"
+        )
+
+    async def initialize_emojis_and_commands(self):
+        await self.initialize_application_emojis()
         self.generate_user_mode_commands()
 
-    @commands.Cog.listener()
-    async def on_ready(self):
-        self.load_emoji()
-        self.generate_user_mode_commands()
+    async def initialize_application_emojis(self):
+        for name, file_name in EMOJIS.items():
+            if f"lichess_{name}" not in self.bot.application_emojis:
+                self.bot.application_emojis[f"lichess_{name}"] = (
+                    await self.bot.create_application_emoji(
+                        name = f"lichess_{name}",
+                        image = (Path(self.bot.assets_path) / "lichess_icons" / f"{file_name}.png").read_bytes()
+                    )
+                )
 
-    def load_emoji(self):
-        # TODO: Check only within Emoji Server emojis?
-        self.ultrabullet_emoji = discord.utils.get(self.bot.emojis, name = "lichess_ultrabullet") or "\N{NORTH WEST ARROW}\N{VARIATION SELECTOR-16}"
-        self.bullet_emoji = discord.utils.get(self.bot.emojis, name = "lichess_bullet") or "\N{HIGH VOLTAGE SIGN}"
-        self.blitz_emoji = discord.utils.get(self.bot.emojis, name = "lichess_blitz") or "\N{FIRE}"
-        self.rapid_emoji = discord.utils.get(self.bot.emojis, name = "lichess_rapid") or "\N{RABBIT}"
-        self.classical_emoji = discord.utils.get(self.bot.emojis, name = "lichess_classical") or "\N{TURTLE}"
-        self.correspondence_emoji = discord.utils.get(self.bot.emojis, name = "lichess_correspondence") or "\N{ENVELOPE}\N{VARIATION SELECTOR-16}"
-        self.crazyhouse_emoji = discord.utils.get(self.bot.emojis, name = "lichess_crazyhouse") or "\N{PISCES}"
-        self.chess960_emoji = discord.utils.get(self.bot.emojis, name = "lichess_chess960") or "\N{GAME DIE}"
-        self.kingofthehill_emoji = discord.utils.get(self.bot.emojis, name = "lichess_king_of_the_hill") or "\N{TRIANGULAR FLAG ON POST}"
-        self.threecheck_emoji = discord.utils.get(self.bot.emojis, name = "lichess_three_check") or "3\N{VARIATION SELECTOR-16}\N{COMBINING ENCLOSING KEYCAP}"
-        self.antichess_emoji = discord.utils.get(self.bot.emojis, name = "lichess_antichess") or "\N{CLOCKWISE DOWNWARDS AND UPWARDS OPEN CIRCLE ARROWS}"
-        self.atomic_emoji = discord.utils.get(self.bot.emojis, name = "lichess_atomic") or "\N{ATOM SYMBOL}\N{VARIATION SELECTOR-16}"
-        self.horde_emoji = discord.utils.get(self.bot.emojis, name = "lichess_horde") or ""  # TODO: Fallback Emoji
-        self.racingkings_emoji = discord.utils.get(self.bot.emojis, name = "lichess_racing_kings") or "\N{CHEQUERED FLAG}"
-        self.training_emoji = discord.utils.get(self.bot.emojis, name = "lichess_training") or "\N{DIRECT HIT}"
-        self.uprightarrow_emoji = discord.utils.get(self.bot.emojis, name = "lichess_up_right_arrow") or "\N{NORTH EAST ARROW}\N{VARIATION SELECTOR-16}"
+        self.ultrabullet_emoji = self.bot.application_emojis.get("lichess_ultrabullet", "\N{NORTH WEST ARROW}\N{VARIATION SELECTOR-16}")
+        self.bullet_emoji = self.bot.application_emojis.get("lichess_bullet", "\N{HIGH VOLTAGE SIGN}")
+        self.blitz_emoji = self.bot.application_emojis.get("lichess_blitz", "\N{FIRE}")
+        self.rapid_emoji = self.bot.application_emojis.get("lichess_rapid", "\N{RABBIT}")
+        self.classical_emoji = self.bot.application_emojis.get("lichess_classical", "\N{TURTLE}")
+        self.correspondence_emoji = self.bot.application_emojis.get("lichess_correspondence", "\N{ENVELOPE}\N{VARIATION SELECTOR-16}")
+        self.crazyhouse_emoji = self.bot.application_emojis.get("lichess_crazyhouse", "\N{PISCES}")
+        self.chess960_emoji = self.bot.application_emojis.get("lichess_chess960", "\N{GAME DIE}")
+        self.kingofthehill_emoji = self.bot.application_emojis.get("lichess_king_of_the_hill", "\N{TRIANGULAR FLAG ON POST}")
+        self.threecheck_emoji = self.bot.application_emojis.get("lichess_three_check", "3\N{VARIATION SELECTOR-16}\N{COMBINING ENCLOSING KEYCAP}")
+        self.antichess_emoji = self.bot.application_emojis.get("lichess_antichess", "\N{CLOCKWISE DOWNWARDS AND UPWARDS OPEN CIRCLE ARROWS}")
+        self.atomic_emoji = self.bot.application_emojis.get("lichess_atomic", "\N{ATOM SYMBOL}\N{VARIATION SELECTOR-16}")
+        self.horde_emoji = self.bot.application_emojis.get("lichess_horde", "")  # TODO: Fallback Emoji
+        self.racingkings_emoji = self.bot.application_emojis.get("lichess_racing_kings", "\N{CHEQUERED FLAG}")
+        self.training_emoji = self.bot.application_emojis.get("lichess_training", "\N{DIRECT HIT}")
+        self.uprightarrow_emoji = self.bot.application_emojis.get("lichess_up_right_arrow", "\N{NORTH EAST ARROW}\N{VARIATION SELECTOR-16}")
         # Also possible fallback emoji: :chart_with_upwards_trend:
-        self.downrightarrow_emoji = discord.utils.get(self.bot.emojis, name = "lichess_down_right_arrow") or "\N{SOUTH EAST ARROW}\N{VARIATION SELECTOR-16}"
+        self.downrightarrow_emoji = self.bot.application_emojis.get("lichess_down_right_arrow", "\N{SOUTH EAST ARROW}\N{VARIATION SELECTOR-16}")
         # Also possible fallback emoji: :chart_with_downwards_trend:
-        self.forum_emoji = discord.utils.get(self.bot.emojis, name = "lichess_forum") or "\N{SPEECH BALLOON}"
+        self.forum_emoji = self.bot.application_emojis.get("lichess_forum", "\N{SPEECH BALLOON}")
         # Also possible fallback emoji: :speech_left:
-        self.practice_emoji = discord.utils.get(self.bot.emojis, name = "lichess_practice") or ""  # TODO: Fallback Emoji
-        self.stream_emoji = discord.utils.get(self.bot.emojis, name = "lichess_stream") or "\N{STUDIO MICROPHONE}\N{VARIATION SELECTOR-16}"
-        self.team_emoji = discord.utils.get(self.bot.emojis, name = "lichess_team") or ""  # TODO: Fallback Emoji
-        self.thumbsup_emoji = discord.utils.get(self.bot.emojis, name = "lichess_thumbsup") or "\N{THUMBS UP SIGN}"  # TODO: Add skin-tone
-        self.trophy_emoji = discord.utils.get(self.bot.emojis, name = "lichess_trophy") or "\N{TROPHY}"
+        self.practice_emoji = self.bot.application_emojis.get("lichess_practice", "")  # TODO: Fallback Emoji
+        self.stream_emoji = self.bot.application_emojis.get("lichess_stream", "\N{STUDIO MICROPHONE}\N{VARIATION SELECTOR-16}")
+        self.team_emoji = self.bot.application_emojis.get("lichess_team", "")  # TODO: Fallback Emoji
+        self.thumbsup_emoji = self.bot.application_emojis.get("lichess_thumbsup", "\N{THUMBS UP SIGN}")  # TODO: Add skin-tone
+        self.trophy_emoji = self.bot.application_emojis.get("lichess_trophy", "\N{TROPHY}")
         self.mode_emojis = (
             self.ultrabullet_emoji, self.bullet_emoji, self.blitz_emoji,
             self.rapid_emoji, self.classical_emoji, self.correspondence_emoji,
