@@ -231,7 +231,7 @@ class Lichess(commands.Cog):
         )
 
     @user.command(name = "activity")
-    async def user_activity(self, ctx, username : str):
+    async def user_activity(self, ctx, username: str):
         '''User activity'''
         # TODO: Use converter?
         url = f"https://lichess.org/api/user/{username}/activity"
