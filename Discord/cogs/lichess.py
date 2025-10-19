@@ -529,10 +529,12 @@ class LichessUserView(ui.View):
                 arrow = self.downrightarrow_emoji
             embed = discord.Embed(
                 color = self.bot.bot_color,
-                title = self.lichess_user["username"],
-                description = (
-                    f"{self.mode_emojis[index]} {MODES[mode]} | **Games**: {mode_data['games']}, "
-                    f"**Rating**: {mode_data['rating']}{prov}±{mode_data['rd']} "
+                title = self.lichess_user["username"]
+            ).add_field(
+                name = f"{self.mode_emojis[index]} {MODES[mode]}",
+                value = (
+                    f"Games: {mode_data['games']}\n"
+                    f"Rating: {mode_data['rating']}{prov}±{mode_data['rd']} "
                     f"{arrow} {mode_data['prog']}"
                 )
             )
