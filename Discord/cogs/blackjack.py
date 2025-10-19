@@ -1,7 +1,7 @@
 
 from __future__ import annotations
 
-from discord import ui
+from discord import app_commands, ui
 from discord.ext import commands
 
 import asyncio
@@ -28,6 +28,10 @@ async def setup(bot):
 class Blackjack(commands.Cog):
 
     @commands.hybrid_command()
+    @app_commands.allowed_installs(guilds = True, users = False)
+    @app_commands.allowed_contexts(
+        guilds = True, dms = False, private_channels = False
+    )
     @checks.not_forbidden()
     async def blackjack(self, ctx: Context):
         """Play a game of blackjack"""

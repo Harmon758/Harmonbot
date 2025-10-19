@@ -1,5 +1,6 @@
 
 import discord
+from discord import app_commands
 from discord.ext import commands
 
 import asyncio
@@ -61,6 +62,10 @@ class ChessCog(commands.Cog, name = "Chess"):
     # TODO: Use max concurrency?
     @commands.hybrid_group(
         name = "chess", fallback = "play", case_insensitive = True
+    )
+    @app_commands.allowed_installs(guilds = True, users = False)
+    @app_commands.allowed_contexts(
+        guilds = True, dms = False, private_channels = False
     )
     async def chess_command(
         self, ctx,

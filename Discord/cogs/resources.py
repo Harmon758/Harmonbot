@@ -1,5 +1,6 @@
 
 import discord
+from discord import app_commands
 from discord.ext import commands, menus
 
 import asyncio
@@ -111,6 +112,10 @@ class Resources(commands.Cog):
         )
 
     @commands.hybrid_command()
+    @app_commands.allowed_installs(guilds = True, users = False)
+    @app_commands.allowed_contexts(
+        guilds = True, dms = False, private_channels = False
+    )
     @checks.not_forbidden()
     async def cve(self, ctx, identifier: str):
         """
@@ -213,6 +218,10 @@ class Resources(commands.Cog):
         )
 
     @commands.hybrid_command()
+    @app_commands.allowed_installs(guilds = True, users = False)
+    @app_commands.allowed_contexts(
+        guilds = True, dms = False, private_channels = False
+    )
     @checks.not_forbidden()
     async def horoscope(
         self, ctx,

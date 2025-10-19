@@ -71,6 +71,12 @@ class Bot(commands.Bot):
             activity = discord.Streaming(
                 name = random.choice(self.game_statuses), url = self.stream_url  # nosec: random  # noqa: S311 (suspicious-non-cryptographic-random-usage)
             ),
+            allowed_contexts = app_commands.AppCommandContext(
+                guild = True, dm_channel = True, private_channel = True
+            ),
+            allowed_installs = app_commands.AppInstallationType(
+                guild = True, user = True
+            ),
             case_insensitive = True,
             command_prefix = self.get_command_prefix,
             help_command = HelpCommand(

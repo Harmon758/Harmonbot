@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import discord
+from discord import app_commands
 from discord.ext import commands
 
 import contextlib
@@ -46,6 +47,10 @@ class LoR(commands.Cog):
         return await checks.not_forbidden().predicate(ctx)
 
     @commands.hybrid_group(case_insensitive = True)
+    @app_commands.allowed_installs(guilds = True, users = False)
+    @app_commands.allowed_contexts(
+        guilds = True, dms = False, private_channels = False
+    )
     async def lor(self, ctx: Context):
         """Legends of Runeterra"""
         await ctx.send_help(ctx.command)

@@ -1,4 +1,5 @@
 
+from discord import app_commands
 from discord.ext import commands
 
 from utilities import checks
@@ -34,6 +35,10 @@ class Server(commands.Cog):
 	# TODO: Server settings
 	
 	@commands.hybrid_group(aliases = ["guild"], case_insensitive = True)
+	@app_commands.allowed_installs(guilds = True, users = False)
+	@app_commands.allowed_contexts(
+		guilds = True, dms = False, private_channels = False
+	)
 	async def server(self, ctx):
 		"""Server"""
 		await ctx.send_help(ctx.command)

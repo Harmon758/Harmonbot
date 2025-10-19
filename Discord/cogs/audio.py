@@ -1,6 +1,6 @@
 
 import discord
-from discord import ui
+from discord import app_commands, ui
 from discord.ext import commands
 
 import base64
@@ -47,6 +47,10 @@ class Audio(commands.Cog):
         ],
         case_insensitive = True,
         fallback = "play"
+    )
+    @app_commands.allowed_installs(guilds = True, users = False)
+    @app_commands.allowed_contexts(
+        guilds = True, dms = False, private_channels = False
     )
     @commands.check_any(
         checks.is_permitted(), commands.has_permissions(administrator = True),

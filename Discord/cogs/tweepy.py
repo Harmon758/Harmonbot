@@ -1,6 +1,6 @@
 
 import discord
-from discord import ui
+from discord import app_commands, ui
 from discord.ext import commands, menus
 
 from operator import itemgetter
@@ -137,6 +137,10 @@ class Tweepy(commands.Cog):
                     return
 
     @commands.hybrid_group(case_insensitive = True)
+    @app_commands.allowed_installs(guilds = True, users = False)
+    @app_commands.allowed_contexts(
+        guilds = True, dms = False, private_channels = False
+    )
     async def tweepy(self, ctx):
         """
         Tweepy Python library

@@ -1,5 +1,6 @@
 
 import discord
+from discord import app_commands
 from discord.ext import commands, menus
 
 import io
@@ -28,6 +29,10 @@ class Words(commands.Cog):
         return await checks.not_forbidden().predicate(ctx)
 
     @commands.hybrid_command(aliases = ["antonym"])
+    @app_commands.allowed_installs(guilds = True, users = False)
+    @app_commands.allowed_contexts(
+        guilds = True, dms = False, private_channels = False
+    )
     async def antonyms(self, ctx, word: str):
         """
         Antonyms of a word
@@ -66,6 +71,10 @@ class Words(commands.Cog):
     @commands.hybrid_command(
         aliases = ["definition", "definitions", "dictionary"]
     )
+    @app_commands.allowed_installs(guilds = True, users = False)
+    @app_commands.allowed_contexts(
+        guilds = True, dms = False, private_channels = False
+    )
     async def define(self, ctx, word: str):
         """
         Define a word
@@ -103,6 +112,10 @@ class Words(commands.Cog):
         ctx.bot.views.append(paginator)
 
     @commands.hybrid_command(aliases = ["audiodefine", "pronunciation"])
+    @app_commands.allowed_installs(guilds = True, users = False)
+    @app_commands.allowed_contexts(
+        guilds = True, dms = False, private_channels = False
+    )
     async def pronounce(self, ctx, word: str):
         """
         Pronunciation of a word
@@ -161,6 +174,10 @@ class Words(commands.Cog):
         )
 
     @commands.hybrid_command(aliases = ["rhyme"])
+    @app_commands.allowed_installs(guilds = True, users = False)
+    @app_commands.allowed_contexts(
+        guilds = True, dms = False, private_channels = False
+    )
     async def rhymes(self, ctx, word: str):
         """
         Rhymes of a word
@@ -234,6 +251,10 @@ class Words(commands.Cog):
             )
 
     @commands.hybrid_command(aliases = ["synonym"])
+    @app_commands.allowed_installs(guilds = True, users = False)
+    @app_commands.allowed_contexts(
+        guilds = True, dms = False, private_channels = False
+    )
     async def synonyms(self, ctx, word: str):
         """
         Synonyms of a word

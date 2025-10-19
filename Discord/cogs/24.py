@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 import discord
-from discord import ui
+from discord import app_commands, ui
 from discord.ext import commands
 
 from typing import TYPE_CHECKING
@@ -21,6 +21,10 @@ async def setup(bot):
 class TwentyFour(commands.Cog, name = "24"):
 
     @commands.hybrid_command(name = "24", aliases = ["twenty-four"])
+    @app_commands.allowed_installs(guilds = True, users = False)
+    @app_commands.allowed_contexts(
+        guilds = True, dms = False, private_channels = False
+    )
     @checks.not_forbidden()
     async def twenty_four(self, ctx: Context):
         """24 Game"""

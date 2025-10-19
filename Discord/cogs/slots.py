@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 import discord
-from discord import ui
+from discord import app_commands, ui
 from discord.ext import commands
 
 import itertools
@@ -51,6 +51,10 @@ class Slots(commands.Cog):
         )
 
     @commands.hybrid_group(case_insensitive = True, fallback = "play")
+    @app_commands.allowed_installs(guilds = True, users = False)
+    @app_commands.allowed_contexts(
+        guilds = True, dms = False, private_channels = False
+    )
     async def slots(self, ctx: Context):
         """
         Slot machine

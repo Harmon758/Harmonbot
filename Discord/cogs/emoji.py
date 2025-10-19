@@ -76,6 +76,10 @@ async def setup(bot):
 
     await bot.add_cog(EmojiCog())
 
+@app_commands.allowed_installs(guilds = True, users = False)
+@app_commands.allowed_contexts(
+    guilds = True, dms = False, private_channels = False
+)
 class EmojiCog(commands.GroupCog, group_name = "emoji", name = "Emoji"):
     """Emoji"""
 

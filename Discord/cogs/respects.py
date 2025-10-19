@@ -154,10 +154,6 @@ class Respects(commands.Cog):
         await ctx.embed_reply(response)
 
     @app_commands.command(name = 'f')
-    @app_commands.allowed_installs(guilds = True, users = True)
-    @app_commands.allowed_contexts(
-        guilds = True, dms = True, private_channels = True
-    )
     async def slash_f(self, interaction):
         """Pay Respects"""
         ctx = await interaction.client.get_context(interaction)

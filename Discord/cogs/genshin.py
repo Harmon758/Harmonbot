@@ -27,6 +27,10 @@ class GenshinImpact(commands.Cog, name = "Genshin Impact"):
         return await checks.not_forbidden().predicate(ctx)
 
     @commands.hybrid_group(aliases = ["genshin"], case_insensitive = True)
+    @app_commands.allowed_installs(guilds = True, users = False)
+    @app_commands.allowed_contexts(
+        guilds = True, dms = False, private_channels = False
+    )
     async def genshin_impact(self, ctx: Context):
         """Genshin Impact"""
         await ctx.send_help(ctx.command)

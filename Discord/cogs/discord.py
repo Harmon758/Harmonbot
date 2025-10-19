@@ -72,6 +72,10 @@ class Discord(commands.Cog):
     # TODO: Include spaces in quotes explanation (in help)
 
     @commands.hybrid_command(name = "activity")
+    @app_commands.allowed_installs(guilds = True, users = False)
+    @app_commands.allowed_contexts(
+        guilds = True, dms = False, private_channels = False
+    )
     @checks.not_forbidden()
     async def activity_command(self, ctx, *, activity: str):
         """
@@ -507,15 +511,15 @@ class Discord(commands.Cog):
 
 
 @app_commands.context_menu()
+@app_commands.allowed_installs(guilds = True, users = False)
+@app_commands.allowed_contexts(
+    guilds = True, dms = False, private_channels = False
+)
 async def link(interaction, message: discord.Message):
     await interaction.response.send_message(message.jump_url)
 
 
 @app_commands.context_menu()
-@app_commands.allowed_installs(guilds = True, users = True)
-@app_commands.allowed_contexts(
-    guilds = True, dms = True, private_channels = True
-)
 async def quote(interaction, message: discord.Message):
     if not message.content:
         await interaction.response.send_message(
@@ -542,6 +546,10 @@ async def quote(interaction, message: discord.Message):
 
 
 @app_commands.context_menu()
+@app_commands.allowed_installs(guilds = True, users = False)
+@app_commands.allowed_contexts(
+    guilds = True, dms = False, private_channels = False
+)
 async def timestamp(interaction, message: discord.Message):
     """Timestamp of a message"""
     time = discord.utils.snowflake_time(message.id).replace(
@@ -558,6 +566,10 @@ async def timestamp(interaction, message: discord.Message):
 
 
 @app_commands.context_menu()
+@app_commands.allowed_installs(guilds = True, users = False)
+@app_commands.allowed_contexts(
+    guilds = True, dms = False, private_channels = False
+)
 async def avatar(interaction, user: discord.User):
     await interaction.response.send_message(
         embed = discord.Embed(

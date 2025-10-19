@@ -309,10 +309,6 @@ class Location(commands.Cog):
         )
 
     @commands.hybrid_command(aliases = ["timezone"])
-    @app_commands.allowed_installs(guilds = True, users = True)
-    @app_commands.allowed_contexts(
-        guilds = True, dms = True, private_channels = True
-    )
     async def time(self, ctx: Context, *, location: str):
         """
         Current time at a location
@@ -379,6 +375,10 @@ class Location(commands.Cog):
         await self.bot.attempt_delete_message(ctx.message)
 
     @app_commands.command(name = "weather")
+    @app_commands.allowed_installs(guilds = True, users = False)
+    @app_commands.allowed_contexts(
+        guilds = True, dms = False, private_channels = False
+    )
     async def slash_weather(self, interaction, location: str):
         """
         Weather

@@ -1,5 +1,6 @@
 
 import discord
+from discord import app_commands
 from discord.ext import commands
 
 from operator import attrgetter
@@ -20,6 +21,10 @@ class Role(commands.Cog):
         return guild_only and not_forbidden
 
     @commands.hybrid_group(aliases = ["roles"], case_insensitive = True)
+    @app_commands.allowed_installs(guilds = True, users = False)
+    @app_commands.allowed_contexts(
+        guilds = True, dms = False, private_channels = False
+    )
     async def role(self, ctx):
         """Role"""
         await ctx.send_help(ctx.command)

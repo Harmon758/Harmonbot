@@ -1,5 +1,6 @@
 
 import discord
+from discord import app_commands
 from discord.ext import commands
 
 import difflib
@@ -54,6 +55,10 @@ class Tools(commands.Cog):
         )
 
     @commands.hybrid_command(aliases = ["plot"])
+    @app_commands.allowed_installs(guilds = True, users = False)
+    @app_commands.allowed_contexts(
+        guilds = True, dms = False, private_channels = False
+    )
     @checks.not_forbidden()
     async def graph(
         self, ctx, lower_limit: int, upper_limit: int, *, equation: str

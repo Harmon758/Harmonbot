@@ -272,6 +272,10 @@ class MazeCog(commands.Cog, name = "Maze"):
             )
 
     @app_commands.command(name = "maze")
+    @app_commands.allowed_installs(guilds = True, users = False)
+    @app_commands.allowed_contexts(
+        guilds = True, dms = False, private_channels = False
+    )
     async def slash_maze(
         self, interaction, height: app_commands.Range[int, 2, 100] = 5,
         width: app_commands.Range[int, 2, 100] = 5, random_start: bool = False,

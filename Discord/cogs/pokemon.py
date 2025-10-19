@@ -1,5 +1,6 @@
 
 import discord
+from discord import app_commands
 from discord.ext import commands
 
 from utilities import checks
@@ -19,6 +20,10 @@ class Pokemon(commands.Cog):
     # TODO: Cache API responses
 
     @commands.hybrid_group(aliases = ["pokémon"], case_insensitive = True)
+    @app_commands.allowed_installs(guilds = True, users = False)
+    @app_commands.allowed_contexts(
+        guilds = True, dms = False, private_channels = False
+    )
     async def pokemon(self, ctx, id_or_name: str):
         '''WIP'''
         # TODO: colors?, egg groups?, forms?, genders?, habitats?,

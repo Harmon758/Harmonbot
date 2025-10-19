@@ -1,6 +1,6 @@
 
 import discord
-from discord import ui
+from discord import app_commands, ui
 from discord.ext import commands
 
 import asyncio
@@ -97,6 +97,10 @@ class Trivia(commands.Cog):
         return await checks.not_forbidden().predicate(ctx)
 
     @commands.hybrid_group(case_insensitive = True, fallback = "question")
+    @app_commands.allowed_installs(guilds = True, users = False)
+    @app_commands.allowed_contexts(
+        guilds = True, dms = False, private_channels = False
+    )
     async def trivia(
         self, ctx,
         betting: Optional[bool] = False,  # noqa: UP045 (non-pep604-annotation-optional)

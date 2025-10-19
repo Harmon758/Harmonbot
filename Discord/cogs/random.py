@@ -45,10 +45,6 @@ class Random(commands.Cog):
         return await checks.not_forbidden().predicate(ctx)
 
     @commands.hybrid_group(case_insensitive = True)
-    @app_commands.allowed_installs(guilds = True, users = True)
-    @app_commands.allowed_contexts(
-        guilds = True, dms = True, private_channels = True
-    )
     async def random(self, ctx):
         """
         Random things

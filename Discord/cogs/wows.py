@@ -1,4 +1,5 @@
 
+from discord import app_commands
 from discord.ext import commands
 
 import datetime
@@ -26,6 +27,10 @@ class WoWS(commands.Cog):
     @commands.hybrid_group(
         aliases = ["worldofwarships", "world_of_warships"],
         case_insensitive = True
+    )
+    @app_commands.allowed_installs(guilds = True, users = False)
+    @app_commands.allowed_contexts(
+        guilds = True, dms = False, private_channels = False
     )
     async def wows(self, ctx):
         """World of Warships"""

@@ -1,4 +1,5 @@
 
+from discord import app_commands
 from discord.ext import commands
 
 import asyncio
@@ -55,6 +56,10 @@ class Osu(commands.Cog):
         return await checks.not_forbidden().predicate(ctx)
 
     @commands.hybrid_group(aliases = ["osu!"], case_insensitive = True)
+    @app_commands.allowed_installs(guilds = True, users = False)
+    @app_commands.allowed_contexts(
+        guilds = True, dms = False, private_channels = False
+    )
     async def osu(self, ctx):
         """osu!"""
         await ctx.send_help(ctx.command)

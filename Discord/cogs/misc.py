@@ -71,6 +71,10 @@ class Misc(commands.Cog):
         )
 
     @commands.hybrid_command(aliases = ["full-width", "full_width"])
+    @app_commands.allowed_installs(guilds = True, users = False)
+    @app_commands.allowed_contexts(
+        guilds = True, dms = False, private_channels = False
+    )
     async def fullwidth(self, ctx, *, text: str):
         """
         Make text fullwidth
@@ -188,10 +192,6 @@ class Misc(commands.Cog):
         await ctx.embed_reply(utilities.superscript(text))
 
     @app_commands.command()
-    @app_commands.allowed_installs(guilds = True, users = True)
-    @app_commands.allowed_contexts(
-        guilds = True, dms = True, private_channels = True
-    )
     async def think(self, interaction):
         """🤔"""
         await interaction.response.defer()

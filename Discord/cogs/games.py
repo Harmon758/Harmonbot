@@ -69,10 +69,6 @@ class Games(commands.Cog):
 	@commands.hybrid_command(
 		name = "8-ball", aliases = ["8ball", "eightball", '\N{BILLIARDS}']
 	)
-	@app_commands.allowed_installs(guilds = True, users = True)
-	@app_commands.allowed_contexts(
-		guilds = True, dms = True, private_channels = True
-	)
 	@checks.not_forbidden()
 	async def eightball(
 		self, ctx: Context, *,
@@ -95,6 +91,10 @@ class Games(commands.Cog):
 		)
 	
 	@commands.hybrid_command()
+	@app_commands.allowed_installs(guilds = True, users = False)
+	@app_commands.allowed_contexts(
+		guilds = True, dms = False, private_channels = False
+	)
 	@checks.not_forbidden()
 	async def guess(
 		self, ctx: Context,

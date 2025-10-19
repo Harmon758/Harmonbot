@@ -1,7 +1,7 @@
 
 from __future__ import annotations
 
-from discord import Attachment  # noqa: TC001 (typing-only-first-party-import)
+from discord import app_commands, Attachment  # noqa: TC001 (typing-only-first-party-import)
 from discord.ext import commands
 
 import hashlib
@@ -39,6 +39,10 @@ class Cryptography(commands.Cog):
     # TODO: not forbidden global check?
 
     @commands.hybrid_group(aliases = ["decrpyt"], case_insensitive = True)
+    @app_commands.allowed_installs(guilds = True, users = False)
+    @app_commands.allowed_contexts(
+        guilds = True, dms = False, private_channels = False
+    )
     async def decode(self, ctx: Context):
         """Decode encoded messages"""
         await ctx.send_help(ctx.command)
@@ -247,6 +251,10 @@ class Cryptography(commands.Cog):
         await ctx.embed_reply(message[::-1])
 
     @commands.hybrid_group(aliases = ["encrypt"], case_insensitive = True)
+    @app_commands.allowed_installs(guilds = True, users = False)
+    @app_commands.allowed_contexts(
+        guilds = True, dms = False, private_channels = False
+    )
     async def encode(self, ctx: Context):
         """Encode messages"""
         await ctx.send_help(ctx.command)
@@ -515,6 +523,10 @@ class Cryptography(commands.Cog):
         await ctx.embed_reply(h.hexdigest())
 
     @commands.hybrid_group(case_insensitive = True)
+    @app_commands.allowed_installs(guilds = True, users = False)
+    @app_commands.allowed_contexts(
+        guilds = True, dms = False, private_channels = False
+    )
     async def hash(self, ctx: Context):
         """Use hash algorithms/functions"""
         await ctx.send_help(ctx.command)

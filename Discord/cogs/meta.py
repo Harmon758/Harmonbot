@@ -253,6 +253,10 @@ class Meta(commands.Cog):
                                 title = "Conversion Commands")
 
     @app_commands.command(name = "help")
+    @app_commands.allowed_installs(guilds = True, users = False)
+    @app_commands.allowed_contexts(
+        guilds = True, dms = False, private_channels = False
+    )
     async def slash_help(self, interaction):
         ctx = await interaction.client.get_context(interaction)
         prefixes = await ctx.bot.get_command_prefix(ctx.bot, ctx.message)
@@ -260,11 +264,19 @@ class Meta(commands.Cog):
         await ctx.send_help()
 
     @commands.hybrid_command(aliases = ["oauth"])
+    @app_commands.allowed_installs(guilds = True, users = False)
+    @app_commands.allowed_contexts(
+        guilds = True, dms = False, private_channels = False
+    )
     async def invite(self, ctx):
         """Link to invite me to a server"""
         await ctx.embed_reply(ctx.bot.invite_url)
 
     @commands.hybrid_command(aliases = ["latency"])
+    @app_commands.allowed_installs(guilds = True, users = False)
+    @app_commands.allowed_contexts(
+        guilds = True, dms = False, private_channels = False
+    )
     async def ping(self, ctx):
         """
         Latency information
@@ -314,6 +326,10 @@ class Meta(commands.Cog):
             return f"{ns} ns"
 
     @commands.hybrid_command(aliases = ["stats"])
+    @app_commands.allowed_installs(guilds = True, users = False)
+    @app_commands.allowed_contexts(
+        guilds = True, dms = False, private_channels = False
+    )
     async def statistics(self, ctx):
         """
         Bot statistics
@@ -337,6 +353,10 @@ class Meta(commands.Cog):
         ctx.bot.views.append(view)
 
     @commands.hybrid_command()
+    @app_commands.allowed_installs(guilds = True, users = False)
+    @app_commands.allowed_contexts(
+        guilds = True, dms = False, private_channels = False
+    )
     async def uptime(self, ctx):
         """Bot uptime"""
         await ctx.defer()
@@ -827,6 +847,10 @@ class Meta(commands.Cog):
         await ctx.send("Hello, World!")
 
     @app_commands.command(name = "test")
+    @app_commands.allowed_installs(guilds = True, users = False)
+    @app_commands.allowed_contexts(
+        guilds = True, dms = False, private_channels = False
+    )
     async def slash_test(self, interaction):
         """Basic test command"""
         await interaction.response.send_message("Hello, World!")
