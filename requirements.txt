@@ -539,7 +539,7 @@ inflect==7.5.0 ; implementation_name == 'cpython' and platform_python_implementa
     --hash=sha256:2aea70e5e70c35d8350b8097396ec155ffd68def678c7ff97f51aa69c1d92344 \
     --hash=sha256:faf19801c3742ed5a05a8ce388e0d8fe1a07f8d095c82201eb904f5d27ad571f
     # via harmonbot
-iniconfig==2.1.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+iniconfig==2.3.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:3abbd2e30b36733fee78f9c7f7308f2d0050e88f0087fd25c2645f63c773e1c7 \
     --hash=sha256:9deba5723312380e77435581c6bf4935c94cbfab9b1ed33ef8d238ea168eb760
     # via pytest
