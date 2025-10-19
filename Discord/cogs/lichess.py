@@ -1,4 +1,6 @@
 
+import discord
+from discord import ui
 from discord.ext import commands
 
 import asyncio
@@ -80,13 +82,9 @@ class Lichess(commands.Cog):
 
     async def cog_load(self):
         asyncio.create_task(
-            self.initialize_emojis_and_commands(),
-            name = "Initialize Lichess emojis and commands"
+            self.initialize_application_emojis(),
+            name = "Initialize Lichess application emojis"
         )
-
-    async def initialize_emojis_and_commands(self):
-        await self.initialize_application_emojis()
-        self.generate_user_mode_commands()
 
     async def initialize_application_emojis(self):
         for name, file_name in EMOJIS.items():
@@ -132,41 +130,6 @@ class Lichess(commands.Cog):
             self.horde_emoji, self.racingkings_emoji, self.training_emoji
         )
 
-    def generate_user_mode_commands(self):
-        # Creates user subcommand for a mode
-        def user_mode_wrapper(mode, name, emoji):
-            async def user_mode_command(ctx, username: LichessUser):
-                mode_data = username["perfs"][mode]
-                prov = ""
-                if username["perfs"][mode].get("prov"):
-                    prov = '?'
-                if username["perfs"][mode]["prog"] >= 0:
-                    arrow = self.uprightarrow_emoji
-                else:
-                    arrow = self.downrightarrow_emoji
-                await ctx.embed_reply(
-                    (
-                        f"{emoji} {name} | **Games**: {mode_data['games']}, "
-                        f"**Rating**: {mode_data['rating']}{prov}±{mode_data['rd']} "
-                        f"{arrow} {mode_data['prog']}"
-                    ),
-                    title = username["username"]
-                )
-            return user_mode_command
-        # Generate user subcommands for each mode
-        for mode, name, emoji in zip(MODES.keys(), MODES.values(), self.mode_emojis):
-            internal_name = name.lower().replace(' ', "").replace('-', "")
-            # Remove existing command in cases where already generated
-            # Such as on ready after cog initialized
-            self.user.remove_command(internal_name)
-            command = commands.Command(
-                user_mode_wrapper(mode, name, emoji),
-                name = name.lower().replace(' ', "").replace('-', ""),
-                help = f"User {name} stats", checks = [checks.not_forbidden().predicate]
-            )
-            setattr(self, "user_" + internal_name, command)
-            self.user.add_command(command)
-
     async def cog_check(self, ctx):
         return await checks.not_forbidden().predicate(ctx)
 
@@ -207,33 +170,13 @@ class Lichess(commands.Cog):
     async def user(self, ctx, username: LichessUser):
         '''User stats'''
         # TODO: Separate stats subcommand?
-        title = username.get("title", "") + ' ' + username["username"]
-        fields = []
-        for mode, name, emoji in zip(MODES.keys(), MODES.values(), self.mode_emojis):
-            if not username["perfs"].get(mode, {}).get("games", 0):
-                continue
-            mode_data = username["perfs"][mode]
-            prov = ""
-            if username["perfs"][mode].get("prov"):
-                prov = '?'
-            if username["perfs"][mode]["prog"] >= 0:
-                arrow = self.uprightarrow_emoji
-            else:
-                arrow = self.downrightarrow_emoji
-            value = (
-                f"Games: {mode_data['games']}\nRating:\n"
-                f"{mode_data['rating']}{prov} ± {mode_data['rd']} {arrow} {mode_data['prog']}"
-            )
-            fields.append((str(emoji) + ' ' + name, value))
-        if "seenAt" in username:
-            footer_text = "Last seen"
-            timestamp = datetime.datetime.utcfromtimestamp(username["seenAt"] / 1000.0)
-        else:
-            footer_text = timestamp = None
-        await ctx.embed_reply(
-            title = title, title_url = username["url"], fields = fields,
-            footer_text = footer_text, timestamp = timestamp
+        view = LichessUserView(ctx, username, self.mode_emojis)
+        view.message = await ctx.reply(
+            "",
+            embed = view.overview_embed,
+            view = view
         )
+        ctx.bot.views.append(view)
 
     @user.command(name = "activity")
     async def user_activity(self, ctx, username: str):
@@ -503,4 +446,105 @@ class Lichess(commands.Cog):
             description, title = title, title_url = user_data["url"],
             fields = fields, footer_text = footer_text, timestamp = timestamp
         )
+
+
+class LichessUserView(ui.View):
+
+    def __init__(self, ctx, lichess_user, mode_emojis):
+        super().__init__(timeout = 600)
+
+        self.bot = ctx.bot
+        self.lichess_user = lichess_user
+        self.mode_emojis = mode_emojis
+
+        # https://github.com/Rapptz/discord.py/pull/10143
+        for option in self.perf.options:
+            option.default = False
+        self.perf.options[0].default = True
+
+        if len(self.perf.options) == 1:
+            for mode, name in MODES.items():
+                self.perf.add_option(
+                    emoji = self.mode_emojis[list(MODES.keys()).index(mode)],
+                    label = name,
+                    value = mode
+                )
+
+        self.uprightarrow_emoji = self.bot.application_emojis.get("lichess_up_right_arrow", "\N{NORTH EAST ARROW}\N{VARIATION SELECTOR-16}")
+        self.downrightarrow_emoji = self.bot.application_emojis.get("lichess_down_right_arrow", "\N{SOUTH EAST ARROW}\N{VARIATION SELECTOR-16}")
+
+        self.overview_embed = discord.Embed(
+            color = self.bot.bot_color,
+            title = lichess_user.get("title", "") + ' ' + lichess_user["username"],
+            url = lichess_user["url"]
+        )
+        for mode, name, emoji in zip(MODES.keys(), MODES.values(), self.mode_emojis):
+            if not lichess_user["perfs"].get(mode, {}).get("games", 0):
+                continue
+            mode_data = lichess_user["perfs"][mode]
+            prov = ""
+            if lichess_user["perfs"][mode].get("prov"):
+                prov = '?'
+            if lichess_user["perfs"][mode]["prog"] >= 0:
+                arrow = self.uprightarrow_emoji
+            else:
+                arrow = self.downrightarrow_emoji
+            self.overview_embed.add_field(
+                name = str(emoji) + ' ' + name,
+                value = (
+                    f"Games: {mode_data['games']}\nRating:\n"
+                    f"{mode_data['rating']}{prov} ± {mode_data['rd']} {arrow} {mode_data['prog']}"
+                )
+            )
+        if "seenAt" in lichess_user:
+            self.overview_embed.set_footer(text = "Last seen")
+            self.overview_embed.timestamp = datetime.datetime.utcfromtimestamp(lichess_user["seenAt"] / 1000.0)
+
+    @ui.select(
+        placeholder = "Select a speed, variant, or puzzle mode",
+        options = [
+            discord.SelectOption(
+                label = "Overview",
+                default = True
+            ),
+        ]
+    )
+    async def perf(self, interaction, select):
+        for option in select.options:
+            option.default = False
+
+        if select.values[0] == "Overview":
+            embed = self.overview_embed
+            select.options[0].default = True
+        else:
+            mode = select.values[0]
+            index = list(MODES.keys()).index(mode)
+            mode_data = self.lichess_user["perfs"][mode]
+            prov = ""
+            if self.lichess_user["perfs"][mode].get("prov"):
+                prov = '?'
+            if self.lichess_user["perfs"][mode]["prog"] >= 0:
+                arrow = self.uprightarrow_emoji
+            else:
+                arrow = self.downrightarrow_emoji
+            embed = discord.Embed(
+                color = self.bot.bot_color,
+                title = self.lichess_user["username"],
+                description = (
+                    f"{self.mode_emojis[index]} {MODES[mode]} | **Games**: {mode_data['games']}, "
+                    f"**Rating**: {mode_data['rating']}{prov}±{mode_data['rd']} "
+                    f"{arrow} {mode_data['prog']}"
+                )
+            )
+            select.options[index + 1].default = True
+
+        await interaction.response.edit_message(embed = embed, view = self)
+
+    async def stop(self):
+        self.perf.disabled = True
+        await self.message.edit(view = self)
+        super().stop()
+
+    async def on_timeout(self):
+        await self.stop()
 
