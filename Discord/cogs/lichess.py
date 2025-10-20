@@ -133,17 +133,19 @@ class Lichess(commands.Cog):
     async def cog_check(self, ctx):
         return await checks.not_forbidden().predicate(ctx)
 
-    @commands.group(invoke_without_command = True, case_insensitive = True)
+    @commands.hybrid_group(case_insensitive = True)
     async def lichess(self, ctx):
         '''Lichess'''
         await ctx.send_help(ctx.command)
 
-    @lichess.group(aliases = ["tournaments"], invoke_without_command = True, case_insensitive = True)
+    @lichess.group(aliases = ["tournaments"], case_insensitive = True)
     async def tournament(self, ctx):
         '''Tournaments'''
         await ctx.send_help(ctx.command)
 
-    @tournament.command(name = "current", aliases = ["started"])
+    @tournament.command(
+        name = "current", aliases = ["started"], with_app_command = False
+    )
     async def tournament_current(self, ctx):
         '''Current tournaments'''
         url = "https://en.lichess.org/api/tournament"
@@ -165,7 +167,7 @@ class Lichess(commands.Cog):
 
     @lichess.group(
         aliases = ["stats", "statistics", "stat", "statistic"],
-        invoke_without_command = True, case_insensitive = True
+        case_insensitive = True, fallback = "statistics"
     )
     async def user(self, ctx, username: LichessUser):
         '''User stats'''
@@ -178,7 +180,7 @@ class Lichess(commands.Cog):
         )
         ctx.bot.views.append(view)
 
-    @user.command(name = "activity")
+    @user.command(name = "activity", with_app_command = False)
     async def user_activity(self, ctx, username: str):
         '''User activity'''
         # TODO: Use converter?
@@ -360,7 +362,7 @@ class Lichess(commands.Cog):
                 # TODO: Use zws?
         await ctx.embed_reply(title = f"{username}'s Activity", fields = fields)
 
-    @user.command(name = "games")
+    @user.command(name = "games", with_app_command = False)
     async def user_games(self, ctx, username: LichessUser):
         '''User games'''
         title = username.get("title", "") + ' ' + username["username"]
@@ -386,7 +388,9 @@ class Lichess(commands.Cog):
             footer_text = footer_text, timestamp = timestamp
         )
 
-    @user.command(name = "profile", aliases = ["bio"])
+    @user.command(
+        name = "profile", aliases = ["bio"], with_app_command = False
+    )
     async def user_profile(self, ctx, username: LichessUser):
         '''User profile'''
         user_data = username
