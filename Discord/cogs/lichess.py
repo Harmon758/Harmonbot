@@ -185,6 +185,7 @@ class Lichess(commands.Cog):
             The speed, variant, or puzzle mode for which to view stats
         '''
         # TODO: Separate stats subcommand?
+        await ctx.defer()
         view = LichessUserView(ctx, username, self.mode_emojis)
         view.message = await ctx.reply(
             "",
