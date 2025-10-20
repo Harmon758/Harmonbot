@@ -6,6 +6,7 @@ from discord.ext import commands
 import asyncio
 import datetime
 from pathlib import Path
+from typing import Literal, Optional
 
 import emoji
 import pycountry
@@ -169,7 +170,10 @@ class Lichess(commands.Cog):
         aliases = ["stats", "statistics", "stat", "statistic"],
         case_insensitive = True, fallback = "statistics"
     )
-    async def user(self, ctx, username: LichessUser):
+    async def user(
+        self, ctx, username: LichessUser, *,
+        mode: Optional[Literal[tuple(MODES.values())]]  # noqa: UP045 (non-pep604-annotation-optional)
+    ):
         '''
         View statistics of a Lichess user
 
@@ -177,12 +181,18 @@ class Lichess(commands.Cog):
         ----------
         username
             The username of the Lichess user of whom to view stats
+        mode
+            The speed, variant, or puzzle mode for which to view stats
         '''
         # TODO: Separate stats subcommand?
         view = LichessUserView(ctx, username, self.mode_emojis)
         view.message = await ctx.reply(
             "",
-            embed = view.overview_embed,
+            embed = (
+                view.select_perf(
+                    list(MODES.keys())[list(MODES.values()).index(mode)]
+                ) if mode else view.overview_embed
+            ),
             view = view
         )
         ctx.bot.views.append(view)
@@ -521,14 +531,18 @@ class LichessUserView(ui.View):
         ]
     )
     async def perf(self, interaction, select):
-        for option in select.options:
+        await interaction.response.edit_message(
+            embed = self.select_perf(select.values[0]), view = self
+        )
+
+    def select_perf(self, mode: str):
+        for option in self.perf.options:
             option.default = False
 
-        if select.values[0] == "Overview":
+        if mode == "Overview":
             embed = self.overview_embed
-            select.options[0].default = True
+            self.perf.options[0].default = True
         else:
-            mode = select.values[0]
             index = list(MODES.keys()).index(mode)
             mode_data = self.lichess_user["perfs"][mode]
             prov = ""
@@ -549,9 +563,9 @@ class LichessUserView(ui.View):
                     f"{arrow} {mode_data['prog']}"
                 )
             )
-            select.options[index + 1].default = True
+            self.perf.options[index + 1].default = True
 
-        await interaction.response.edit_message(embed = embed, view = self)
+        return embed
 
     async def stop(self):
         self.perf.disabled = True
