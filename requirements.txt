@@ -1014,7 +1014,7 @@ protobuf==6.33.0 ; implementation_name == 'cpython' and platform_python_implemen
     #   grpc-google-iam-v1
     #   grpcio-status
     #   proto-plus
-psutil==7.1.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+psutil==7.1.1 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:09ad740870c8d219ed8daae0ad3b726d3bf9a028a198e7f3080f6a1888b99bca \
     --hash=sha256:22e4454970b32472ce7deaa45d045b34d3648ce478e26a04c7e858a0a6e75ff3 \
     --hash=sha256:57f5e987c36d3146c0dd2528cd42151cf96cd359b9d67cfff836995cc5df9a3d \
