@@ -31,6 +31,7 @@ EMOJIS = {
     "horde": "Keypad",
     "racing_kings": "FlagRacingKings",
     "puzzles": "ArcheryTarget",
+    "storm": "Storm",
     "up_right_arrow": "ArrowUpRight",
     "down_right_arrow": "ArrowDownRight",
     "forum": "BubbleConvo",
@@ -57,6 +58,7 @@ MODES = {
     "horde": "Horde",
     "racingKings": "Racing Kings",
     "puzzle": "Puzzles",
+    "storm": "Puzzle Storm",
 }
 
 
@@ -112,6 +114,7 @@ class Lichess(commands.Cog):
         self.horde_emoji = self.bot.application_emojis.get("lichess_horde", "")  # TODO: Fallback Emoji
         self.racingkings_emoji = self.bot.application_emojis.get("lichess_racing_kings", "\N{CHEQUERED FLAG}")
         self.puzzles_emoji = self.bot.application_emojis.get("lichess_puzzles", "\N{DIRECT HIT}")
+        self.storm_emoji = self.bot.application_emojis.get("lichess_storm", "\N{CLOUD WITH TORNADO}\N{VARIATION SELECTOR-16}")
         self.uprightarrow_emoji = self.bot.application_emojis.get("lichess_up_right_arrow", "\N{NORTH EAST ARROW}\N{VARIATION SELECTOR-16}")
         # Also possible fallback emoji: :chart_with_upwards_trend:
         self.downrightarrow_emoji = self.bot.application_emojis.get("lichess_down_right_arrow", "\N{SOUTH EAST ARROW}\N{VARIATION SELECTOR-16}")
@@ -128,7 +131,8 @@ class Lichess(commands.Cog):
             self.rapid_emoji, self.classical_emoji, self.correspondence_emoji,
             self.crazyhouse_emoji, self.chess960_emoji, self.kingofthehill_emoji,
             self.threecheck_emoji, self.antichess_emoji, self.atomic_emoji,
-            self.horde_emoji, self.racingkings_emoji, self.puzzles_emoji
+            self.horde_emoji, self.racingkings_emoji, self.puzzles_emoji,
+            self.storm_emoji
         )
 
     async def cog_check(self, ctx):
@@ -501,23 +505,31 @@ class LichessUserView(ui.View):
             url = lichess_user["url"]
         )
         for mode, name, emoji in zip(MODES.keys(), MODES.values(), self.mode_emojis):
-            if not lichess_user["perfs"].get(mode, {}).get("games", 0):
+            if not (mode_data := lichess_user["perfs"].get(mode)):
                 continue
-            mode_data = lichess_user["perfs"][mode]
-            prov = ""
-            if lichess_user["perfs"][mode].get("prov"):
-                prov = '?'
-            if lichess_user["perfs"][mode]["prog"] >= 0:
-                arrow = self.uprightarrow_emoji
-            else:
-                arrow = self.downrightarrow_emoji
-            self.overview_embed.add_field(
-                name = str(emoji) + ' ' + name,
-                value = (
-                    f"Games: {mode_data['games']}\nRating:\n"
-                    f"{mode_data['rating']}{prov} ± {mode_data['rd']} {arrow} {mode_data['prog']}"
+            if mode_data.get("games", 0):
+                prov = ""
+                if lichess_user["perfs"][mode].get("prov"):
+                    prov = '?'
+                if lichess_user["perfs"][mode]["prog"] >= 0:
+                    arrow = self.uprightarrow_emoji
+                else:
+                    arrow = self.downrightarrow_emoji
+                self.overview_embed.add_field(
+                    name = str(emoji) + ' ' + name,
+                    value = (
+                        f"Games: {mode_data['games']}\nRating:\n"
+                        f"{mode_data['rating']}{prov} ± {mode_data['rd']} {arrow} {mode_data['prog']}"
+                    )
                 )
-            )
+            elif mode_data.get("runs", 0):
+                self.overview_embed.add_field(
+                    name = str(emoji) + ' ' + name,
+                    value = (
+                        f"Runs: {mode_data['runs']}\n"
+                        f"Score: {mode_data['score']}"
+                    )
+                )
         if "seenAt" in lichess_user:
             self.overview_embed.set_footer(text = "Last seen")
             self.overview_embed.timestamp = datetime.datetime.utcfromtimestamp(lichess_user["seenAt"] / 1000.0)
@@ -546,24 +558,34 @@ class LichessUserView(ui.View):
         else:
             index = list(MODES.keys()).index(mode)
             mode_data = self.lichess_user["perfs"][mode]
-            prov = ""
-            if self.lichess_user["perfs"][mode].get("prov"):
-                prov = '?'
-            if self.lichess_user["perfs"][mode]["prog"] >= 0:
-                arrow = self.uprightarrow_emoji
-            else:
-                arrow = self.downrightarrow_emoji
             embed = discord.Embed(
                 color = self.bot.bot_color,
                 title = self.lichess_user["username"]
-            ).add_field(
-                name = f"{self.mode_emojis[index]} {MODES[mode]}",
-                value = (
-                    f"Games: {mode_data['games']}\n"
-                    f"Rating: {mode_data['rating']}{prov}±{mode_data['rd']} "
-                    f"{arrow} {mode_data['prog']}"
-                )
             )
+            if mode_data.get("games", 0):
+                prov = ""
+                if self.lichess_user["perfs"][mode].get("prov"):
+                    prov = '?'
+                if self.lichess_user["perfs"][mode]["prog"] >= 0:
+                    arrow = self.uprightarrow_emoji
+                else:
+                    arrow = self.downrightarrow_emoji
+                embed.add_field(
+                    name = f"{self.mode_emojis[index]} {MODES[mode]}",
+                    value = (
+                        f"Games: {mode_data['games']}\n"
+                        f"Rating: {mode_data['rating']}{prov}±{mode_data['rd']} "
+                        f"{arrow} {mode_data['prog']}"
+                    )
+                )
+            elif mode_data.get("runs", 0):
+                embed.add_field(
+                    name = f"{self.mode_emojis[index]} {MODES[mode]}",
+                    value = (
+                        f"Runs: {mode_data['runs']}\n"
+                        f"Score: {mode_data['score']}"
+                    )
+                )
             self.perf.options[index + 1].default = True
 
         return embed
