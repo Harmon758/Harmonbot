@@ -1682,7 +1682,7 @@ wordcloud==1.9.4 ; implementation_name == 'cpython' and platform_python_implemen
 wordnik-py3==2.1.2 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:e4a55aeab9d546cb0b76afd6b853a60f96a5553542f89c29b4fcf69dbc237a8b
     # via harmonbot
-wrapt==1.17.3 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+wrapt==2.0.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:0610b46293c59a3adbae3dee552b648b984176f8562ee0dba099a56cfbe4df1f \
     --hash=sha256:0b1831115c97f0663cb77aa27d381237e73ad4f721391a9bfb2fe8bc25fa6e77 \
     --hash=sha256:273a736c4645e63ac582c60a56b0acb529ef07f78e08dc6bfadf6a46b19c0da7 \
