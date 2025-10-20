@@ -273,9 +273,6 @@ class Meta(commands.Cog):
         await ctx.embed_reply(ctx.bot.invite_url)
 
     @commands.hybrid_command(aliases = ["latency"])
-    @app_commands.allowed_contexts(
-        guilds = True, dms = False, private_channels = False
-    )
     async def ping(self, ctx):
         """
         Latency information
