@@ -32,6 +32,8 @@ EMOJIS = {
     "racing_kings": "FlagRacingKings",
     "puzzles": "ArcheryTarget",
     "storm": "Storm",
+    "racer": "FlagChessboard",
+    "streak": "ArrowThruApple",
     "up_right_arrow": "ArrowUpRight",
     "down_right_arrow": "ArrowDownRight",
     "forum": "BubbleConvo",
@@ -59,6 +61,8 @@ MODES = {
     "racingKings": "Racing Kings",
     "puzzle": "Puzzles",
     "storm": "Puzzle Storm",
+    "racer": "Puzzle Racer",
+    "streak": "Puzzle Streak",
 }
 
 
@@ -115,6 +119,8 @@ class Lichess(commands.Cog):
         self.racingkings_emoji = self.bot.application_emojis.get("lichess_racing_kings", "\N{CHEQUERED FLAG}")
         self.puzzles_emoji = self.bot.application_emojis.get("lichess_puzzles", "\N{DIRECT HIT}")
         self.storm_emoji = self.bot.application_emojis.get("lichess_storm", "\N{CLOUD WITH TORNADO}\N{VARIATION SELECTOR-16}")
+        self.racer_emoji = self.bot.application_emojis.get("lichess_racer", "\N{CHEQUERED FLAG}")
+        self.streak_emoji = self.bot.application_emojis.get("lichess_streak", "\N{BOW AND ARROW}")
         self.uprightarrow_emoji = self.bot.application_emojis.get("lichess_up_right_arrow", "\N{NORTH EAST ARROW}\N{VARIATION SELECTOR-16}")
         # Also possible fallback emoji: :chart_with_upwards_trend:
         self.downrightarrow_emoji = self.bot.application_emojis.get("lichess_down_right_arrow", "\N{SOUTH EAST ARROW}\N{VARIATION SELECTOR-16}")
@@ -132,7 +138,7 @@ class Lichess(commands.Cog):
             self.crazyhouse_emoji, self.chess960_emoji, self.kingofthehill_emoji,
             self.threecheck_emoji, self.antichess_emoji, self.atomic_emoji,
             self.horde_emoji, self.racingkings_emoji, self.puzzles_emoji,
-            self.storm_emoji
+            self.storm_emoji, self.racer_emoji, self.streak_emoji
         )
 
     async def cog_check(self, ctx):
