@@ -170,7 +170,14 @@ class Lichess(commands.Cog):
         case_insensitive = True, fallback = "statistics"
     )
     async def user(self, ctx, username: LichessUser):
-        '''User stats'''
+        '''
+        View statistics of a Lichess user
+
+        Parameters
+        ----------
+        username
+            The username of the Lichess user of whom to view stats
+        '''
         # TODO: Separate stats subcommand?
         view = LichessUserView(ctx, username, self.mode_emojis)
         view.message = await ctx.reply(
