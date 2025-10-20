@@ -30,7 +30,7 @@ EMOJIS = {
     "atomic": "Atom",
     "horde": "Keypad",
     "racing_kings": "FlagRacingKings",
-    "training": "ArcheryTarget",
+    "puzzles": "ArcheryTarget",
     "up_right_arrow": "ArrowUpRight",
     "down_right_arrow": "ArrowDownRight",
     "forum": "BubbleConvo",
@@ -56,7 +56,7 @@ MODES = {
     "atomic": "Atomic",
     "horde": "Horde",
     "racingKings": "Racing Kings",
-    "puzzle": "Training",
+    "puzzle": "Puzzles",
 }
 
 
@@ -111,7 +111,7 @@ class Lichess(commands.Cog):
         self.atomic_emoji = self.bot.application_emojis.get("lichess_atomic", "\N{ATOM SYMBOL}\N{VARIATION SELECTOR-16}")
         self.horde_emoji = self.bot.application_emojis.get("lichess_horde", "")  # TODO: Fallback Emoji
         self.racingkings_emoji = self.bot.application_emojis.get("lichess_racing_kings", "\N{CHEQUERED FLAG}")
-        self.training_emoji = self.bot.application_emojis.get("lichess_training", "\N{DIRECT HIT}")
+        self.puzzles_emoji = self.bot.application_emojis.get("lichess_puzzles", "\N{DIRECT HIT}")
         self.uprightarrow_emoji = self.bot.application_emojis.get("lichess_up_right_arrow", "\N{NORTH EAST ARROW}\N{VARIATION SELECTOR-16}")
         # Also possible fallback emoji: :chart_with_upwards_trend:
         self.downrightarrow_emoji = self.bot.application_emojis.get("lichess_down_right_arrow", "\N{SOUTH EAST ARROW}\N{VARIATION SELECTOR-16}")
@@ -128,7 +128,7 @@ class Lichess(commands.Cog):
             self.rapid_emoji, self.classical_emoji, self.correspondence_emoji,
             self.crazyhouse_emoji, self.chess960_emoji, self.kingofthehill_emoji,
             self.threecheck_emoji, self.antichess_emoji, self.atomic_emoji,
-            self.horde_emoji, self.racingkings_emoji, self.training_emoji
+            self.horde_emoji, self.racingkings_emoji, self.puzzles_emoji
         )
 
     async def cog_check(self, ctx):
@@ -230,7 +230,7 @@ class Lichess(commands.Cog):
                 total_puzzles = puzzle_wins + puzzle_losses + puzzle_draws
                 rating_change = rating_after - rating_before
                 activity += (
-                    f"{self.training_emoji} Solved {total_puzzles} tactical "
+                    f"{self.puzzles_emoji} Solved {total_puzzles} tactical "
                     f"{ctx.bot.inflect_engine.plural('puzzle', total_puzzles)}\t"
                 )
                 if rating_change != 0:
