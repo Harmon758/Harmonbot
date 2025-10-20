@@ -349,9 +349,6 @@ class Meta(commands.Cog):
         ctx.bot.views.append(view)
 
     @commands.hybrid_command()
-    @app_commands.allowed_contexts(
-        guilds = True, dms = False, private_channels = False
-    )
     async def uptime(self, ctx):
         """Bot uptime"""
         await ctx.defer()
