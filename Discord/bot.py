@@ -133,8 +133,7 @@ class Bot(commands.Bot):
         self.last_resort_notices_channel = None
         self.listener_bot = None  # User object
         self.listing_sites = {}
-        # TODO: Include owner variable for user object?
-        # TODO: emote constants/variables
+        self.owner = None  # User object
 
         # Variables
         self.guild_settings = {}
@@ -619,7 +618,9 @@ class Bot(commands.Bot):
         self.log_channel = self.get_channel(self.log_channel_id)
 
         self.listener_bot = await self.fetch_user(self.listener_id)
+        self.owner = await self.fetch_user(self.owner_id)
         # TODO: Handle NotFound and HTTPException?
+
         self.listing_sites = {
             "discord.bots.gg": {
                 "name": "Discord Bots",

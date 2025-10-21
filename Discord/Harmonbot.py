@@ -156,12 +156,8 @@ if __name__ == "__main__":
 						f"Ephemeral message with erroneous DMChannel channel attribute: {message.id}"
 					)
 				elif channel.recipient.id != ctx.bot.owner_id:
-					owner = (
-						ctx.bot.get_user(ctx.bot.owner_id) or
-						await ctx.bot.fetch_user(ctx.bot.owner_id)
-					)
-					forwarded_message = await message.forward(owner)
-					await owner.send(
+					forwarded_message = await message.forward(ctx.bot.owner)
+					await ctx.bot.owner.send(
 						f"[Sent]({forwarded_message.jump_url}) " + (
 							f"to {channel.recipient.mention} ({channel.recipient})"
 							if author == ctx.bot.user else
