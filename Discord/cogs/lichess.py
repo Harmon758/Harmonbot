@@ -56,6 +56,9 @@ EMOJIS = {mode.emoji_name: mode.emoji_icon for mode in MODES} | {
     "trophy": "Trophy",
 }
 
+FALLBACK_UP_RIGHT_ARROW_EMOJI = "\N{NORTH EAST ARROW}\N{VARIATION SELECTOR-16}"
+FALLBACK_DOWN_RIGHT_ARROW_EMOJI = "\N{SOUTH EAST ARROW}\N{VARIATION SELECTOR-16}"
+
 
 async def setup(bot):
     await bot.add_cog(Lichess(bot))
@@ -96,8 +99,8 @@ class Lichess(commands.Cog):
 
         self.correspondence_emoji = self.bot.application_emojis.get("lichess_correspondence", "")
         self.puzzles_emoji = self.bot.application_emojis.get("lichess_puzzles", "")
-        self.uprightarrow_emoji = self.bot.application_emojis.get("lichess_up_right_arrow", "\N{NORTH EAST ARROW}\N{VARIATION SELECTOR-16}")
-        self.downrightarrow_emoji = self.bot.application_emojis.get("lichess_down_right_arrow", "\N{SOUTH EAST ARROW}\N{VARIATION SELECTOR-16}")
+        self.uprightarrow_emoji = self.bot.application_emojis.get("lichess_up_right_arrow", FALLBACK_UP_RIGHT_ARROW_EMOJI)
+        self.downrightarrow_emoji = self.bot.application_emojis.get("lichess_down_right_arrow", FALLBACK_DOWN_RIGHT_ARROW_EMOJI)
         self.forum_emoji = self.bot.application_emojis.get("lichess_forum", "")
         self.practice_emoji = self.bot.application_emojis.get("lichess_practice", "")
         self.stream_emoji = self.bot.application_emojis.get("lichess_stream", "")
@@ -466,8 +469,8 @@ class LichessUserView(ui.View):
                     value = mode.key
                 )
 
-        self.uprightarrow_emoji = self.bot.application_emojis.get("lichess_up_right_arrow", "\N{NORTH EAST ARROW}\N{VARIATION SELECTOR-16}")
-        self.downrightarrow_emoji = self.bot.application_emojis.get("lichess_down_right_arrow", "\N{SOUTH EAST ARROW}\N{VARIATION SELECTOR-16}")
+        self.uprightarrow_emoji = self.bot.application_emojis.get("lichess_up_right_arrow", FALLBACK_UP_RIGHT_ARROW_EMOJI)
+        self.downrightarrow_emoji = self.bot.application_emojis.get("lichess_down_right_arrow", FALLBACK_DOWN_RIGHT_ARROW_EMOJI)
 
         self.overview_embed = discord.Embed(
             color = self.bot.bot_color,
