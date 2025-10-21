@@ -103,35 +103,32 @@ class Lichess(commands.Cog):
                     )
                 )
 
-        self.ultrabullet_emoji = self.bot.application_emojis.get("lichess_ultrabullet", "\N{NORTH WEST ARROW}\N{VARIATION SELECTOR-16}")
-        self.bullet_emoji = self.bot.application_emojis.get("lichess_bullet", "\N{HIGH VOLTAGE SIGN}")
-        self.blitz_emoji = self.bot.application_emojis.get("lichess_blitz", "\N{FIRE}")
-        self.rapid_emoji = self.bot.application_emojis.get("lichess_rapid", "\N{RABBIT}")
-        self.classical_emoji = self.bot.application_emojis.get("lichess_classical", "\N{TURTLE}")
-        self.correspondence_emoji = self.bot.application_emojis.get("lichess_correspondence", "\N{ENVELOPE}\N{VARIATION SELECTOR-16}")
-        self.crazyhouse_emoji = self.bot.application_emojis.get("lichess_crazyhouse", "\N{PISCES}")
-        self.chess960_emoji = self.bot.application_emojis.get("lichess_chess960", "\N{GAME DIE}")
-        self.kingofthehill_emoji = self.bot.application_emojis.get("lichess_king_of_the_hill", "\N{TRIANGULAR FLAG ON POST}")
-        self.threecheck_emoji = self.bot.application_emojis.get("lichess_three_check", "3\N{VARIATION SELECTOR-16}\N{COMBINING ENCLOSING KEYCAP}")
-        self.antichess_emoji = self.bot.application_emojis.get("lichess_antichess", "\N{CLOCKWISE DOWNWARDS AND UPWARDS OPEN CIRCLE ARROWS}")
-        self.atomic_emoji = self.bot.application_emojis.get("lichess_atomic", "\N{ATOM SYMBOL}\N{VARIATION SELECTOR-16}")
-        self.horde_emoji = self.bot.application_emojis.get("lichess_horde", "")  # TODO: Fallback Emoji
-        self.racingkings_emoji = self.bot.application_emojis.get("lichess_racing_kings", "\N{CHEQUERED FLAG}")
-        self.puzzles_emoji = self.bot.application_emojis.get("lichess_puzzles", "\N{DIRECT HIT}")
-        self.storm_emoji = self.bot.application_emojis.get("lichess_storm", "\N{CLOUD WITH TORNADO}\N{VARIATION SELECTOR-16}")
-        self.racer_emoji = self.bot.application_emojis.get("lichess_racer", "\N{CHEQUERED FLAG}")
-        self.streak_emoji = self.bot.application_emojis.get("lichess_streak", "\N{BOW AND ARROW}")
+        self.ultrabullet_emoji = self.bot.application_emojis.get("lichess_ultrabullet", "")
+        self.bullet_emoji = self.bot.application_emojis.get("lichess_bullet", "")
+        self.blitz_emoji = self.bot.application_emojis.get("lichess_blitz", "")
+        self.rapid_emoji = self.bot.application_emojis.get("lichess_rapid", "")
+        self.classical_emoji = self.bot.application_emojis.get("lichess_classical", "")
+        self.correspondence_emoji = self.bot.application_emojis.get("lichess_correspondence", "")
+        self.crazyhouse_emoji = self.bot.application_emojis.get("lichess_crazyhouse", "")
+        self.chess960_emoji = self.bot.application_emojis.get("lichess_chess960", "")
+        self.kingofthehill_emoji = self.bot.application_emojis.get("lichess_king_of_the_hill", "")
+        self.threecheck_emoji = self.bot.application_emojis.get("lichess_three_check", "")
+        self.antichess_emoji = self.bot.application_emojis.get("lichess_antichess", "")
+        self.atomic_emoji = self.bot.application_emojis.get("lichess_atomic", "")
+        self.horde_emoji = self.bot.application_emojis.get("lichess_horde", "")
+        self.racingkings_emoji = self.bot.application_emojis.get("lichess_racing_kings", "")
+        self.puzzles_emoji = self.bot.application_emojis.get("lichess_puzzles", "")
+        self.storm_emoji = self.bot.application_emojis.get("lichess_storm", "")
+        self.racer_emoji = self.bot.application_emojis.get("lichess_racer", "")
+        self.streak_emoji = self.bot.application_emojis.get("lichess_streak", "")
         self.uprightarrow_emoji = self.bot.application_emojis.get("lichess_up_right_arrow", "\N{NORTH EAST ARROW}\N{VARIATION SELECTOR-16}")
-        # Also possible fallback emoji: :chart_with_upwards_trend:
         self.downrightarrow_emoji = self.bot.application_emojis.get("lichess_down_right_arrow", "\N{SOUTH EAST ARROW}\N{VARIATION SELECTOR-16}")
-        # Also possible fallback emoji: :chart_with_downwards_trend:
-        self.forum_emoji = self.bot.application_emojis.get("lichess_forum", "\N{SPEECH BALLOON}")
-        # Also possible fallback emoji: :speech_left:
-        self.practice_emoji = self.bot.application_emojis.get("lichess_practice", "")  # TODO: Fallback Emoji
-        self.stream_emoji = self.bot.application_emojis.get("lichess_stream", "\N{STUDIO MICROPHONE}\N{VARIATION SELECTOR-16}")
-        self.team_emoji = self.bot.application_emojis.get("lichess_team", "")  # TODO: Fallback Emoji
-        self.thumbsup_emoji = self.bot.application_emojis.get("lichess_thumbsup", "\N{THUMBS UP SIGN}")  # TODO: Add skin-tone
-        self.trophy_emoji = self.bot.application_emojis.get("lichess_trophy", "\N{TROPHY}")
+        self.forum_emoji = self.bot.application_emojis.get("lichess_forum", "")
+        self.practice_emoji = self.bot.application_emojis.get("lichess_practice", "")
+        self.stream_emoji = self.bot.application_emojis.get("lichess_stream", "")
+        self.team_emoji = self.bot.application_emojis.get("lichess_team", "")
+        self.thumbsup_emoji = self.bot.application_emojis.get("lichess_thumbsup", "")
+        self.trophy_emoji = self.bot.application_emojis.get("lichess_trophy", "")
         self.mode_emojis = (
             self.ultrabullet_emoji, self.bullet_emoji, self.blitz_emoji,
             self.rapid_emoji, self.classical_emoji, self.correspondence_emoji,
