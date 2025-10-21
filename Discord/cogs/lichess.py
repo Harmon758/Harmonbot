@@ -96,26 +96,6 @@ class Lichess(commands.Cog):
 
         self.correspondence_emoji = self.bot.application_emojis.get("lichess_correspondence", "")
         self.puzzles_emoji = self.bot.application_emojis.get("lichess_puzzles", "")
-        self.mode_emojis = (
-            self.bot.application_emojis.get("lichess_ultrabullet", ""),
-            self.bot.application_emojis.get("lichess_bullet", ""),
-            self.bot.application_emojis.get("lichess_blitz", ""),
-            self.bot.application_emojis.get("lichess_rapid", ""),
-            self.bot.application_emojis.get("lichess_classical", ""),
-            self.correspondence_emoji,
-            self.bot.application_emojis.get("lichess_crazyhouse", ""),
-            self.bot.application_emojis.get("lichess_chess960", ""),
-            self.bot.application_emojis.get("lichess_king_of_the_hill", ""),
-            self.bot.application_emojis.get("lichess_three_check", ""),
-            self.bot.application_emojis.get("lichess_antichess", ""),
-            self.bot.application_emojis.get("lichess_atomic", ""),
-            self.bot.application_emojis.get("lichess_horde", ""),
-            self.bot.application_emojis.get("lichess_racing_kings", ""),
-            self.puzzles_emoji,
-            self.bot.application_emojis.get("lichess_storm", ""),
-            self.bot.application_emojis.get("lichess_racer", ""),
-            self.bot.application_emojis.get("lichess_streak", ""),
-        )
         self.uprightarrow_emoji = self.bot.application_emojis.get("lichess_up_right_arrow", "\N{NORTH EAST ARROW}\N{VARIATION SELECTOR-16}")
         self.downrightarrow_emoji = self.bot.application_emojis.get("lichess_down_right_arrow", "\N{SOUTH EAST ARROW}\N{VARIATION SELECTOR-16}")
         self.forum_emoji = self.bot.application_emojis.get("lichess_forum", "")
@@ -247,11 +227,11 @@ class Lichess(commands.Cog):
                     mode_draws = mode_data["draw"]
                     rating_before = mode_data["rp"]["before"]
                     rating_after = mode_data["rp"]["after"]
-                    mode_index = list(MODE_KEYS).index(mode)
                     total_matches = mode_wins + mode_losses + mode_draws
                     rating_change = rating_after - rating_before
                     activity += (
-                        f"{self.mode_emojis[mode_index]} Played {total_matches} "
+                        str(self.bot.application_emojis.get(f"lichess_{MODE_KEYS[mode].emoji_name}", "")) +
+                        f" Played {total_matches} "
                         f"{MODE_KEYS[mode].name} "
                         f"{ctx.bot.inflect_engine.plural('game', total_matches)}\t"
                     )
