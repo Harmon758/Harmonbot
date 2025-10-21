@@ -224,9 +224,9 @@ clarifai==11.5.0 ; implementation_name == 'cpython' and platform_python_implemen
     # via
     #   clarifai-protocol
     #   harmonbot
-clarifai-grpc==11.9.4 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:50ea808d6b19c54c77e98dadba66a4e0078cd9d057730d5a27b27612479449aa \
-    --hash=sha256:bef4dba30b8f8cc9e19ff7d79079fd3f6ce3be832d7a5dc6b8482b2ae0d12d56
+clarifai-grpc==11.9.6 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:2250a55aa837bb9cfbc1fd6a65740e5b9ccb68093b58acae104d31075a382227 \
+    --hash=sha256:b08c8938ff0ce35d6c5766c10fe127b175e6770e55e5a892818f3f8e0bf146dd
     # via
     #   clarifai
     #   clarifai-protocol
