@@ -218,19 +218,19 @@ charset-normalizer==3.4.4 ; implementation_name == 'cpython' and platform_python
 chess==1.11.2 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:a8b43e5678fdb3000695bdaa573117ad683761e5ca38e591c4826eba6d25bb39
     # via harmonbot
-clarifai==11.5.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+clarifai==11.8.5 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:21b46eabe0043c2aac8896a34311ae5dab1d413a2d0de534e8768046560240d7 \
     --hash=sha256:9da105f3b86810adcfb4660a3f4449ea13dac737af3eb71288ef3fbaf0b6ef4b
     # via
     #   clarifai-protocol
     #   harmonbot
-clarifai-grpc==11.9.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+clarifai-grpc==11.9.8 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:2ab16f27ffae8053783be72fb588f3c8e45c617ee7f5ac03189561fc3cd248b9 \
     --hash=sha256:cf2902374e489c5c64cef442e3e1561307aab1ae251c1c35dbd5a3d69f8e6881
     # via
     #   clarifai
     #   clarifai-protocol
-clarifai-protocol==0.0.25 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+clarifai-protocol==0.0.33 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:9b27a7928d5996a05d8d09e90de85a8246e68cb9638e9a379739470af4862a55 \
     --hash=sha256:9ecd8a2f7ead7857d5ce2f129e9892326bf998f3db7796c16fd063a867d2d42f \
     --hash=sha256:a6466492d0eedd87064800d7947521314176f22b2a2713e5edc6fd803ab7ddfb \
