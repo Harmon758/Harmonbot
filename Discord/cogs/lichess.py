@@ -180,7 +180,7 @@ class Lichess(commands.Cog):
         '''
         # TODO: Separate stats subcommand?
         await ctx.defer()
-        view = LichessUserView(ctx, username, self.mode_emojis)
+        view = LichessUserView(ctx, username)
         view.message = await ctx.reply(
             "",
             embed = (
@@ -465,12 +465,11 @@ class Lichess(commands.Cog):
 
 class LichessUserView(ui.View):
 
-    def __init__(self, ctx, lichess_user, mode_emojis):
+    def __init__(self, ctx, lichess_user):
         super().__init__(timeout = 600)
 
         self.bot = ctx.bot
         self.lichess_user = lichess_user
-        self.mode_emojis = mode_emojis
 
         # https://github.com/Rapptz/discord.py/pull/10143
         for option in self.perf.options:
@@ -480,7 +479,9 @@ class LichessUserView(ui.View):
         if len(self.perf.options) == 1:
             for mode in MODES:
                 self.perf.add_option(
-                    emoji = self.mode_emojis[list(MODE_KEYS).index(mode.key)],
+                    emoji = self.bot.application_emojis.get(
+                        f"lichess_{mode.emoji_name}", None
+                    ),
                     label = mode.name,
                     value = mode.key
                 )
@@ -493,7 +494,7 @@ class LichessUserView(ui.View):
             title = lichess_user.get("title", "") + ' ' + lichess_user["username"],
             url = lichess_user["url"]
         )
-        for mode, emoji in zip(MODES, self.mode_emojis):
+        for mode in MODES:
             if not (mode_data := lichess_user["perfs"].get(mode.key)):
                 continue
             if mode_data.get("games", 0):
@@ -505,7 +506,7 @@ class LichessUserView(ui.View):
                 else:
                     arrow = self.downrightarrow_emoji
                 self.overview_embed.add_field(
-                    name = str(emoji) + ' ' + mode.name,
+                    name = str(self.bot.application_emojis.get(f"lichess_{mode.emoji_name}", "")) + ' ' + mode.name,
                     value = (
                         f"Games: {mode_data['games']}\nRating:\n"
                         f"{mode_data['rating']}{prov} ± {mode_data['rd']} {arrow} {mode_data['prog']}"
@@ -513,7 +514,7 @@ class LichessUserView(ui.View):
                 )
             elif mode_data.get("runs", 0):
                 self.overview_embed.add_field(
-                    name = str(emoji) + ' ' + mode.name,
+                    name = str(self.bot.application_emojis.get(f"lichess_{mode.emoji_name}", "")) + ' ' + mode.name,
                     value = (
                         f"Runs: {mode_data['runs']}\n"
                         f"Score: {mode_data['score']}"
@@ -560,7 +561,7 @@ class LichessUserView(ui.View):
                 else:
                     arrow = self.downrightarrow_emoji
                 embed.add_field(
-                    name = f"{self.mode_emojis[index]} {MODE_KEYS[mode].name}",
+                    name = str(self.bot.application_emojis.get(f"lichess_{MODE_KEYS[mode].emoji_name}", "")) + f" {MODE_KEYS[mode].name}",
                     value = (
                         f"Games: {mode_data['games']}\n"
                         f"Rating: {mode_data['rating']}{prov}±{mode_data['rd']} "
@@ -569,7 +570,7 @@ class LichessUserView(ui.View):
                 )
             elif mode_data.get("runs", 0):
                 embed.add_field(
-                    name = f"{self.mode_emojis[index]} {MODE_KEYS[mode].name}",
+                    name = str(self.bot.application_emojis.get(f"lichess_{MODE_KEYS[mode].emoji_name}", "")) + f" {MODE_KEYS[mode].name}",
                     value = (
                         f"Runs: {mode_data['runs']}\n"
                         f"Score: {mode_data['score']}"
