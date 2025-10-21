@@ -97,17 +97,6 @@ class Lichess(commands.Cog):
                     )
                 )
 
-        self.correspondence_emoji = self.bot.application_emojis.get("lichess_correspondence", "")
-        self.puzzles_emoji = self.bot.application_emojis.get("lichess_puzzles", "")
-        self.uprightarrow_emoji = self.bot.application_emojis.get("lichess_up_right_arrow", FALLBACK_UP_RIGHT_ARROW_EMOJI)
-        self.downrightarrow_emoji = self.bot.application_emojis.get("lichess_down_right_arrow", FALLBACK_DOWN_RIGHT_ARROW_EMOJI)
-        self.forum_emoji = self.bot.application_emojis.get("lichess_forum", "")
-        self.practice_emoji = self.bot.application_emojis.get("lichess_practice", "")
-        self.stream_emoji = self.bot.application_emojis.get("lichess_stream", "")
-        self.team_emoji = self.bot.application_emojis.get("lichess_team", "")
-        self.thumbsup_emoji = self.bot.application_emojis.get("lichess_thumbsup", "")
-        self.trophy_emoji = self.bot.application_emojis.get("lichess_trophy", "")
-
     async def cog_check(self, ctx):
         return await checks.not_forbidden().predicate(ctx)
 
@@ -194,7 +183,7 @@ class Lichess(commands.Cog):
             if "practice" in day:
                 for practice in day["practice"]:
                     activity += (
-                        f"{self.practice_emoji} Practiced {practice['nbPositions']} positions on "
+                        f"{ctx.bot.application_emojis.get('lichess_practice', '')} Practiced {practice['nbPositions']} positions on "
                         f"[{practice['name']}](https://lichess.org{practice['url']})\n"
                     )
             if "puzzles" in day:
@@ -206,15 +195,15 @@ class Lichess(commands.Cog):
                 total_puzzles = puzzle_wins + puzzle_losses + puzzle_draws
                 rating_change = rating_after - rating_before
                 activity += (
-                    f"{self.puzzles_emoji} Solved {total_puzzles} tactical "
+                    f"{ctx.bot.application_emojis.get('lichess_puzzles', '')} Solved {total_puzzles} tactical "
                     f"{ctx.bot.inflect_engine.plural('puzzle', total_puzzles)}\t"
                 )
                 if rating_change != 0:
                     activity += str(rating_after)
                     if rating_change > 0:
-                        activity += str(self.uprightarrow_emoji)
+                        activity += str(ctx.bot.application_emojis.get("lichess_up_right_arrow", FALLBACK_UP_RIGHT_ARROW_EMOJI))
                     elif rating_change < 0:
-                        activity += str(self.downrightarrow_emoji)
+                        activity += str(ctx.bot.application_emojis.get("lichess_down_right_arrow", FALLBACK_DOWN_RIGHT_ARROW_EMOJI))
                     activity += f"{abs(rating_change)}\t"
                 if puzzle_wins:
                     activity += f"{puzzle_wins} {ctx.bot.inflect_engine.plural('win', puzzle_wins)} "
@@ -233,7 +222,7 @@ class Lichess(commands.Cog):
                     total_matches = mode_wins + mode_losses + mode_draws
                     rating_change = rating_after - rating_before
                     activity += (
-                        str(self.bot.application_emojis.get(f"lichess_{MODE_KEYS[mode].emoji_name}", "")) +
+                        str(ctx.bot.application_emojis.get(f"lichess_{MODE_KEYS[mode].emoji_name}", "")) +
                         f" Played {total_matches} "
                         f"{MODE_KEYS[mode].name} "
                         f"{ctx.bot.inflect_engine.plural('game', total_matches)}\t"
@@ -241,9 +230,9 @@ class Lichess(commands.Cog):
                     if rating_change != 0:
                         activity += str(rating_after)
                         if rating_change > 0:
-                            activity += str(self.uprightarrow_emoji)
+                            activity += str(ctx.bot.application_emojis.get("lichess_up_right_arrow", FALLBACK_UP_RIGHT_ARROW_EMOJI))
                         elif rating_change < 0:
-                            activity += str(self.downrightarrow_emoji)
+                            activity += str(ctx.bot.application_emojis.get("lichess_down_right_arrow", FALLBACK_DOWN_RIGHT_ARROW_EMOJI))
                         activity += f"{abs(rating_change)}\t"
                     if mode_wins:
                         activity += f"{mode_wins} {ctx.bot.inflect_engine.plural('win', mode_wins)} "
@@ -255,13 +244,13 @@ class Lichess(commands.Cog):
             if "posts" in day:
                 for post in day["posts"]:
                     activity += (
-                        f"{self.forum_emoji} Posted {len(post['posts'])} "
+                        f"{ctx.bot.application_emojis.get('lichess_forum', '')} Posted {len(post['posts'])} "
                         f"{ctx.bot.inflect_engine.plural('message', len(post['posts']))}"
                         f" in [{post['topicName']}](https://lichess.org{post['topicUrl']})\n"
                     )
             if "correspondenceMoves" in day:
                 activity += (
-                    f"{self.correspondence_emoji} Played {day['correspondenceMoves']['nb']} "
+                    f"{ctx.bot.application_emojis.get('lichess_correspondence', '')} Played {day['correspondenceMoves']['nb']} "
                     f"{ctx.bot.inflect_engine.plural('move', day['correspondenceMoves']['nb'])}"
                 )
                 game_count = len(day["correspondenceMoves"]["games"])
@@ -279,15 +268,15 @@ class Lichess(commands.Cog):
                 total_matches = correspondence_wins + correspondence_losses + correspondence_draws
                 rating_change = rating_after - rating_before
                 activity += (
-                    f"{self.correspondence_emoji} Completed {total_matches} correspondence "
+                    f"{ctx.bot.application_emojis.get('lichess_correspondence', '')} Completed {total_matches} correspondence "
                     f"{ctx.bot.inflect_engine.plural('game', total_matches)}\t"
                 )
                 if rating_change != 0:
                     activity += str(rating_after)
                     if rating_change > 0:
-                        activity += str(self.uprightarrow_emoji)
+                        activity += str(ctx.bot.application_emojis.get("lichess_up_right_arrow", FALLBACK_UP_RIGHT_ARROW_EMOJI))
                     elif rating_change < 0:
-                        activity += str(self.downrightarrow_emoji)
+                        activity += str(ctx.bot.application_emojis.get("lichess_down_right_arrow", FALLBACK_DOWN_RIGHT_ARROW_EMOJI))
                     activity += f"{abs(rating_change)}\t"
                 if correspondence_wins:
                     activity += f"{correspondence_wins} {ctx.bot.inflect_engine.plural('win', correspondence_wins)} "
@@ -298,10 +287,11 @@ class Lichess(commands.Cog):
                 activity += '\n'
                 # TODO: Include game details?
             if "follows" in day:
+                thumbsup_emoji = ctx.bot.application_emojis.get("lichess_thumbsup", "")
                 if "in" in day["follows"]:
                     follows_in = day["follows"]["in"]["ids"]
                     activity += (
-                        f"{self.thumbsup_emoji} Gained "
+                        f"{thumbsup_emoji} Gained "
                         f"{day['follows']['in'].get('nb', len(follows_in))} new "
                         f"{ctx.bot.inflect_engine.plural('follower', len(follows_in))}"
                         f"\n\t{', '.join(follows_in)}\n"
@@ -309,14 +299,14 @@ class Lichess(commands.Cog):
                 if "out" in day["follows"]:
                     follows_out = day["follows"]["out"]["ids"]
                     activity += (
-                        f"{self.thumbsup_emoji} Started following "
+                        f"{thumbsup_emoji} Started following "
                         f"{day['follows']['out'].get('nb', len(follows_out))} "
                         f"{ctx.bot.inflect_engine.plural('player', len(follows_out))}"
                         f"\n\t{', '.join(follows_out)}\n"
                     )
             if "tournaments" in day:
                 activity += (
-                    f"{self.trophy_emoji} Competed in {day['tournaments']['nb']} "
+                    f"{ctx.bot.application_emojis.get('lichess_trophy', '')} Competed in {day['tournaments']['nb']} "
                     f"{ctx.bot.inflect_engine.plural('tournament', day['tournaments']['nb'])}\n"
                 )
                 for tournament in day["tournaments"]["best"]:
@@ -329,13 +319,13 @@ class Lichess(commands.Cog):
                     )
             if "teams" in day:
                 activity += (
-                    f"{self.team_emoji} Joined {len(day['teams'])} "
+                    f"{ctx.bot.application_emojis.get('lichess_team', '')} Joined {len(day['teams'])} "
                     f"{ctx.bot.inflect_engine.plural('team', len(day['teams']))}\n\t"
                 )
                 teams = [f"[{team['name']}](https://lichess.org{team['url']})" for team in day["teams"]]
                 activity += f"{', '.join(teams)}\n"
             if day.get("stream"):
-                activity += f"{self.stream_emoji} Hosted a live stream\n"
+                activity += f"{ctx.bot.application_emojis.get('lichess_stream', '')} Hosted a live stream\n"
                 # TODO: Add link
             # TODO: Use embed limit variables
             # TODO: Better method of checking total embed size
