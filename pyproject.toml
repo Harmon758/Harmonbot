@@ -160,6 +160,14 @@ environments = [
     # https://github.com/astral-sh/uv/issues/11151
     # https://github.com/astral-sh/uv/issues/14886
 ]
+override-dependencies = [
+    # https://github.com/Clarifai/clarifai-python/issues/769
+    "psutil >= 7.1.1",
+    "pydantic >= 2.12.2",
+    "pydantic-core >= 2.41.4",
+    "ruff >= 0.14.1",
+    "uv >= 0.8.22",
+]
 
 [tool.uv.sources]
 discord-py = { git = "https://github.com/Rapptz/discord.py.git", rev = "5734996" }

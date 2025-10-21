@@ -297,11 +297,11 @@ sdist = { url = "https://files.pythonhosted.org/packages/93/09/7d04d7581ae3bb8b5
 
 [[packages]]
 name = "clarifai"
-version = "11.5.0"
+version = "11.8.5"
 marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'"
 index = "https://pypi.org/simple"
-sdist = { url = "https://files.pythonhosted.org/packages/03/a7/0e7f24690d193ed2008a8529a52100de5cdab7d2fa8b3a04371f1586b85e/clarifai-11.5.0.tar.gz", upload-time = 2025-06-10T10:14:59Z, size = 206657, hashes = { sha256 = "9da105f3b86810adcfb4660a3f4449ea13dac737af3eb71288ef3fbaf0b6ef4b" } }
-wheels = [{ url = "https://files.pythonhosted.org/packages/ab/e7/9886334d139b1904a41840cea5f236046b4bb55d608a0157d2427c5a55bb/clarifai-11.5.0-py3-none-any.whl", upload-time = 2025-06-10T10:14:56Z, size = 229165, hashes = { sha256 = "21b46eabe0043c2aac8896a34311ae5dab1d413a2d0de534e8768046560240d7" } }]
+sdist = { url = "https://files.pythonhosted.org/packages/55/7e/bea7114bbd5c5881f48750455d44accf28b73f53ccb43e70e3a30d04f714/clarifai-11.8.5.tar.gz", upload-time = 2025-10-20T15:19:06Z, size = 277194, hashes = { sha256 = "ff469e8ca7b2d7212d66b1789a2701cd8092b458bc2eb405a346e6f61b40bf4d" } }
+wheels = [{ url = "https://files.pythonhosted.org/packages/74/53/acff25a7ff82d278873632a41b7a2ec0a9dcfef99da7b2409e374b80e51a/clarifai-11.8.5-py3-none-any.whl", upload-time = 2025-10-20T15:19:04Z, size = 299111, hashes = { sha256 = "e97086f944fe4825d662d6f888ca0e4db5b5199c154854f497488f32d27ccf21" } }]
 
 [[packages]]
 name = "clarifai-grpc"
@@ -313,16 +313,16 @@ wheels = [{ url = "https://files.pythonhosted.org/packages/d5/7b/8fa189bc5d844af
 
 [[packages]]
 name = "clarifai-protocol"
-version = "0.0.25"
+version = "0.0.33"
 marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'"
 index = "https://pypi.org/simple"
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/42/8e/fb14b3315a5b36767ed3924eac95fb82d815649fff3ed47f82a88975d17e/clarifai_protocol-0.0.25-cp311-cp311-macosx_11_0_universal2.whl", upload-time = 2025-07-01T14:39:50Z, size = 224600, hashes = { sha256 = "f47d584f5bb166fd939a75d03aa919d10399d3fed7d1d34be78f3c15aece3a16" } },
-    { url = "https://files.pythonhosted.org/packages/ca/1f/cff1ffc0fbb0e895528d5afa64b55536fe59eedaa0113739f7b48334610b/clarifai_protocol-0.0.25-cp311-cp311-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl", upload-time = 2025-07-01T14:39:51Z, size = 343847, hashes = { sha256 = "9ecd8a2f7ead7857d5ce2f129e9892326bf998f3db7796c16fd063a867d2d42f" } },
-    { url = "https://files.pythonhosted.org/packages/3e/f2/5df3363dd7b50f2115c78d94904b1673d29c0e56acde24f9700ac688af37/clarifai_protocol-0.0.25-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl", upload-time = 2025-07-01T14:39:52Z, size = 372440, hashes = { sha256 = "9b27a7928d5996a05d8d09e90de85a8246e68cb9638e9a379739470af4862a55" } },
-    { url = "https://files.pythonhosted.org/packages/f0/3c/28ddac6f70a3d356f771af70ab3f2a5dcacb712d9d060060eca84986b345/clarifai_protocol-0.0.25-cp311-cp311-musllinux_1_2_aarch64.whl", upload-time = 2025-07-01T14:39:53Z, size = 352480, hashes = { sha256 = "b4ffd64727bf3fee211d5f254e91183ec75a729e2b8c28687f25b820e8814e30" } },
-    { url = "https://files.pythonhosted.org/packages/b5/6a/51bc8e60fa944d0ad576bff7963c04311b6c3cd24127789d1b44c36909fb/clarifai_protocol-0.0.25-cp311-cp311-musllinux_1_2_x86_64.whl", upload-time = 2025-07-01T14:39:54Z, size = 378083, hashes = { sha256 = "a6466492d0eedd87064800d7947521314176f22b2a2713e5edc6fd803ab7ddfb" } },
-    { url = "https://files.pythonhosted.org/packages/c8/7f/4fa5f87b033d2bcfba6cc3ad5faf9d4f60c6d45858de5e146bacc1959273/clarifai_protocol-0.0.25-cp311-cp311-win_amd64.whl", upload-time = 2025-07-01T14:39:56Z, size = 276933, hashes = { sha256 = "deb50e8b00c16914ba3eee024b9ce122849e36d9315f5480e2238397d867283a" } },
+    { url = "https://files.pythonhosted.org/packages/af/26/8ee8ea7716979f2e33136e10f595516db55e8b4724aead307481c7a1b379/clarifai_protocol-0.0.33-cp311-cp311-macosx_11_0_universal2.whl", upload-time = 2025-10-09T16:46:33Z, size = 257465, hashes = { sha256 = "cb30df2752647dc8a7fbfa55b9b929be74f983233f46ff8af7bfe1bfa09def3d" } },
+    { url = "https://files.pythonhosted.org/packages/1e/88/9a968ae468d1b4ac781e0a598275b19c59129c218d717a159866f937f08c/clarifai_protocol-0.0.33-cp311-cp311-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl", upload-time = 2025-10-09T16:46:34Z, size = 377547, hashes = { sha256 = "bfbc97d985f9bded84491927ee4a0bcf378584ad2fba89dd1efab47aa874cb63" } },
+    { url = "https://files.pythonhosted.org/packages/22/ea/d543bfc8379176707ab06fc9b08922135c572dc495672aa9877f8e2c198e/clarifai_protocol-0.0.33-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl", upload-time = 2025-10-09T16:46:35Z, size = 405816, hashes = { sha256 = "365e56d97fd500bb18ca46524f71560e61685ae9fdc10b8366468385dd73516e" } },
+    { url = "https://files.pythonhosted.org/packages/96/5d/78ce9f57872d35efe605f6015c9ed60d9dced67620b2bfb78312fe537ff3/clarifai_protocol-0.0.33-cp311-cp311-musllinux_1_2_aarch64.whl", upload-time = 2025-10-09T16:46:36Z, size = 384838, hashes = { sha256 = "28621d247044c2ed3f7887d836c38be3d4d628f5a65f5e90b44a804c2d4c37c0" } },
+    { url = "https://files.pythonhosted.org/packages/03/a2/b30abe0c112a5af5a7901afa54ebabfe95abb13e288119f1c884e8c297a0/clarifai_protocol-0.0.33-cp311-cp311-musllinux_1_2_x86_64.whl", upload-time = 2025-10-09T16:46:37Z, size = 411528, hashes = { sha256 = "ec0f554e30937e81705990a3ebaca2c8038319b364da9f44efb381b2aaeb0d1d" } },
+    { url = "https://files.pythonhosted.org/packages/74/31/b384b6bdc99b371f738a28b2c8213a5b45e927beb2b74e05cabb21b303d5/clarifai_protocol-0.0.33-cp311-cp311-win_amd64.whl", upload-time = 2025-10-09T16:46:39Z, size = 308006, hashes = { sha256 = "f2e0684dce532721a85129d85458ecb5fbc69f79dcc03bb9fbd8e5a37b919e9b" } },
 ]
 
 [[packages]]
