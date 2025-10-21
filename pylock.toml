@@ -305,11 +305,11 @@ wheels = [{ url = "https://files.pythonhosted.org/packages/ab/e7/9886334d139b190
 
 [[packages]]
 name = "clarifai-grpc"
-version = "11.9.3"
+version = "11.9.4"
 marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'"
 index = "https://pypi.org/simple"
-sdist = { url = "https://files.pythonhosted.org/packages/1b/c5/2f0898a09373c58587ac27b38a01f98c99b8534f35beac4e1bab5e3dfc0e/clarifai_grpc-11.9.3.tar.gz", upload-time = 2025-10-10T03:54:15Z, size = 288192, hashes = { sha256 = "e8f2dfa0f91d7c16de2f8e04e6ed419621bd69664d5a800b332efca8a54b4db4" } }
-wheels = [{ url = "https://files.pythonhosted.org/packages/ed/21/1ee8a409de16ff45f6f6336d4dc207e3dc1cb37e03bc34f44c4711c5034f/clarifai_grpc-11.9.3-py3-none-any.whl", upload-time = 2025-10-10T03:54:14Z, size = 303756, hashes = { sha256 = "742800c9d4a8e9320d621b2e36ff5e7c6f8cbba113fcd52a1ab229f3fe9a362a" } }]
+sdist = { url = "https://files.pythonhosted.org/packages/4c/3d/76d7145a2233d9cf6577be54d090310b824181b283a3b4efa63e456a22ab/clarifai_grpc-11.9.4.tar.gz", upload-time = 2025-10-10T23:17:42Z, size = 288179, hashes = { sha256 = "50ea808d6b19c54c77e98dadba66a4e0078cd9d057730d5a27b27612479449aa" } }
+wheels = [{ url = "https://files.pythonhosted.org/packages/d4/06/dbf7dafd3b6184ecb84b3276da776c55c1688257df477a49dc6d0421a805/clarifai_grpc-11.9.4-py3-none-any.whl", upload-time = 2025-10-10T23:17:40Z, size = 303755, hashes = { sha256 = "bef4dba30b8f8cc9e19ff7d79079fd3f6ce3be832d7a5dc6b8482b2ae0d12d56" } }]
 
 [[packages]]
 name = "clarifai-protocol"
