@@ -6,7 +6,7 @@ from discord.ext import commands
 import asyncio
 import datetime
 from pathlib import Path
-from typing import Literal, Optional
+from typing import Literal, NamedTuple, Optional
 
 import emoji
 import pycountry
@@ -15,25 +15,37 @@ from units.time import duration_to_string
 from utilities import checks
 
 
-EMOJIS = {
-    "ultrabullet": "UltraBullet",
-    "bullet": "Bullet",
-    "blitz": "FlameBlitz",
-    "rapid": "Rabbit",
-    "classical": "Turtle",
-    "correspondence": "PaperAirplane",
-    "crazyhouse": "Crazyhouse",
-    "chess960": "DieSix",
-    "king_of_the_hill": "FlagKingHill",
-    "three_check": "ThreeCheckStack",
-    "antichess": "Antichess",
-    "atomic": "Atom",
-    "horde": "Keypad",
-    "racing_kings": "FlagRacingKings",
-    "puzzles": "ArcheryTarget",
-    "storm": "Storm",
-    "racer": "FlagChessboard",
-    "streak": "ArrowThruApple",
+class Mode(NamedTuple):
+    key: str
+    name: str
+    emoji_name: str
+    emoji_icon: str
+
+MODES = (
+    Mode("ultraBullet", "Ultrabullet", "ultrabullet", "UltraBullet"),
+    Mode("bullet", "Bullet", "bullet", "Bullet"),
+    Mode("blitz", "Blitz", "blitz", "FlameBlitz"),
+    Mode("rapid", "Rapid", "rapid", "Rabbit"),
+    Mode("classical", "Classical", "classical", "Turtle"),
+    Mode("correspondence", "Correspondence", "correspondence", "PaperAirplane"),
+    Mode("crazyhouse", "Crazyhouse", "crazyhouse", "Crazyhouse"),
+    Mode("chess960", "Chess960", "chess960", "DieSix"),
+    Mode("kingOfTheHill", "King of the Hill", "king_of_the_hill", "FlagKingHill"),
+    Mode("threeCheck", "Three-Check", "three_check", "ThreeCheckStack"),
+    Mode("antichess", "Antichess", "antichess", "Antichess"),
+    Mode("atomic", "Atomic", "atomic", "Atom"),
+    Mode("horde", "Horde", "horde", "Keypad"),
+    Mode("racingKings", "Racing Kings", "racing_kings", "FlagRacingKings"),
+    Mode("puzzle", "Puzzles", "puzzles", "ArcheryTarget"),
+    Mode("storm", "Puzzle Storm", "storm", "Storm"),
+    Mode("racer", "Puzzle Racer", "racer", "FlagChessboard"),
+    Mode("streak", "Puzzle Streak", "streak", "ArrowThruApple"),
+)
+
+MODE_KEYS = {mode.key: mode for mode in MODES}
+MODE_NAMES = {mode.name: mode for mode in MODES}
+
+EMOJIS = {mode.emoji_name: mode.emoji_icon for mode in MODES} | {
     "up_right_arrow": "ArrowUpRight",
     "down_right_arrow": "ArrowDownRight",
     "forum": "BubbleConvo",
@@ -42,27 +54,6 @@ EMOJIS = {
     "team": "Group",
     "thumbsup": "ThumbsUp",
     "trophy": "Trophy",
-}
-
-MODES = {
-    "ultraBullet": "Ultrabullet",
-    "bullet": "Bullet",
-    "blitz": "Blitz",
-    "rapid": "Rapid",
-    "classical": "Classical",
-    "correspondence": "Correspondence",
-    "crazyhouse": "Crazyhouse",
-    "chess960": "Chess960",
-    "kingOfTheHill": "King of the Hill",
-    "threeCheck": "Three-Check",
-    "antichess": "Antichess",
-    "atomic": "Atomic",
-    "horde": "Horde",
-    "racingKings": "Racing Kings",
-    "puzzle": "Puzzles",
-    "storm": "Puzzle Storm",
-    "racer": "Puzzle Racer",
-    "streak": "Puzzle Streak",
 }
 
 
@@ -175,7 +166,7 @@ class Lichess(commands.Cog):
     )
     async def user(
         self, ctx, username: LichessUser, *,
-        mode: Optional[Literal[tuple(MODES.values())]]  # noqa: UP045 (non-pep604-annotation-optional)
+        mode: Optional[Literal[tuple(MODE_NAMES)]]  # noqa: UP045 (non-pep604-annotation-optional)
     ):
         '''
         View statistics of a Lichess user
@@ -193,9 +184,8 @@ class Lichess(commands.Cog):
         view.message = await ctx.reply(
             "",
             embed = (
-                view.select_perf(
-                    list(MODES.keys())[list(MODES.values()).index(mode)]
-                ) if mode else view.overview_embed
+                view.select_perf(MODE_NAMES[mode].key)
+                if mode else view.overview_embed
             ),
             view = view
         )
@@ -257,12 +247,12 @@ class Lichess(commands.Cog):
                     mode_draws = mode_data["draw"]
                     rating_before = mode_data["rp"]["before"]
                     rating_after = mode_data["rp"]["after"]
-                    mode_index = list(MODES.keys()).index(mode)
+                    mode_index = list(MODE_KEYS).index(mode)
                     total_matches = mode_wins + mode_losses + mode_draws
                     rating_change = rating_after - rating_before
                     activity += (
                         f"{self.mode_emojis[mode_index]} Played {total_matches} "
-                        f"{MODES[mode]} "
+                        f"{MODE_KEYS[mode].name} "
                         f"{ctx.bot.inflect_engine.plural('game', total_matches)}\t"
                     )
                     if rating_change != 0:
@@ -488,11 +478,11 @@ class LichessUserView(ui.View):
         self.perf.options[0].default = True
 
         if len(self.perf.options) == 1:
-            for mode, name in MODES.items():
+            for mode in MODES:
                 self.perf.add_option(
-                    emoji = self.mode_emojis[list(MODES.keys()).index(mode)],
-                    label = name,
-                    value = mode
+                    emoji = self.mode_emojis[list(MODE_KEYS).index(mode.key)],
+                    label = mode.name,
+                    value = mode.key
                 )
 
         self.uprightarrow_emoji = self.bot.application_emojis.get("lichess_up_right_arrow", "\N{NORTH EAST ARROW}\N{VARIATION SELECTOR-16}")
@@ -503,8 +493,8 @@ class LichessUserView(ui.View):
             title = lichess_user.get("title", "") + ' ' + lichess_user["username"],
             url = lichess_user["url"]
         )
-        for mode, name, emoji in zip(MODES.keys(), MODES.values(), self.mode_emojis):
-            if not (mode_data := lichess_user["perfs"].get(mode)):
+        for mode, emoji in zip(MODES, self.mode_emojis):
+            if not (mode_data := lichess_user["perfs"].get(mode.key)):
                 continue
             if mode_data.get("games", 0):
                 prov = ""
@@ -515,7 +505,7 @@ class LichessUserView(ui.View):
                 else:
                     arrow = self.downrightarrow_emoji
                 self.overview_embed.add_field(
-                    name = str(emoji) + ' ' + name,
+                    name = str(emoji) + ' ' + mode.name,
                     value = (
                         f"Games: {mode_data['games']}\nRating:\n"
                         f"{mode_data['rating']}{prov} ± {mode_data['rd']} {arrow} {mode_data['prog']}"
@@ -523,7 +513,7 @@ class LichessUserView(ui.View):
                 )
             elif mode_data.get("runs", 0):
                 self.overview_embed.add_field(
-                    name = str(emoji) + ' ' + name,
+                    name = str(emoji) + ' ' + mode.name,
                     value = (
                         f"Runs: {mode_data['runs']}\n"
                         f"Score: {mode_data['score']}"
@@ -555,7 +545,7 @@ class LichessUserView(ui.View):
             embed = self.overview_embed
             self.perf.options[0].default = True
         else:
-            index = list(MODES.keys()).index(mode)
+            index = list(MODE_KEYS).index(mode)
             mode_data = self.lichess_user["perfs"][mode]
             embed = discord.Embed(
                 color = self.bot.bot_color,
@@ -570,7 +560,7 @@ class LichessUserView(ui.View):
                 else:
                     arrow = self.downrightarrow_emoji
                 embed.add_field(
-                    name = f"{self.mode_emojis[index]} {MODES[mode]}",
+                    name = f"{self.mode_emojis[index]} {MODE_KEYS[mode].name}",
                     value = (
                         f"Games: {mode_data['games']}\n"
                         f"Rating: {mode_data['rating']}{prov}±{mode_data['rd']} "
@@ -579,7 +569,7 @@ class LichessUserView(ui.View):
                 )
             elif mode_data.get("runs", 0):
                 embed.add_field(
-                    name = f"{self.mode_emojis[index]} {MODES[mode]}",
+                    name = f"{self.mode_emojis[index]} {MODE_KEYS[mode].name}",
                     value = (
                         f"Runs: {mode_data['runs']}\n"
                         f"Score: {mode_data['score']}"
