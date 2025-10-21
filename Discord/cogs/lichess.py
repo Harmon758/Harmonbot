@@ -567,9 +567,9 @@ class LichessUserView(ui.View):
             )
             if mode_data.get("games", 0):
                 prov = ""
-                if self.lichess_user["perfs"][mode].get("prov"):
+                if mode_data.get("prov"):
                     prov = '?'
-                if self.lichess_user["perfs"][mode]["prog"] >= 0:
+                if mode_data["prog"] >= 0:
                     arrow = self.uprightarrow_emoji
                 else:
                     arrow = self.downrightarrow_emoji
