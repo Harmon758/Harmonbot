@@ -11,6 +11,7 @@ from typing import Optional
 from parsedatetime import Calendar, VERSION_CONTEXT_STYLE
 
 from modules import conversions
+from modules.utilities import secs_to_letter_format
 from utilities import checks
 
 
@@ -54,6 +55,7 @@ ACTIVITES_ALIASES = {
 
 async def setup(bot):
     await bot.add_cog(Discord(bot))
+    bot.tree.add_command(call_duration, override = True)
     bot.tree.add_command(link, override = True)
     bot.tree.add_command(quote, override = True)
     bot.tree.add_command(timestamp, override = True)
@@ -508,6 +510,34 @@ class Discord(commands.Cog):
                 await self.bot.delete_channel(temp_voice_channel)
                 await self.bot.delete_channel(temp_text_channel)
                 return
+
+
+@app_commands.context_menu(name = "Call Duration")
+@app_commands.allowed_installs(guilds = False, users = True)
+@app_commands.allowed_contexts(
+    guilds = False, dms = True, private_channels = True
+)
+async def call_duration(interaction, message: discord.Message):
+    if not getattr(message, "call", None):
+        await interaction.response.send_message(
+            "That message does not have a call associated with it.",
+            ephemeral = True
+        )
+        return
+    await interaction.response.send_message(
+        embed = discord.Embed(
+            title = "Call Duration",
+            url = message.jump_url,
+            description = (
+                f"{secs_to_letter_format(message.call.duration.seconds)} "
+                f"from {discord.utils.format_dt(message.created_at)} to " + (
+                    discord.utils.format_dt(message.call.ended_timestamp)
+                    if message.call.is_ended() else "now"
+                )
+            ),
+            color = interaction.client.bot_color
+        )
+    )
 
 
 @app_commands.context_menu()
