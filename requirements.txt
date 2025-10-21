@@ -1547,7 +1547,7 @@ typeguard==4.4.4 ; implementation_name == 'cpython' and platform_python_implemen
     --hash=sha256:3a7fd2dffb705d4d0efaed4306a704c89b9dee850b688f060a8b1615a79e5f74 \
     --hash=sha256:b5f562281b6bfa1f5492470464730ef001646128b180769880468bd84b68b09e
     # via inflect
-typer==0.19.2 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+typer==0.20.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:755e7e19670ffad8283db353267cb81ef252f595aa6834a0d1ca9312d9326cb9 \
     --hash=sha256:9ad824308ded0ad06cc716434705f691d4ee0bfd0fb081839d2e426860e7fdca
     # via
