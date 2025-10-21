@@ -581,15 +581,15 @@ dependencies = [
 
 [[package]]
 name = "discord-py"
-version = "2.5.0a5081+g463b4bd5"
-source = { git = "https://github.com/Rapptz/discord.py.git?rev=463b4bd#463b4bd570faba36f1d8eac1ae29413bce3da9a6" }
+version = "2.5.0a5085+gdee5bf65"
+source = { git = "https://github.com/Rapptz/discord.py.git?rev=dee5bf6#dee5bf65c63fc2feca00d32e5f4a9fa293636291" }
 dependencies = [
     { name = "aiohttp", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 
 [package.optional-dependencies]
 speed = [
-    { name = "aiodns", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "aiodns", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython' and sys_platform != 'win32'" },
     { name = "brotli", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
     { name = "orjson", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
@@ -1009,7 +1009,7 @@ requires-dist = [
     { name = "cryptography" },
     { name = "dice" },
     { name = "discord-ext-menus", git = "https://github.com/Rapptz/discord-ext-menus.git?rev=8686b5d" },
-    { name = "discord-py", extras = ["speed", "voice"], git = "https://github.com/Rapptz/discord.py.git?rev=463b4bd" },
+    { name = "discord-py", extras = ["speed", "voice"], git = "https://github.com/Rapptz/discord.py.git?rev=dee5bf6" },
     { name = "emoji" },
     { name = "en-core-web-md", url = "https://github.com/explosion/spacy-models/releases/download/en_core_web_md-3.8.0/en_core_web_md-3.8.0-py3-none-any.whl" },
     { name = "feedparser" },
