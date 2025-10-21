@@ -469,9 +469,6 @@ class LichessUserView(ui.View):
                     value = mode.key
                 )
 
-        self.uprightarrow_emoji = self.bot.application_emojis.get("lichess_up_right_arrow", FALLBACK_UP_RIGHT_ARROW_EMOJI)
-        self.downrightarrow_emoji = self.bot.application_emojis.get("lichess_down_right_arrow", FALLBACK_DOWN_RIGHT_ARROW_EMOJI)
-
         self.overview_embed = discord.Embed(
             color = self.bot.bot_color,
             title = lichess_user.get("title", "") + ' ' + lichess_user["username"],
@@ -485,9 +482,9 @@ class LichessUserView(ui.View):
                 if mode_data.get("prov"):
                     prov = '?'
                 if mode_data["prog"] >= 0:
-                    arrow = self.uprightarrow_emoji
+                    arrow = self.bot.application_emojis.get("lichess_up_right_arrow", FALLBACK_UP_RIGHT_ARROW_EMOJI)
                 else:
-                    arrow = self.downrightarrow_emoji
+                    arrow = self.bot.application_emojis.get("lichess_down_right_arrow", FALLBACK_DOWN_RIGHT_ARROW_EMOJI)
                 self.overview_embed.add_field(
                     name = str(self.bot.application_emojis.get(f"lichess_{mode.emoji_name}", "")) + ' ' + mode.name,
                     value = (
@@ -540,9 +537,9 @@ class LichessUserView(ui.View):
                 if mode_data.get("prov"):
                     prov = '?'
                 if mode_data["prog"] >= 0:
-                    arrow = self.uprightarrow_emoji
+                    arrow = self.bot.application_emojis.get("lichess_up_right_arrow", FALLBACK_UP_RIGHT_ARROW_EMOJI)
                 else:
-                    arrow = self.downrightarrow_emoji
+                    arrow = self.bot.application_emojis.get("lichess_down_right_arrow", FALLBACK_DOWN_RIGHT_ARROW_EMOJI)
                 embed.add_field(
                     name = str(self.bot.application_emojis.get(f"lichess_{MODE_KEYS[mode].emoji_name}", "")) + f" {MODE_KEYS[mode].name}",
                     value = (
