@@ -103,24 +103,28 @@ class Lichess(commands.Cog):
                     )
                 )
 
-        self.ultrabullet_emoji = self.bot.application_emojis.get("lichess_ultrabullet", "")
-        self.bullet_emoji = self.bot.application_emojis.get("lichess_bullet", "")
-        self.blitz_emoji = self.bot.application_emojis.get("lichess_blitz", "")
-        self.rapid_emoji = self.bot.application_emojis.get("lichess_rapid", "")
-        self.classical_emoji = self.bot.application_emojis.get("lichess_classical", "")
         self.correspondence_emoji = self.bot.application_emojis.get("lichess_correspondence", "")
-        self.crazyhouse_emoji = self.bot.application_emojis.get("lichess_crazyhouse", "")
-        self.chess960_emoji = self.bot.application_emojis.get("lichess_chess960", "")
-        self.kingofthehill_emoji = self.bot.application_emojis.get("lichess_king_of_the_hill", "")
-        self.threecheck_emoji = self.bot.application_emojis.get("lichess_three_check", "")
-        self.antichess_emoji = self.bot.application_emojis.get("lichess_antichess", "")
-        self.atomic_emoji = self.bot.application_emojis.get("lichess_atomic", "")
-        self.horde_emoji = self.bot.application_emojis.get("lichess_horde", "")
-        self.racingkings_emoji = self.bot.application_emojis.get("lichess_racing_kings", "")
         self.puzzles_emoji = self.bot.application_emojis.get("lichess_puzzles", "")
-        self.storm_emoji = self.bot.application_emojis.get("lichess_storm", "")
-        self.racer_emoji = self.bot.application_emojis.get("lichess_racer", "")
-        self.streak_emoji = self.bot.application_emojis.get("lichess_streak", "")
+        self.mode_emojis = (
+            self.bot.application_emojis.get("lichess_ultrabullet", ""),
+            self.bot.application_emojis.get("lichess_bullet", ""),
+            self.bot.application_emojis.get("lichess_blitz", ""),
+            self.bot.application_emojis.get("lichess_rapid", ""),
+            self.bot.application_emojis.get("lichess_classical", ""),
+            self.correspondence_emoji,
+            self.bot.application_emojis.get("lichess_crazyhouse", ""),
+            self.bot.application_emojis.get("lichess_chess960", ""),
+            self.bot.application_emojis.get("lichess_king_of_the_hill", ""),
+            self.bot.application_emojis.get("lichess_three_check", ""),
+            self.bot.application_emojis.get("lichess_antichess", ""),
+            self.bot.application_emojis.get("lichess_atomic", ""),
+            self.bot.application_emojis.get("lichess_horde", ""),
+            self.bot.application_emojis.get("lichess_racing_kings", ""),
+            self.puzzles_emoji,
+            self.bot.application_emojis.get("lichess_storm", ""),
+            self.bot.application_emojis.get("lichess_racer", ""),
+            self.bot.application_emojis.get("lichess_streak", ""),
+        )
         self.uprightarrow_emoji = self.bot.application_emojis.get("lichess_up_right_arrow", "\N{NORTH EAST ARROW}\N{VARIATION SELECTOR-16}")
         self.downrightarrow_emoji = self.bot.application_emojis.get("lichess_down_right_arrow", "\N{SOUTH EAST ARROW}\N{VARIATION SELECTOR-16}")
         self.forum_emoji = self.bot.application_emojis.get("lichess_forum", "")
@@ -129,14 +133,6 @@ class Lichess(commands.Cog):
         self.team_emoji = self.bot.application_emojis.get("lichess_team", "")
         self.thumbsup_emoji = self.bot.application_emojis.get("lichess_thumbsup", "")
         self.trophy_emoji = self.bot.application_emojis.get("lichess_trophy", "")
-        self.mode_emojis = (
-            self.ultrabullet_emoji, self.bullet_emoji, self.blitz_emoji,
-            self.rapid_emoji, self.classical_emoji, self.correspondence_emoji,
-            self.crazyhouse_emoji, self.chess960_emoji, self.kingofthehill_emoji,
-            self.threecheck_emoji, self.antichess_emoji, self.atomic_emoji,
-            self.horde_emoji, self.racingkings_emoji, self.puzzles_emoji,
-            self.storm_emoji, self.racer_emoji, self.streak_emoji
-        )
 
     async def cog_check(self, ctx):
         return await checks.not_forbidden().predicate(ctx)
