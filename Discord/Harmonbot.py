@@ -162,22 +162,14 @@ if __name__ == "__main__":
 						)
 					):
 						owner = await ctx.bot.fetch_user(ctx.bot.owner_id)
-					if author == ctx.bot.user:
-						try:
-							await owner.send(
-								f"To {channel.recipient.mention} ({channel.recipient}): {message.content}",
-								embed = message.embeds[0] if message.embeds else None
-							)
-						except discord.HTTPException:
-							# TODO: use textwrap/paginate
-							await owner.send(
-								f"To {channel.recipient.mention} ({channel.recipient}): `DM too long to forward`"
-							)
-					else:
-						await owner.send(
-							f"From {author.mention} ({author}): {message.content}",
-							embed = message.embeds[0] if message.embeds else None
+					forwarded_message = await message.forward(owner)
+					await owner.send(
+						f"[Sent]({forwarded_message.jump_url}) " + (
+							f"to {channel.recipient.mention} ({channel.recipient})"
+							if author == ctx.bot.user else
+							f"from {author.mention} ({author})"
 						)
+					)
 		
 		# Ignore own and blank messages
 		if author == ctx.bot.user or not message.content:
