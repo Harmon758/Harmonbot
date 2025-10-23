@@ -1287,7 +1287,7 @@ rich==14.2.0 ; implementation_name == 'cpython' and platform_python_implementati
     # via
     #   harmonbot
     #   typer
-rpds-py==0.27.1 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+rpds-py==0.28.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:168b025f8fd8d8d10957405f3fdcef3dc20f5982d398f90851f4abc58c566c52 \
     --hash=sha256:26a1c73171d10b7acccbded82bf6a586ab8203601e565badc74bbbf8bc5a10f8 \
     --hash=sha256:2bde09cbcf2248b73c7c323be49b280180ff39fadcfe04e7b6f54a678d02a7cf \
