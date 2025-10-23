@@ -218,9 +218,9 @@ charset-normalizer==3.4.4 ; implementation_name == 'cpython' and platform_python
 chess==1.11.2 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:a8b43e5678fdb3000695bdaa573117ad683761e5ca38e591c4826eba6d25bb39
     # via harmonbot
-clarifai==11.8.5 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:e97086f944fe4825d662d6f888ca0e4db5b5199c154854f497488f32d27ccf21 \
-    --hash=sha256:ff469e8ca7b2d7212d66b1789a2701cd8092b458bc2eb405a346e6f61b40bf4d
+clarifai==11.9.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:4fa95a27345cc106b756e53aa0fc9e85fb2fcc8e990c396c4dff24d2adf482d5 \
+    --hash=sha256:bd3117e89b5fcbb4814101a528276716c552c3ef2b5a37a6f5b81a429ec42c1a
     # via
     #   clarifai-protocol
     #   harmonbot
