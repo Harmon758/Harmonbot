@@ -218,13 +218,13 @@ charset-normalizer==3.4.4 ; implementation_name == 'cpython' and platform_python
 chess==1.11.2 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:a8b43e5678fdb3000695bdaa573117ad683761e5ca38e591c4826eba6d25bb39
     # via harmonbot
-clarifai==11.8.5 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+clarifai==11.9.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:e97086f944fe4825d662d6f888ca0e4db5b5199c154854f497488f32d27ccf21 \
     --hash=sha256:ff469e8ca7b2d7212d66b1789a2701cd8092b458bc2eb405a346e6f61b40bf4d
     # via
     #   clarifai-protocol
     #   harmonbot
-clarifai-grpc==11.9.8 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+clarifai-grpc==11.9.9 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:5bcc40f0b4a8e7bae2225600442386505b150fe3cb3636e4ba61efe2f124bfbb \
     --hash=sha256:bf407890c5469c1b1ebb0a8ba80e58fe24e990f76876200d75bddeaa0ddee94b
     # via
