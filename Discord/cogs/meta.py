@@ -263,9 +263,9 @@ class Meta(commands.Cog):
         ctx.prefix = prefixes[0]
         await ctx.send_help()
 
-    @commands.hybrid_command(aliases = ["oauth"])
+    @commands.hybrid_command(aliases = ["install", "oauth"])
     async def invite(self, ctx):
-        """Link to invite me to a server"""
+        """Link to install me as an app or invite me to a server"""
         await ctx.embed_reply(ctx.bot.invite_url)
 
     @commands.hybrid_command(aliases = ["latency"])
