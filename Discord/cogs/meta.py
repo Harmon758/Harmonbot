@@ -264,7 +264,6 @@ class Meta(commands.Cog):
         await ctx.send_help()
 
     @commands.hybrid_command(aliases = ["oauth"])
-    @app_commands.allowed_installs(guilds = True, users = False)
     @app_commands.allowed_contexts(
         guilds = True, dms = False, private_channels = False
     )
