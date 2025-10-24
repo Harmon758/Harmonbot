@@ -444,11 +444,6 @@ class LichessUserView(ui.View):
         self.bot = ctx.bot
         self.lichess_user = lichess_user
 
-        # https://github.com/Rapptz/discord.py/pull/10143
-        for option in self.perf.options:
-            option.default = False
-        self.perf.options[0].default = True
-
         if len(self.perf.options) == 1:
             for mode in MODES:
                 self.perf.add_option(
