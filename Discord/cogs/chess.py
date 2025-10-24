@@ -532,13 +532,11 @@ class ChessMatchView(discord.ui.View):
         await self.match.message.edit(view = self)
 
         view = ChessMatchResignView(self.match.player)
-        await interaction.response.send_message(
+        callback = await interaction.response.send_message(
             "Are you sure you want to resign?",
             view = view
         )
-        self.resignation_confirmation_message = (
-            await interaction.original_response()
-        )
+        self.resignation_confirmation_message = callback.resource
         await view.wait()
 
         if view.resigned:
