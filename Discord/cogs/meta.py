@@ -209,7 +209,7 @@ class Meta(commands.Cog):
 
         view = discord.ui.View()
         view.add_item(discord.ui.Button(
-            label = "Add To Server (Invite)",
+            label = "Add To Server/Apps (Invite/Install)",
             url = ctx.bot.invite_url
         ))
         view.add_item(discord.ui.Button(
