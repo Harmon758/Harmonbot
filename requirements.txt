@@ -467,7 +467,7 @@ grpc-google-iam-v1==0.14.3 ; implementation_name == 'cpython' and platform_pytho
     --hash=sha256:7a7f697e017a067206a3dfef44e4c634a34d3dee135fe7d7a4613fe3e59217e6 \
     --hash=sha256:879ac4ef33136c5491a6300e27575a9ec760f6cdf9a2518798c1b8977a5dc389
     # via google-cloud-translate
-grpcio==1.75.1 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+grpcio==1.76.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:0049a7bf547dafaeeb1db17079ce79596c298bfe308fc084d023c8907a845b9a \
     --hash=sha256:36990d629c3c9fb41e546414e5af52d0a7af37ce7113d9682c46d7e2919e4cca \
     --hash=sha256:3e81d89ece99b9ace23a6916880baca613c03a799925afb2857887efa8b1b3d2 \
@@ -486,7 +486,7 @@ grpcio==1.75.1 ; implementation_name == 'cpython' and platform_python_implementa
     #   googleapis-common-protos
     #   grpc-google-iam-v1
     #   grpcio-status
-grpcio-status==1.75.1 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+grpcio-status==1.76.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:8162afa21833a2085c91089cc395ad880fac1378a1d60233d976649ed724cbf8 \
     --hash=sha256:f681b301be26dcf7abf5c765d4a22e4098765e1a65cbdfa3efca384edf8e4e3c
     # via google-api-core
