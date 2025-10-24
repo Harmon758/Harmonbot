@@ -1096,11 +1096,6 @@ class StatisticsView(ui.View):
     def __init__(self):
         super().__init__(timeout = 600)
 
-        # https://github.com/Rapptz/discord.py/pull/10143
-        for option in self.category.options:
-            option.default = False
-        self.category.options[0].default = True
-
     async def construct_embeds(self, ctx):
         stats = await ctx.bot.db.fetchrow(
             """
