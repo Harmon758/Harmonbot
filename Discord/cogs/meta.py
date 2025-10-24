@@ -264,9 +264,6 @@ class Meta(commands.Cog):
         await ctx.send_help()
 
     @commands.hybrid_command(aliases = ["oauth"])
-    @app_commands.allowed_contexts(
-        guilds = True, dms = False, private_channels = False
-    )
     async def invite(self, ctx):
         """Link to invite me to a server"""
         await ctx.embed_reply(ctx.bot.invite_url)
