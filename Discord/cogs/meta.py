@@ -599,7 +599,7 @@ class Meta(commands.Cog):
                     "Uses discord.py (Python)\n"
                     "For more detailed information, see `!info`/`!about`\n"
                     f"[**Invite/Installation link**]({ctx.bot.invite_url})\n"
-                    "[**Github repository**](https://github.com/Harmon758/Harmonbot)"
+                    "[**GitHub repository**](https://github.com/Harmon758/Harmonbot)"
                 ),
                 color = ctx.bot.bot_color
             ).set_thumbnail(
