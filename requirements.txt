@@ -352,9 +352,7 @@ dice==4.0.0 ; implementation_name == 'cpython' and platform_python_implementatio
     # via harmonbot
 discord-ext-menus @ git+https://github.com/Rapptz/discord-ext-menus.git@8686b5d1bbc1d3c862292eb436ab630d6e9c9b53 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython'
     # via harmonbot
-discord-py==2.5.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:8e1e3b3ff5a112a4ab3a615059a285238eea34edff6de8737db6e1f72ea05195 \
-    --hash=sha256:f6827909b87ea89bdb2cc49d475cb1fada2e73235a3e4568fc8b113660340c73
+discord-py @ git+https://github.com/Rapptz/discord.py.git@2cf1babb4ac40d6087ae94cdbad304e75ef090df ; implementation_name == 'cpython' and platform_python_implementation == 'CPython'
     # via
     #   discord-ext-menus
     #   harmonbot
