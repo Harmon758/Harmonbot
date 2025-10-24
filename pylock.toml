@@ -482,9 +482,9 @@ vcs = { type = "git", url = "https://github.com/Rapptz/discord-ext-menus.git", r
 
 [[packages]]
 name = "discord-py"
-version = "2.5.0a5153+gdb7b2d90"
+version = "2.5.0a5158+g52967ec1"
 marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'"
-vcs = { type = "git", url = "https://github.com/Rapptz/discord.py.git", requested-revision = "db7b2d9", commit-id = "db7b2d9058e4e7f357a6a9f02aad41e8b053a1bd" }
+vcs = { type = "git", url = "https://github.com/Rapptz/discord.py.git", requested-revision = "52967ec", commit-id = "52967ec1034ed02f1a12f7bb0eefd1b8b5660f3d" }
 
 [[packages]]
 name = "emoji"
