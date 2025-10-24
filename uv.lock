@@ -596,10 +596,14 @@ dependencies = [
 
 [[package]]
 name = "discord-py"
-version = "2.6.0a5182+gde5720e6"
-source = { git = "https://github.com/Rapptz/discord.py.git?rev=de5720e#de5720e6593922dcbe2b03b6046dee2e18531b02" }
+version = "2.5.1"
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiohttp", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/02/96/5c5e57ea6b68f96c5c72067c24ce06974316b4df661036876a21217364b4/discord_py-2.5.1.tar.gz", hash = "sha256:59a2e1a3bee90d45ab2cee1abf2fefbb3f4ca5124cb4290702f08e6c54282f64", size = 1054895, upload-time = "2025-03-04T07:17:09.162Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/e4/8b/d1e9e96b026885b169122046eac6e6fe204a086709370cc5a41cc77128b1/discord_py-2.5.1-py3-none-any.whl", hash = "sha256:4d997eb3ffc1e204499fb7099c433ff177cfec5785fe7198708c30a0a21b810d", size = 1155097, upload-time = "2025-03-04T07:17:05.403Z" },
 ]
 
 [package.optional-dependencies]
@@ -1026,7 +1030,7 @@ requires-dist = [
     { name = "cryptography" },
     { name = "dice" },
     { name = "discord-ext-menus", git = "https://github.com/Rapptz/discord-ext-menus.git?rev=8686b5d" },
-    { name = "discord-py", extras = ["speed", "voice"], git = "https://github.com/Rapptz/discord.py.git?rev=de5720e" },
+    { name = "discord-py", extras = ["speed", "voice"] },
     { name = "emoji" },
     { name = "en-core-web-md", url = "https://github.com/explosion/spacy-models/releases/download/en_core_web_md-3.8.0/en_core_web_md-3.8.0-py3-none-any.whl" },
     { name = "feedparser" },

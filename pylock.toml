@@ -482,9 +482,11 @@ vcs = { type = "git", url = "https://github.com/Rapptz/discord-ext-menus.git", r
 
 [[packages]]
 name = "discord-py"
-version = "2.6.0a5182+gde5720e6"
+version = "2.5.1"
 marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'"
-vcs = { type = "git", url = "https://github.com/Rapptz/discord.py.git", requested-revision = "de5720e", commit-id = "de5720e6593922dcbe2b03b6046dee2e18531b02" }
+index = "https://pypi.org/simple"
+sdist = { url = "https://files.pythonhosted.org/packages/02/96/5c5e57ea6b68f96c5c72067c24ce06974316b4df661036876a21217364b4/discord_py-2.5.1.tar.gz", upload-time = 2025-03-04T07:17:09Z, size = 1054895, hashes = { sha256 = "59a2e1a3bee90d45ab2cee1abf2fefbb3f4ca5124cb4290702f08e6c54282f64" } }
+wheels = [{ url = "https://files.pythonhosted.org/packages/e4/8b/d1e9e96b026885b169122046eac6e6fe204a086709370cc5a41cc77128b1/discord_py-2.5.1-py3-none-any.whl", upload-time = 2025-03-04T07:17:05Z, size = 1155097, hashes = { sha256 = "4d997eb3ffc1e204499fb7099c433ff177cfec5785fe7198708c30a0a21b810d" } }]
 
 [[packages]]
 name = "emoji"
