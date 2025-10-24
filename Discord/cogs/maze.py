@@ -305,15 +305,16 @@ class MazeCog(commands.Cog, name = "Maze"):
             text = f"Your current position: {maze.column + 1}, {maze.row + 1}"
         )
         view = MazeView(interaction.client, maze, interaction.user)
-        await interaction.response.send_message(embed = embed, view = view)
+        callback = await interaction.response.send_message(
+            embed = embed, view = view
+        )
 
-        message = await interaction.original_response()
         # InteractionMessage token expires after 15 min.
         try:
-            view.message = await message.fetch()
+            view.message = await callback.resource.fetch()
         except discord.Forbidden:
             view.timeout = 600
-            view.message = await message.edit(view = view)
+            view.message = await callback.resource.edit(view = view)
         interaction.client.views.append(view)
 
     # TODO: maze stats
