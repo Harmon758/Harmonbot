@@ -598,7 +598,7 @@ class Meta(commands.Cog):
                     f"{ctx.me.mention}\n"
                     "Uses discord.py (Python)\n"
                     "For more detailed information, see `!info`/`!about`\n"
-                    f"[**Invite link**]({ctx.bot.invite_url})\n"
+                    f"[**Invite/Installation link**]({ctx.bot.invite_url})\n"
                     "[**Github repository**](https://github.com/Harmon758/Harmonbot)"
                 ),
                 color = ctx.bot.bot_color
