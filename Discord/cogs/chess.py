@@ -551,7 +551,7 @@ class ChessMatchView(discord.ui.View):
         else:
             await self.resignation_confirmation_message.delete()
             self.resignation_confirmation_message = None
-            self.resign.enabled = True
+            self.resign.disabled = False
             await self.match.message.edit(view = self)
 
     async def stop(self):
