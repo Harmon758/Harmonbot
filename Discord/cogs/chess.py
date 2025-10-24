@@ -550,6 +550,7 @@ class ChessMatchView(discord.ui.View):
             await self.match.resign()
         else:
             await self.resignation_confirmation_message.delete()
+            self.resignation_confirmation_message = None
             self.resign.enabled = True
             await self.match.message.edit(view = self)
 
