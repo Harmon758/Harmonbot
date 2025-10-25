@@ -878,7 +878,7 @@ oauthlib==3.2.2 ; implementation_name == 'cpython' and platform_python_implement
     # via
     #   requests-oauthlib
     #   tweepy
-orjson==3.11.3 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+orjson==3.11.4 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:00f1a271e56d511d1569937c0447d7dce5a99a33ea0dec76673706360a051904 \
     --hash=sha256:1c0603b1d2ffcd43a411d64797a19556ef76958aef1c182f22dc30860152a98a \
     --hash=sha256:212e67806525d2561efbfe9e799633b17eb668b8964abed6b5319b2f1cfbae1f \
