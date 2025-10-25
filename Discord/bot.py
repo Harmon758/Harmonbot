@@ -215,17 +215,20 @@ class Bot(commands.Bot):
             "default_search": "auto", "noplaylist": True, "quiet": True,
             "format": "bestaudio/best", "extractaudio": True,
             "outtmpl": self.data_path + "/audio_cache/%(id)s-%(title)s.%(ext)s",
-            "restrictfilenames": True, "noprogress": True
+            "restrictfilenames": True, "noprogress": True,
+            "ffmpeg_location": self.bin_path
         }  # "audioformat": "mp3" ?
         self.ytdl_download = youtube_dl.YoutubeDL(self.ytdl_download_options)
         self.ytdl_info_options = {
             "default_search": "auto", "noplaylist": True, "quiet": True,
-            "format": "webm[abr>0]/bestaudio/best", "prefer_ffmpeg": True
+            "format": "webm[abr>0]/bestaudio/best", "prefer_ffmpeg": True,
+            "ffmpeg_location": self.bin_path
         }
         self.ytdl_info = youtube_dl.YoutubeDL(self.ytdl_info_options)
         self.ytdl_playlist_options = {
             "default_search": "auto", "ignoreerrors": True, "quiet": True,
-            "format": "webm[abr>0]/bestaudio/best", "prefer_ffmpeg": True
+            "format": "webm[abr>0]/bestaudio/best", "prefer_ffmpeg": True,
+            "ffmpeg_location": self.bin_path
         }
         self.ytdl_playlist = youtube_dl.YoutubeDL(self.ytdl_playlist_options)
 
