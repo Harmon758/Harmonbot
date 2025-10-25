@@ -20,7 +20,8 @@ class ModifiedFFmpegPCMAudio(discord.FFmpegPCMAudio):
         self.bot = ctx.bot
         with open(self.bot.data_path + "/logs/ffmpeg.log", 'a') as ffmpeg_log:
             super().__init__(
-                source, executable = "bin/ffmpeg", stderr = ffmpeg_log,
+                source, executable = f"{self.bot.bin_path}ffmpeg",
+                stderr = ffmpeg_log,
                 before_options = before_options
             )
 
@@ -94,7 +95,8 @@ class TTSSource(ModifiedPCMVolumeTransformer):
         func = functools.partial(
             subprocess.run,
             [
-                "bin/eSpeak NG/espeak-ng", "--path=bin/eSpeak NG",
+                f"{self.bot.bin_path}eSpeak NG/espeak-ng",
+                f"--path={self.bot.bin_path}eSpeak NG",
                 f"-a {self.amplitude}", f"-p {self.pitch}", f"-s {self.speed}",
                 f"-g {self.word_gap}", f"-v{self.voice}",
                 f"-w {self.bot.data_path}/temp/tts.wav", self.message

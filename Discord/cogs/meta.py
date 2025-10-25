@@ -385,7 +385,7 @@ class Meta(commands.Cog):
     async def version_ffmpeg(self, ctx):
         """FFmpeg version"""
         output = subprocess.run(
-            "bin/ffmpeg -version", capture_output = True, check = True,
+            f"{ctx.bot.bin_path}ffmpeg -version", capture_output = True, check = True,
             creationflags = subprocess.CREATE_NO_WINDOW
         ).stdout
         await ctx.embed_reply(
@@ -414,7 +414,7 @@ class Meta(commands.Cog):
     async def version_stockfish(self, ctx):
         # pylint: disable-next=unused-variable
         transport, engine = await chess.engine.popen_uci(
-            f"bin/{STOCKFISH_EXECUTABLE}",
+            f"{ctx.bot.bin_path}{STOCKFISH_EXECUTABLE}",
             creationflags = subprocess.CREATE_NO_WINDOW
         )
         await ctx.embed_reply(engine.id["name"])

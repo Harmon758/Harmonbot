@@ -96,6 +96,7 @@ class Bot(commands.Bot):
         self.console_line_limit = 167
         self.console_message_prefix = "Discord Harmonbot: "
         self.assets_path = "../assets/"
+        self.bin_path = "./bin/"
         self.library_path = "D:/Music/"
         self.simple_user_agent = "Harmonbot (Discord Bot)"
         self.user_agent = (

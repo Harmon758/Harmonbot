@@ -250,7 +250,7 @@ class ChessMatch(chess.Board):
         self.ended = asyncio.Event()
         self.engine_transport, self.chess_engine = (
             await chess.engine.popen_uci(
-                f"bin/{STOCKFISH_EXECUTABLE}",
+                f"{self.bot.bin_path}{STOCKFISH_EXECUTABLE}",
                 creationflags = subprocess.CREATE_NO_WINDOW
             )
         )
