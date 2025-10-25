@@ -878,23 +878,23 @@ oauthlib==3.2.2 ; implementation_name == 'cpython' and platform_python_implement
     # via
     #   requests-oauthlib
     #   tweepy
-orjson==3.11.3 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:00f1a271e56d511d1569937c0447d7dce5a99a33ea0dec76673706360a051904 \
-    --hash=sha256:1c0603b1d2ffcd43a411d64797a19556ef76958aef1c182f22dc30860152a98a \
-    --hash=sha256:212e67806525d2561efbfe9e799633b17eb668b8964abed6b5319b2f1cfbae1f \
-    --hash=sha256:2d68bf97a771836687107abfca089743885fb664b90138d8761cce61d5625d55 \
-    --hash=sha256:6890ace0809627b0dff19cfad92d69d0fa3f089d3e359a2a532507bb6ba34efb \
-    --hash=sha256:6be2f1b5d3dc99a5ce5ce162fc741c22ba9f3443d3dd586e6a1211b7bc87bc7b \
-    --hash=sha256:6e8e0c3b85575a32f2ffa59de455f85ce002b8bdc0662d6b9c2ed6d80ab5d204 \
-    --hash=sha256:9d2ae0cc6aeb669633e0124531f342a17d8e97ea999e42f12a5ad4adaa304c5f \
-    --hash=sha256:b67e71e47caa6680d1b6f075a396d04fa6ca8ca09aafb428731da9b3ea32a5a6 \
-    --hash=sha256:ba21dbb2493e9c653eaffdc38819b004b7b1b246fb77bfc93dc016fe664eac91 \
-    --hash=sha256:bfc27516ec46f4520b18ef645864cee168d2a027dbf32c5537cb1f3e3c22dac1 \
-    --hash=sha256:d7d012ebddffcce8c85734a6d9e5f08180cd3857c5f5a3ac70185b43775d043d \
-    --hash=sha256:dd759f75d6b8d1b62012b7f5ef9461d03c804f94d539a5515b454ba3a6588038 \
-    --hash=sha256:f66b001332a017d7945e177e282a40b6997056394e3ed7ddb41fb1813b83e824 \
-    --hash=sha256:f9d4a5e041ae435b815e568537755773d05dac031fee6a57b4ba70897a44d9d2 \
-    --hash=sha256:fafb1a99d740523d964b15c8db4eabbfc86ff29f84898262bf6e3e4c9e97e43e
+orjson==3.11.4 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:01ee5487fefee21e6910da4c2ee9eef005bee568a0879834df86f888d2ffbdd9 \
+    --hash=sha256:39485f4ab4c9b30a3943cfe99e1a213c4776fb69e8abd68f66b83d5a0b0fdc6d \
+    --hash=sha256:3b2427ed5791619851c52a1261b45c233930977e7de8cf36de05636c708fa905 \
+    --hash=sha256:3c36e524af1d29982e9b190573677ea02781456b2e537d5840e4538a5ec41907 \
+    --hash=sha256:3d40d46f348c0321df01507f92b95a377240c4ec31985225a6668f10e2676f9a \
+    --hash=sha256:5c3aedecfc1beb988c27c79d52ebefab93b6c3921dbec361167e6559aba2d36d \
+    --hash=sha256:5d7feb0741ebb15204e748f26c9638e6665a5fa93c37a2c73d64f1669b0ddc63 \
+    --hash=sha256:5e59d23cd93ada23ec59a96f215139753fbfe3a4d989549bcb390f8c00370b39 \
+    --hash=sha256:6bb6bb41b14c95d4f2702bce9975fda4516f1db48e500102fc4d8119032ff045 \
+    --hash=sha256:842289889de515421f3f224ef9c1f1efb199a32d76d8d2ca2706fa8afe749549 \
+    --hash=sha256:87255b88756eab4a68ec61837ca754e5d10fa8bc47dc57f75cedfeaec358d54c \
+    --hash=sha256:8873812c164a90a79f65368f8f96817e59e35d0cc02786a5356f0e2abed78040 \
+    --hash=sha256:95713e5fc8af84d8edc75b785d2386f653b63d62b16d681687746734b4dfc0be \
+    --hash=sha256:ad73ede24f9083614d6c4ca9a85fe70e33be7bf047ec586ee2363bc7418fe4d7 \
+    --hash=sha256:da9e5301f1c2caa2a9a4a303480d79c9ad73560b2e7761de742ab39fe59d9175 \
+    --hash=sha256:e2d5d5d798aba9a0e1fede8d853fa899ce2cb930ec0857365f700dffc2c7af6a
     # via
     #   discord-py
     #   mypy
