@@ -169,10 +169,10 @@ class AudioPlayer:
         else:
             queue_string = ""
             for number, source in enumerate(list(self.queue._queue)[:10], start = 1):
-                queue_string += ":{}: **[{}]({})** (Added by: {})\n".format("keycap_ten" if number == 10 else self.bot.inflect_engine.number_to_words(number), source.info.get("title", "N/A"), source.info.get("webpage_url", "N/A"), source.requester.display_name)
+                queue_string += f":{'keycap_ten' if number == 10 else self.bot.inflect_engine.number_to_words(number)}: **[{source.info.get('title', 'N/A')}]({source.info.get('webpage_url', 'N/A')})** (Added by: {source.requester.display_name})\n"
             if self.queue.qsize() > 10:
                 more_songs = self.queue.qsize() - 10
-                queue_string += ":arrow_right: There {} {} more {} in the queue".format(self.bot.inflect_engine.plural("is", more_songs), more_songs, self.bot.inflect_engine.plural("song", more_songs))
+                queue_string += f":arrow_right: There {self.bot.inflect_engine.plural('is', more_songs)} {more_songs} more {self.bot.inflect_engine.plural('song', more_songs)} in the queue"
             return discord.Embed(title = ":musical_score: Queue:", description = queue_string, color = self.bot.bot_color)
 
     async def empty_queue(self):
