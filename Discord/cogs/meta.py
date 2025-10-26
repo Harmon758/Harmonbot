@@ -611,12 +611,6 @@ class Meta(commands.Cog):
                 title = "Other Discord Harmonbots",
                 color = ctx.bot.bot_color
             ).add_field(
-                name = "Listener",
-                value = (
-                    ctx.bot.listener_bot.mention +
-                    "\nUsed for speech recognition\nUses discordgo (Go)"
-                )
-            ).add_field(
                 name= "Alias/Backup",
                 value = "<@170709691523923975>"
             ).add_field(
@@ -630,8 +624,14 @@ class Meta(commands.Cog):
                     "Not continuously running"
                 )
             ).add_field(
-                name = "Decommissioned/Assimilated",
-                value = "<@180206397533716490>"
+                name = "Decommissioned/Retired",
+                value = (
+                    "<@180994984038760448>\n"
+                    "- Used for speech recognition\n"
+                    "- Used discordgo (Go)\n"
+                    "<@180206397533716490>\n"
+                    "- Assimilated into main Discord Harmonbot"
+                )
             ),
             discord.Embed(
                 title = "Twitch Harmonbot",

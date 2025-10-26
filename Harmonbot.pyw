@@ -2,13 +2,11 @@
 
 import atexit
 from queue import Queue
-from subprocess import CREATE_NO_WINDOW, Popen, PIPE
+from subprocess import Popen, PIPE
 import sys
 from threading import Thread
 from tkinter import BOTH, BooleanVar, Checkbutton, END, Frame, NONE, Text, Tk, ttk
 from tkinter.font import Font
-
-import psutil
 
 
 class HarmonbotGUI:
@@ -16,7 +14,7 @@ class HarmonbotGUI:
     def __init__(self, master):
         self.master = master
         master.title("Harmonbot")
-        self.bots = ["discord", "discord_listener", "twitch", "telegram"]
+        self.bots = ["discord", "twitchio", "twitch", "telegram"]
         self.text_background_color = "Silver"
         self.text_font = Font(family = "TkDefaultFont", size = "11")  # Other?
 
@@ -24,7 +22,7 @@ class HarmonbotGUI:
         for tab in ["overview"] + self.bots:
             frame = Frame(self.notebook)
             setattr(self, f"{tab}_tab", frame)
-            self.notebook.add(frame, text = tab.replace('_', ' ').title())
+            self.notebook.add(frame, text = tab.title().replace("io", "IO"))
         self.notebook.pack()
 
         for bot in self.bots:
@@ -37,7 +35,7 @@ class HarmonbotGUI:
             setattr(self, f"overview_{bot}_text", text)
             text.pack()
         self.overview_discord_frame.grid(row = 1, column = 1)
-        self.overview_discord_listener_frame.grid(row = 2, column = 1)
+        self.overview_twitchio_frame.grid(row = 2, column = 1)
         self.overview_twitch_frame.grid(row = 1, column = 2)
         self.overview_telegram_frame.grid(row = 2, column = 2)
         self.overview_tab.grid_columnconfigure(1, weight = 1)
@@ -55,7 +53,7 @@ class HarmonbotGUI:
             setattr(self, f"autorestart_{bot}", BooleanVar())
             checkbutton = Checkbutton(
                 self.overview_controls_frame,
-                text = f"Auto-Restart {bot.replace('_', ' ').title()}",
+                text = f"Auto-Restart {bot.title().replace('io', 'IO')}",
                 variable = getattr(self, f"autorestart_{bot}")
             )
             setattr(self, f"autorestart_{bot}_checkbutton", checkbutton)
@@ -82,7 +80,7 @@ if __name__ == "__main__":
     processes = {}
     process_args = {}
     process_args["discord"] = [sys.executable, "-u", "Harmonbot.py"]
-    process_args["discord_listener"] = ["go", "run", "Harmonbot_Listener.go"]
+    process_args["twitchio"] = [sys.executable, "-u", "Harmonbot.py"]
     process_args["twitch"] = [sys.executable, "-u", "Twitch_Harmonbot.py"]
     process_args["telegram"] = [sys.executable, "-u", "Telegram_Harmonbot.py"]
 
@@ -91,11 +89,9 @@ if __name__ == "__main__":
             "stdout": PIPE, "stderr": PIPE, "bufsize": 1, "encoding": "UTF-8"
         }
         # "errors": "backslashreplace" necessary?
-        if process == "discord_listener":
-            process_kwargs["creationflags"] = CREATE_NO_WINDOW
         processes[process] = Popen(
             process_args[process],
-            cwd = process.split('_')[0].capitalize(),
+            cwd = process.removesuffix("io").capitalize(),
             **process_kwargs
         )
 
@@ -156,9 +152,6 @@ if __name__ == "__main__":
         root.after(0, check_process_ended, process)
 
     def cleanup():
-        go_process = psutil.Process(processes["discord_listener"].pid)
-        for process in go_process.children(recursive = True):
-            process.terminate()
         for process in processes.values():
             process.terminate()
         ## root.destroy()

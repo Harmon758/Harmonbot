@@ -1,2 +1,3 @@
-start /b cmd /c call scripts\Harmonbot.bat
-start /b cmd /c call scripts\Harmonbot_Listener.bat
+:loop
+py -3.11 Harmonbot.py
+goto loop

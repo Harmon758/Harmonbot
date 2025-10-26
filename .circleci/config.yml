@@ -54,20 +54,8 @@ jobs:
           path: test-reports
           destination: test-reports
 
-  test-golang:
-    docker:
-      - image: cimg/go:1.25.2
-
-    steps:
-      - checkout
-      - run: go get github.com/bwmarrin/discordgo
-      - run: go get github.com/bwmarrin/dgvoice
-      - run: go get github.com/joho/godotenv
-      - run: cd Discord && go run Harmonbot_Listener.go
-
 workflows:
   version: 2
   test:
     jobs:
       - test-python
-      - test-golang

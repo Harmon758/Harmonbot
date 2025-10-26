@@ -91,7 +91,6 @@ class Bot(commands.Bot):
         repo = git.Repo("..")
         self.version = f"1.0.dev{repo.head.commit.count()}+g{repo.git.rev_parse('--short', 'HEAD')}"
         self.owner_id = 115691005197549570
-        self.listener_id = 180994984038760448
         self.changelog = "https://discord.gg/a2rbZPu"
         self.console_line_limit = 167
         self.console_message_prefix = "Discord Harmonbot: "
@@ -132,7 +131,6 @@ class Bot(commands.Bot):
         ### Set on ready
         self.invite_url = None
         self.last_resort_notices_channel = None
-        self.listener_bot = None  # User object
         self.listing_sites = {}
         self.owner = None  # User object
 
@@ -624,7 +622,6 @@ class Bot(commands.Bot):
         )
         self.log_channel = self.get_channel(self.log_channel_id)
 
-        self.listener_bot = await self.fetch_user(self.listener_id)
         self.owner = await self.fetch_user(self.owner_id)
         # TODO: Handle NotFound and HTTPException?
 
@@ -806,7 +803,6 @@ class Bot(commands.Bot):
         # TODO: DM if joined new server
         # TODO: DM if left server
         # TODO: Track guild names
-        # await voice.detectvoice()
 
     @staticmethod
     async def get_command_prefix(bot, message):
