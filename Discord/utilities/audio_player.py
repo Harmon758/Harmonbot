@@ -344,7 +344,7 @@ class AudioPlayer:
 			self.listener = None
 			await self.finish_listening()
 			if self.listen_paused:
-				self.resume()
+				self.guild.voice_client.resume()
 			self.not_interrupted.set()
 	
 	async def listen_task(self, ctx):
