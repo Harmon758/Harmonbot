@@ -162,17 +162,17 @@ class AudioPlayer:
     def queue_embed(self):
         if self.radio_flag:
             return discord.Embed(
-                title = ":radio: Radio is currently on",
+                title = "\N{RADIO} Radio is currently on",
                 color = self.bot.bot_color
             )
         elif self.library_flag:
             return discord.Embed(
-                title = ":notes: Playing songs from my library",
+                title = "\N{MULTIPLE MUSICAL NOTES} Playing songs from my library",
                 color = self.bot.bot_color
             )
         elif self.queue.qsize() == 0:
             return discord.Embed(
-                title = ":hole: The queue is currently empty",
+                title = "\N{HOLE} The queue is currently empty",
                 color = self.bot.bot_color
             )
         else:
@@ -181,18 +181,18 @@ class AudioPlayer:
                 list(self.queue._queue)[:10], start = 1
             ):
                 queue_string += (
-                    f":{'keycap_ten' if number == 10 else self.bot.inflect_engine.number_to_words(number)}: "
+                    ("\N{KEYCAP TEN} " if number == 10 else f"{number}\N{VARIATION SELECTOR-16}\N{COMBINING ENCLOSING KEYCAP} ") +
                     f"**[{source.info.get('title', 'N/A')}]({source.info.get('webpage_url', 'N/A')})** "
                     f"(Added by: {source.requester.display_name})\n"
                 )
             if self.queue.qsize() > 10:
                 more_songs = self.queue.qsize() - 10
                 queue_string += (
-                    f":arrow_right: There {self.bot.inflect_engine.plural('is', more_songs)} "
+                    f"\N{BLACK RIGHTWARDS ARROW}\N{VARIATION SELECTOR-16} There {self.bot.inflect_engine.plural('is', more_songs)} "
                     f"{more_songs} more {self.bot.inflect_engine.plural('song', more_songs)} in the queue"
                 )
             return discord.Embed(
-                title = ":musical_score: Queue:",
+                title = "\N{MUSICAL SCORE} Queue:",
                 description = queue_string,
                 color = self.bot.bot_color
             )
