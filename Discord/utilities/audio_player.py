@@ -355,14 +355,14 @@ class AudioPlayer:
 	async def listen_once(self, ctx):
 		if self.interrupted:
 			return False
-		if self.bot.listener_bot not in self.guild.voice_client.channel.voice_members:
+		if self.bot.listener_bot not in self.guild.voice_client.channel.members:
 			await self.bot.send_embed(
 				self.text_channel,
 				f":no_entry: {self.bot.listener_bot.mention} needs to be in the voice channel"
 			)
 			return None
 		try:
-			self.pause()
+			self.guild.voice_client.pause()
 		except errors.AudioError:
 			self.listen_paused = False
 		else:
@@ -370,21 +370,19 @@ class AudioPlayer:
 		self.not_interrupted.clear()
 		if not self.listener:
 			self.listener = True
-		listen_message = await self.bot.send_message(
-			self.text_channel, ">listen"
-		)
+		listen_message = await self.text_channel.send(">listen")
 		await self.bot.wait_for_message(
 			author = self.bot.listener_bot,
 			content = f":ear:{self.bot.emoji_skin_tone} I'm listening.."
 		)
-		await self.bot.delete_message(listen_message)
+		await listen_message.delete()
 		await self.bot.wait_for_message(
 			author = self.bot.listener_bot,
 			content = ":stop_sign: I stopped listening."
 		)
 		await self.process_listen(ctx)
 		if self.listen_paused:
-			self.resume()
+			self.guild.voice_client.resume()
 		self.not_interrupted.set()
 		if self.listener is True:
 			self.listener = None
