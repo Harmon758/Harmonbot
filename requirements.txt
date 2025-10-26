@@ -431,6 +431,7 @@ google-api-core==2.25.1 ; implementation_name == 'cpython' and platform_python_i
     --hash=sha256:d2aaa0b13c78c61cb3f4282c464c046e45fbd75755683c9c525e6e8f7ed0a5e8
     # via
     #   google-cloud-core
+    #   google-cloud-speech
     #   google-cloud-translate
     #   harmonbot
 google-auth==2.41.1 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
@@ -439,11 +440,16 @@ google-auth==2.41.1 ; implementation_name == 'cpython' and platform_python_imple
     # via
     #   google-api-core
     #   google-cloud-core
+    #   google-cloud-speech
     #   google-cloud-translate
 google-cloud-core==2.4.3 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:1fab62d7102844b278fe6dead3af32408b1df3eb06f5c7e8634cbd40edc4da53 \
     --hash=sha256:5130f9f4c14b4fafdff75c79448f9495cfade0d8775facf1b09c3bf67e027f6e
     # via google-cloud-translate
+google-cloud-speech==2.34.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:2a7bffd84f134b9b70c9f11cbb5088c534f92be149d71d9073d0b9dd3a431acf \
+    --hash=sha256:cc0c6c0fda9306fee01c998bc207b68f71e0a3247121a5a3a27daabacd3a8c98
+    # via speechrecognition
 google-cloud-translate==3.22.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:c9a0e52b8546f0096406289f6be741f90ea41a14c05a98e96d292bfef1ac7e73 \
     --hash=sha256:d2373212c13442ddbcf5cfcac857671258cc2239489afdf5b9c1ebf587b4e4aa
@@ -487,6 +493,7 @@ grpcio==1.76.0 ; implementation_name == 'cpython' and platform_python_implementa
     # via
     #   clarifai-grpc
     #   google-api-core
+    #   google-cloud-speech
     #   google-cloud-translate
     #   googleapis-common-protos
     #   grpc-google-iam-v1
@@ -1003,6 +1010,7 @@ proto-plus==1.26.1 ; implementation_name == 'cpython' and platform_python_implem
     --hash=sha256:21a515a4c4c0088a773899e23c7bbade3d18f9c66c73edd4c7ee3816bc96a012
     # via
     #   google-api-core
+    #   google-cloud-speech
     #   google-cloud-translate
 protobuf==6.33.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:140303d5c8d2037730c548f8c7b93b20bb1dc301be280c378b82b8894589c954 \
@@ -1016,6 +1024,7 @@ protobuf==6.33.0 ; implementation_name == 'cpython' and platform_python_implemen
     # via
     #   clarifai-grpc
     #   google-api-core
+    #   google-cloud-speech
     #   google-cloud-translate
     #   googleapis-common-protos
     #   grpc-google-iam-v1

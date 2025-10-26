@@ -352,33 +352,20 @@ class AudioPlayer:
 		)
 	
 	async def process_listen(self, recognizer, audio, user):
-		'''
 		try:
-			await self.bot.reply(
-				"Sphinx thinks you said: " + recognizer.recognize_sphinx(audio)
-			)
-		except speech_recognition.UnknownValueError:
-			await self.bot.reply("Sphinx could not understand audio")
-		except speech_recognition.RequestError as e:
-			await self.bot.reply(f"Sphinx error; {e}")
-		'''
-		try:
-			text = recognizer.recognize_google(audio)
+			# text = recognizer.recognize_google(audio)
+			# text = recognizer.recognize_sphinx(audio)
+			text = recognizer.recognize_google_cloud(audio)
 			await self.bot.send_embed(
 				self.text_channel, f"I think you said: `{text}`"
 			)
 		except speech_recognition.UnknownValueError:
-			# await self.bot.send_embed(
-			# 	self.text_channel,
-			# 	":no_entry: Google Speech Recognition could not understand audio"
-			# )
 			await self.bot.send_embed(
 				self.text_channel, ":no_entry: I couldn't understand that"
 			)
 		except speech_recognition.RequestError as e:
 			await self.bot.send_embed(
-				self.text_channel,
-				f":warning: Could not request results from Google Speech Recognition service; {e}"
+				self.text_channel, f":warning: Unable to process speech: {e}"
 			)
 		else:
 			response = self.bot.aiml_kernel.respond(text)

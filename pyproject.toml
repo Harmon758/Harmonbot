@@ -59,7 +59,7 @@ dependencies = [
     "sentry-sdk",
     "spacy",
     "spacy-entity-linker",
-    "SpeechRecognition",
+    "SpeechRecognition[google-cloud]",
     "sphobjinv",
     "sympy",
     "tabulate",

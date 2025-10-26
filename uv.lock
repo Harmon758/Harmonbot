@@ -806,6 +806,22 @@ wheels = [
 ]
 
 [[package]]
+name = "google-cloud-speech"
+version = "2.34.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "google-api-core", extra = ["grpc"], marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "google-auth", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "grpcio", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "proto-plus", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "protobuf", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/b7/c2/500c58a7e3008cb77da01a2f2a8284ac55c808545d18551c62a031ff548d/google_cloud_speech-2.34.0.tar.gz", hash = "sha256:2a7bffd84f134b9b70c9f11cbb5088c534f92be149d71d9073d0b9dd3a431acf", size = 391496, upload-time = "2025-10-20T14:57:17.127Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/78/4c/8c52951a4078f4b181917c37a2610e69c0b24a10567d0182bf089a933c35/google_cloud_speech-2.34.0-py3-none-any.whl", hash = "sha256:cc0c6c0fda9306fee01c998bc207b68f71e0a3247121a5a3a27daabacd3a8c98", size = 336614, upload-time = "2025-10-20T14:54:05.004Z" },
+]
+
+[[package]]
 name = "google-cloud-translate"
 version = "3.22.0"
 source = { registry = "https://pypi.org/simple" }
@@ -972,7 +988,7 @@ dependencies = [
     { name = "sentry-sdk", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
     { name = "spacy", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
     { name = "spacy-entity-linker", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
-    { name = "speechrecognition", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "speechrecognition", extra = ["google-cloud"], marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
     { name = "sphobjinv", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
     { name = "sympy", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
     { name = "tabulate", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
@@ -1089,7 +1105,7 @@ requires-dist = [
     { name = "sentry-sdk" },
     { name = "spacy" },
     { name = "spacy-entity-linker" },
-    { name = "speechrecognition" },
+    { name = "speechrecognition", extras = ["google-cloud"] },
     { name = "sphobjinv" },
     { name = "sqlalchemy", marker = "extra == 'scripts'" },
     { name = "sympy" },
@@ -2804,6 +2820,11 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/a9/7b/51d8b756aa1066b3f95bcbe3795f382f630ca9d2559ed808dada022141bf/speechrecognition-3.14.3.tar.gz", hash = "sha256:bdd2000a9897832b33095e33adfa48580787255706092e1346d1c6c36adae0a4", size = 32858109, upload-time = "2025-05-12T23:42:29.671Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/aa/cd/4b5f5d04c8a4e25c376858d0ad28c325f079f17c82bf379185abf45e41bf/speechrecognition-3.14.3-py3-none-any.whl", hash = "sha256:1859fbb09ae23fa759200f5b0677307f1fb16e2c5c798f4259fcc41dd5399fe6", size = 32853520, upload-time = "2025-05-12T23:42:23.485Z" },
+]
+
+[package.optional-dependencies]
+google-cloud = [
+    { name = "google-cloud-speech", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 
 [[package]]
