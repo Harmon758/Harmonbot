@@ -203,9 +203,8 @@ class AudioPlayer:
 
     async def empty_queue(self):
         while not self.queue.empty():
-            song = await self.queue.get()
-            del song
-        # self.queue._queue.clear() ?
+            self.queue.get_nowait()
+            self.queue.task_done()
 
     async def shuffle_queue(self):
         song_list = []
