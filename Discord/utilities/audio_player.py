@@ -364,11 +364,13 @@ class AudioPlayer:
             )
         except speech_recognition.UnknownValueError:
             await self.bot.send_embed(
-                self.text_channel, ":no_entry: I couldn't understand that"
+                self.text_channel,
+                f"{self.bot.error_emoji} I couldn't understand that"
             )
         except speech_recognition.RequestError as e:
             await self.bot.send_embed(
-                self.text_channel, f":warning: Unable to process speech: {e}"
+                self.text_channel,
+                f"{self.bot.error_emoji} Unable to process speech: {e}"
             )
         else:
             response = self.bot.aiml_kernel.respond(text)
