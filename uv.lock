@@ -596,14 +596,14 @@ dependencies = [
 
 [[package]]
 name = "discord-ext-voice-recv"
-version = "0.3.0a120"
+version = "0.3.1a128"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "discord-py", extra = ["voice"], marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/c5/1a/00d7812b6503308bde9b1fb0734e676d5960573a8d00a02c7994e52134c3/discord-ext-voice_recv-0.3.0a120.tar.gz", hash = "sha256:e582dfc7dd6b2952b40310a0b492b1be3b6ff47d951889af855735f3c4af1882", size = 33620, upload-time = "2023-10-06T06:41:42.428Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/d5/20/6ea2532d2a01eb5b2ac2b5348d5baf224d96ff49684ac9aa4a2fc1ce258d/discord-ext-voice_recv-0.3.1a128.tar.gz", hash = "sha256:de975b91c524dd0438368ffeed5db8ca030e8a62579405b285fdd196dcc4bf6c", size = 37199, upload-time = "2023-11-08T04:14:16.269Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/01/8a/bba3a128549d284f3a1a5f06575213d345c9b1c62e474d0acb1e2520184b/discord_ext_voice_recv-0.3.0a120-py3-none-any.whl", hash = "sha256:5b1e46729478f8794f9a44f9059875b4566398f96652b7faa374ac90ed23e541", size = 33608, upload-time = "2023-10-06T06:41:40.888Z" },
+    { url = "https://files.pythonhosted.org/packages/ea/b9/2b35e74a6688e3729939486427ba8da90e515fe3c258d8cbcd759da56b08/discord_ext_voice_recv-0.3.1a128-py3-none-any.whl", hash = "sha256:0b1c016154f1c6aa438ec889749dd5871fdab777c921798b741ad0449f376346", size = 40151, upload-time = "2023-11-08T04:14:15.175Z" },
 ]
 
 [[package]]
