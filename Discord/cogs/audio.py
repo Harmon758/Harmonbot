@@ -1090,7 +1090,7 @@ class Audio(commands.Cog):
         await ctx.send(embed = embed)
         await self.bot.attempt_delete_message(ctx.message)
 
-    @commands.group()
+    @commands.group(case_insensitive = True)
     @checks.is_voice_connected()
     @checks.not_forbidden()
     async def queue(self, ctx):
