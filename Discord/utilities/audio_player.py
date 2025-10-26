@@ -373,11 +373,9 @@ class AudioPlayer:
                 f"{self.bot.error_emoji} Unable to process speech: {e}"
             )
         else:
-            response = self.bot.aiml_kernel.respond(text)
-            # TODO: Handle brain not loaded?
-            if not response:
-                games_cog = self.bot.get_cog("Games")
-                if not games_cog:
+            if not (response := self.bot.aiml_kernel.respond(text)):
+                # TODO: Handle brain not loaded?
+                if not (games_cog := self.bot.get_cog("Games")):
                     return
                 response = await games_cog.cleverbot_get_reply(text)
             await self.bot.send_embed(
