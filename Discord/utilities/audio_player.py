@@ -389,9 +389,9 @@ class AudioPlayer:
 		return True
 	
 	async def finish_listening(self):
-		stop_message = await self.bot.send_message(self.text_channel, ">stoplistening")
+		stop_message = await self.text_channel.send(">stoplistening")
 		await self.bot.wait_for_message(author = self.bot.listener_bot, content = ":stop_sign: I stopped listening.")
-		await self.bot.delete_message(stop_message)
+		await stop_message.delete()
 	
 	async def process_listen(self, ctx):
 		if (
