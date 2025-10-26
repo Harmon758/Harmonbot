@@ -1,7 +1,7 @@
 
 import discord
 from discord import app_commands, ui
-from discord.ext import commands
+from discord.ext import commands, voice_recv
 
 import base64
 import random
@@ -255,7 +255,7 @@ class Audio(commands.Cog):
                     ":arrow_right_hook: I've moved to the voice channel"
                 )
             else:
-                await channel.connect()
+                await channel.connect(cls = voice_recv.VoiceRecvClient)
                 await ctx.embed_reply(
                     ":headphones: I've joined the voice channel"
                 )

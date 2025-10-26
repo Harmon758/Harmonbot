@@ -5,6 +5,7 @@ requires-python = "==3.11.*"
 dependencies = [
     "discord-py[speed,voice]",
     "discord-ext-menus",
+    "discord-ext-voice-recv",
     "twitchio",
     "irc",
     "python-telegram-bot",

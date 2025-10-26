@@ -1,7 +1,7 @@
 
 import discord
 from discord import app_commands
-from discord.ext import commands
+from discord.ext import commands, voice_recv
 
 import asyncio
 import contextlib
@@ -800,7 +800,9 @@ class Bot(commands.Bot):
                     audio_cog.players[text_channel.guild.id] = AudioPlayer(
                         self, text_channel
                     )
-                    await self.get_channel(record["channel_id"]).connect()
+                    await self.get_channel(record["channel_id"]).connect(
+                        cls = voice_recv.VoiceRecvClient
+                    )
         # TODO: DM if joined new server
         # TODO: DM if left server
         # TODO: Track guild names
