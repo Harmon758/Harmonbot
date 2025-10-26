@@ -293,14 +293,22 @@ class AudioPlayer:
         interrupt_message = await self.interrupt(source)
         return interrupt_message
 
-    async def play_from_library(self, ctx, *, filename = None, clear_flag = True):
+    async def play_from_library(
+        self, ctx, *, filename = None, clear_flag = True
+    ):
         if not filename and self.library_files:
             filename = random.choice(self.library_files)  # nosec: random  # noqa: S311 (suspicious-non-cryptographic-random-usage)
         elif filename not in self.library_files:
             await ctx.embed_reply(":no_entry: Song file not found")
             return True
-        return await self.interrupt(FileSource(ctx, ctx.bot.library_path + filename, self.default_volume, title_prefix = "Library File: "), clear_flag = clear_flag)
-        ## print([f for f in os.listdir(ctx.bot.library_path) if not f.endswith((".mp3", ".m4a", ".jpg"))])
+        return await self.interrupt(
+            FileSource(
+                ctx, ctx.bot.library_path + filename, self.default_volume,
+                title_prefix = "Library File: "
+            ),
+            clear_flag = clear_flag
+        )
+        # print([f for f in os.listdir(ctx.bot.library_path) if not f.endswith((".mp3", ".m4a", ".jpg"))])
 
     async def play_library(self, ctx):
         if self.interrupted:
