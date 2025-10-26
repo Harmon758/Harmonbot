@@ -215,7 +215,7 @@ class AudioPlayer:
             await self.queue.put(song)
 
     async def add_playlist(self, ctx, playlist):
-        response = await ctx.embed_reply(":cd: Loading..")
+        response = await ctx.embed_reply("\N{OPTICAL DISC} Loading..")
         func = functools.partial(
             self.bot.ytdl_playlist.extract_info, playlist, download = False
         )
@@ -231,18 +231,21 @@ class AudioPlayer:
                 try:
                     await self.bot.send_embed(
                         self.text_channel,
-                        f"{ctx.author.mention}: :warning: Error loading video {position} "
+                        f"{ctx.author.mention}: \N{WARNING SIGN}\N{VARIATION SELECTOR-16} Error loading video {position} "
                         f"(<https://www.youtube.com/watch?v={video['id']}>) from <{playlist}>\n"
                         f"{type(e).__name__}: {e}"
                     )
                 except discord.HTTPException:
                     await self.bot.send_embed(
                         self.text_channel,
-                        f"{ctx.author.mention}: :warning: Error loading video {position} "
+                        f"{ctx.author.mention}: \N{WARNING SIGN}\N{VARIATION SELECTOR-16} Error loading video {position} "
                         f"(<https://www.youtube.com/watch?v={video['id']}>) from <{playlist}>"
                     )
         embed = response.embeds[0]
-        embed.description = ":ballot_box_with_check: Your songs have been added to the queue"
+        embed.description = (
+            "\N{BALLOT BOX WITH CHECK}\N{VARIATION SELECTOR-16} "
+            "Your songs have been added to the queue"
+        )
         await response.edit(embed = embed)
 
     async def interrupt(self, source, *, clear_flag = True):
