@@ -332,9 +332,9 @@ class AudioPlayer:
 			self.radio_flag = False
 			self.skip()
 	
-	async def start_listening(self):
+	async def start_listening(self, ctx):
 		if not self.listener and self.not_interrupted.is_set():
-			self.listener = self.bot.loop.create_task(self.listen_task(), name = "Audio Player listener")
+			self.listener = self.bot.loop.create_task(self.listen_task(ctx), name = "Audio Player listener")
 			return True
 	
 	async def stop_listening(self):
@@ -347,12 +347,12 @@ class AudioPlayer:
 				self.resume()
 			self.not_interrupted.set()
 	
-	async def listen_task(self):
-		while (await self.listen_once()):
+	async def listen_task(self, ctx):
+		while (await self.listen_once(ctx)):
 			pass
 		self.listener = None
 	
-	async def listen_once(self):
+	async def listen_once(self, ctx):
 		if self.interrupted:
 			return False
 		if self.bot.listener_bot not in self.guild.voice_client.channel.voice_members:
@@ -382,7 +382,7 @@ class AudioPlayer:
 			author = self.bot.listener_bot,
 			content = ":stop_sign: I stopped listening."
 		)
-		await self.process_listen()
+		await self.process_listen(ctx)
 		if self.listen_paused:
 			self.resume()
 		self.not_interrupted.set()
@@ -395,7 +395,7 @@ class AudioPlayer:
 		await self.bot.wait_for_message(author = self.bot.listener_bot, content = ":stop_sign: I stopped listening.")
 		await self.bot.delete_message(stop_message)
 	
-	async def process_listen(self):
+	async def process_listen(self, ctx):
 		if (
 			not os.path.isfile(self.bot.data_path + "/temp/heard.pcm") or
 			os.stat(self.bot.data_path + "/temp/heard.pcm").st_size == 0
@@ -459,7 +459,7 @@ class AudioPlayer:
 			await self.bot.send_embed(
 				self.text_channel, f"Responding with: `{response}`"
 			)
-			await self.play_tts(response, self.bot.user)
+			await self.play_tts(ctx, response)
 		# open(self.bot.data_path + "/heard.pcm", 'w').close() # necessary?
 		# os.remove ?
 

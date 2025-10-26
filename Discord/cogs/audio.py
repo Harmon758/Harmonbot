@@ -1399,7 +1399,7 @@ class Audio(commands.Cog):
     async def listen(self, ctx):
         if self.players[ctx.guild.id].listener:
             await self.players[ctx.guild.id].stop_listening()
-        elif not (await self.players[ctx.guild.id].start_listening()):
+        elif not (await self.players[ctx.guild.id].start_listening(ctx)):
             await ctx.embed_reply(":warning: Something else is already playing. Please stop it first.")
 
     @listen.command(name = "start", aliases = ["on"])
@@ -1408,7 +1408,7 @@ class Audio(commands.Cog):
     async def listen_start(self, ctx):
         if self.players[ctx.guild.id].listener:
             await ctx.embed_reply(":no_entry: I'm already listening")
-        elif not (await self.players[ctx.guild.id].start_listening()):
+        elif not (await self.players[ctx.guild.id].start_listening(ctx)):
             await ctx.embed_reply(":warning: Something else is already playing. Please stop it first.")
 
     @listen.command(name = "stop", aliases = ["off"])
@@ -1426,7 +1426,7 @@ class Audio(commands.Cog):
     async def listen_once(self, ctx):
         if self.players[ctx.guild.id].listener:
             await ctx.embed_reply(":no_entry: I'm already listening")
-        elif (await self.players[ctx.guild.id].listen_once()) is False:
+        elif (await self.players[ctx.guild.id].listen_once(ctx)) is False:
             await ctx.embed_reply(":warning: Something else is already playing. Please stop it first.")
 
     @listen.command(name = "finish")
@@ -1442,7 +1442,7 @@ class Audio(commands.Cog):
     @checks.is_voice_connected()
     @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
     async def listen_process(self, ctx):
-        await self.players[ctx.guild.id].process_listen()
+        await self.players[ctx.guild.id].process_listen(ctx)
 
     # Utility
 
