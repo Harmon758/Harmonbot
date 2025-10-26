@@ -1528,7 +1528,7 @@ treys==0.1.8 ; implementation_name == 'cpython' and platform_python_implementati
     --hash=sha256:9ba3460ff2ed597510fb535af6280f115254b0b70699ea362f8f1ee067378063 \
     --hash=sha256:a486a42b899e91985b4da4fdac9a30e638275648977104487acb90a2dd7cd73b
     # via harmonbot
-tweepy==4.14.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+tweepy==4.16.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:1f9f1707d6972de6cff6c5fd90dfe6a449cd2e0d70bd40043ffab01e07a06c8c \
     --hash=sha256:db6d3844ccc0c6d27f339f12ba8acc89912a961da513c1ae50fa2be502a56afb
     # via harmonbot
