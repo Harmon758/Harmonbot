@@ -176,24 +176,24 @@ class AudioPlayer:
                 color = self.bot.bot_color
             )
         else:
-            queue_string = ""
+            description = ""
             for number, source in enumerate(
                 list(self.queue._queue)[:10], start = 1
             ):
-                queue_string += (
+                description += (
                     ("\N{KEYCAP TEN} " if number == 10 else f"{number}\N{VARIATION SELECTOR-16}\N{COMBINING ENCLOSING KEYCAP} ") +
                     f"**[{source.info.get('title', 'N/A')}]({source.info.get('webpage_url', 'N/A')})** "
                     f"(Added by: {source.requester.display_name})\n"
                 )
             if self.queue.qsize() > 10:
                 more_songs = self.queue.qsize() - 10
-                queue_string += (
+                description += (
                     f"\N{BLACK RIGHTWARDS ARROW}\N{VARIATION SELECTOR-16} There {self.bot.inflect_engine.plural('is', more_songs)} "
                     f"{more_songs} more {self.bot.inflect_engine.plural('song', more_songs)} in the queue"
                 )
             return discord.Embed(
                 title = "\N{MUSICAL SCORE} Queue:",
-                description = queue_string,
+                description = description,
                 color = self.bot.bot_color
             )
 
