@@ -2040,11 +2040,11 @@ wheels = [{ url = "https://files.pythonhosted.org/packages/33/78/d1a1a026ef3af91
 
 [[packages]]
 name = "speechrecognition"
-version = "3.10.1"
+version = "3.14.3"
 marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'"
 index = "https://pypi.org/simple"
-sdist = { url = "https://files.pythonhosted.org/packages/a2/13/2e2555acb52f01ba5eab8e4663ee9b99b5e6a63a1b71ebc008f5fb3799e8/SpeechRecognition-3.10.1.tar.gz", upload-time = 2023-12-06T13:02:30Z, size = 32851268, hashes = { sha256 = "718731886b7836e20a06b9a2c6cace12a9e130971bb6af1b1dd130b22bad9f82" } }
-wheels = [{ name = "speechrecognition-3.10.1-py2.py3-none-any.whl", url = "https://files.pythonhosted.org/packages/73/8c/74d3b2a7d71e3f18e1e50bf3f168cf3333846137f5723efac3d0dc5a8635/SpeechRecognition-3.10.1-py2.py3-none-any.whl", upload-time = 2023-12-06T13:02:22Z, size = 32841344, hashes = { sha256 = "69898b2b0bbd5bc65647c5ef833fe318ad74f02e8a6af5c9fd671933083660bc" } }]
+sdist = { url = "https://files.pythonhosted.org/packages/a9/7b/51d8b756aa1066b3f95bcbe3795f382f630ca9d2559ed808dada022141bf/speechrecognition-3.14.3.tar.gz", upload-time = 2025-05-12T23:42:29Z, size = 32858109, hashes = { sha256 = "bdd2000a9897832b33095e33adfa48580787255706092e1346d1c6c36adae0a4" } }
+wheels = [{ url = "https://files.pythonhosted.org/packages/aa/cd/4b5f5d04c8a4e25c376858d0ad28c325f079f17c82bf379185abf45e41bf/speechrecognition-3.14.3-py3-none-any.whl", upload-time = 2025-05-12T23:42:23Z, size = 32853520, hashes = { sha256 = "1859fbb09ae23fa759200f5b0677307f1fb16e2c5c798f4259fcc41dd5399fe6" } }]
 
 [[packages]]
 name = "sphobjinv"
