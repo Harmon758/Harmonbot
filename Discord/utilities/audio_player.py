@@ -266,7 +266,7 @@ class AudioPlayer:
         if not filename and self.audio_files:
             filename = random.choice(self.audio_files)  # nosec: random  # noqa: S311 (suspicious-non-cryptographic-random-usage)
         elif filename not in self.audio_files:
-            await ctx.embed_reply(":no_entry: File not found")
+            await ctx.embed_reply(f"{ctx.bot.error_emoji} File not found")
             return True
         return await self.interrupt(
             FileSource(
