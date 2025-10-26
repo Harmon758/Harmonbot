@@ -606,6 +606,11 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/bc/65/d3a9d555cb2baaab6f8081d64d4d423688ba28ff7ae6608c374d06add3f6/discord_ext_voice_recv-0.5.2a179-py3-none-any.whl", hash = "sha256:f3fa65f2c1591bef2382aa39f3ebc25d6751b405aef5b5d113dfb452640f29fc", size = 41041, upload-time = "2025-06-18T04:56:38.785Z" },
 ]
 
+[package.optional-dependencies]
+extras-speech = [
+    { name = "speechrecognition", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+]
+
 [[package]]
 name = "discord-py"
 version = "2.6.0a5218+g2175bd51"
@@ -924,7 +929,7 @@ dependencies = [
     { name = "cryptography", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
     { name = "dice", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
     { name = "discord-ext-menus", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
-    { name = "discord-ext-voice-recv", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "discord-ext-voice-recv", extra = ["extras-speech"], marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
     { name = "discord-py", extra = ["speed", "voice"], marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
     { name = "emoji", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
     { name = "en-core-web-md", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
@@ -1039,7 +1044,7 @@ requires-dist = [
     { name = "cryptography" },
     { name = "dice" },
     { name = "discord-ext-menus", git = "https://github.com/Rapptz/discord-ext-menus.git?rev=8686b5d" },
-    { name = "discord-ext-voice-recv" },
+    { name = "discord-ext-voice-recv", extras = ["extras-speech"] },
     { name = "discord-py", extras = ["speed", "voice"], git = "https://github.com/Rapptz/discord.py.git?rev=2175bd5" },
     { name = "emoji" },
     { name = "en-core-web-md", url = "https://github.com/explosion/spacy-models/releases/download/en_core_web_md-3.8.0/en_core_web_md-3.8.0-py3-none-any.whl" },

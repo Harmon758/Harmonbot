@@ -5,7 +5,7 @@ requires-python = "==3.11.*"
 dependencies = [
     "discord-py[speed,voice]",
     "discord-ext-menus",
-    "discord-ext-voice-recv",
+    "discord-ext-voice-recv[extras_speech]",
     "twitchio",
     "irc",
     "python-telegram-bot",
@@ -59,7 +59,7 @@ dependencies = [
     "sentry-sdk",
     "spacy",
     "spacy-entity-linker",
-    "speechrecognition",
+    "SpeechRecognition",
     "sphobjinv",
     "sympy",
     "tabulate",

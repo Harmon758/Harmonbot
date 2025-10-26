@@ -1,11 +1,13 @@
 
 import discord
+from discord.ext.voice_recv.extras.speechrecognition import (
+	SpeechRecognitionSink
+)
 
 import asyncio
 import functools
 import os
 import random
-import subprocess
 import traceback
 
 import speech_recognition
@@ -33,9 +35,7 @@ class AudioPlayer:
 		self.library_files = [f for f in os.listdir(self.bot.library_path) if f.endswith((".mp3", ".m4a"))]
 		self.library_flag = False
 		self.radio_flag = False
-		self.recognizer = speech_recognition.Recognizer()
-		self.listener = None
-		self.listen_paused = False
+		self.listen_ctx = None
 	
 	@classmethod
 	def from_context(cls, ctx):
@@ -333,91 +333,25 @@ class AudioPlayer:
 			self.skip()
 	
 	async def start_listening(self, ctx):
-		if not self.listener and self.not_interrupted.is_set():
-			self.listener = self.bot.loop.create_task(self.listen_task(ctx), name = "Audio Player listener")
+		if not self.listen_ctx and self.not_interrupted.is_set():
+			self.guild.voice_client.listen(
+				SpeechRecognitionSink(process_cb = self.process_cb)
+			)
+			self.listen_ctx = ctx
 			return True
 	
 	async def stop_listening(self):
-		if self.listener:
-			if self.listener is not True:
-				self.listener.cancel()
-			self.listener = None
-			await self.finish_listening()
-			if self.listen_paused:
-				self.guild.voice_client.resume()
-			self.not_interrupted.set()
+		if self.listen_ctx:
+			self.listen_ctx = None
+			self.guild.voice_client.stop_listening()
 	
-	async def listen_task(self, ctx):
-		while (await self.listen_once(ctx)):
-			pass
-		self.listener = None
-	
-	async def listen_once(self, ctx):
-		if self.interrupted:
-			return False
-		if self.bot.listener_bot not in self.guild.voice_client.channel.members:
-			await self.bot.send_embed(
-				self.text_channel,
-				f":no_entry: {self.bot.listener_bot.mention} needs to be in the voice channel"
-			)
-			return None
-		try:
-			self.guild.voice_client.pause()
-		except errors.AudioError:
-			self.listen_paused = False
-		else:
-			self.listen_paused = True
-		self.not_interrupted.clear()
-		if not self.listener:
-			self.listener = True
-		listen_message = await self.text_channel.send(">listen")
-		await self.bot.wait_for_message(
-			author = self.bot.listener_bot,
-			content = f":ear:{self.bot.emoji_skin_tone} I'm listening.."
+	def process_cb(self, recognizer, audio, user):
+		asyncio.run_coroutine_threadsafe(
+			self.process_listen(recognizer, audio, user),
+			self.bot.loop
 		)
-		await listen_message.delete()
-		await self.bot.wait_for_message(
-			author = self.bot.listener_bot,
-			content = ":stop_sign: I stopped listening."
-		)
-		await self.process_listen(ctx)
-		if self.listen_paused:
-			self.guild.voice_client.resume()
-		self.not_interrupted.set()
-		if self.listener is True:
-			self.listener = None
-		return True
 	
-	async def finish_listening(self):
-		stop_message = await self.text_channel.send(">stoplistening")
-		await self.bot.wait_for_message(author = self.bot.listener_bot, content = ":stop_sign: I stopped listening.")
-		await stop_message.delete()
-	
-	async def process_listen(self, ctx):
-		if (
-			not os.path.isfile(self.bot.data_path + "/temp/heard.pcm") or
-			os.stat(self.bot.data_path + "/temp/heard.pcm").st_size == 0
-		):
-			await self.bot.send_embed(
-				self.text_channel, ":warning: No input found"
-			)
-			return
-		func = functools.partial(
-			subprocess.call,
-			[
-				"ffmpeg", "-f", "s16le", "-y", "-ar", "44.1k", "-ac", "2",
-				"-i", self.bot.data_path + "/temp/heard.pcm",
-				self.bot.data_path + "/temp/heard.wav"
-			],
-			shell = True
-		)
-		# TODO: Use creationflags = subprocess.CREATE_NO_WINDOW in place of
-		# shell = True
-		await self.bot.loop.run_in_executor(None, func)
-		with speech_recognition.AudioFile(
-			self.bot.data_path + "/temp/heard.wav"
-		) as source:
-			audio = self.recognizer.record(source)
+	async def process_listen(self, recognizer, audio, user):
 		'''
 		try:
 			await self.bot.reply(
@@ -429,7 +363,7 @@ class AudioPlayer:
 			await self.bot.reply(f"Sphinx error; {e}")
 		'''
 		try:
-			text = self.recognizer.recognize_google(audio)
+			text = recognizer.recognize_google(audio)
 			await self.bot.send_embed(
 				self.text_channel, f"I think you said: `{text}`"
 			)
@@ -457,7 +391,5 @@ class AudioPlayer:
 			await self.bot.send_embed(
 				self.text_channel, f"Responding with: `{response}`"
 			)
-			await self.play_tts(ctx, response)
-		# open(self.bot.data_path + "/heard.pcm", 'w').close() # necessary?
-		# os.remove ?
+			await self.play_tts(self.listen_ctx, response)
 

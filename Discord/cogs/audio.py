@@ -1397,7 +1397,7 @@ class Audio(commands.Cog):
     @checks.is_voice_connected()
     @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
     async def listen(self, ctx):
-        if self.players[ctx.guild.id].listener:
+        if self.players[ctx.guild.id].listen_ctx:
             await self.players[ctx.guild.id].stop_listening()
         elif not (await self.players[ctx.guild.id].start_listening(ctx)):
             await ctx.embed_reply(":warning: Something else is already playing. Please stop it first.")
@@ -1406,7 +1406,7 @@ class Audio(commands.Cog):
     @checks.is_voice_connected()
     @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
     async def listen_start(self, ctx):
-        if self.players[ctx.guild.id].listener:
+        if self.players[ctx.guild.id].listen_ctx:
             await ctx.embed_reply(":no_entry: I'm already listening")
         elif not (await self.players[ctx.guild.id].start_listening(ctx)):
             await ctx.embed_reply(":warning: Something else is already playing. Please stop it first.")
@@ -1415,34 +1415,10 @@ class Audio(commands.Cog):
     @checks.is_voice_connected()
     @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
     async def listen_stop(self, ctx):
-        if self.players[ctx.guild.id].listener:
+        if self.players[ctx.guild.id].listen_ctx:
             await self.players[ctx.guild.id].stop_listening()
         else:
             await ctx.embed_reply(":no_entry: I'm not listening")
-
-    @listen.command(name = "once")
-    @checks.is_voice_connected()
-    @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
-    async def listen_once(self, ctx):
-        if self.players[ctx.guild.id].listener:
-            await ctx.embed_reply(":no_entry: I'm already listening")
-        elif (await self.players[ctx.guild.id].listen_once(ctx)) is False:
-            await ctx.embed_reply(":warning: Something else is already playing. Please stop it first.")
-
-    @listen.command(name = "finish")
-    @checks.is_voice_connected()
-    @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
-    async def listen_finish(self, ctx):
-        if self.players[ctx.guild.id].listener:
-            await self.players[ctx.guild.id].finish_listening()
-        else:
-            await ctx.embed_reply(":no_entry: I'm not listening")
-
-    @listen.command(name = "process")
-    @checks.is_voice_connected()
-    @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
-    async def listen_process(self, ctx):
-        await self.players[ctx.guild.id].process_listen(ctx)
 
     # Utility
 
