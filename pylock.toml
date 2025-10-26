@@ -482,11 +482,11 @@ vcs = { type = "git", url = "https://github.com/Rapptz/discord-ext-menus.git", r
 
 [[packages]]
 name = "discord-ext-voice-recv"
-version = "0.2.0a108"
+version = "0.3.0a120"
 marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'"
 index = "https://pypi.org/simple"
-sdist = { url = "https://files.pythonhosted.org/packages/fc/59/92ad2cbfd14844dc608a317f38ceed391266fd41fbc64f31527d68f7df66/discord-ext-voice_recv-0.2.0a108.tar.gz", upload-time = 2023-07-31T02:39:29Z, size = 33452, hashes = { sha256 = "80570f19655d52744b48576182b60e09e586175d9ea5842abcaaec965ad615aa" } }
-wheels = [{ url = "https://files.pythonhosted.org/packages/fd/8e/93a42682eb1ecbd3eddaa740e4ee8d2e8fdeb665136e85740015d0d58cae/discord_ext_voice_recv-0.2.0a108-py3-none-any.whl", upload-time = 2023-07-31T02:39:28Z, size = 33376, hashes = { sha256 = "ae11d64f0ea338157b0c07e649b5e1b8dba8fbf24d7d597f8109568056198849" } }]
+sdist = { url = "https://files.pythonhosted.org/packages/c5/1a/00d7812b6503308bde9b1fb0734e676d5960573a8d00a02c7994e52134c3/discord-ext-voice_recv-0.3.0a120.tar.gz", upload-time = 2023-10-06T06:41:42Z, size = 33620, hashes = { sha256 = "e582dfc7dd6b2952b40310a0b492b1be3b6ff47d951889af855735f3c4af1882" } }
+wheels = [{ url = "https://files.pythonhosted.org/packages/01/8a/bba3a128549d284f3a1a5f06575213d345c9b1c62e474d0acb1e2520184b/discord_ext_voice_recv-0.3.0a120-py3-none-any.whl", upload-time = 2023-10-06T06:41:40Z, size = 33608, hashes = { sha256 = "5b1e46729478f8794f9a44f9059875b4566398f96652b7faa374ac90ed23e541" } }]
 
 [[packages]]
 name = "discord-py"
