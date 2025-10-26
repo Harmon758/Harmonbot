@@ -352,6 +352,9 @@ class AudioPlayer:
         )
 
     async def process_listen(self, recognizer, audio, user):
+        # https://github.com/imayhaveborkedit/discord-ext-voice-recv/issues/48
+        if not audio.frame_data:
+            return
         try:
             # text = recognizer.recognize_google(audio)
             # text = recognizer.recognize_sphinx(audio)
