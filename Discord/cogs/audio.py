@@ -1394,11 +1394,12 @@ class Audio(commands.Cog):
     # Voice Input
 
     @commands.group(
+        aliases = ["listen"],
         invoke_without_command = True, case_insensitive = True, hidden = True
     )
     @checks.is_voice_connected()
     @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
-    async def listen(self, ctx):
+    async def converse(self, ctx):
         if self.players[ctx.guild.id].listen_ctx:
             await self.players[ctx.guild.id].stop_listening()
         elif not (await self.players[ctx.guild.id].start_listening(ctx)):
@@ -1407,10 +1408,10 @@ class Audio(commands.Cog):
                 "Please stop it first."
             )
 
-    @listen.command(name = "start", aliases = ["on"])
+    @converse.command(name = "start", aliases = ["on"])
     @checks.is_voice_connected()
     @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
-    async def listen_start(self, ctx):
+    async def converse_start(self, ctx):
         if self.players[ctx.guild.id].listen_ctx:
             await ctx.embed_reply(
                 f"{ctx.bot.warning_emoji} I'm already listening"
@@ -1421,10 +1422,10 @@ class Audio(commands.Cog):
                 "Please stop it first."
             )
 
-    @listen.command(name = "stop", aliases = ["off"])
+    @converse.command(name = "stop", aliases = ["off"])
     @checks.is_voice_connected()
     @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
-    async def listen_stop(self, ctx):
+    async def converse_stop(self, ctx):
         if self.players[ctx.guild.id].listen_ctx:
             await self.players[ctx.guild.id].stop_listening()
         else:
