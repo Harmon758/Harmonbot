@@ -109,8 +109,9 @@ class Bot(commands.Bot):
         self.twitch_icon_url = "https://s.jtvnw.net/jtv_user_pictures/hosted_images/GlitchIcon_purple.png"
         self.twitter_icon_url = "https://abs.twimg.com/icons/apple-touch-icon-192x192.png"
         ### Emoji
-        self.emoji_skin_tone = self.emote_skin_tone = '\N{EMOJI MODIFIER FITZPATRICK TYPE-3}'  # TODO: use everywhere
+        self.emoji_skin_tone = self.emote_skin_tone = '\N{EMOJI MODIFIER FITZPATRICK TYPE-3}'  # TODO: Use everywhere
         self.error_emoji = self.error_emote = '\N{NO ENTRY}'
+        self.warning_emoji = self.warning_emote = '\N{WARNING SIGN}\N{VARIATION SELECTOR-16}'  # TODO: Replace certain usages of error emoji
         ## Constant
         self.CODE_BLOCK = "```\n{}\n```"  # TODO: Change to method?
         self.ANSI_CODE_BLOCK = "```ansi\n{}\n```"  # TODO: Change to method?
