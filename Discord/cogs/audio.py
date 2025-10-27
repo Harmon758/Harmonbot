@@ -1394,7 +1394,7 @@ class Audio(commands.Cog):
     # Voice Input
 
     @commands.group(
-        aliases = ["listen"],
+        aliases = ["chat", "listen", "speak"],
         invoke_without_command = True, case_insensitive = True, hidden = True
     )
     @checks.is_voice_connected()
