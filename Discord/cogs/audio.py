@@ -1418,7 +1418,7 @@ class Audio(commands.Cog):
         if self.players[ctx.guild.id].listen_ctx:
             await self.players[ctx.guild.id].stop_listening()
         else:
-            await ctx.embed_reply(":no_entry: I'm not listening")
+            await ctx.embed_reply(f"{ctx.bot.warning_emoji} I'm not listening")
 
     # Utility
 
