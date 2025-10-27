@@ -1395,7 +1395,7 @@ class Audio(commands.Cog):
 
     @commands.group(
         aliases = ["chat", "listen", "speak", "talk"],
-        invoke_without_command = True, case_insensitive = True
+        case_insensitive = True, invoke_without_command = True
     )
     @checks.is_voice_connected()
     @commands.check_any(checks.is_permitted(), checks.is_guild_owner())
