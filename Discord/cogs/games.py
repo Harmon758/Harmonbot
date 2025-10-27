@@ -44,7 +44,7 @@ class Games(commands.Cog):
 		#check default values
 		self.guess_games = {}
 	
-	@commands.command(aliases = ["talk", "ask"])
+	@commands.command(aliases = ["ask"])
 	@checks.not_forbidden()
 	async def cleverbot(self, ctx: Context, *, message: str):
 		'''
