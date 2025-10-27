@@ -1400,7 +1400,7 @@ class Audio(commands.Cog):
         if self.players[ctx.guild.id].listen_ctx:
             await self.players[ctx.guild.id].stop_listening()
         elif not (await self.players[ctx.guild.id].start_listening(ctx)):
-            await ctx.embed_reply(":warning: Something else is already playing. Please stop it first.")
+            await ctx.embed_reply(f"{ctx.bot.warning_emoji} Something else is already playing. Please stop it first.")
 
     @listen.command(name = "start", aliases = ["on"])
     @checks.is_voice_connected()
