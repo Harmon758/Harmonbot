@@ -1402,7 +1402,14 @@ class Audio(commands.Cog):
     async def converse(self, ctx):
         if self.players[ctx.guild.id].listen_ctx:
             await self.players[ctx.guild.id].stop_listening()
-        elif not (await self.players[ctx.guild.id].start_listening(ctx)):
+            await ctx.embed_reply(
+                "\N{HEAR-NO-EVIL MONKEY} I'm no longer listening"
+            )
+        elif await self.players[ctx.guild.id].start_listening(ctx):
+            await ctx.embed_reply(
+                f"\N{EAR}{ctx.bot.emoji_skin_tone} I'm listening"
+            )
+        else:
             await ctx.embed_reply(
                 f"{ctx.bot.warning_emoji} Something else is already playing. "
                 "Please stop it first."
