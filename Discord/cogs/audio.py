@@ -1423,7 +1423,11 @@ class Audio(commands.Cog):
             await ctx.embed_reply(
                 f"{ctx.bot.warning_emoji} I'm already listening"
             )
-        elif not (await self.players[ctx.guild.id].start_listening(ctx)):
+        elif await self.players[ctx.guild.id].start_listening(ctx):
+            await ctx.embed_reply(
+                f"\N{EAR}{ctx.bot.emoji_skin_tone} I'm listening"
+            )
+        else:
             await ctx.embed_reply(
                 f"{ctx.bot.warning_emoji} Something else is already playing. "
                 "Please stop it first."
