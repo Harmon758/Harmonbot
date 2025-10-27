@@ -418,7 +418,11 @@ class AudioPlayer:
                 f"{self.bot.error_emoji} Unable to process speech: {e}"
             )
         else:
-            if not (response := self.bot.aiml_kernel.respond(text)):
+            if not (
+                response := self.bot.aiml_kernel.respond(
+                    text, sessionID = user.id
+                )
+            ):
                 # TODO: Handle brain not loaded?
                 if not (games_cog := self.bot.get_cog("Games")):
                     return
