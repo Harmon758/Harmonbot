@@ -1439,6 +1439,9 @@ class Audio(commands.Cog):
     async def converse_stop(self, ctx):
         if self.players[ctx.guild.id].listen_ctx:
             await self.players[ctx.guild.id].stop_listening()
+            await ctx.embed_reply(
+                "\N{HEAR-NO-EVIL MONKEY} I'm no longer listening"
+            )
         else:
             await ctx.embed_reply(f"{ctx.bot.warning_emoji} I'm not listening")
 
