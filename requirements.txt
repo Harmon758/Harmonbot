@@ -1041,20 +1041,20 @@ psutil==7.1.2 ; implementation_name == 'cpython' and platform_python_implementat
     # via
     #   clarifai
     #   harmonbot
-psycopg==3.2.11 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:217231b2b6b72fba88281b94241b2f16043ee67f81def47c52a01b72ff0c086a \
-    --hash=sha256:398bb484ed44361e041c8f804ed7af3d2fcefbffdace1d905b7446c319321706
+psycopg==3.2.12 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:85c08d6f6e2a897b16280e0ff6406bef29b1327c045db06d21f364d7cd5da90b \
+    --hash=sha256:8a1611a2d4c16ae37eada46438be9029a35bb959bb50b3d0e1e93c0f3d54c9ee
     # via harmonbot
-psycopg-binary==3.2.11 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:110a2036007230416fcc2c17bfe7aaa2c1fa9b6e9d21e2cd551523e3f6489759 \
-    --hash=sha256:20d41bcd9ac289d44ac1f6151594f7883483b4ad14680a63e04b639dc90c3349 \
-    --hash=sha256:31f1d5630afa673c37a6327f8e3efa1f17d4e4e42972643b3478b52275233529 \
-    --hash=sha256:478a68d50f34f6203642d245e2046d266c719ab4e593a1bb94c3be5f82e1aee1 \
-    --hash=sha256:592fb928efe0674a7400af914bcf931eb5267d36237925947aaecf63bd9a91aa \
-    --hash=sha256:6688807ed07436c18e9946d01372bc80b9d20b7732cde27de9313e0860910c84 \
-    --hash=sha256:82fe30afbdd66fbdad583b02baad5c15930a3dc8a3756d2ae15fc874e9be8ec8 \
-    --hash=sha256:9f12a34bddaeffa7840a61163595ec0d70a9db855896865dcfbb731510014484 \
-    --hash=sha256:e7575ca710277cc3e9257ff803a3e0e3cb7cc1b7851639cb783a7cd55ebfc815
+psycopg-binary==3.2.12 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:100fdfee763d701f6da694bde711e264aca4c2bc84fb81e1669fb491ce11d219 \
+    --hash=sha256:16db2549a31ccd4887bef05570d95036813ce25fd9810b523ba1c16b0f6cfd90 \
+    --hash=sha256:385c7b5cfffac115f413b8e32c941c85ea0960e0b94a6ef43bb260f774c54893 \
+    --hash=sha256:72fd979e410ba7805462817ef8ed6f37dd75f9f4ae109bdb8503e013ccecb80b \
+    --hash=sha256:7b9a99ded7d19b24d3b6fa632b58e52bbdecde7e1f866c3b23d0c27b092af4e3 \
+    --hash=sha256:802bd01fb18a0acb0dea491f69a9a2da6034f33329a62876ab5b558a1fb66b45 \
+    --hash=sha256:9c674887d1e0d4384c06c822bc7fcfede4952742e232ec1e76b5a6ae39a3ddd4 \
+    --hash=sha256:ec82fa5134517af44e28a30c38f34384773a0422ffd545fd298433ea9f2cc5a9 \
+    --hash=sha256:f33c9e12ed05e579b7fb3c8fdb10a165f41459394b8eb113e7c377b2bd027f61
     # via psycopg
 py-cpuinfo==9.0.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:3cdbbf3fac90dc6f118bfd64384f309edeadd902d7c8fb17f02ffa1fc3f49690 \
