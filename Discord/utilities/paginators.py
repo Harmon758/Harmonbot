@@ -149,6 +149,7 @@ class ButtonPaginator(discord.ui.View):
     async def stop(self, interaction = None):
         self.start_button.disabled = True
         self.previous_button.disabled = True
+        self.current_button.disabled = True
         self.next_button.disabled = True
         self.end_button.disabled = True
         self.select_menu.disabled = True
