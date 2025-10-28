@@ -1,5 +1,6 @@
 
 import discord
+from discord import ui
 from discord.ext import commands
 
 
@@ -39,12 +40,11 @@ class ButtonPaginator(discord.ui.View):
         await interaction.response.defer()
         await self.show_page(interaction, self.current_page - 1)
 
-    @discord.ui.button(
-        style = discord.ButtonStyle.blurple,
-        disabled = True
-    )
+    @discord.ui.button(style = discord.ButtonStyle.blurple)
     async def current_button(self, interaction, button):
-        return
+        await interaction.response.send_modal(
+            ButtonPaginatorPageSelectionModal(self)
+        )
 
     @discord.ui.button(
         style = discord.ButtonStyle.grey,
@@ -159,6 +159,32 @@ class ButtonPaginator(discord.ui.View):
             await self.ctx.bot.attempt_edit_message(self.message, view = self)
 
         super().stop()
+
+
+class ButtonPaginatorPageSelectionModal(ui.Modal):
+
+    def __init__(self, button_paginator: ButtonPaginator):
+        super().__init__(title = "Page Selection")
+        self.button_paginator = button_paginator
+
+    number = ui.TextInput(label = "Page Number")
+
+    async def on_submit(self, interaction: discord.Interaction):
+        try:
+            page_number = int(self.number.value) - 1
+        except ValueError:
+            await interaction.response.send_message(
+                "That is not a valid number.", ephemeral = True
+            )
+            return
+
+        await interaction.response.defer()
+
+        page_number = max(page_number, 0)
+        page_number = min(
+            page_number, self.button_paginator.source.get_max_pages() - 1
+        )
+        await self.button_paginator.show_page(interaction, page_number)
 
 
 class Paginator(commands.Paginator):
