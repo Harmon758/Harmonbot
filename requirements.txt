@@ -1041,11 +1041,11 @@ psutil==7.1.2 ; implementation_name == 'cpython' and platform_python_implementat
     # via
     #   clarifai
     #   harmonbot
-psycopg==3.2.10 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+psycopg==3.2.12 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:0bce99269d16ed18401683a8569b2c5abd94f72f8364856d56c0389bcd50972a \
     --hash=sha256:ab5caf09a9ec42e314a21f5216dbcceac528e0e05142e42eea83a3b28b320ac3
     # via harmonbot
-psycopg-binary==3.2.10 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+psycopg-binary==3.2.12 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:1b29285474e3339d0840e1b5079fdb0481914108f92ec62de0c87ae333c60b24 \
     --hash=sha256:29b6bb87959515bc8b6abef10d8d23a9a681f03e48e9f0c8adb4b9fb7fa73f11 \
     --hash=sha256:62590dd113d10cd9c08251cb80b32e2e8aaf01ece04a700322e776b1d216959f \
