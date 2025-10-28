@@ -141,7 +141,7 @@ class ButtonPaginator(discord.ui.View):
             for option in self.select_menu.options:
                 option.default = (int(option.value) == self.current_page)
 
-        await interaction.message.edit(**kwargs, view = self)
+        await interaction.edit_original_response(**kwargs, view = self)
 
     async def on_timeout(self):
         await self.stop()
