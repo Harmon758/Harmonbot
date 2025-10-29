@@ -1359,7 +1359,7 @@ schema==0.7.5 ; implementation_name == 'cpython' and platform_python_implementat
     --hash=sha256:f06717112c61895cabc4707752b88716e8420a8819d71404501e114f91043197 \
     --hash=sha256:f3ffdeeada09ec34bf40d7d79996d9f7175db93b7a5065de0faa7f41083c1e6c
     # via clarifai
-scipy==1.16.2 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+scipy==1.16.3 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:4e409eac067dcee96a57fbcf424c13f428037827ec7ee3cb671ff525ca4fc34d \
     --hash=sha256:6ab88ea43a57da1af33292ebd04b417e8e2eaf9d5aa05700be8d6e1b6501cd92 \
     --hash=sha256:87eb178db04ece7c698220d523c170125dbffebb7af0345e66c3554f6f60c173 \
