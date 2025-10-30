@@ -436,9 +436,13 @@ class DefineSource(menus.ListPageSource):
 
         embed = discord.Embed(
             title = definition.word,
-            description = BeautifulSoup(
-                definition.text, "html.parser"
-            ).get_text(),
+            description = (
+                BeautifulSoup(definition.text, "html.parser").get_text() +
+                "\n\n" + '\n'.join(
+                    f"- \"{BeautifulSoup(example.text, 'html.parser').get_text()}\""
+                    for example in definition.exampleUses
+                )
+            ),
             color = menu.ctx.bot.bot_color
         ).set_footer(
             text = definition.attributionText
