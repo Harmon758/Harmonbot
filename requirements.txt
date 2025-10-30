@@ -1545,7 +1545,7 @@ twitchio==2.4.0 ; implementation_name == 'cpython' and platform_python_implement
     --hash=sha256:3b0d62794b8320e5a8d11091ed3441217f7933b72720309b6e2c99f080c8a4af \
     --hash=sha256:c5be40008686705bb2470366c9e268da7b172f5ce13fd311266a369876bd40d3
     # via harmonbot
-ty==0.0.1a24 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+ty==0.0.1a25 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:120fe95eaf2a200f531f949e3dd0a9d95ab38915ce388412873eae28c499c0b9 \
     --hash=sha256:12945fe358fb0f73acf0b72a29efcc80da73f8d95cfe7f11a81e4d8d730e7b18 \
     --hash=sha256:2e826d75bddd958643128c309f6c47673ed6cef2ea5f2b3cd1a1159a1392971a \
