@@ -1969,11 +1969,11 @@ wheels = [{ url = "https://files.pythonhosted.org/packages/b7/ce/149a00dd41f10bc
 
 [[packages]]
 name = "smart-open"
-version = "7.4.1"
+version = "7.4.2"
 marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'"
 index = "https://pypi.org/simple"
-sdist = { url = "https://files.pythonhosted.org/packages/ed/1a/8de851644371c2c88ee5ff006d58355979247a02370494d63d091ef0cd01/smart_open-7.4.1.tar.gz", upload-time = 2025-10-21T16:28:40Z, size = 53203, hashes = { sha256 = "5c20f09026875e6dec708e9610e0cd13d24d91f0a2c12e6511b9e478a566b4a0" } }
-wheels = [{ url = "https://files.pythonhosted.org/packages/04/ba/6dc8aea11f667b2a1455c466a42cdcd7a7efda93a1510dd085fa988c5144/smart_open-7.4.1-py3-none-any.whl", upload-time = 2025-10-21T16:28:38Z, size = 63220, hashes = { sha256 = "f52cb9bc897c7676dfc6996735332bd2465dfb048c73bfa9dfcdc829f48018cc" } }]
+sdist = { url = "https://files.pythonhosted.org/packages/d1/49/a3aefb18f3d54208298917c95998e02cccf7aab6ba0ab631baa7a3bf6900/smart_open-7.4.2.tar.gz", upload-time = 2025-10-30T20:59:19Z, size = 53339, hashes = { sha256 = "648b5619297cb32720cdfed4ffbcb15209defb531e0904497721a9b24fdcdcac" } }
+wheels = [{ url = "https://files.pythonhosted.org/packages/d2/da/50ff212da23830e095e0a8e0541b3a8f715edaa77b16ad2897f946763c46/smart_open-7.4.2-py3-none-any.whl", upload-time = 2025-10-30T20:59:18Z, size = 63313, hashes = { sha256 = "5e53a2604d62979a3940f80472c3d42c508250cec709ad4d25854f597d15036f" } }]
 
 [[packages]]
 name = "smmap"

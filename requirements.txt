@@ -1404,9 +1404,9 @@ six==1.17.0 ; implementation_name == 'cpython' and platform_python_implementatio
     # via
     #   markdownify
     #   python-dateutil
-smart-open==7.4.1 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:5c20f09026875e6dec708e9610e0cd13d24d91f0a2c12e6511b9e478a566b4a0 \
-    --hash=sha256:f52cb9bc897c7676dfc6996735332bd2465dfb048c73bfa9dfcdc829f48018cc
+smart-open==7.4.2 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:5e53a2604d62979a3940f80472c3d42c508250cec709ad4d25854f597d15036f \
+    --hash=sha256:648b5619297cb32720cdfed4ffbcb15209defb531e0904497721a9b24fdcdcac
     # via weasel
 smmap==5.0.2 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:26ea65a03958fa0c8a1c7e8c7a58fdc77221b8910f6be2131affade476898ad5 \
