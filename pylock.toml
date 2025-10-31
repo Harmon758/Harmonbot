@@ -610,11 +610,11 @@ wheels = [{ url = "https://files.pythonhosted.org/packages/14/4b/ead00905132820b
 
 [[packages]]
 name = "google-auth"
-version = "2.42.0"
+version = "2.42.1"
 marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'"
 index = "https://pypi.org/simple"
-sdist = { url = "https://files.pythonhosted.org/packages/11/75/28881e9d7de9b3d61939bc9624bd8fa594eb787a00567aba87173c790f09/google_auth-2.42.0.tar.gz", upload-time = 2025-10-28T17:38:08Z, size = 295400, hashes = { sha256 = "9bbbeef3442586effb124d1ca032cfb8fb7acd8754ab79b55facd2b8f3ab2802" } }
-wheels = [{ url = "https://files.pythonhosted.org/packages/87/24/ec82aee6ba1a076288818fe5cc5125f4d93fffdc68bb7b381c68286c8aaa/google_auth-2.42.0-py2.py3-none-any.whl", upload-time = 2025-10-28T17:38:05Z, size = 222550, hashes = { sha256 = "f8f944bcb9723339b0ef58a73840f3c61bc91b69bf7368464906120b55804473" } }]
+sdist = { url = "https://files.pythonhosted.org/packages/25/6b/22a77135757c3a7854c9f008ffed6bf4e8851616d77faf13147e9ab5aae6/google_auth-2.42.1.tar.gz", upload-time = 2025-10-30T16:42:19Z, size = 295541, hashes = { sha256 = "30178b7a21aa50bffbdc1ffcb34ff770a2f65c712170ecd5446c4bef4dc2b94e" } }
+wheels = [{ url = "https://files.pythonhosted.org/packages/92/05/adeb6c495aec4f9d93f9e2fc29eeef6e14d452bba11d15bdb874ce1d5b10/google_auth-2.42.1-py2.py3-none-any.whl", upload-time = 2025-10-30T16:42:17Z, size = 222550, hashes = { sha256 = "eb73d71c91fc95dbd221a2eb87477c278a355e7367a35c0d84e6b0e5f9b4ad11" } }]
 
 [[packages]]
 name = "google-cloud-core"
