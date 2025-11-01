@@ -617,15 +617,10 @@ class Meta(commands.Cog):
                 name = "Beta",
                 value = "<@236911677180739585>"
             ).add_field(
-                name = "Eta",
-                value = (
-                    "<@274547045203705856>\n"
-                    "Uses discord.hs (Haskell)\n"
-                    "Not continuously running"
-                )
-            ).add_field(
                 name = "Decommissioned/Retired",
                 value = (
+                    "<@274547045203705856>\n"
+                    "- Used discord.hs (Haskell)\n"
                     "<@180994984038760448>\n"
                     "- Used for speech recognition\n"
                     "- Used discordgo (Go)\n"

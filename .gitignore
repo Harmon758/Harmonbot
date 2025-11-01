@@ -1,12 +1,20 @@
+# (Instance specific) data
+data/
+
 # FFmpeg
 ffmpeg.exe
 
-# Instance Specific Data
-data/
+# Haskell
+*.hi
+*.o
 
 # mIRC/mSL (and other) backup / initialization files
 *.bak
 *.ini
+
+# Retired executable files
+retired/**/*.exe
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
