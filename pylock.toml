@@ -1922,11 +1922,11 @@ wheels = [{ url = "https://files.pythonhosted.org/packages/83/11/00d3c3dfc25ad54
 
 [[packages]]
 name = "sentry-sdk"
-version = "2.42.1"
+version = "2.43.0"
 marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'"
 index = "https://pypi.org/simple"
-sdist = { url = "https://files.pythonhosted.org/packages/31/04/ec8c1dd9250847303d98516e917978cb1c7083024770d86d657d2ccb5a70/sentry_sdk-2.42.1.tar.gz", upload-time = 2025-10-20T12:38:40Z, size = 354839, hashes = { sha256 = "8598cc6edcfe74cb8074ba6a7c15338cdee93d63d3eb9b9943b4b568354ad5b6" } }
-wheels = [{ url = "https://files.pythonhosted.org/packages/0f/cb/c21b96ff379923310b4fb2c06e8d560d801e24aeb300faa72a04776868fc/sentry_sdk-2.42.1-py2.py3-none-any.whl", upload-time = 2025-10-20T12:38:38Z, size = 380952, hashes = { sha256 = "f8716b50c927d3beb41bc88439dc6bcd872237b596df5b14613e2ade104aee02" } }]
+sdist = { url = "https://files.pythonhosted.org/packages/b3/18/09875b4323b03ca9025bae7e6539797b27e4fc032998a466b4b9c3d24653/sentry_sdk-2.43.0.tar.gz", upload-time = 2025-10-29T11:26:08Z, size = 368953, hashes = { sha256 = "52ed6e251c5d2c084224d73efee56b007ef5c2d408a4a071270e82131d336e20" } }
+wheels = [{ url = "https://files.pythonhosted.org/packages/69/31/8228fa962f7fd8814d634e4ebece8780e2cdcfbdf0cd2e14d4a6861a7cd5/sentry_sdk-2.43.0-py2.py3-none-any.whl", upload-time = 2025-10-29T11:26:05Z, size = 400997, hashes = { sha256 = "4aacafcf1756ef066d359ae35030881917160ba7f6fc3ae11e0e58b09edc2d5d" } }]
 
 [[packages]]
 name = "setuptools"
