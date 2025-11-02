@@ -1359,18 +1359,18 @@ schema==0.7.5 ; implementation_name == 'cpython' and platform_python_implementat
     --hash=sha256:f06717112c61895cabc4707752b88716e8420a8819d71404501e114f91043197 \
     --hash=sha256:f3ffdeeada09ec34bf40d7d79996d9f7175db93b7a5065de0faa7f41083c1e6c
     # via clarifai
-scipy==1.16.2 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:4e409eac067dcee96a57fbcf424c13f428037827ec7ee3cb671ff525ca4fc34d \
-    --hash=sha256:6ab88ea43a57da1af33292ebd04b417e8e2eaf9d5aa05700be8d6e1b6501cd92 \
-    --hash=sha256:87eb178db04ece7c698220d523c170125dbffebb7af0345e66c3554f6f60c173 \
-    --hash=sha256:912f46667d2d3834bc3d57361f854226475f695eb08c08a904aadb1c936b6a88 \
-    --hash=sha256:91e9e8a37befa5a69e9cacbe0bcb79ae5afb4a0b130fd6db6ee6cc0d491695fa \
-    --hash=sha256:af029b153d243a80afb6eabe40b0a07f8e35c9adc269c019f364ad747f826a6b \
-    --hash=sha256:c95e96c7305c96ede73a7389f46ccd6c659c4da5ef1b2789466baeaed3622b6e \
-    --hash=sha256:e574be127bb760f0dad24ff6e217c80213d153058372362ccb9555a10fc5e8d2 \
-    --hash=sha256:ec6e74c4e884104ae006d34110677bfe0098203a3fec2f3faf349f4cb05165e3 \
-    --hash=sha256:f3bf75a6dcecab62afde4d1f973f1692be013110cad5338007927db8da73249c \
-    --hash=sha256:f5db5ba6188d698ba7abab982ad6973265b74bb40a1efe1821b58c87f73892b9
+scipy==1.16.3 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:0151a0749efeaaab78711c78422d413c583b8cdd2011a3c1d6c794938ee9fdb2 \
+    --hash=sha256:01e87659402762f43bd2fee13370553a17ada367d42e7487800bf2916535aecb \
+    --hash=sha256:2a207a6ce9c24f1951241f4693ede2d393f59c07abc159b2cb2be980820e01fb \
+    --hash=sha256:40be6cf99e68b6c4321e9f8782e7d5ff8265af28ef2cd56e9c9b2638fa08ad97 \
+    --hash=sha256:532fb5ad6a87e9e9cd9c959b106b73145a03f04c7d57ea3e6f6bb60b86ab0876 \
+    --hash=sha256:53c3844d527213631e886621df5695d35e4f6a75f620dca412bcd292f6b87d78 \
+    --hash=sha256:8be1ca9170fcb6223cc7c27f4305d680ded114a1567c0bd2bfcbf947d1b17511 \
+    --hash=sha256:9452781bd879b14b6f055b26643703551320aa8d79ae064a71df55c00286a184 \
+    --hash=sha256:b7180967113560cca57418a7bc719e30366b47959dd845a93206fbed693c867e \
+    --hash=sha256:bea0a62734d20d67608660f69dcda23e7f90fb4ca20974ab80b6ed40df87a005 \
+    --hash=sha256:deb3841c925eeddb6afc1e4e4a45e418d19ec7b87c5df177695224078e8ec733
     # via harmonbot
 seaborn==0.13.2 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:636f8336facf092165e27924f223d3c62ca560b1f2bb5dff7ab7fad265361987 \
