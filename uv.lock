@@ -613,8 +613,8 @@ extras-speech = [
 
 [[package]]
 name = "discord-py"
-version = "2.6.0a5220+g774b934f"
-source = { git = "https://github.com/Rapptz/discord.py.git?rev=774b934#774b934f7432ea7274befb3580fd51cdc8cf366e" }
+version = "2.6.0a5222+gcb730099"
+source = { git = "https://github.com/Rapptz/discord.py.git?rev=cb73009#cb7300990f656c0964ea48115354f9416e96dcd1" }
 dependencies = [
     { name = "aiohttp", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
@@ -1061,7 +1061,7 @@ requires-dist = [
     { name = "dice" },
     { name = "discord-ext-menus", git = "https://github.com/Rapptz/discord-ext-menus.git?rev=8686b5d" },
     { name = "discord-ext-voice-recv", extras = ["extras-speech"] },
-    { name = "discord-py", extras = ["speed", "voice"], git = "https://github.com/Rapptz/discord.py.git?rev=774b934" },
+    { name = "discord-py", extras = ["speed", "voice"], git = "https://github.com/Rapptz/discord.py.git?rev=cb73009" },
     { name = "emoji" },
     { name = "en-core-web-md", url = "https://github.com/explosion/spacy-models/releases/download/en_core_web_md-3.8.0/en_core_web_md-3.8.0-py3-none-any.whl" },
     { name = "feedparser" },
