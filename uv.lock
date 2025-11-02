@@ -1188,15 +1188,15 @@ wheels = [
 
 [[package]]
 name = "hypothesis"
-version = "6.143.0"
+version = "6.143.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "attrs", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
     { name = "sortedcontainers", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/12/77/1a89c2498e678d7ad4040f3012b5ec4ea2e44b9f3ec9a7b703f0af02e917/hypothesis-6.143.0.tar.gz", hash = "sha256:37dcd5cf9396deb832553dabe6c75003c0d3bcbbb77ac3db9321971dc914d2d0", size = 466220, upload-time = "2025-11-01T22:46:41.965Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/b8/7e/7217747127792254cef8e7f0b82bc3fe659f46b4efbd2e33abb76a8a6978/hypothesis-6.143.1.tar.gz", hash = "sha256:27954227d85057c0456c0b4e5953fdf6a0eff989874dcda21e20b5a41b4f1a59", size = 466406, upload-time = "2025-11-02T04:26:02.425Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/d2/85/2b64f5ec3927abe9638b1c50bf906508d8b6c9104c5b29b86ff6c9c3769a/hypothesis-6.143.0-py3-none-any.whl", hash = "sha256:5f7321f7e5d3eadaa65de3d94dbd5a0222165c3a2120d491fd3ee889eba887d9", size = 533675, upload-time = "2025-11-01T22:46:37.955Z" },
+    { url = "https://files.pythonhosted.org/packages/de/c6/b6d3e96fa2367edb3f30f6b3ccb7cd061b1603f210311985253099d13b55/hypothesis-6.143.1-py3-none-any.whl", hash = "sha256:7974544d0d5b7041688b544aa2dbeac69a28def90e010ff5d2b2cbc85bd40dd2", size = 533720, upload-time = "2025-11-02T04:25:58.072Z" },
 ]
 
 [[package]]
