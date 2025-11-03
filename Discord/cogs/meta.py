@@ -188,54 +188,12 @@ class Meta(commands.Cog):
     @commands.command()
     async def about(self, ctx):
         """About me"""
-        fields = []
-        if (changes := git.Repo("..").git.log(
-            "-3", "--first-parent",
-            format = "[`%h`](https://github.com/Harmon758/Harmonbot/commit/%H) %s (<t:%ct:R>)"
-        )):
-            fields.append(("Latest Changes:", changes, False))
-        created_time = discord.utils.snowflake_time(147207200945733632)
-        fields.append((
-            "Created on:", discord.utils.format_dt(created_time, style = 'D')
-        ))
-        fields.append(("Version", ctx.bot.version))
-        fields.append((
-            "Library",
-            f"[discord.py](https://github.com/Rapptz/discord.py) v{importlib.metadata.version('discord.py')}\n"
-            f"([Python](https://www.python.org/) v{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro})"
-        ))
-
-        view = ui.View()
-        view.add_item(ui.Button(
-            label = "Add To Server/Apps (Invite/Install)",
-            url = ctx.bot.invite_url
-        ))
-        view.add_item(ui.Button(
-            label = "Harmonbot Server (#changelog)",
-            url = ctx.bot.changelog
-        ))
-
-        # TODO: Move out of command?
-        class ServerInviteButton(ui.Button):
-            async def callback(self, interaction):
-                await interaction.response.send_message(
-                    f"{interaction.user.mention}: Harmonbot Discord Server (#changelog): {ctx.bot.changelog}"
-                )
-
-        view.add_item(ServerInviteButton(
-            label = "Send Discord Server Invite",
-            style = discord.ButtonStyle.blurple
-        ))
-
-        await ctx.embed_reply(
-            author_icon_url = ctx.bot.user.display_avatar.url,
-            author_name = f"Harmonbot (Discord ID: {ctx.bot.user.id})",
-            title = "About Me",
-            fields = fields,
-            footer_icon_url = ctx.bot.owner.display_avatar.url,
-            footer_text = f"Developer/Owner: {ctx.bot.owner} (Discord ID: {ctx.bot.owner.id})",
-            view = view
+        await ctx.send(
+            view = AboutLayoutView(ctx),
+            allowed_mentions = discord.AllowedMentions.none()
         )
+        if not ctx.interaction:
+            await ctx.bot.attempt_delete_message(ctx.message)
 
     @commands.command()
     async def changelog(self, ctx):
@@ -1082,6 +1040,104 @@ class Meta(commands.Cog):
     @github_publication.after_loop
     async def after_github_publication(self):
         self.bot.print("GitHub publication task cancelled")
+
+
+class AboutLayoutView(ui.LayoutView):
+
+    def __init__(self, ctx):
+        super().__init__(timeout = 600)
+        self.add_item(AboutContainer(ctx))
+
+
+class AboutContainer(ui.Container):
+
+    def __init__(self, ctx):
+        super().__init__()
+
+        if not ctx.interaction:
+            self.add_item(
+                ui.TextDisplay(
+                    f"-# In response to {ctx.author.mention}:\n"
+                    f"-# > {ctx.message.clean_content}"
+                )
+            )
+
+        self.add_item(ui.TextDisplay("## About Me"))
+
+        created_time = discord.utils.snowflake_time(147207200945733632)
+        self.add_item(
+            ui.Section(
+                ui.TextDisplay(
+                    f"**Harmonbot:** {ctx.bot.user.mention}\n"
+                    f"-# (Discord User ID: {ctx.bot.user.id})"
+                ),
+                ui.TextDisplay(
+                    f"**Created On**: {discord.utils.format_dt(created_time, style = 'D')}\n"
+                    f"**Version**: {ctx.bot.version}"
+                ),
+                ui.TextDisplay(
+                    "**Language**: [Python](https://www.python.org/) "
+                    f"v{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}\n"
+                    "**Library**: [discord.py](https://github.com/Rapptz/discord.py) "
+                    f"v{importlib.metadata.version('discord.py')}"
+                ),
+                accessory = ui.Thumbnail(ctx.bot.user.display_avatar.url)
+            )
+        )
+
+        section = ui.Section(
+            ui.TextDisplay(
+                f"**Developer/Owner**: Harmon: {ctx.bot.owner.mention}\n"
+                f"-# (Discord User ID: {ctx.bot.owner.id})"
+            ),
+            accessory = ui.Thumbnail(ctx.bot.owner.display_avatar.url)
+        )
+
+        if (changes := git.Repo("..").git.log(
+            "-3", "--first-parent",
+            format = "-# [`%h`](https://github.com/Harmon758/Harmonbot/commit/%H) %s (<t:%ct:R>)"
+        )):
+            section.add_item(ui.TextDisplay(f"**Latest Changes**:\n{changes}"))
+
+        self.add_item(section)
+
+        self.add_item(
+            ui.Section(
+                ui.TextDisplay(
+                    f"**Invite/Install Link** (Add to Server/Apps):\n{ctx.bot.invite_url}"
+                ),
+                accessory = ui.Button(
+                    label = "Add", url = ctx.bot.invite_url
+                )
+            )
+        )
+
+        self.add_item(
+            ui.Section(
+                ui.TextDisplay(
+                    f"**Harmonbot Discord Server** (#changelog): {ctx.bot.changelog}"
+                ),
+                accessory = ui.Button(
+                    label = "Join", url = ctx.bot.changelog
+                )
+            )
+        )
+
+        # TODO: Move out of Container?
+        class ServerInviteButton(ui.Button):
+            async def callback(self, interaction):
+                await interaction.response.send_message(
+                    f"{interaction.user.mention}: Harmonbot Discord Server (#changelog): {ctx.bot.changelog}"
+                )
+
+        self.add_item(
+            ui.ActionRow(
+                ServerInviteButton(
+                    label = "Send Discord Server Invite",
+                    style = discord.ButtonStyle.blurple
+                )
+            )
+        )
 
 
 class StatisticsView(ui.View):
