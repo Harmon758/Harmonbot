@@ -185,9 +185,10 @@ class Meta(commands.Cog):
 
     # Public Info
 
-    @commands.command()
+    @commands.hybrid_command()
     async def about(self, ctx):
         """About me"""
+        await ctx.defer()
         view = AboutLayoutView(ctx)
         view.message = await ctx.send(
             view = view, allowed_mentions = discord.AllowedMentions.none()
