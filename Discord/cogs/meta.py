@@ -1054,7 +1054,7 @@ class AboutLayoutView(ui.LayoutView):
         await self.stop()
 
     async def stop(self):
-        self.container.server_invite_button.disabled = True
+        self.container.send_server_invite_button.disabled = True
         await self.message.edit(
             view = self, allowed_mentions = discord.AllowedMentions.none()
         )
@@ -1135,7 +1135,7 @@ class AboutContainer(ui.Container):
             )
         )
 
-        # Put server invite button last, at bottom
+        # Put send server invite button last, at bottom
         self.remove_item(self.action_row)
         self.add_item(self.action_row)
 
@@ -1145,7 +1145,7 @@ class AboutContainer(ui.Container):
         label = "Send Discord Server Invite",
         style = discord.ButtonStyle.blurple
     )
-    async def server_invite_button(
+    async def send_server_invite_button(
         self, interaction: discord.Interaction, button: ui.Button
     ):
         await interaction.response.send_message(
