@@ -205,18 +205,18 @@ class Meta(commands.Cog):
             f"([Python](https://www.python.org/) v{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro})"
         ))
 
-        view = discord.ui.View()
-        view.add_item(discord.ui.Button(
+        view = ui.View()
+        view.add_item(ui.Button(
             label = "Add To Server/Apps (Invite/Install)",
             url = ctx.bot.invite_url
         ))
-        view.add_item(discord.ui.Button(
+        view.add_item(ui.Button(
             label = "Harmonbot Server (#changelog)",
             url = ctx.bot.changelog
         ))
 
         # TODO: Move out of command?
-        class ServerInviteButton(discord.ui.Button):
+        class ServerInviteButton(ui.Button):
             async def callback(self, interaction):
                 await interaction.response.send_message(
                     f"{interaction.user.mention}: Harmonbot Discord Server (#changelog): {ctx.bot.changelog}"
