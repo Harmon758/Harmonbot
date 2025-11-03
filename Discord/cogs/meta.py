@@ -204,8 +204,6 @@ class Meta(commands.Cog):
             f"[discord.py](https://github.com/Rapptz/discord.py) v{importlib.metadata.version('discord.py')}\n"
             f"([Python](https://www.python.org/) v{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro})"
         ))
-        if not (owner := discord.utils.get(ctx.bot.get_all_members(), id = ctx.bot.owner_id)):
-            owner = await ctx.bot.fetch_user(ctx.bot.owner_id)
 
         view = discord.ui.View()
         view.add_item(discord.ui.Button(
@@ -234,8 +232,8 @@ class Meta(commands.Cog):
             author_name = f"Harmonbot (Discord ID: {ctx.bot.user.id})",
             title = "About Me",
             fields = fields,
-            footer_icon_url = owner.display_avatar.url,
-            footer_text = f"Developer/Owner: {owner} (Discord ID: {owner.id})",
+            footer_icon_url = ctx.bot.owner.display_avatar.url,
+            footer_text = f"Developer/Owner: {ctx.bot.owner} (Discord ID: {ctx.bot.owner.id})",
             view = view
         )
 
