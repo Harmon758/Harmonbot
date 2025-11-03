@@ -1093,10 +1093,10 @@ class AboutContainer(ui.Container):
             accessory = ui.Thumbnail(ctx.bot.owner.display_avatar.url)
         )
 
-        if (changes := git.Repo("..").git.log(
+        if changes := git.Repo("..").git.log(
             "-3", "--first-parent",
             format = "-# [`%h`](https://github.com/Harmon758/Harmonbot/commit/%H) %s (<t:%ct:R>)"
-        )):
+        ):
             section.add_item(ui.TextDisplay(f"**Latest Changes**:\n{changes}"))
 
         self.add_item(section)
