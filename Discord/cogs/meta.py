@@ -188,10 +188,11 @@ class Meta(commands.Cog):
     @commands.command()
     async def about(self, ctx):
         """About me"""
-        await ctx.send(
-            view = AboutLayoutView(ctx),
-            allowed_mentions = discord.AllowedMentions.none()
+        view = AboutLayoutView(ctx)
+        view.message = await ctx.send(
+            view = view, allowed_mentions = discord.AllowedMentions.none()
         )
+        ctx.bot.views.append(view)
         if not ctx.interaction:
             await ctx.bot.attempt_delete_message(ctx.message)
 
@@ -1046,7 +1047,18 @@ class AboutLayoutView(ui.LayoutView):
 
     def __init__(self, ctx):
         super().__init__(timeout = 600)
-        self.add_item(AboutContainer(ctx))
+        self.container = AboutContainer(ctx)
+        self.add_item(self.container)
+
+    async def on_timeout(self):
+        await self.stop()
+
+    async def stop(self):
+        self.container.server_invite_button.disabled = True
+        await self.message.edit(
+            view = self, allowed_mentions = discord.AllowedMentions.none()
+        )
+        super().stop()
 
 
 class AboutContainer(ui.Container):
@@ -1130,14 +1142,12 @@ class AboutContainer(ui.Container):
                     f"{interaction.user.mention}: Harmonbot Discord Server (#changelog): {ctx.bot.changelog}"
                 )
 
-        self.add_item(
-            ui.ActionRow(
-                ServerInviteButton(
-                    label = "Send Discord Server Invite",
-                    style = discord.ButtonStyle.blurple
-                )
-            )
+        self.server_invite_button = ServerInviteButton(
+            label = "Send Discord Server Invite",
+            style = discord.ButtonStyle.blurple
         )
+
+        self.add_item(ui.ActionRow(self.server_invite_button))
 
 
 class StatisticsView(ui.View):
