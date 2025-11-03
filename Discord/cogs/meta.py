@@ -1135,19 +1135,22 @@ class AboutContainer(ui.Container):
             )
         )
 
-        # TODO: Move out of Container?
-        class ServerInviteButton(ui.Button):
-            async def callback(self, interaction):
-                await interaction.response.send_message(
-                    f"{interaction.user.mention}: Harmonbot Discord Server (#changelog): {ctx.bot.changelog}"
-                )
+        # Put server invite button last, at bottom
+        self.remove_item(self.action_row)
+        self.add_item(self.action_row)
 
-        self.server_invite_button = ServerInviteButton(
-            label = "Send Discord Server Invite",
-            style = discord.ButtonStyle.blurple
+    action_row = ui.ActionRow()
+
+    @action_row.button(
+        label = "Send Discord Server Invite",
+        style = discord.ButtonStyle.blurple
+    )
+    async def server_invite_button(
+        self, interaction: discord.Interaction, button: ui.Button
+    ):
+        await interaction.response.send_message(
+            f"{interaction.user.mention}: Harmonbot Discord Server (#changelog): {interaction.client.changelog}"
         )
-
-        self.add_item(ui.ActionRow(self.server_invite_button))
 
 
 class StatisticsView(ui.View):
