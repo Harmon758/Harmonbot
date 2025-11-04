@@ -516,7 +516,7 @@ httpx==0.28.1 ; implementation_name == 'cpython' and platform_python_implementat
     # via
     #   python-telegram-bot
     #   wolframalpha
-hypothesis==6.143.1 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+hypothesis==6.145.1 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:27954227d85057c0456c0b4e5953fdf6a0eff989874dcda21e20b5a41b4f1a59 \
     --hash=sha256:7974544d0d5b7041688b544aa2dbeac69a28def90e010ff5d2b2cbc85bd40dd2
 idna==3.11 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
