@@ -78,7 +78,6 @@ attrs==25.4.0 ; implementation_name == 'cpython' and platform_python_implementat
     --hash=sha256:adcf7e2a1fb3b36ac48d97835bb6d8ade15b8dcce26aba8bf1d14847b57a3373
     # via
     #   aiohttp
-    #   hypothesis
     #   jsonschema
     #   pytype
     #   referencing
@@ -516,9 +515,9 @@ httpx==0.28.1 ; implementation_name == 'cpython' and platform_python_implementat
     # via
     #   python-telegram-bot
     #   wolframalpha
-hypothesis==6.144.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:38e81c34e5091ad6435efec85e82b956bb8c5bdfdaebd4930853dfc7a2783ae6 \
-    --hash=sha256:eea7ac8d8c906605781bd813715285088d5ab74eed1c4e7128b78043e6222213
+hypothesis==6.145.1 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:4e7610923de7e0c7d5c1bfa84114f2579e06f0e83a4ce9f073ca0c887d222b7e \
+    --hash=sha256:8b4c2d93adbacd235153a3ee075012fc870da341b32c3035838963b6241d6281
 idna==3.11 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:771a87f49d9defaf64091e6e6fe9c18d4833f140bd19464795bc32d966ca37ea \
     --hash=sha256:795dafcc9c04ed0c1fb032c2aa73654d8e8c5023a7df64a53f39190ada629902
