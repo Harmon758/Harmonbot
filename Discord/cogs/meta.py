@@ -1048,6 +1048,15 @@ class AboutLayoutView(ui.LayoutView):
 
     def __init__(self, ctx):
         super().__init__(timeout = 600)
+
+        if not ctx.interaction:
+            self.add_item(
+                ui.TextDisplay(
+                    f"-# In response to {ctx.author.mention}:\n"
+                    f"-# > {ctx.message.clean_content}"
+                )
+            )
+
         self.container = AboutContainer(ctx)
         self.add_item(self.container)
 
@@ -1066,14 +1075,6 @@ class AboutContainer(ui.Container):
 
     def __init__(self, ctx):
         super().__init__()
-
-        if not ctx.interaction:
-            self.add_item(
-                ui.TextDisplay(
-                    f"-# In response to {ctx.author.mention}:\n"
-                    f"-# > {ctx.message.clean_content}"
-                )
-            )
 
         self.add_item(ui.TextDisplay("## About Me"))
 
