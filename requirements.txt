@@ -642,7 +642,7 @@ language-data==1.3.0 ; implementation_name == 'cpython' and platform_python_impl
     --hash=sha256:7600ef8aa39555145d06c89f0c324bf7dab834ea0b0a439d8243762e3ebad7ec \
     --hash=sha256:e2ee943551b5ae5f89cd0e801d1fc3835bb0ef5b7e9c3a4e8e17b2b214548fbf
     # via langcodes
-libcst==1.8.5 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+libcst==1.8.6 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:26e9d5e756447873eeda78441fa7d1fe640c0b526e5be2b6b7ee0c8f03c4665f \
     --hash=sha256:4f43915cd523a6967ba1dfe137627ed3804892005330c3bf53674a2ab4ff3dad \
     --hash=sha256:588acde1588544b3bfe06069c118ee731e6712f323f26a026733f0ec4512596e \
