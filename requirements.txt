@@ -526,7 +526,7 @@ idna==3.11 ; implementation_name == 'cpython' and platform_python_implementation
     #   httpx
     #   requests
     #   yarl
-imageio==2.37.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+imageio==2.37.2 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:11efa15b87bc7871b61590326b2d635439acc321cf7f8ce996f812543ce10eed \
     --hash=sha256:71b57b3669666272c818497aebba2b4c5f20d5b37c81720e5e1a56d59c492996
     # via harmonbot
