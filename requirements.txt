@@ -132,7 +132,7 @@ blis==1.3.0 ; implementation_name == 'cpython' and platform_python_implementatio
     --hash=sha256:8072fbb03505444c818810536ad77616a18d97bbde06e8ec69755d917abb7f31 \
     --hash=sha256:cad91ae2c8a11286b32e80ac7e579d7028f8c0a22afa1e817edddc18051f05b2
     # via thinc
-brotli==1.1.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+brotli==1.2.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:19c116e796420b0cee3da1ccec3b764ed2952ccfcc298b55a10e5610ad7885f9 \
     --hash=sha256:1b2c248cd517c222d89e74669a4adfa5577e06ab68771a529060cf5a156e9757 \
     --hash=sha256:2a24c50840d89ded6c9a8fdc7b6ed3692ed4e86f1c4a4a938e1e92def92933e0 \
