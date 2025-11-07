@@ -453,7 +453,7 @@ google-cloud-translate==3.22.0 ; implementation_name == 'cpython' and platform_p
     --hash=sha256:c9a0e52b8546f0096406289f6be741f90ea41a14c05a98e96d292bfef1ac7e73 \
     --hash=sha256:d2373212c13442ddbcf5cfcac857671258cc2239489afdf5b9c1ebf587b4e4aa
     # via harmonbot
-googleapis-common-protos==1.71.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+googleapis-common-protos==1.72.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:1aec01e574e29da63c80ba9f7bbf1ccfaacf1da877f23609fe236ca7c72a2e2e \
     --hash=sha256:59034a1d849dc4d18971997a72ac56246570afdd17f9369a0ff68218d50ab78c
     # via
