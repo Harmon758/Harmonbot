@@ -1668,7 +1668,7 @@ wasabi==1.1.3 ; implementation_name == 'cpython' and platform_python_implementat
     #   spacy
     #   thinc
     #   weasel
-weasel==0.4.1 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+weasel==0.4.2 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:24140a090ea1ac512a2b2f479cc64192fd1d527a7f3627671268d08ed5ac418c \
     --hash=sha256:aabc210f072e13f6744e5c3a28037f93702433405cd35673f7c6279147085aa9
     # via spacy
