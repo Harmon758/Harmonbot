@@ -1356,7 +1356,7 @@ ruff==0.14.4 ; implementation_name == 'cpython' and platform_python_implementati
     --hash=sha256:f5e649052a294fe00818650712083cddc6cc02744afaf37202c65df9ea52efa5 \
     --hash=sha256:f911bba769e4a9f51af6e70037bb72b70b45a16db5ce73e1f72aefe6f6d62132
     # via clarifai
-schema==0.7.5 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+schema==0.7.8 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:f06717112c61895cabc4707752b88716e8420a8819d71404501e114f91043197 \
     --hash=sha256:f3ffdeeada09ec34bf40d7d79996d9f7175db93b7a5065de0faa7f41083c1e6c
     # via clarifai
