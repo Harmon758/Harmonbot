@@ -1,8 +1,6 @@
 
 import unittest
 
-import pytest
-
 from units.trivia import check_answer, load_nlp
 
 
@@ -10,13 +8,6 @@ def setUpModule():
     load_nlp()
 
 
-@pytest.mark.filterwarnings(
-    "ignore:"
-    "Importing 'parser.split_arg_string' is deprecated:"
-    "DeprecationWarning"
-)
-# https://github.com/explosion/spaCy/issues/13843
-# https://github.com/explosion/weasel/issues/97
 class TestCheckAnswer(unittest.TestCase):
 
     def test_correct_answer(self):
