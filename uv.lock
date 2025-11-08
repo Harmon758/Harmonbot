@@ -2861,7 +2861,7 @@ wheels = [
 
 [[package]]
 name = "thinc"
-version = "8.3.6"
+version = "8.3.8"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "blis", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
@@ -2877,15 +2877,15 @@ dependencies = [
     { name = "srsly", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
     { name = "wasabi", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/01/f4/7607f76c2e156a34b1961a941eb8407b84da4f515cc0903b44d44edf4f45/thinc-8.3.6.tar.gz", hash = "sha256:49983f9b7ddc4343a9532694a9118dd216d7a600520a21849a43b6c268ec6cad", size = 194218, upload-time = "2025-04-04T11:50:45.751Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/90/71/3b1a5dd9f2d902f7ddbf6dd127fdcb6010c1215b4e58f4aaf835d8a83521/thinc-8.3.8.tar.gz", hash = "sha256:11b66762b353af0dbdb591d5d98faf5067625de86575bea727b467dbd282ff3a", size = 194146, upload-time = "2025-11-06T22:19:21.583Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/23/b4/b4ed217679327849ad796dc8ced307447a05e9f607bb12f290b2ec99fb35/thinc-8.3.6-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:7c7c44f8736f27d1cced216246c00e219fb5734e6bc3b8a78c09157c011aae59", size = 895694, upload-time = "2025-04-04T11:49:56.102Z" },
-    { url = "https://files.pythonhosted.org/packages/f0/53/5f9eeb725c2ca94adef76a2cd0289bc530728b0a035eed815c766a9291ef/thinc-8.3.6-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:92b3c38bdfdf81d0485685a6261b8a6ea40e03120b08ced418c8400f5e186b2d", size = 845256, upload-time = "2025-04-04T11:49:57.401Z" },
-    { url = "https://files.pythonhosted.org/packages/89/8e/fae78ba63b1b0fb9017fd51d0aeffdc22e837807a93d55100c92e6d30570/thinc-8.3.6-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:853eb187b1f77057adada1a72e7f6ea3f38643930363681cfd5de285dab4b09b", size = 4402142, upload-time = "2025-04-04T11:49:59.144Z" },
-    { url = "https://files.pythonhosted.org/packages/ae/7e/6b1bb6eba9c25a5911e1624c0da33ca007d7697b41ee11c059f3d23d8bbc/thinc-8.3.6-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:1c12bf75a375b3b1f7c32a26cbd69255b177daa693c986a27faaf2027439c7ef", size = 4463797, upload-time = "2025-04-04T11:50:00.647Z" },
-    { url = "https://files.pythonhosted.org/packages/42/39/c5f48785f76cd97a79e83b1acd3dab7d0835e4b560c9d7add846b47ea984/thinc-8.3.6-cp311-cp311-musllinux_1_2_aarch64.whl", hash = "sha256:5bf1708c22fb54e7846e8e743a9e6a43a22cbe24cab0081ba4e6362b4437a53f", size = 5313270, upload-time = "2025-04-04T11:50:02.241Z" },
-    { url = "https://files.pythonhosted.org/packages/a3/32/ce8e7827ed0a1f86eab864e6b0b8ae79118e4e5c40ffd8b21938f8961e23/thinc-8.3.6-cp311-cp311-musllinux_1_2_x86_64.whl", hash = "sha256:169d7c5779f6f1a78fa91b2bc3a6485f7bbe4341bd8064576f8e067b67b6a0b5", size = 5508338, upload-time = "2025-04-04T11:50:04.18Z" },
-    { url = "https://files.pythonhosted.org/packages/94/40/7e5e840ac2e835fbf5d87e3ab94df7d678d846aaf28b12d46538ed36bf7f/thinc-8.3.6-cp311-cp311-win_amd64.whl", hash = "sha256:59c244ce11a3359b9a33b4c3bbc9ba94f7174214356ed88c16a41e39f31fe372", size = 1775998, upload-time = "2025-04-04T11:50:05.744Z" },
+    { url = "https://files.pythonhosted.org/packages/02/e5/65c49da410803c2743c9f5f892f138ec0b36b3664cafe7f7bc9ea94afb9a/thinc-8.3.8-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:4a80d95185d4b0f4ff337b4305995ae2969961a80fb33fe31ef96cc39acd75ae", size = 820430, upload-time = "2025-11-06T22:18:50.117Z" },
+    { url = "https://files.pythonhosted.org/packages/f7/ae/7e63b0e27494dd041f9db68acfde86f8fd70f7c9f79de04ae1f9355d0db5/thinc-8.3.8-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:288856020ed36504ba098a2ae44a1379c3f936c6bc0880eff9dd4ede7c1c17e4", size = 771739, upload-time = "2025-11-06T22:18:51.707Z" },
+    { url = "https://files.pythonhosted.org/packages/b2/a9/930cb5a93ac0509439b4a195be6ed85662e6beeacb9233401d6b06199675/thinc-8.3.8-cp311-cp311-manylinux2014_aarch64.manylinux_2_17_aarch64.whl", hash = "sha256:138a2b61620e97055fc5c6716e6e34dcc4c82542ac09ec836ba4e8212bfcef27", size = 4102662, upload-time = "2025-11-06T22:18:52.989Z" },
+    { url = "https://files.pythonhosted.org/packages/4f/a7/03db47f1bbf1b6b500c64bd1b8b73471e771d6097fe9161efc3be72c69ff/thinc-8.3.8-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.whl", hash = "sha256:6a4e27e3a14f49d16689a8583fd8d4027bb4704e84d9caee7fdac7077af726ad", size = 4120275, upload-time = "2025-11-06T22:18:54.567Z" },
+    { url = "https://files.pythonhosted.org/packages/d6/73/2444378ad5b79bc0b29df2f994b5bdb23807d4d2197f36772a6440488072/thinc-8.3.8-cp311-cp311-musllinux_1_2_aarch64.whl", hash = "sha256:242cad94302b6c0c83435d96714a98998dfdf76a2ce22ad71e873e09ef42f5c2", size = 5091505, upload-time = "2025-11-06T22:18:56.367Z" },
+    { url = "https://files.pythonhosted.org/packages/33/15/f3981acac65c568c2300b17dd73b9f6a27ee7995fddb192dee7f374782e2/thinc-8.3.8-cp311-cp311-musllinux_1_2_x86_64.whl", hash = "sha256:5c048bd06d3c3463492c3df77e343e07eda1b939aee80a6900f6e5bdb3ea3c15", size = 5251770, upload-time = "2025-11-06T22:18:57.982Z" },
+    { url = "https://files.pythonhosted.org/packages/00/71/93a78fef893fc5d6f0b54bcdff3c4141b3dc68f6005766b54f03cb4ca52f/thinc-8.3.8-cp311-cp311-win_amd64.whl", hash = "sha256:4e1b053265a6d17ae043e74c6e50a1af7ff033d4d3450498e482f5d93bedeb6e", size = 1788577, upload-time = "2025-11-06T22:18:59.755Z" },
 ]
 
 [[package]]

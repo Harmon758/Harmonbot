@@ -1470,15 +1470,15 @@ tempora==5.8.1 ; implementation_name == 'cpython' and platform_python_implementa
     # via
     #   irc
     #   jaraco-logging
-thinc==8.3.6 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:169d7c5779f6f1a78fa91b2bc3a6485f7bbe4341bd8064576f8e067b67b6a0b5 \
-    --hash=sha256:1c12bf75a375b3b1f7c32a26cbd69255b177daa693c986a27faaf2027439c7ef \
-    --hash=sha256:49983f9b7ddc4343a9532694a9118dd216d7a600520a21849a43b6c268ec6cad \
-    --hash=sha256:59c244ce11a3359b9a33b4c3bbc9ba94f7174214356ed88c16a41e39f31fe372 \
-    --hash=sha256:5bf1708c22fb54e7846e8e743a9e6a43a22cbe24cab0081ba4e6362b4437a53f \
-    --hash=sha256:7c7c44f8736f27d1cced216246c00e219fb5734e6bc3b8a78c09157c011aae59 \
-    --hash=sha256:853eb187b1f77057adada1a72e7f6ea3f38643930363681cfd5de285dab4b09b \
-    --hash=sha256:92b3c38bdfdf81d0485685a6261b8a6ea40e03120b08ced418c8400f5e186b2d
+thinc==8.3.8 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:11b66762b353af0dbdb591d5d98faf5067625de86575bea727b467dbd282ff3a \
+    --hash=sha256:138a2b61620e97055fc5c6716e6e34dcc4c82542ac09ec836ba4e8212bfcef27 \
+    --hash=sha256:242cad94302b6c0c83435d96714a98998dfdf76a2ce22ad71e873e09ef42f5c2 \
+    --hash=sha256:288856020ed36504ba098a2ae44a1379c3f936c6bc0880eff9dd4ede7c1c17e4 \
+    --hash=sha256:4a80d95185d4b0f4ff337b4305995ae2969961a80fb33fe31ef96cc39acd75ae \
+    --hash=sha256:4e1b053265a6d17ae043e74c6e50a1af7ff033d4d3450498e482f5d93bedeb6e \
+    --hash=sha256:5c048bd06d3c3463492c3df77e343e07eda1b939aee80a6900f6e5bdb3ea3c15 \
+    --hash=sha256:6a4e27e3a14f49d16689a8583fd8d4027bb4704e84d9caee7fdac7077af726ad
     # via spacy
 toml==0.10.2 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:806143ae5bfb6a3c6e736a764057db0e6a0e05e338b5630894a5f779cabb4f9b \
