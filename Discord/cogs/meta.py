@@ -1371,7 +1371,7 @@ class StatisticsView(ui.View):
                     '\n'.join(
                         f"{record['invocations']:,} {record['command']}"
                         for record in slash_command_invocations
-                    ) + f"\n**Total**: {total_slash_command_invocations}"
+                    ) + f"\n**Total**: {total_slash_command_invocations:,}"
                 )
             ).add_field(
                 name = "Message Context Menu Command Invocations",
@@ -1379,7 +1379,7 @@ class StatisticsView(ui.View):
                     '\n'.join(
                         f"{record['invocations']:,} {record['command']}"
                         for record in message_context_menu_command_invocations
-                    ) + f"\n**Total**: {total_message_context_menu_command_invocations}"
+                    ) + f"\n**Total**: {total_message_context_menu_command_invocations:,}"
                 )
             ).add_field(
                 name = "User Context Menu Command Invocations",
@@ -1387,7 +1387,7 @@ class StatisticsView(ui.View):
                     '\n'.join(
                         f"{record['invocations']:,} {record['command']}"
                         for record in user_context_menu_command_invocations
-                    ) + f"\n**Total**: {total_user_context_menu_command_invocations}"
+                    ) + f"\n**Total**: {total_user_context_menu_command_invocations:,}"
                 )
             )
         )
