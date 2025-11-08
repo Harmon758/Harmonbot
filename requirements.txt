@@ -237,6 +237,7 @@ click==8.3.0 ; implementation_name == 'cpython' and platform_python_implementati
     # via
     #   clarifai
     #   typer
+    #   typer-slim
 cloudpathlib==0.23.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:8520b3b01468fee77de37ab5d50b1b524ea6b4a8731c35d1b7407ac0cd716002 \
     --hash=sha256:eb38a34c6b8a048ecfd2b2f60917f7cbad4a105b7c979196450c2f541f4d6b4b
@@ -1566,9 +1567,11 @@ typeguard==4.4.4 ; implementation_name == 'cpython' and platform_python_implemen
 typer==0.20.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:1aaf6494031793e4876fb0bacfa6a912b551cf43c1e63c800df8b1a866720c37 \
     --hash=sha256:5b463df6793ec1dca6213a3cf4c0f03bc6e322ac5e16e13ddd622a889489784a
-    # via
-    #   spacy
-    #   weasel
+    # via spacy
+typer-slim==0.20.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:9fc6607b3c6c20f5c33ea9590cbeb17848667c51feee27d9e314a579ab07d1a3 \
+    --hash=sha256:f42a9b7571a12b97dddf364745d29f12221865acef7a2680065f9bb29c7dc89d
+    # via weasel
 typeshed-client==2.8.2 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:4cf886d976c777689cd31889f13abf5bfb7797c82519b07e5969e541380c75ee \
     --hash=sha256:9d8e29fb74574d87bf9a719f77131dc40f2aeea20e97d25d4a3dc2cc30debd31
@@ -1594,6 +1597,7 @@ typing-extensions==4.15.0 ; implementation_name == 'cpython' and platform_python
     #   twitchio
     #   typeguard
     #   typer
+    #   typer-slim
     #   typeshed-client
     #   typing-inspection
 typing-inspection==0.4.2 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
@@ -1662,9 +1666,9 @@ wasabi==1.1.3 ; implementation_name == 'cpython' and platform_python_implementat
     #   spacy
     #   thinc
     #   weasel
-weasel==0.4.1 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:24140a090ea1ac512a2b2f479cc64192fd1d527a7f3627671268d08ed5ac418c \
-    --hash=sha256:aabc210f072e13f6744e5c3a28037f93702433405cd35673f7c6279147085aa9
+weasel==0.4.2 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:447a5f7b99f8002c4c5ed076ecf75f23e9ad3f7c4be05d3930c7d087721674fd \
+    --hash=sha256:47372460ff42ee89f59d8b6bc8ea07994600f7e88822a342b9771c72961f965e
     # via spacy
 websockets==15.0.1 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:16b6c1b3e57799b9d38427dda63edcbe4926352c47cf88588c0be4ace18dac85 \
