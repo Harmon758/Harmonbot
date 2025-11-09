@@ -1195,7 +1195,7 @@ pyspellchecker==0.8.3 ; implementation_name == 'cpython' and platform_python_imp
     --hash=sha256:cb06eeafe124837f321e0d02f8e21deab713e966e28e0360319a28a089c43978 \
     --hash=sha256:e993076e98b0da5a99b7cc31085c3022c77a9dc37c5e95f5cf6304b5dbb8b9d2
     # via harmonbot
-pytest==8.4.2 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+pytest==9.0.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:86c0d0b93306b961d58d62a4db4879f27fe25513d4b969df351abdddb3c30e01 \
     --hash=sha256:872f880de3fc3a5bdc88a11b39c9710c3497a547cfa9320bc3c5e62fbf272e79
 python-aiml==0.9.3 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
