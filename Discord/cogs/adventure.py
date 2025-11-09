@@ -115,11 +115,11 @@ class Adventure(commands.Cog):
 
     @adventure.command(aliases = ["make", "craft"])
     async def create(self, ctx, *items: str):
-        '''
+        """
         Create item
         items: items to use to attempt to create something else
         Use quotes for spaces in item names
-        '''
+        """
         player = await self.get_adventure_player(ctx.author.id)
         created = await player.create_item(items)
         if created is None:
