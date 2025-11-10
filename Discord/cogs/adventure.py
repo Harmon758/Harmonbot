@@ -125,7 +125,9 @@ class Adventure(commands.Cog):
         if created is None:
             await ctx.embed_reply("You don't have those items")
         elif created is False:
-            await ctx.embed_reply("You were unable to create anything with those items")
+            await ctx.embed_reply(
+                "You were unable to create anything with those items"
+            )
         else:
             await ctx.embed_reply(f"You have created {created}")
 
