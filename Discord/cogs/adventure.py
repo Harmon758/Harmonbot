@@ -133,7 +133,7 @@ class Adventure(commands.Cog):
 
     @adventure.command()
     async def examine(self, ctx, *, item: str):
-        '''Examine items'''
+        """Examine items"""
         player = await self.get_adventure_player(ctx.author.id)
         count = await player.inventory(item)
         if not count:
