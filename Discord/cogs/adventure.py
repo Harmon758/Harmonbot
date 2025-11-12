@@ -137,7 +137,7 @@ class Adventure(commands.Cog):
         player = await self.get_adventure_player(ctx.author.id)
         count = await player.inventory(item)
         if not count:
-            return await ctx.embed_reply(":no_entry: You don't have that item")
+            return await ctx.embed_reply(f"{ctx.bot.error_emoji} You don't have that item")
         if item in EXAMINE_MESSAGES:
             await ctx.embed_reply(EXAMINE_MESSAGES[item])
         else:
