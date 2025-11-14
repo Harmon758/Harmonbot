@@ -326,7 +326,7 @@ cycler==0.12.1 ; implementation_name == 'cpython' and platform_python_implementa
     --hash=sha256:85cef7cff222d8644161529808465972e51340599459b8ac3ccbac5a854e0d30 \
     --hash=sha256:88bb128f02ba341da8ef447245a9e138fae777f6a23943da4540077d3601eb1c
     # via matplotlib
-cymem==2.0.11 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+cymem==2.0.12 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:2203bd6525a80d8fd0c94654a263af21c0387ae1d5062cceaebb652bf9bad7bc \
     --hash=sha256:39b78f2195d20b75c2d465732f6b8e8721c5d4eb012777c2cb89bdb45a043185 \
     --hash=sha256:3ee54039aad3ef65de82d66c40516bf54586287b46d32c91ea0530c34e8a2745 \
