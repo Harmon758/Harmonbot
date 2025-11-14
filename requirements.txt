@@ -948,7 +948,7 @@ pluggy==1.6.0 ; implementation_name == 'cpython' and platform_python_implementat
     --hash=sha256:7dcc130b76258d33b90f61b658791dede3486c3e6bfb003ee5c9bfb396dd22f3 \
     --hash=sha256:e920276dd6813095e9377c0bc5566d94c932c33b27a3e3945d8389c374dd4746
     # via pytest
-preshed==3.0.10 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+preshed==3.0.11 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:1367c1fd6f44296305315d4e1c3fe3171787d4d01c1008a76bc9466bd79c3249 \
     --hash=sha256:5a5c8e685e941f4ffec97f1fbf32694b8107858891a4bc34107fac981d8296ff \
     --hash=sha256:9dd1f0a7b7d150e229d073fd4fe94f72610cae992e907cee74687c4695873a98 \
