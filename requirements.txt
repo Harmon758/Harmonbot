@@ -988,7 +988,7 @@ proto-plus==1.26.1 ; implementation_name == 'cpython' and platform_python_implem
     #   google-api-core
     #   google-cloud-speech
     #   google-cloud-translate
-protobuf==6.33.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+protobuf==6.33.1 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:140303d5c8d2037730c548f8c7b93b20bb1dc301be280c378b82b8894589c954 \
     --hash=sha256:25c9e1963c6734448ea2d308cfa610e692b801304ba0908d7bfa564ac5132995 \
     --hash=sha256:35be49fd3f4fefa4e6e2aacc35e8b837d6703c37a2168a55ac21e9b1bc7559ef \
