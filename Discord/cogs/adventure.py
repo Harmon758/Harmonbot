@@ -151,7 +151,7 @@ class Adventure(commands.Cog):
         invoke_without_command = True, case_insensitive = True
     )
     async def forage(self, ctx, *, item: str = ""):
-        '''Foraging'''
+        """Foraging"""
         player = await self.get_adventure_player(ctx.author.id)
         started = await player.start_foraging(item)
         if started == "foraging":
