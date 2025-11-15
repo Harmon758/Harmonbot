@@ -757,7 +757,7 @@ multidict==6.7.0 ; implementation_name == 'cpython' and platform_python_implemen
     #   aiohttp
     #   wolframalpha
     #   yarl
-murmurhash==1.0.13 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+murmurhash==1.0.15 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:0f272e15a84a8ae5f8b4bc0a68f9f47be38518ddffc72405791178058e9d019a \
     --hash=sha256:507148e50929ba1fce36898808573b9f81c763d5676f3fc6e4e832ff56b66992 \
     --hash=sha256:64d50f6173d266ad165beb8bca6101d824217fc9279f9e9981f4c0245c1e7ee6 \
