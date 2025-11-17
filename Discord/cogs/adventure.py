@@ -157,7 +157,7 @@ class Adventure(commands.Cog):
         if started == "foraging":
             stopped = await player.stop_foraging()
             output = (
-                f":herb: You were foraging {stopped[0]} for {stopped[1]:,.2f} min. and received {stopped[2]:,} {stopped[0]} and xp.\n"
+                f"\N{HERB} You were foraging {stopped[0]} for {stopped[1]:,.2f} min. and received {stopped[2]:,} {stopped[0]} and xp.\n"
                 f"While you were foraging, you also found {stopped[3]:,} {FORAGEABLES[stopped[0]][0]}"
             )
             if stopped[4]:
@@ -169,7 +169,7 @@ class Adventure(commands.Cog):
                 return
         if started is True:
             await ctx.embed_reply(
-                f":herb: You have started foraging for {item}"
+                f"\N{HERB} You have started foraging for {item}"
             )
             # TODO: active option?
         elif started is False:
