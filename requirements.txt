@@ -825,7 +825,7 @@ numexpr==2.14.1 ; implementation_name == 'cpython' and platform_python_implement
     --hash=sha256:e9b2f957798c67a2428be96b04bce85439bed05efe78eb78e4c2ca43737578e7 \
     --hash=sha256:ebe4980f9494b9f94d10d2e526edc29e72516698d3bf95670ba79415492212a4
     # via harmonbot
-numpy==2.3.4 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+numpy==2.3.5 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:13b9062e4f5c7ee5c7e5be96f29ba71bc5a37fed3d1d77c37390ae00724d296d \
     --hash=sha256:1b219560ae2c1de48ead517d085bc2d05b9433f8e49d0955c82e8cd37bd7bf36 \
     --hash=sha256:36dc13af226aeab72b7abad501d370d606326a0029b9f435eacb3b8c94b8a8b7 \
