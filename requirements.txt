@@ -120,7 +120,7 @@ beautifulsoup4==4.14.2 ; implementation_name == 'cpython' and platform_python_im
     # via
     #   harmonbot
     #   markdownify
-blis==1.3.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+blis==1.3.3 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:1695a87e3fc4c20d9b9140f5238cac0514c411b750e8cdcec5d8320c71f62e99 \
     --hash=sha256:1bf4267616fb97a3b869cc8d278383faa86882dc8330067421f9bf9c06e6b80c \
     --hash=sha256:2cf336a810bd0e6ab52e8ba5455c42ff02f6216acb196ffc831cd30ab084127e \
