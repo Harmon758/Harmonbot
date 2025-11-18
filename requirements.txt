@@ -1394,7 +1394,7 @@ soupsieve==2.8 ; implementation_name == 'cpython' and platform_python_implementa
     --hash=sha256:0cc76456a30e20f5d7f2e14a98a4ae2ee4e5abdc7c5ea0aafe795f344bc7984c \
     --hash=sha256:e2dd4a40a628cb5f28f6d4b0db8800b8f581b65bb380b97de22ba5ca8d72572f
     # via beautifulsoup4
-spacy==3.8.8 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+spacy==3.8.11 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:08b933bd1f0f47f59321fe730a06c645120084719e718960a2e596a3728aea84 \
     --hash=sha256:3c541e5f2725229295b5ae7e0d7b03158991a0b1b4dfb25406ce8c399201e38d \
     --hash=sha256:47cd146c97ae8a7096f687872a29deaf7a7a2249347b6f464af8a43e5a051769 \
