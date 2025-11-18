@@ -148,7 +148,7 @@ class Adventure(commands.Cog):
 
     @adventure.group(
         aliases = ["gather"],
-        invoke_without_command = True, case_insensitive = True
+        case_insensitive = True, invoke_without_command = True
     )
     async def forage(self, ctx, *, item: str = ""):
         """Foraging"""
