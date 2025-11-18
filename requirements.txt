@@ -1439,7 +1439,7 @@ sqlalchemy==2.0.44 ; implementation_name == 'cpython' and platform_python_implem
     --hash=sha256:c3678a0fb72c8a6a29422b2732fe423db3ce119c34421b5f9955873eb9b62c1e \
     --hash=sha256:de4387a354ff230bc979b46b2207af841dc8bf29847b6c7dbe60af186d97aefa
     # via harmonbot
-srsly==2.5.1 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+srsly==2.5.2 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:58f0736794ce00a71d62a39cbba1d62ea8d5be4751df956e802d147da20ecad7 \
     --hash=sha256:7a8269c40859806d71920396d185f4f38dc985cdb6a28d3a326a701e29a5f629 \
     --hash=sha256:889905900401fefc1032e22b73aecbed8b4251aa363f632b2d1f86fc16f1ad8e \
