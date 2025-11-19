@@ -157,8 +157,11 @@ class Adventure(commands.Cog):
         if started == "foraging":
             stopped = await player.stop_foraging()
             output = (
-                f"\N{HERB} You were foraging {stopped[0]} for {stopped[1]:,.2f} min. and received {stopped[2]:,} {stopped[0]} and xp.\n"
-                f"While you were foraging, you also found {stopped[3]:,} {FORAGEABLES[stopped[0]][0]}"
+                f"\N{HERB} You were foraging {stopped[0]} for "
+                f"{stopped[1]:,.2f} min. and received "
+                f"{stopped[2]:,} {stopped[0]} and xp.\n"
+                "While you were foraging, you also found "
+                f"{stopped[3]:,} {FORAGEABLES[stopped[0]][0]}"
             )
             if stopped[4]:
                 output += f" and {stopped[4]:,} {FORAGEABLES[stopped[0]][1]}!"
@@ -173,10 +176,13 @@ class Adventure(commands.Cog):
             )
             # TODO: active option?
         elif started is False:
-            await ctx.embed_reply(f"{ctx.bot.error_emoji} That item type doesn't exist")
+            await ctx.embed_reply(
+                f"{ctx.bot.error_emoji} That item type doesn't exist"
+            )
         else:
             await ctx.embed_reply(
-                f"{ctx.bot.error_emoji} You're currently {started}! You can't start/stop foraging right now"
+                f"{ctx.bot.error_emoji} You're currently {started}! "
+                "You can't start/stop foraging right now"
             )
 
     @forage.command(name = "items", aliases = ["item", "type", "types"])
