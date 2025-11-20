@@ -187,7 +187,7 @@ class Adventure(commands.Cog):
 
     @forage.command(name = "items", aliases = ["item", "type", "types"])
     async def forage_items(self, ctx):
-        '''Forageable items'''
+        """Forageable items"""
         await ctx.embed_reply(", ".join(FORAGEABLES.keys()))
 
     @forage.command(name = "start", aliases = ["on"])
