@@ -192,7 +192,7 @@ class Adventure(commands.Cog):
 
     @forage.command(name = "start", aliases = ["on"])
     async def forage_start(self, ctx, *, item: str):
-        '''Start foraging'''
+        """Start foraging"""
         player = await self.get_adventure_player(ctx.author.id)
         started = await player.start_foraging(item)
         if started is True:
