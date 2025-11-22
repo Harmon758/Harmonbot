@@ -31,7 +31,7 @@ jobs:
         architecture: x64
         cache: pip
     - name: Set up uv
-      uses: astral-sh/setup-uv@v6.8.0
+      uses: astral-sh/setup-uv@v7.1.4
     - name: Install dependencies
       run: uv pip install -r pylock.toml --system
     - name: Test Discord Harmonbot
@@ -60,7 +60,7 @@ jobs:
         architecture: x64
         cache: pip
     - name: Set up uv
-      uses: astral-sh/setup-uv@v6.8.0
+      uses: astral-sh/setup-uv@v7.1.4
     - name: Install dependencies
       run: uv pip install -r pylock.toml --system
     - name: Test Telegram Harmonbot
