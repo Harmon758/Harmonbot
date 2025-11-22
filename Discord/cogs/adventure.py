@@ -199,9 +199,9 @@ class Adventure(commands.Cog):
             await ctx.embed_reply(f":herb: You have started foraging for {item}")
             # TODO: active option?
         elif started is False:
-            await ctx.embed_reply(":no_entry: That item type doesn't exist")
+            await ctx.embed_reply(f"{ctx.bot.error_emoji} That item type doesn't exist")
         else:
-            await ctx.embed_reply(f":no_entry: You're currently {started}! You can't start foraging right now")
+            await ctx.embed_reply(f"{ctx.bot.error_emoji} You're currently {started}! You can't start foraging right now")
 
     @forage.command(name = "stop", aliases = ["off"])
     async def forage_stop(self, ctx):
