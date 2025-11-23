@@ -196,7 +196,7 @@ class Adventure(commands.Cog):
         player = await self.get_adventure_player(ctx.author.id)
         started = await player.start_foraging(item)
         if started is True:
-            await ctx.embed_reply(f":herb: You have started foraging for {item}")
+            await ctx.embed_reply(f"\N{HERB} You have started foraging for {item}")
             # TODO: active option?
         elif started is False:
             await ctx.embed_reply(f"{ctx.bot.error_emoji} That item type doesn't exist")
