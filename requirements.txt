@@ -90,7 +90,7 @@ backports-tarfile==1.2.0 ; implementation_name == 'cpython' and platform_python_
     --hash=sha256:77e284d754527b01fb1e6fa8a1afe577858ebe4e9dad8919e34c862cb399bc34 \
     --hash=sha256:d75e02c268746e1b8144c278978b6e98e85de6ad16f8e4b0844a154557eca991
     # via jaraco-context
-backports-zstd==1.0.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+backports-zstd==1.1.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:15863463b7f28049d4511f9f123c3b96d66c3de543315c21ef3bc6b001b20d01 \
     --hash=sha256:1f8b0bc92f5be153a4878188ab0aeab5b9bbff3dc3e9d3ad3b19e29fe4932741 \
     --hash=sha256:34cd5bdb76448f2259ea371d6cd62a7e339021e1429fe3c386acb3e58c1f6c61 \
