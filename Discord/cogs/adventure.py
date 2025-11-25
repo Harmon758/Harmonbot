@@ -212,7 +212,7 @@ class Adventure(commands.Cog):
 
     @forage.command(name = "stop", aliases = ["off"])
     async def forage_stop(self, ctx):
-        '''Stop foraging'''
+        """Stop foraging"""
         player = await self.get_adventure_player(ctx.author.id)
         stopped = await player.stop_foraging()
         if stopped[0]:
