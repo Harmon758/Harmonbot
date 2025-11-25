@@ -722,7 +722,7 @@ mpmath==1.3.0 ; implementation_name == 'cpython' and platform_python_implementat
     --hash=sha256:7a28eb2a9774d00c7bc92411c19a89209d5da7c4c9a9e227be8330a23a25b91f \
     --hash=sha256:a0b2b9fe80bbcd81a6647ff13108738cfb482d481d826cc0e02f5b35e5c88d2c
     # via sympy
-msgspec==0.19.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+msgspec==0.20.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:047cfa8675eb3bad68722cfe95c60e7afabf84d1bd8938979dd2b92e9e4a9551 \
     --hash=sha256:45c8fb410670b3b7eb884d44a75589377c341ec1392b778311acdbfa55187716 \
     --hash=sha256:604037e7cd475345848116e89c553aa9a233259733ab51986ac924ab1b976f8e \
