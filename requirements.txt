@@ -62,7 +62,7 @@ async-lru==2.0.5 ; implementation_name == 'cpython' and platform_python_implemen
     # via
     #   harmonbot
     #   tweepy
-asyncpg==0.30.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+asyncpg==0.31.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:1c198a00cce9506fcd0bf219a799f38ac7a237745e1d27f0e1f66d3707c84a5a \
     --hash=sha256:3326e6d7381799e9735ca2ec9fd7be4d5fef5dcbc3cb555d8a463d8460607956 \
     --hash=sha256:3356637f0bd830407b5597317b3cb3571387ae52ddc3bca6233682be88bbbc1f \
