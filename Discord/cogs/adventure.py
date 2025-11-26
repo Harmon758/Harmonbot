@@ -225,10 +225,10 @@ class Adventure(commands.Cog):
             await ctx.embed_reply(output)
         elif stopped[1]:
             await ctx.embed_reply(
-                f":no_entry: You're currently {stopped[1]}! You aren't foraging right now"
+                f"{ctx.bot.error_emoji} You're currently {stopped[1]}! You aren't foraging right now"
             )
         else:
-            await ctx.embed_reply(":no_entry: You aren't foraging")
+            await ctx.embed_reply(f"{ctx.bot.error_emoji} You aren't foraging")
 
     @adventure.command()
     async def inventory(self, ctx, *, item: str = ""):
