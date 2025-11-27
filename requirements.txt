@@ -1093,7 +1093,7 @@ pycryptodomex==3.23.0 ; implementation_name == 'cpython' and platform_python_imp
     # via
     #   harmonbot
     #   yt-dlp
-pydantic==2.12.4 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+pydantic==2.12.5 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:0f8cb9555000a4b5b617f66bfd2566264c4984b27589d3b845685983e8ea85ac \
     --hash=sha256:92d3d202a745d46f9be6df459ac5a064fdaa3c1c4cd8adcfa332ccf3c05f871e
     # via
