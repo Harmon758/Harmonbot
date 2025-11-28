@@ -217,15 +217,19 @@ class Adventure(commands.Cog):
         stopped = await player.stop_foraging()
         if stopped[0]:
             output = (
-                f"\N{HERB} You were foraging {stopped[0]} for {stopped[1]:,.2f} min. and received {stopped[2]:,} {stopped[0]} and xp.\n"
-                f"While you were foraging, you also found {stopped[3]:,} {FORAGEABLES[stopped[0]][0]}"
+                f"\N{HERB} You were foraging {stopped[0]} "
+                f"for {stopped[1]:,.2f} min. and received "
+                f"{stopped[2]:,} {stopped[0]} and xp.\n"
+                "While you were foraging, you also found "
+                f"{stopped[3]:,} {FORAGEABLES[stopped[0]][0]}"
             )
             if stopped[4]:
                 output += f" and {stopped[4]:,} {FORAGEABLES[stopped[0]][1]}!"
             await ctx.embed_reply(output)
         elif stopped[1]:
             await ctx.embed_reply(
-                f"{ctx.bot.error_emoji} You're currently {stopped[1]}! You aren't foraging right now"
+                f"{ctx.bot.error_emoji} You're currently {stopped[1]}! "
+                "You aren't foraging right now"
             )
         else:
             await ctx.embed_reply(f"{ctx.bot.error_emoji} You aren't foraging")
