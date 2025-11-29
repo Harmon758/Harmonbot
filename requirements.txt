@@ -774,7 +774,7 @@ mutagen==1.47.0 ; implementation_name == 'cpython' and platform_python_implement
     --hash=sha256:719fadef0a978c31b4cf3c956261b3c58b6948b32023078a2117b1de09f0fc99 \
     --hash=sha256:edd96f50c5907a9539d8e5bba7245f62c9f520aef333d13392a79a4f70aca719
     # via yt-dlp
-mypy==1.18.2 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+mypy==1.19.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:06a398102a5f203d7477b2923dda3634c36727fa5c237d8f859ef90c42a9924b \
     --hash=sha256:1331eb7fd110d60c24999893320967594ff84c38ac6d19e0a76c5fd809a84c86 \
     --hash=sha256:1379451880512ffce14505493bd9fe469e0697543717298242574882cf8cdb8d \
