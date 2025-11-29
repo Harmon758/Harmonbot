@@ -236,7 +236,7 @@ class Adventure(commands.Cog):
 
     @adventure.command()
     async def inventory(self, ctx, *, item: str = ""):
-        '''Inventory'''
+        """Inventory"""
         player = await self.get_adventure_player(ctx.author.id)
         if item:
             count = await player.inventory(item)
