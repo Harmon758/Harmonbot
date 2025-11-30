@@ -241,7 +241,8 @@ class Adventure(commands.Cog):
         if item:
             count = await player.inventory(item)
             if count:
-                return await ctx.embed_reply(f"{item}: {count}")
+                await ctx.embed_reply(f"{item}: {count}")
+                return
         records = await player.inventory()
         await ctx.embed_reply(", ".join(f"{record['item']}: {record['count']:,}" for record in sorted(records, key = itemgetter("item"))))
 
