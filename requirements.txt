@@ -114,7 +114,7 @@ backports-zstd==1.0.0 ; implementation_name == 'cpython' and platform_python_imp
     --hash=sha256:f009996762b887d1bf9330ac0ce1e83608db0b881f63644ae30f2b6a290cd36b \
     --hash=sha256:f6a27510ebb9e1cb877aaa26fc5e0303437bd2023e0a24976da854a3421e60e5
     # via aiohttp
-beautifulsoup4==4.14.2 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+beautifulsoup4==4.14.3 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:2a98ab9f944a11acee9cc848508ec28d9228abfd522ef0fad6a02a72e0ded69e \
     --hash=sha256:5ef6fa3a8cbece8488d66985560f97ed091e22bbc4e9c2338508a9d5de6d4515
     # via
