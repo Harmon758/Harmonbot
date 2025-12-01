@@ -238,11 +238,9 @@ class Adventure(commands.Cog):
     async def inventory(self, ctx, *, item: str = ""):
         """Inventory"""
         player = await self.get_adventure_player(ctx.author.id)
-        if item:
-            count = await player.inventory(item)
-            if count:
-                await ctx.embed_reply(f"{item}: {count}")
-                return
+        if item and (count := await player.inventory(item)):
+            await ctx.embed_reply(f"{item}: {count}")
+            return
         records = await player.inventory()
         await ctx.embed_reply(", ".join(f"{record['item']}: {record['count']:,}" for record in sorted(records, key = itemgetter("item"))))
 
