@@ -1272,7 +1272,7 @@ rich==14.2.0 ; implementation_name == 'cpython' and platform_python_implementati
     --hash=sha256:73ff50c7c0c1c77c8243079283f4edb376f0f6442433aecb8ce7e6d0b92d1fe4 \
     --hash=sha256:76bc51fe2e57d2b1be1f96c524b890b816e334ab4c1e45888799bfaab0021edd
     # via harmonbot
-rpds-py==0.28.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+rpds-py==0.30.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:03065002fd2e287725d95fbc69688e0c6daf6c6314ba38bdbaa3895418e09296 \
     --hash=sha256:0d3259ea9ad8743a75a43eb7819324cdab393263c91be86e2d1901ee65c314e0 \
     --hash=sha256:1571ae4292649100d743b26d5f9c63503bb1fedf538a8f29a98dce2d5ba6b4e6 \
