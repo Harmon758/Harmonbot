@@ -242,7 +242,12 @@ class Adventure(commands.Cog):
             await ctx.embed_reply(f"{item}: {count}")
             return
         records = await player.inventory()
-        await ctx.embed_reply(", ".join(f"{record['item']}: {record['count']:,}" for record in sorted(records, key = itemgetter("item"))))
+        await ctx.embed_reply(
+            ", ".join(
+                f"{record['item']}: {record['count']:,}"
+                for record in sorted(records, key = itemgetter("item"))
+            )
+        )
 
     @adventure.group(
         aliases = ["stat", "levels", "level", "lvls", "lvl"],
