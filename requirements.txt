@@ -1623,7 +1623,7 @@ uv==0.8.22 ; implementation_name == 'cpython' and platform_python_implementation
     --hash=sha256:e6e1289c411d43e0ca245f46e76457f3807de646d90b656591b6cf46348bed5c \
     --hash=sha256:f6ded9bacb31441d788afca397b8b884ebc2e70f903bea0a38806194be4b249c
     # via clarifai
-vcrpy==7.0.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+vcrpy==8.0.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:176391ad0425edde1680c5b20738ea3dc7fb942520a48d2993448050986b3a50 \
     --hash=sha256:55791e26c18daa363435054d8b35bd41a4ac441b6676167635d1b37a71dbe124
 wand==0.6.13 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
