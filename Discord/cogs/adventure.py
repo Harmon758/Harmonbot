@@ -254,7 +254,7 @@ class Adventure(commands.Cog):
         invoke_without_command = True, case_insensitive = True
     )
     async def stats(self, ctx):
-        '''Stats'''
+        """Stats"""
         player = await self.get_adventure_player(ctx.author.id)
         await ctx.embed_reply(
             f":fishing_pole_and_fish: Fishing xp: {player.fishing_xp:,} (Level {player.fishing_lvl:,})\n"
