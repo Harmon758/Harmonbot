@@ -1721,7 +1721,7 @@ yarl==1.22.0 ; implementation_name == 'cpython' and platform_python_implementati
 youtube-dl @ https://github.com/ytdl-org/ytdl-nightly/releases/download/2023.12.07/youtube-dl-2023.12.07.tar.gz ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:cbcf0028bb951303170333841e4d3b0dc6fa990b75e120ee701bbce3b5918173
     # via harmonbot
-yt-dlp==2025.10.22 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+yt-dlp==2025.12.8 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:9c803a9598859f91d0d5bd3337f1506ecb40bbe97f6efbe93bc4461fed344fb2 \
     --hash=sha256:db2d48133222b1d9508c6de757859c24b5cefb9568cf68ccad85dac20b07f77b
     # via harmonbot
