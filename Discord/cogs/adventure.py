@@ -257,10 +257,10 @@ class Adventure(commands.Cog):
         """Stats"""
         player = await self.get_adventure_player(ctx.author.id)
         await ctx.embed_reply(
-            f":fishing_pole_and_fish: Fishing xp: {player.fishing_xp:,} (Level {player.fishing_lvl:,})\n"
-            f":herb: Foraging xp: {player.foraging_xp:,} (Level {player.foraging_lvl:,})\n"
-            f":pick: Mining xp: {player.mining_xp:,} (Level {player.mining_lvl:,})\n"
-            f":evergreen_tree: Woodcutting xp: {player.woodcutting_xp:,} (Level {player.woodcutting_lvl:,})"
+            f"\N{FISHING POLE AND FISH} Fishing xp: {player.fishing_xp:,} (Level {player.fishing_lvl:,})\n"
+            f"\N{HERB} Foraging xp: {player.foraging_xp:,} (Level {player.foraging_lvl:,})\n"
+            f"\N{PICK}\N{VARIATION SELECTOR-16} Mining xp: {player.mining_xp:,} (Level {player.mining_lvl:,})\n"
+            f"\N{EVERGREEN TREE} Woodcutting xp: {player.woodcutting_xp:,} (Level {player.woodcutting_lvl:,})"
         )
         # time started/played
 
