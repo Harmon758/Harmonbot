@@ -251,7 +251,7 @@ class Adventure(commands.Cog):
 
     @adventure.group(
         aliases = ["stat", "levels", "level", "lvls", "lvl"],
-        invoke_without_command = True, case_insensitive = True
+        case_insensitive = True, invoke_without_command = True
     )
     async def stats(self, ctx):
         """Stats"""
