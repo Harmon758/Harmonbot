@@ -268,7 +268,7 @@ class Adventure(commands.Cog):
         name = "foraging", aliases = ["forage", "gather", "gathering"]
     )
     async def stats_foraging(self, ctx):
-        '''Foraging stats'''
+        """Foraging stats"""
         player = await self.get_adventure_player(ctx.author.id)
         foraging_xp = player.foraging_xp
         await ctx.embed_reply(
