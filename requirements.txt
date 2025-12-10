@@ -1427,7 +1427,7 @@ sphobjinv==2.3.1.3 ; implementation_name == 'cpython' and platform_python_implem
     --hash=sha256:41fc39f6f740a707cfe5b24c1a3a4a6e4ddbdd6429a59bf21f0b5ef1fddf932a \
     --hash=sha256:a1d51e4cf3d968b9e0d3ed1cbccea0071e5e5795f24a2d7401a4e37d6bd75717
     # via harmonbot
-sqlalchemy==2.0.44 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+sqlalchemy==2.0.45 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:0ae7454e1ab1d780aee69fd2aae7d6b8670a581d8847f2d1e0f7ddfbf47e5a22 \
     --hash=sha256:0fe3917059c7ab2ee3f35e77757062b1bea10a0b6ca633c58391e3f3c6c488dd \
     --hash=sha256:19de7ca1246fbef9f9d1bff8f1ab25641569df226364a0e40457dc5457c54b05 \
