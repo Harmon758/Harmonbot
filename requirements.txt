@@ -687,7 +687,7 @@ markupsafe==3.0.3 ; implementation_name == 'cpython' and platform_python_impleme
     --hash=sha256:de8a88e63464af587c950061a5e6a67d3632e36df62b986892331d4620a35c01 \
     --hash=sha256:f9e130248f4462aaa8e2552d547f36ddadbeaa573879158d721bbd33dfe4743a
     # via jinja2
-matplotlib==3.10.7 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+matplotlib==3.10.8 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:15112bcbaef211bd663fa935ec33313b948e214454d949b723998a43357b17b0 \
     --hash=sha256:2222c7ba2cbde7fe63032769f6eb7e83ab3227f47d997a8453377709b7fe3a5a \
     --hash=sha256:3886e47f64611046bc1db523a09dd0a0a6bed6081e6f90e13806dd1d1d1b5e91 \
