@@ -1046,7 +1046,7 @@ pyasn1-modules==0.4.2 ; implementation_name == 'cpython' and platform_python_imp
     --hash=sha256:29253a9207ce32b64c3ac6600edc75368f98473906e8fd1043bd6b5b1de2c14a \
     --hash=sha256:677091de870a80aae844b1ca6134f54652fa2c8c5a52aa396440ac3106e941e6
     # via google-auth
-pycares==4.11.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+pycares==5.0.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:0aed0974eab3131d832e7e84a73ddb0dddbc57393cd8c0788d68a759a78c4a7b \
     --hash=sha256:30d197180af626bb56f17e1fa54640838d7d12ed0f74665a3014f7155435b199 \
     --hash=sha256:35ff1ec260372c97ed688efd5b3c6e5481f2274dea08f6c4ea864c195a9673c6 \
