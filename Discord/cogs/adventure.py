@@ -279,7 +279,7 @@ class Adventure(commands.Cog):
 
     @stats.command(name = "woodcutting", aliases = ["wc"])
     async def stats_woodcutting(self, ctx):
-        '''Woodcutting stats'''
+        """Woodcutting stats"""
         player = await self.get_adventure_player(ctx.author.id)
         woodcutting_xp = player.woodcutting_xp
         await ctx.embed_reply(
