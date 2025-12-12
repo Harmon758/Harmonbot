@@ -5,7 +5,7 @@ aiocache==0.12.3 ; implementation_name == 'cpython' and platform_python_implemen
     --hash=sha256:889086fc24710f431937b87ad3720a289f7fc31c4fd8b68e9f918b9bacd8270d \
     --hash=sha256:f528b27bf4d436b497a1d0d1a8f59a542c153ab1e37c3621713cb376d44c4713
     # via harmonbot
-aiodns==3.5.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+aiodns==3.6.1 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:11264edbab51896ecf546c18eb0dd56dff0428c6aa6d2cd87e643e07300eb310 \
     --hash=sha256:6d0404f7d5215849233f6ee44854f2bb2481adf71b336b2279016ea5990ca5c5
     # via
