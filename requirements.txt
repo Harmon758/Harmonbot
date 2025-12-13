@@ -365,7 +365,7 @@ feedparser==6.0.12 ; implementation_name == 'cpython' and platform_python_implem
     --hash=sha256:64f76ce90ae3e8ef5d1ede0f8d3b50ce26bcce71dd8ae5e82b1cd2d4a5f94228 \
     --hash=sha256:6bbff10f5a52662c00a2e3f86a38928c37c48f77b3c511aedcd51de933549324
     # via harmonbot
-fonttools==4.60.1 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+fonttools==4.61.1 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:3630e86c484263eaac71d117085d509cbcf7b18f677906824e4bace598fb70d2 \
     --hash=sha256:398447f3d8c0c786cbf1209711e79080a40761eb44b27cdafffb48f52bcec258 \
     --hash=sha256:5c1015318e4fec75dd4943ad5f6a206d9727adf97410d58b7e32ab644a807914 \
