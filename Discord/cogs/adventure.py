@@ -283,7 +283,7 @@ class Adventure(commands.Cog):
         player = await self.get_adventure_player(ctx.author.id)
         woodcutting_xp = player.woodcutting_xp
         await ctx.embed_reply(
-            f":evergreen_tree: Woodcutting xp: {woodcutting_xp:,}\n"
+            f"\N{EVERGREEN TREE} Woodcutting xp: {woodcutting_xp:,}\n"
             f"{self.level_bar(woodcutting_xp)}\n"
             f"{xp_left_to_next_lvl(woodcutting_xp):,} xp to next level"
         )
