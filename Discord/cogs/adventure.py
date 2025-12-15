@@ -300,7 +300,7 @@ class Adventure(commands.Cog):
 
     @adventure.group(name = "chop", aliases = ["woodcutting", "wc"], invoke_without_command = True, case_insensitive = True)
     async def woodcutting(self, ctx, *, wood_type: str = ""):
-        '''Woodcutting'''
+        """Woodcutting"""
         player = await self.get_adventure_player(ctx.author.id)
         started = await player.start_woodcutting(wood_type)
         if started == "woodcutting":
