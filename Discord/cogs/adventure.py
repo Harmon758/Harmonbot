@@ -314,9 +314,9 @@ class Adventure(commands.Cog):
             await ctx.embed_reply(f":evergreen_tree: You have started chopping {wood_type} trees")
             await self.woodcutting_active(ctx, wood_type)
         elif started is False:
-            await ctx.embed_reply(":no_entry: That wood type doesn't exist")
+            await ctx.embed_reply(f"{ctx.bot.error_emoji} That wood type doesn't exist")
         else:
-            await ctx.embed_reply(f":no_entry: You're currently {started}! You can't start/stop woodcutting right now")
+            await ctx.embed_reply(f"{ctx.bot.error_emoji} You're currently {started}! You can't start/stop woodcutting right now")
 
     @woodcutting.command(name = "rate", aliases = ["rates"])
     async def woodcutting_rate(self, ctx, *, wood_type: str):
