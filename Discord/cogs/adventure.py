@@ -298,25 +298,40 @@ class Adventure(commands.Cog):
         bar = '\N{BLACK SQUARE}' * shaded + '\N{WHITE SQUARE}' * (10 - shaded)
         return f"Level {lvl:,} ({previous_xp:,} xp) [{bar}] Level {lvl + 1:,} ({next_xp:,} xp)"
 
-    @adventure.group(name = "chop", aliases = ["woodcutting", "wc"], invoke_without_command = True, case_insensitive = True)
+    @adventure.group(
+        name = "chop", aliases = ["woodcutting", "wc"],
+        invoke_without_command = True, case_insensitive = True
+    )
     async def woodcutting(self, ctx, *, wood_type: str = ""):
         """Woodcutting"""
         player = await self.get_adventure_player(ctx.author.id)
         started = await player.start_woodcutting(wood_type)
         if started == "woodcutting":
             stopped = await player.stop_woodcutting()
-            await ctx.embed_reply(f"\N{EVERGREEN TREE} You were chopping {stopped[0]} for {stopped[1]:,.2f} min. and received {stopped[2]:,} {stopped[0]} and {stopped[3]:,} xp")
+            await ctx.embed_reply(
+                f"\N{EVERGREEN TREE} You were chopping {stopped[0]} "
+                f"for {stopped[1]:,.2f} min. and received "
+                f"{stopped[2]:,} {stopped[0]} and {stopped[3]:,} xp"
+            )
             if wood_type:
                 started = await player.start_woodcutting(wood_type)
             else:
                 return
         if started is True:
-            await ctx.embed_reply(f"\N{EVERGREEN TREE} You have started chopping {wood_type} trees")
+            await ctx.embed_reply(
+                "\N{EVERGREEN TREE} You have started chopping "
+                f"{wood_type} trees"
+            )
             await self.woodcutting_active(ctx, wood_type)
         elif started is False:
-            await ctx.embed_reply(f"{ctx.bot.error_emoji} That wood type doesn't exist")
+            await ctx.embed_reply(
+                f"{ctx.bot.error_emoji} That wood type doesn't exist"
+            )
         else:
-            await ctx.embed_reply(f"{ctx.bot.error_emoji} You're currently {started}! You can't start/stop woodcutting right now")
+            await ctx.embed_reply(
+                f"{ctx.bot.error_emoji} You're currently {started}! "
+                "You can't start/stop woodcutting right now"
+            )
 
     @woodcutting.command(name = "rate", aliases = ["rates"])
     async def woodcutting_rate(self, ctx, *, wood_type: str):
