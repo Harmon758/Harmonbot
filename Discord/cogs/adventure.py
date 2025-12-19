@@ -300,7 +300,7 @@ class Adventure(commands.Cog):
 
     @adventure.group(
         name = "chop", aliases = ["woodcutting", "wc"],
-        invoke_without_command = True, case_insensitive = True
+        case_insensitive = True, invoke_without_command = True
     )
     async def woodcutting(self, ctx, *, wood_type: str = ""):
         """Woodcutting"""
