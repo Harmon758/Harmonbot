@@ -335,7 +335,7 @@ class Adventure(commands.Cog):
 
     @woodcutting.command(name = "rate", aliases = ["rates"])
     async def woodcutting_rate(self, ctx, *, wood_type: str):
-        '''Rate of chopping certain wood'''
+        """Rate of chopping certain wood"""
         player = await self.get_adventure_player(ctx.author.id)
         if wood_type in WOOD_TYPES:
             await ctx.embed_reply(f"You will get {player.wood_rate(wood_type) * player.woodcutting_rate:.2f} {wood_type}/min. at your current level")
