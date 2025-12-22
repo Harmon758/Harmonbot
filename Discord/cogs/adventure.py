@@ -338,9 +338,15 @@ class Adventure(commands.Cog):
         """Rate of chopping certain wood"""
         player = await self.get_adventure_player(ctx.author.id)
         if wood_type in WOOD_TYPES:
-            await ctx.embed_reply(f"You will get {player.wood_rate(wood_type) * player.woodcutting_rate:.2f} {wood_type}/min. at your current level")
+            await ctx.embed_reply(
+                "You will get "
+                f"{player.wood_rate(wood_type) * player.woodcutting_rate:.2f} "
+                f"{wood_type}/min. at your current level"
+            )
         else:
-            await ctx.embed_reply(f"{ctx.bot.error_emoji} That wood type doesn't exist")
+            await ctx.embed_reply(
+                f"{ctx.bot.error_emoji} That wood type doesn't exist"
+            )
 
     @woodcutting.command(name = "start", aliases = ["on"])
     async def woodcutting_start(self, ctx, *, wood_type: str):
