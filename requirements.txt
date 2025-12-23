@@ -687,18 +687,18 @@ markupsafe==3.0.3 ; implementation_name == 'cpython' and platform_python_impleme
     --hash=sha256:de8a88e63464af587c950061a5e6a67d3632e36df62b986892331d4620a35c01 \
     --hash=sha256:f9e130248f4462aaa8e2552d547f36ddadbeaa573879158d721bbd33dfe4743a
     # via jinja2
-matplotlib==3.10.7 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:15112bcbaef211bd663fa935ec33313b948e214454d949b723998a43357b17b0 \
-    --hash=sha256:2222c7ba2cbde7fe63032769f6eb7e83ab3227f47d997a8453377709b7fe3a5a \
-    --hash=sha256:3886e47f64611046bc1db523a09dd0a0a6bed6081e6f90e13806dd1d1d1b5e91 \
-    --hash=sha256:53b492410a6cd66c7a471de6c924f6ede976e963c0f3097a3b7abfadddc67d0a \
-    --hash=sha256:6516ce375109c60ceec579e699524e9d504cd7578506f01150f7a6bc174a775e \
-    --hash=sha256:6f1851eab59ca082c95df5a500106bad73672645625e04538b3ad0f69471ffcc \
-    --hash=sha256:a06ba7e2a2ef9131c79c49e63dad355d2d878413a0376c1727c8b9335ff731c7 \
-    --hash=sha256:b172db79759f5f9bc13ef1c3ef8b9ee7b37b0247f987fbbbdaa15e4f87fd46a9 \
-    --hash=sha256:d2a959c640cdeecdd2ec3136e8ea0441da59bcaf58d67e9c590740addba2cb68 \
-    --hash=sha256:d9749313deb729f08207718d29c86246beb2ea3fdba753595b55901dee5d2fd6 \
-    --hash=sha256:e91f61a064c92c307c5a9dc8c05dc9f8a68f0a3be199d9a002a0622e13f874a1
+matplotlib==3.10.8 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:18821ace09c763ec93aef5eeff087ee493a24051936d7b9ebcad9662f66501f9 \
+    --hash=sha256:1ae029229a57cd1e8fe542485f27e7ca7b23aa9e8944ddb4985d0bc444f1eca2 \
+    --hash=sha256:2299372c19d56bcd35cf05a2738308758d32b9eaed2371898d8f5bd33f084aa3 \
+    --hash=sha256:238b7ce5717600615c895050239ec955d91f321c209dd110db988500558e70d6 \
+    --hash=sha256:6be43b667360fef5c754dda5d25a32e6307a03c204f3c0fc5468b78fa87b4160 \
+    --hash=sha256:6da7c2ce169267d0d066adcf63758f0604aa6c3eebf67458930f9d9b79ad1db1 \
+    --hash=sha256:9153c3292705be9f9c64498a8872118540c3f4123d1a1c840172edf262c8be4a \
+    --hash=sha256:a2b336e2d91a3d7006864e0990c83b216fcdca64b5a6484912902cef87313d78 \
+    --hash=sha256:bab485bcf8b1c7d2060b4fcb6fc368a9e6f4cd754c9c2fea281f4be21df394a2 \
+    --hash=sha256:d56a1efd5bfd61486c8bc968fa18734464556f0fb8e51690f4ac25d85cbbbbc2 \
+    --hash=sha256:efb30e3baaea72ce5928e32bab719ab4770099079d66726a62b11b1ef7273be4
     # via
     #   harmonbot
     #   seaborn
