@@ -350,7 +350,7 @@ class Adventure(commands.Cog):
 
     @woodcutting.command(name = "start", aliases = ["on"])
     async def woodcutting_start(self, ctx, *, wood_type: str):
-        '''Start chopping wood'''
+        """Start chopping wood"""
         player = await self.get_adventure_player(ctx.author.id)
         started = await player.start_woodcutting(wood_type)
         if started is True:
