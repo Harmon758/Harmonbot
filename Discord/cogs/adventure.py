@@ -354,12 +354,20 @@ class Adventure(commands.Cog):
         player = await self.get_adventure_player(ctx.author.id)
         started = await player.start_woodcutting(wood_type)
         if started is True:
-            await ctx.embed_reply(f"\N{EVERGREEN TREE} You have started chopping {wood_type} trees")
+            await ctx.embed_reply(
+                "\N{EVERGREEN TREE} You have started chopping "
+                f"{wood_type} trees"
+            )
             await self.woodcutting_active(ctx, wood_type)
         elif started is False:
-            await ctx.embed_reply(f"{ctx.bot.error_emoji} That wood type doesn't exist")
+            await ctx.embed_reply(
+                f"{ctx.bot.error_emoji} That wood type doesn't exist"
+            )
         else:
-            await ctx.embed_reply(f"{ctx.bot.error_emoji} You're currently {started}! You can't start woodcutting right now")
+            await ctx.embed_reply(
+                f"{ctx.bot.error_emoji} You're currently {started}! "
+                "You can't start woodcutting right now"
+            )
 
     async def woodcutting_active(self, ctx, wood_type):
         player = await self.get_adventure_player(ctx.author.id)
