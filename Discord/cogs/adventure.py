@@ -427,7 +427,7 @@ class Adventure(commands.Cog):
 
     @woodcutting.command(name = "stop", aliases = ["off"])
     async def woodcutting_stop(self, ctx):
-        '''Stop chopping wood'''
+        """Stop chopping wood"""
         player = await self.get_adventure_player(ctx.author.id)
         stopped = await player.stop_woodcutting()
         if stopped[0]:
