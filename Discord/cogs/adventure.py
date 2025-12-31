@@ -431,11 +431,20 @@ class Adventure(commands.Cog):
         player = await self.get_adventure_player(ctx.author.id)
         stopped = await player.stop_woodcutting()
         if stopped[0]:
-            await ctx.embed_reply(f"\N{EVERGREEN TREE} You were chopping {stopped[0]} for {stopped[1]:,.2f} min. and received {stopped[2]:,} {stopped[0]} and {stopped[3]:,} xp")
+            await ctx.embed_reply(
+                f"\N{EVERGREEN TREE} You were chopping {stopped[0]} for "
+                f"{stopped[1]:,.2f} min. and received "
+                f"{stopped[2]:,} {stopped[0]} and {stopped[3]:,} xp"
+            )
         elif stopped[1]:
-            await ctx.embed_reply(f"{ctx.bot.error_emoji} You're currently {stopped[1]}! You aren't woodcutting right now")
+            await ctx.embed_reply(
+                f"{ctx.bot.error_emoji} You're currently {stopped[1]}! "
+                "You aren't woodcutting right now"
+            )
         else:
-            await ctx.embed_reply(f"{ctx.bot.error_emoji} You aren't woodcutting")
+            await ctx.embed_reply(
+                f"{ctx.bot.error_emoji} You aren't woodcutting"
+            )
 
     @woodcutting.command(name = "types", aliases = ["type", "item", "items"])
     async def woodcutting_types(self, ctx):
