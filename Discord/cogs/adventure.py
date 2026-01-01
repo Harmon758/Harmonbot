@@ -448,7 +448,7 @@ class Adventure(commands.Cog):
 
     @woodcutting.command(name = "types", aliases = ["type", "item", "items"])
     async def woodcutting_types(self, ctx):
-        '''Types of wood'''
+        """Types of wood"""
         await ctx.embed_reply(", ".join(WOOD_TYPES))
 
 
