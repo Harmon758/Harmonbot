@@ -1175,16 +1175,16 @@ pyparsing==3.2.5 ; implementation_name == 'cpython' and platform_python_implemen
     #   harmonbot
     #   matplotlib
     #   pydot
-pyrefly==0.40.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:0332491f3521ca228f1e2f0bbfbe9b5a65835c5d53887649e65638c1262dbe53 \
-    --hash=sha256:1003592ecc0bc605fc060480c5b061b5d34f4f919c391c12f239a51c8865a061 \
-    --hash=sha256:13d2d67184fd8044d687dff04ad78ec5b845644ccd83505ec67ef61997a82f06 \
-    --hash=sha256:28097f49497cf75818d428a080f69e70a7673ea1aab1fc6d796b333f1822e0e3 \
-    --hash=sha256:35b5439994b3a760f986067743c8c5fde09acd1c1bc46dbc9b092b58a4711d4a \
-    --hash=sha256:925073c6f823445d41b3e4ba6eaf62b28acaa444e1a5dc66ebbe1a9d134251a0 \
-    --hash=sha256:ac856cb7af6b2c3f43bdd684579b4bb122adf66fb98908cddd7b36c0b905b040 \
-    --hash=sha256:d6550055d73fbb921437f246d99397b0ae5c794ca81e0c328e60e164ef32e7ce \
-    --hash=sha256:de3ff4fdb4adb5d2aeb3752811d8da2ae76f8431fed6ae84693fd7a51acc3cfd
+pyrefly==0.48.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:029440758d02f1954105523356bd583caa450cb537f70e746ebeeab5bf7e9ef9 \
+    --hash=sha256:10b82b48f0175d195ebb418ec23d6567b10c6f62f421ff5523a9e6e38955c396 \
+    --hash=sha256:326b9d01dfbca7e81f19630c59e79065e69c39505dab7dc3899dbce9832aa747 \
+    --hash=sha256:3dc4eec1d606e69fe3e2be0533e8f86a30a4e97bd089df52fe279e4d5947d08f \
+    --hash=sha256:754379335d90d42d66571ffd01d9afa6b7869ae16fdf8a62c67ad1ca3c2c594f \
+    --hash=sha256:8c4cdf71439c9d21c337155d2a578a08ee322b898f716668a88f99392b2a1938 \
+    --hash=sha256:98c1bed117e7a2c20dc6e160640460f903e9d75d8c674c7fccf69984ae1b9ba5 \
+    --hash=sha256:b38640edf5a7ff5250d0509d58c3002316b3700c0f60966f9635598f7079c8f0 \
+    --hash=sha256:e09806e14ea36873911e15f96c2351b4c6bd3e7ee29c609c4ba2ccdb4bf2d4f4
 pysocks==1.7.1 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:2725bd0a9925919b9b51739eea5f9e2bae91e83288108a9ad338b2e3a4435ee5 \
     --hash=sha256:3f8804571ebe159c380ac6de37643bb4685970655d3bba243530d6558b799aa0
