@@ -238,122 +238,122 @@ class Tweepy(commands.Cog):
 async def format_documentation_section(
     object, *, bot, rtd_version, embed = None
 ):
-        if embed:
-            embed.clear_fields()
-        else:
-            embed = discord.Embed(color = bot.bot_color)
+    if embed:
+        embed.clear_fields()
+    else:
+        embed = discord.Embed(color = bot.bot_color)
 
-        embed.title = object.dispname_expanded
-        embed.url = (
-            f"https://tweepy.readthedocs.io/en/{rtd_version}/{object.uri_expanded}"
+    embed.title = object.dispname_expanded
+    embed.url = (
+        f"https://tweepy.readthedocs.io/en/{rtd_version}/{object.uri_expanded}"
+    )
+
+    url = "https://readthedocs.org/api/v3/embed/"
+    params = {"url": embed.url, "doctool": "sphinx"}
+    async with bot.aiohttp_session.get(url, params = params) as resp:
+        data = await resp.json()
+
+    content = BeautifulSoup(data["content"], "lxml")
+
+    if next(content.body.children).name == "dl":
+        embed.description = bot.PY_CODE_BLOCK.format(
+            content.find("dt").get_text().rstrip('\uF0C1')
         )
 
-        url = "https://readthedocs.org/api/v3/embed/"
-        params = {"url": embed.url, "doctool": "sphinx"}
-        async with bot.aiohttp_session.get(url, params = params) as resp:
-            data = await resp.json()
-
-        content = BeautifulSoup(data["content"], "lxml")
-
-        if next(content.body.children).name == "dl":
-            embed.description = bot.PY_CODE_BLOCK.format(
-                content.find("dt").get_text().rstrip('\uF0C1')
-            )
-
-            for description_list in content.dl.dd.find_all(
-                "dl", recursive = False
+        for description_list in content.dl.dd.find_all(
+            "dl", recursive = False
+        ):
+            for term, description in zip(
+                *[iter(
+                    description_list.find_all(
+                        ["dt", "dd"], recursive = False
+                    )
+                )] * 2
             ):
-                for term, description in zip(
-                    *[iter(
-                        description_list.find_all(
-                            ["dt", "dd"], recursive = False
-                        )
-                    )] * 2
+                if (
+                    description.get_text().strip() and
+                    len(embed) < bot.EMBED_TOTAL_CHARACTER_LIMIT
                 ):
-                    if (
-                        description.get_text().strip() and
-                        len(embed) < bot.EMBED_TOTAL_CHARACTER_LIMIT
-                    ):
-                        description_text = remove_extra_newlines(
-                            markdown_converter.convert_soup(description)
+                    description_text = remove_extra_newlines(
+                        markdown_converter.convert_soup(description)
+                    )
+                    if len(description_text) > bot.EFVCL:
+                        # EFVCL: Embed Field Value Character Limit
+                        description_text = (
+                            description_text[:bot.EFVCL - 4].rsplit(
+                                maxsplit = 1
+                            )[0] + "\n..."
                         )
-                        if len(description_text) > bot.EFVCL:
-                            # EFVCL: Embed Field Value Character Limit
-                            description_text = (
-                                description_text[:bot.EFVCL - 4].rsplit(
-                                    maxsplit = 1
-                                )[0] + "\n..."
-                            )
-                        embed.add_field(
-                            name = term.get_text().rstrip('\uF0C1'),
-                            value = description_text,
-                            inline = False
-                        )
-                description_list.extract()
+                    embed.add_field(
+                        name = term.get_text().rstrip('\uF0C1'),
+                        value = description_text,
+                        inline = False
+                    )
+            description_list.extract()
 
-            if references_heading := content.find(
-                'p', class_ = "rubric", string = "References"
-            ):
-                embed.add_field(
-                    name = "References",
-                    value = '\n'.join(
-                        reference.extract().get_text()
-                        for reference in references_heading.find_all_next(
-                            'a', class_ = "reference external"
-                        )
-                    ),
+        if references_heading := content.find(
+            'p', class_ = "rubric", string = "References"
+        ):
+            embed.add_field(
+                name = "References",
+                value = '\n'.join(
+                    reference.extract().get_text()
+                    for reference in references_heading.find_all_next(
+                        'a', class_ = "reference external"
+                    )
+                ),
+                inline = False
+            )
+            references_heading.extract()
+
+        embed.description += (
+            '\n' + remove_extra_newlines(
+                markdown_converter.convert_soup(content.find("dd")).strip()
+            )
+        )
+
+        while len(embed) > bot.EMBED_TOTAL_CHARACTER_LIMIT:
+            if embed.fields[-1].name == "...":
+                embed.remove_field(-2)
+            elif embed.fields[-2].name == "...":
+                embed.remove_field(-3)
+            elif embed.fields[-1].name == "References":
+                embed.remove_field(-2)
+                embed.insert_field_at(
+                    -1,
+                    name = "...",
+                    value = bot.ZERO_WIDTH_SPACE,
                     inline = False
                 )
-                references_heading.extract()
-
-            embed.description += (
-                '\n' + remove_extra_newlines(
-                    markdown_converter.convert_soup(content.find("dd")).strip()
+            else:
+                embed.remove_field(-1)
+                embed.add_field(
+                    name = "...",
+                    value = bot.ZERO_WIDTH_SPACE,
+                    inline = False
                 )
+    else:
+        embed.description = remove_extra_newlines(
+            remove_anchor_links(
+                markdown_converter.convert_soup(content)
+            )
+        ).strip()
+
+        # pylint: disable-next=unused-variable
+        first_line, newline, subsequent_lines = (
+            embed.description.partition('\n')
+        )
+        if first_line.strip("# `") == embed.title:
+            embed.description = subsequent_lines.lstrip()
+
+        if len(embed.description) > bot.EMBED_DESCRIPTION_CHARACTER_LIMIT:
+            embed.description = (
+                embed.description[:bot.EDCL - 4].rsplit(
+                    maxsplit = 1
+                )[0] + " ..."
             )
 
-            while len(embed) > bot.EMBED_TOTAL_CHARACTER_LIMIT:
-                if embed.fields[-1].name == "...":
-                    embed.remove_field(-2)
-                elif embed.fields[-2].name == "...":
-                    embed.remove_field(-3)
-                elif embed.fields[-1].name == "References":
-                    embed.remove_field(-2)
-                    embed.insert_field_at(
-                        -1,
-                        name = "...",
-                        value = bot.ZERO_WIDTH_SPACE,
-                        inline = False
-                    )
-                else:
-                    embed.remove_field(-1)
-                    embed.add_field(
-                        name = "...",
-                        value = bot.ZERO_WIDTH_SPACE,
-                        inline = False
-                    )
-        else:
-            embed.description = remove_extra_newlines(
-                remove_anchor_links(
-                    markdown_converter.convert_soup(content)
-                )
-            ).strip()
-
-            # pylint: disable-next=unused-variable
-            first_line, newline, subsequent_lines = (
-                embed.description.partition('\n')
-            )
-            if first_line.strip("# `") == embed.title:
-                embed.description = subsequent_lines.lstrip()
-
-            if len(embed.description) > bot.EMBED_DESCRIPTION_CHARACTER_LIMIT:
-                embed.description = (
-                    embed.description[:bot.EDCL - 4].rsplit(
-                        maxsplit = 1
-                    )[0] + " ..."
-                )
-
-        return embed
+    return embed
 
 
 class TweepyDocumentationView(ui.View):
