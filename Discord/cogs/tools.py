@@ -173,10 +173,10 @@ class Tools(commands.Cog):
         # Determine font width + height
         draw = ImageDraw.Draw(Image.new("1", (1, 1), 1))
         text_left, text_top, text_right, text_bottom = draw.textbbox(
-            (0,0), spoiler_text, content_font
+            (0, 0), spoiler_text, content_font
         )
         title_left, title_top, title_right, title_bottom = draw.textbbox(
-            (0,0), spoiler_title, content_font
+            (0, 0), spoiler_title, content_font
         )
         text_height = max(text_bottom - text_top, title_top - title_bottom)
         text_width = max(text_right - text_left, title_right - title_left)
