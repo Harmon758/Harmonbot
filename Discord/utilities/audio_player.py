@@ -64,7 +64,7 @@ class AudioPlayer:
         source = YTDLSource(ctx, song)
         await source.get_info()
         self.queue._queue.insert(position - 1, source)
-        await self.queue.put(None) # trigger get
+        await self.queue.put(None)  # trigger get
         self.queue._queue.pop()
         return source
 
