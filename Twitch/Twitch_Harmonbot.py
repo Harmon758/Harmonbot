@@ -428,7 +428,7 @@ class TwitchClient(irc.client_aio.AioSimpleIRCClient):
                 )
 
             if source == "mirosz88" and self.mikki_variables["mirosz88autotimeout.status"]:
-                self.message(target,  "/timeout mirosz88 1")
+                self.message(target, "/timeout mirosz88 1")
 
         # Imagrill Commands
         if target == "#imagrill":
