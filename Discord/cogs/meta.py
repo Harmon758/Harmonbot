@@ -418,7 +418,7 @@ class Meta(commands.Cog):
     async def harmonbot_activity_clear(self, ctx):
         '''Clear my activity'''
         if ctx.me.activity:
-            await self.bot.change_presence() # status
+            await self.bot.change_presence()  # status
             await ctx.embed_reply("Activity cleared")
         else:
             await ctx.embed_reply(f"{ctx.bot.error_emoji} There is no activity to clear")
