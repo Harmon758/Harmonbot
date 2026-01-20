@@ -152,7 +152,7 @@ class Context(commands.Context):
 		if type == "user":
 			if user:
 				id = user.id
-			user_setting  = await self.bot.db.fetchval(
+			user_setting = await self.bot.db.fetchval(
 				"""
 				SELECT setting FROM permissions.users
 				WHERE guild_id = $1 AND user_id = $2 AND permission = $3
