@@ -278,6 +278,7 @@ class TestCheckAnswer(unittest.TestCase):
             answer = "Elaine, George & Kramer",
             response = "elaine, kramer, and george"
         )
+
     def test_slash_with_article_prefix(self):
         assert check_answer(
             answer = "The Netherlands/Holland", response = "netherlands"
