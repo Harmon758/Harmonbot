@@ -183,7 +183,7 @@ class ChessCog(commands.Cog, name = "Chess"):
         '''Flip the table over'''
         self._chess_board.clear()
         await ctx.say(ctx.author.name + " flipped the table over in anger!")
-    """
+    """  # noqa: RUF001 (ambiguous-unicode-character-string)
 
     @chess_command.command(
         aliases = ["last"], with_app_command = False, hidden = True
