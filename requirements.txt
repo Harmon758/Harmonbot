@@ -1213,9 +1213,9 @@ python-dotenv==1.2.1 ; implementation_name == 'cpython' and platform_python_impl
     --hash=sha256:42667e897e16ab0d66954af0e60a9caa94f0fd4ecf3aaf6d2d260eec1aa36ad6 \
     --hash=sha256:b81ee9561e9ca4004139c6cbba3a238c32b03e4894671e181b671e8cb8425d61
     # via harmonbot
-python-telegram-bot==22.5 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:4b7cd365344a7dce54312cc4520d7fa898b44d1a0e5f8c74b5bd9b540d035d16 \
-    --hash=sha256:82d4efd891d04132f308f0369f5b5929e0b96957901f58bcef43911c5f6f92f8
+python-telegram-bot==22.6 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:50ae8cc10f8dff01445628687951020721f37956966b92a91df4c1bf2d113742 \
+    --hash=sha256:e598fe171c3dde2dfd0f001619ee9110eece66761a677b34719fb18934935ce0
     # via harmonbot
 pytype==2024.10.11 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:15e2f39590cc08ef8e6704cfa5c1db6fbbee2799891f9d8adbf821f883a54745 \
