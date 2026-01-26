@@ -431,7 +431,7 @@ class Discord(commands.Cog):
             now = datetime.datetime.now(datetime.UTC)
             if not (matches := self.calendar.nlp(time, sourceTime = now)):
                 raise commands.BadArgument("Invalid time")
-            parsed_datetime, context, start_pos, end_pos, matched_text = matches[0]
+            parsed_datetime, context, _start_pos, _end_pos, _matched_text = matches[0]
             if not context.hasTime:
                 parsed_datetime = parsed_datetime.replace(
                     hour = now.hour, minute = now.minute,
