@@ -60,8 +60,7 @@ class GenshinImpact(commands.Cog, name = "Genshin Impact"):
         )
 
         # birth year is always 0000
-        # pylint: disable-next=unused-variable
-        birth_year, birth_month, birth_day = map(
+        _birth_year, birth_month, birth_day = map(
             int, character.birthday.split('-')
         )
 
