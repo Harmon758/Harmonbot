@@ -370,8 +370,7 @@ class Meta(commands.Cog):
 
     @version.command(name = "stockfish")
     async def version_stockfish(self, ctx):
-        # pylint: disable-next=unused-variable
-        transport, engine = await chess.engine.popen_uci(
+        _transport, engine = await chess.engine.popen_uci(
             f"{ctx.bot.bin_path}{STOCKFISH_EXECUTABLE}",
             creationflags = subprocess.CREATE_NO_WINDOW
         )
