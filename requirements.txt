@@ -1496,9 +1496,9 @@ tomli==2.3.0 ; implementation_name == 'cpython' and platform_python_implementati
     --hash=sha256:d1381caf13ab9f300e30dd8feadb3de072aeb86f1d34a8569453ff32a7dea4bf \
     --hash=sha256:e95b1af3c5b07d9e643909b5abbec77cd9f1217e6d0bca72b0234736b9fb1f1b
     # via pycroscope
-tqdm==4.67.1 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:26445eca388f82e72884e0d580d5464cd801a3ea01e63e5601bdff9ba6a48de2 \
-    --hash=sha256:f8aef9c52c08c13a65f30ea34f4e5aac3fd1a34959879d7e59e63027286627f2
+tqdm==4.67.2 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:649aac53964b2cb8dec76a14b405a4c0d13612cb8933aae547dd144eacc99653 \
+    --hash=sha256:9a12abcbbff58b6036b2167d9d3853042b9d436fe7330f06ae047867f2f8e0a7
     # via
     #   clarifai
     #   spacy
