@@ -89,7 +89,7 @@ class Reminders(commands.Cog):
 		now = datetime.datetime.now(datetime.UTC)
 		if not (matches := self.calendar.nlp(reminder, sourceTime = now)):
 			raise commands.BadArgument("Time not specified")
-		parsed_datetime, context, start_pos, end_pos, matched_text = matches[0]
+		parsed_datetime, context, start_pos, end_pos, _matched_text = matches[0]
 		if not context.hasTime:
 			parsed_datetime = parsed_datetime.replace(
 				hour = now.hour, minute = now.minute,
