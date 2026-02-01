@@ -9,7 +9,7 @@ def secs_to_duration(secs, limit = 0):
 		if (limit and length_of_time > limit) or secs < length_of_time:
 			duration.append(0)
 		else:
-			duration.append(int(math.floor(secs / length_of_time)))
+			duration.append(math.floor(secs / length_of_time))
 			secs -= math.floor(secs / length_of_time) * length_of_time
 	duration.append(int(secs))
 	return duration
