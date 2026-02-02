@@ -200,16 +200,13 @@ class Tools(commands.Cog):
             transparent_text = Image.new(
                 "RGBA",
                 frame.size,
-                discord.Color(WHITE).to_rgb() + (0,)
+                (*discord.Color(WHITE).to_rgb(), 0)
             )
             draw = ImageDraw.Draw(transparent_text)
             draw.text(
                 (avatar_size + 2 * margin_size, text_vertical_margin),
                 frame_text,
-                fill = (
-                    discord.Color(WHITE).to_rgb() +
-                    (text_opacity,)
-                ),
+                fill = (*discord.Color(WHITE).to_rgb(), text_opacity),
                 font = content_font
             )
             if not frames:
@@ -220,10 +217,7 @@ class Tools(commands.Cog):
                     ),
                     "(Hover to reveal spoiler)",
                     font = guide_font,
-                    fill = (
-                        discord.Color(WHITE).to_rgb() +
-                        (text_opacity,)
-                    )
+                    fill = (*discord.Color(WHITE).to_rgb(), text_opacity)
                 )
             frame = Image.alpha_composite(frame, transparent_text)
             buffer = io.BytesIO()
