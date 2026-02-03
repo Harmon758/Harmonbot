@@ -1112,7 +1112,7 @@ class Random(commands.Cog):
             article = await get_random_article(
                 "https://en.uesp.net/",
                 aiohttp_session = ctx.bot.aiohttp_session,
-                random_namespaces = [0] + list(range(100, 152)) + [200, 201]
+                random_namespaces = (0, *range(100, 152), 200, 201)
                 # https://en.uesp.net/wiki/UESPWiki:Namespaces
                 # https://en.uesp.net/w/api.php?action=query&meta=siteinfo&siprop=namespaces&formatversion=2
             )
