@@ -296,7 +296,7 @@ class MazeCog(commands.Cog, name = "Maze"):
         random_end
             Whether to end at a random place in the Maze
             (Defaults to False)
-        """
+        """  # noqa: RUF002 (ambiguous-unicode-character-docstring)
         maze = Maze(height, width, random_start, random_end)
         embed = discord.Embed(
             color = interaction.client.bot_color,
