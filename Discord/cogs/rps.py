@@ -33,8 +33,8 @@ EMOJI = {
 }
 
 RPS_OBJECTS = ("rock", "paper", "scissors")
-RPSLS_OBJECTS = RPS_OBJECTS + ("lizard", "Spock")
-RPSLSSBWG_OBJECTS = RPSLS_OBJECTS + ("Spider-Man", "Batman", "wizard", "Glock")
+RPSLS_OBJECTS = (*RPS_OBJECTS, "lizard", "Spock")
+RPSLSSBWG_OBJECTS = (*RPSLS_OBJECTS, "Spider-Man", "Batman", "wizard", "Glock")
 
 CFN_OBJECTS = ("cockroach", "foot", "nuclear bomb")
 
