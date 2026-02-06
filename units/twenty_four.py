@@ -41,7 +41,7 @@ def generate_numbers() -> list[int]:
 def check_solution(numbers, solution):
     solution = solution.replace('\\', "")
     if any(
-        character not in numbers + [' ', '+', '-', '*', '/', '(', ')']
+        character not in (*numbers, ' ', '+', '-', '*', '/', '(', ')')
         for character in solution
     ):
         return False
