@@ -24,7 +24,7 @@ def check_valid_numbers(numbers):
                     numbers[index_2 + 1:]
                 )
                 for value in values:
-                    if check_valid_numbers(next_items + [value]):
+                    if check_valid_numbers([*next_items, value]):
                         return True
             else:
                 return any(abs(value - 24) < 0.1 for value in values)
