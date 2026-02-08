@@ -348,10 +348,10 @@ def check_hyphen_removal_and_replacement(answer: str, response: str) -> bool:
 def remove_preceding_words(string: str) -> str:
     lowercase_string = string.lower()
     for word in (
-        ("a ", "an ", "the ") +  # articles
-        ("her ", "his ", "its ", "their ", "your ") +  # possessive determiners
-        ("to ",) +  # prepositions
-        ("dr ", "sir ")  # honorifics
+        "a ", "an ", "the ",  # articles
+        "her ", "his ", "its ", "their ", "your ",  # possessive determiners
+        "to ",  # preposition(s)
+        "dr ", "sir ",  # honorifics
     ):
         if lowercase_string.startswith(word):
             return string[len(word):]
