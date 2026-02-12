@@ -1006,14 +1006,16 @@ protobuf==6.33.0 ; implementation_name == 'cpython' and platform_python_implemen
     #   grpc-google-iam-v1
     #   grpcio-status
     #   proto-plus
-psutil==7.1.3 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:2bdbcd0e58ca14996a42adf3621a6244f1bb2e2e528886959c72cf1e326677ab \
-    --hash=sha256:3bb428f9f05c1225a558f53e30ccbad9930b11c3fc206836242de1091d3e7dd3 \
-    --hash=sha256:56d974e02ca2c8eb4812c3f76c30e28836fffc311d55d979f1465c1feeb2b68b \
-    --hash=sha256:6c86281738d77335af7aec228328e944b30930899ea760ecf33a4dba66be5e74 \
-    --hash=sha256:bc31fa00f1fbc3c3802141eede66f3a2d51d89716a194bf2cd6fc68310a19880 \
-    --hash=sha256:bd0d69cee829226a761e92f28140bec9a5ee9d5b4fb4b0cc589068dbfff559b1 \
-    --hash=sha256:f39c2c19fe824b47484b96f9692932248a54c43799a84282cfe58d05a6449efd
+psutil==7.2.2 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:0746f5f8d406af344fd547f1c8daa5f5c33dbc293bb8d6a16d80b4bb88f59372 \
+    --hash=sha256:076a2d2f923fd4821644f5ba89f059523da90dc9014e85f8e45a5774ca5bc6f9 \
+    --hash=sha256:1a7b04c10f32cc88ab39cbf606e117fd74721c831c98a27dc04578deb0c16979 \
+    --hash=sha256:8c233660f575a5a89e6d4cb65d9f938126312bca76d8fe087b947b3a1aaac9ee \
+    --hash=sha256:b0726cecd84f9474419d67252add4ac0cd9811b04d61123054b9fb6f57df6e9e \
+    --hash=sha256:b58fabe35e80b264a4e3bb23e6b96f9e45a3df7fb7eed419ac0e5947c61e47cc \
+    --hash=sha256:eb7e81434c8d223ec4a219b5fc1c47d0417b12be7ea866e24fb5ad6e84b3d988 \
+    --hash=sha256:ed0cace939114f62738d808fdcecd4c869222507e266e574799e9c0faa17d486 \
+    --hash=sha256:fd04ef36b4a6d599bbdb225dd1d3f51e00105f6d48a28f006da7f9822f2606d8
     # via
     #   clarifai
     #   harmonbot
