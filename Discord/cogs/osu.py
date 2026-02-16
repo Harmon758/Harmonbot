@@ -36,7 +36,7 @@ class Osu(commands.Cog):
         self.bot = bot
 
     async def cog_load(self):
-        asyncio.create_task(
+        self.application_emojis_initialization_task = asyncio.create_task(
             self.initialize_application_emojis(),
             name = "Initialize osu! application emojis"
         )
