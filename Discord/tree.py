@@ -17,7 +17,7 @@ class CommandTree(app_commands.CommandTree):
 
     async def on_error(self, interaction, error):
         # Command Invoke Error
-        if isinstance(error, app_commands.CommandInvokeError):
+        if isinstance(error, app_commands.CommandInvokeError):  # noqa: SIM102 (collapsible-if)
             # Bot missing permissions
             if isinstance(error.original, commands.BotMissingPermissions):
                 bot = interaction.client
