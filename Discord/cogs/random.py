@@ -31,7 +31,7 @@ from utilities.paginators import ButtonPaginator
 
 
 async def setup(bot):
-    await bot.add_cog(Random(bot))
+    await bot.add_cog(Random(bot))  # noqa: S311 (suspicious-non-cryptographic-random-usage)
 
 class Random(commands.Cog):
     """Random"""
