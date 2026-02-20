@@ -189,11 +189,11 @@ class Pinboard(commands.Cog):
 				ctx.guild.id
 			)
 			if setting is None:
-				await ctx.embed_reply(f"Current pinboard setting: Ignore private channels (Default)")
+				await ctx.embed_reply("Current pinboard setting: Ignore private channels (Default)")
 			elif setting:
-				await ctx.embed_reply(f"Current pinboard setting: Include private channels")
+				await ctx.embed_reply("Current pinboard setting: Include private channels")
 			else:
-				await ctx.embed_reply(f"Current pinboard setting: Ignore private channels")
+				await ctx.embed_reply("Current pinboard setting: Ignore private channels")
 		else:
 			await ctx.bot.db.execute(
 				"""
