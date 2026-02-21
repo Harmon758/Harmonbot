@@ -1231,7 +1231,7 @@ class Bot(commands.Bot):
                     return False
             if message and payload.message_id != message.id:
                 return False
-            if user and payload.user_id != user.id:
+            if user and payload.user_id != user.id:  # noqa: SIM103 (needless-bool)
                 return False
             return True
 
