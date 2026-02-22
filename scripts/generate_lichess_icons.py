@@ -18,7 +18,7 @@ SIZE = 128
 
 (Path(__file__).parent / "licon.py").write_bytes(requests.get(SCRIPT_URL).content)
 
-from licon import parse_codes
+from licon import parse_codes  # noqa: E402 (module-import-not-at-top-of-file)
 
 (Path(__file__).parent / "licon.py").unlink()
 
