@@ -16,21 +16,24 @@ SFD_URL = f"https://raw.githubusercontent.com/lichess-org/lila/{COMMIT}/public/f
 SIZE = 128
 
 
-(Path(__file__).parent / "licon.py").write_bytes(requests.get(SCRIPT_URL).content)
+session = requests.Session()
+
+
+(Path(__file__).parent / "licon.py").write_bytes(session.get(SCRIPT_URL).content)
 
 from licon import parse_codes  # noqa: E402 (module-import-not-at-top-of-file)
 
 (Path(__file__).parent / "licon.py").unlink()
 
 
-Path("lichess.sfd").write_bytes(requests.get(SFD_URL).content)
+Path("lichess.sfd").write_bytes(session.get(SFD_URL).content)
 
 codes = parse_codes()
 
 Path("lichess.sfd").unlink()
 
 
-font = ImageFont.truetype(BytesIO(requests.get(FONT_URL).content), size = SIZE)
+font = ImageFont.truetype(BytesIO(session.get(FONT_URL).content), size = SIZE)
 
 (Path(__file__).parent.parent / "assets" / "lichess_icons").mkdir(exist_ok = True)
 
