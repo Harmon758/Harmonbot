@@ -110,8 +110,7 @@ class Server(commands.Cog):
 	@commands.check_any(checks.is_permitted(), checks.is_guild_owner())
 	async def settings_logs(self, ctx):
 		'''WIP'''
-		# TODO:
-		# Choose channel
+		# TODO: Choose channel
 		# Ability to log: typing?, message send?, message edit, message delete,
 		# reaction add?, reaction remove?
 
