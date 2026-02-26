@@ -343,7 +343,8 @@ class Meta(commands.Cog):
     async def version_ffmpeg(self, ctx):
         """FFmpeg version"""
         output = subprocess.run(  # noqa: S603 (subprocess-without-shell-equals-true)
-            f"{ctx.bot.bin_path}ffmpeg -version", capture_output = True, check = True,
+            f"{ctx.bot.bin_path}ffmpeg -version",
+            capture_output = True, check = True,
             creationflags = subprocess.CREATE_NO_WINDOW
         ).stdout
         await ctx.embed_reply(
