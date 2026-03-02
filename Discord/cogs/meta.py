@@ -366,7 +366,9 @@ class Meta(commands.Cog):
     async def version_opus(self, ctx):
         """Opus version"""
         discord.opus._lib.opus_get_version_string.restype = ctypes.c_char_p  # Necessary?
-        await ctx.embed_reply(discord.opus._lib.opus_get_version_string().decode("UTF-8"))
+        await ctx.embed_reply(
+            discord.opus._lib.opus_get_version_string().decode("UTF-8")
+        )
 
     @version.command(name = "postgresql", aliases = ["database"])
     async def version_postgresql(self, ctx):
