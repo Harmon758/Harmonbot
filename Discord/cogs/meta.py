@@ -372,6 +372,7 @@ class Meta(commands.Cog):
 
     @version.command(name = "postgresql", aliases = ["database"])
     async def version_postgresql(self, ctx):
+        """PostgreSQL version"""
         postgresql_version = await ctx.bot.db.fetchval("SELECT version()")
         await ctx.embed_reply(postgresql_version)
 
