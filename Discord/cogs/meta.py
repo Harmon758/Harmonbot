@@ -378,6 +378,7 @@ class Meta(commands.Cog):
 
     @version.command(name = "stockfish")
     async def version_stockfish(self, ctx):
+        """Stockfish version"""
         _transport, engine = await chess.engine.popen_uci(
             f"{ctx.bot.bin_path}{STOCKFISH_EXECUTABLE}",
             creationflags = subprocess.CREATE_NO_WINDOW
