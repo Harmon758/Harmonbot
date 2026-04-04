@@ -1597,11 +1597,11 @@ wheels = [{ url = "https://files.pythonhosted.org/packages/c7/21/705964c7812476f
 
 [[packages]]
 name = "pyjwt"
-version = "2.10.1"
+version = "2.12.1"
 marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'"
 index = "https://pypi.org/simple"
-sdist = { url = "https://files.pythonhosted.org/packages/e7/46/bd74733ff231675599650d3e47f361794b22ef3e3770998dda30d3b63726/pyjwt-2.10.1.tar.gz", upload-time = 2024-11-28T03:43:29Z, size = 87785, hashes = { sha256 = "3cc5772eb20009233caf06e9d8a0577824723b44e6648ee0a2aedb6cf9381953" } }
-wheels = [{ name = "pyjwt-2.10.1-py3-none-any.whl", url = "https://files.pythonhosted.org/packages/61/ad/689f02752eeec26aed679477e80e632ef1b682313be70793d798c1d5fc8f/PyJWT-2.10.1-py3-none-any.whl", upload-time = 2024-11-28T03:43:27Z, size = 22997, hashes = { sha256 = "dcdd193e30abefd5debf142f9adfcdd2b58004e644f25406ffaebd50bd98dacb" } }]
+sdist = { url = "https://files.pythonhosted.org/packages/c2/27/a3b6e5bf6ff856d2509292e95c8f57f0df7017cf5394921fc4e4ef40308a/pyjwt-2.12.1.tar.gz", upload-time = 2026-03-13T19:27:37Z, size = 102564, hashes = { sha256 = "c74a7a2adf861c04d002db713dd85f84beb242228e671280bf709d765b03672b" } }
+wheels = [{ url = "https://files.pythonhosted.org/packages/e5/7a/8dd906bd22e79e47397a61742927f6747fe93242ef86645ee9092e610244/pyjwt-2.12.1-py3-none-any.whl", upload-time = 2026-03-13T19:27:35Z, size = 29726, hashes = { sha256 = "28ca37c070cad8ba8cd9790cd940535d40274d22f80ab87f3ac6a713e6e8454c" } }]
 
 [[packages]]
 name = "pynacl"
