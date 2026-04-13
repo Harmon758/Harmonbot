@@ -520,9 +520,9 @@ idna==3.11 ; implementation_name == 'cpython' and platform_python_implementation
     #   httpx
     #   requests
     #   yarl
-imageio==2.37.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:11efa15b87bc7871b61590326b2d635439acc321cf7f8ce996f812543ce10eed \
-    --hash=sha256:71b57b3669666272c818497aebba2b4c5f20d5b37c81720e5e1a56d59c492996
+imageio==2.37.3 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:46f5bb8522cd421c0f5ae104d8268f569d856b29eb1a13b92829d1970f32c9f0 \
+    --hash=sha256:bbb37efbfc4c400fcd534b367b91fcd66d5da639aaa138034431a1c5e0a41451
     # via harmonbot
 imgurpython==1.1.7 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:3ac28501c2f699a78f93a4ab34df7443cebd39a170c9de4adecf0f3852cbdc33

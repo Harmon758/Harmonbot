@@ -741,11 +741,11 @@ wheels = [{ url = "https://files.pythonhosted.org/packages/0e/61/66938bbb5fc52db
 
 [[packages]]
 name = "imageio"
-version = "2.37.0"
+version = "2.37.3"
 marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'"
 index = "https://pypi.org/simple"
-sdist = { url = "https://files.pythonhosted.org/packages/0c/47/57e897fb7094afb2d26e8b2e4af9a45c7cf1a405acdeeca001fdf2c98501/imageio-2.37.0.tar.gz", upload-time = 2025-01-20T02:42:37Z, size = 389963, hashes = { sha256 = "71b57b3669666272c818497aebba2b4c5f20d5b37c81720e5e1a56d59c492996" } }
-wheels = [{ url = "https://files.pythonhosted.org/packages/cb/bd/b394387b598ed84d8d0fa90611a90bee0adc2021820ad5729f7ced74a8e2/imageio-2.37.0-py3-none-any.whl", upload-time = 2025-01-20T02:42:34Z, size = 315796, hashes = { sha256 = "11efa15b87bc7871b61590326b2d635439acc321cf7f8ce996f812543ce10eed" } }]
+sdist = { url = "https://files.pythonhosted.org/packages/b1/84/93bcd1300216ea50811cee96873b84a1bebf8d0489ffaf7f2a3756bab866/imageio-2.37.3.tar.gz", upload-time = 2026-03-09T11:31:12Z, size = 389673, hashes = { sha256 = "bbb37efbfc4c400fcd534b367b91fcd66d5da639aaa138034431a1c5e0a41451" } }
+wheels = [{ url = "https://files.pythonhosted.org/packages/49/fa/391e437a34e55095173dca5f24070d89cbc233ff85bf1c29c93248c6588d/imageio-2.37.3-py3-none-any.whl", upload-time = 2026-03-09T11:31:10Z, size = 317646, hashes = { sha256 = "46f5bb8522cd421c0f5ae104d8268f569d856b29eb1a13b92829d1970f32c9f0" } }]
 
 [[packages]]
 name = "imgurpython"
