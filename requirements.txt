@@ -1191,9 +1191,9 @@ pysocks==1.7.1 ; implementation_name == 'cpython' and platform_python_implementa
     # via
     #   pyowm
     #   requests
-pyspellchecker==0.8.4 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:20c53d119568011bbaef68608aceb956b888bcd9d563798f7770721a112b8255 \
-    --hash=sha256:48cafa76d65c30ce4d81d0831938f25e8f34ede243c1cc6840014b0eb51ad629
+pyspellchecker==0.9.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:97eaed776e0854f69aafb723f6962b403099e50c9a1d9c05525c819f4b0f5d54 \
+    --hash=sha256:eb1a594161c84a4e67df7db1c269a3392a645bd50e4c82e1298892db0cdb0965
     # via harmonbot
 pytest==8.4.2 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:86c0d0b93306b961d58d62a4db4879f27fe25513d4b969df351abdddb3c30e01 \
