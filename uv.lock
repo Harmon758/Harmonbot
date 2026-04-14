@@ -1899,21 +1899,22 @@ wheels = [
 
 [[package]]
 name = "preshed"
-version = "3.0.10"
+version = "3.0.13"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "cymem", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
     { name = "murmurhash", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/4d/3a/db814f67a05b6d7f9c15d38edef5ec9b21415710705b393883de92aee5ef/preshed-3.0.10.tar.gz", hash = "sha256:5a5c8e685e941f4ffec97f1fbf32694b8107858891a4bc34107fac981d8296ff", size = 15039, upload-time = "2025-05-26T15:18:33.612Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/43/75/fe6b7bbd0dea530a001b0e24c331b21a0be2786e402abf3c57f5dce43d4b/preshed-3.0.13.tar.gz", hash = "sha256:d75f718bbfd97e992f7827e0fa7faf6a91bdd9c922d5baa4b50d62731396cb89", size = 18338, upload-time = "2026-03-23T08:57:31.378Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/08/99/c3709638f687da339504d1daeca48604cadb338bf3556a1484d1f0cd95e6/preshed-3.0.10-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:d96c4fe2b41c1cdcc8c4fc1fdb10f922a6095c0430a3ebe361fe62c78902d068", size = 131486, upload-time = "2025-05-26T15:17:52.231Z" },
-    { url = "https://files.pythonhosted.org/packages/e0/27/0fd36b63caa8bbf57b31a121d9565d385bbd7521771d4eb93e17d326873d/preshed-3.0.10-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:cb01ea930b96f3301526a2ab26f41347d07555e4378c4144c6b7645074f2ebb0", size = 127938, upload-time = "2025-05-26T15:17:54.19Z" },
-    { url = "https://files.pythonhosted.org/packages/90/54/6a876d9cc8d401a9c1fb6bb8ca5a31b3664d0bcb888a9016258a1ae17344/preshed-3.0.10-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:9dd1f0a7b7d150e229d073fd4fe94f72610cae992e907cee74687c4695873a98", size = 842263, upload-time = "2025-05-26T15:17:55.398Z" },
-    { url = "https://files.pythonhosted.org/packages/1c/7d/ff19f74d15ee587905bafa3582883cfe2f72b574e6d691ee64dc690dc276/preshed-3.0.10-cp311-cp311-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:9fd7b350c280137f324cd447afbf6ba9a849af0e8898850046ac6f34010e08bd", size = 842913, upload-time = "2025-05-26T15:17:56.687Z" },
-    { url = "https://files.pythonhosted.org/packages/f1/3a/1c345a26463345557705b61965e1e0a732cc0e9c6dfd4787845dbfa50b4a/preshed-3.0.10-cp311-cp311-musllinux_1_2_aarch64.whl", hash = "sha256:cf6a5fdc89ad06079aa6ee63621e417d4f4cf2a3d8b63c72728baad35a9ff641", size = 820548, upload-time = "2025-05-26T15:17:58.057Z" },
-    { url = "https://files.pythonhosted.org/packages/7f/6b/71f25e2b7a23dba168f43edfae0bb508552dbef89114ce65c73f2ea7172f/preshed-3.0.10-cp311-cp311-musllinux_1_2_x86_64.whl", hash = "sha256:b4c29a7bd66985808ad181c9ad05205a6aa7400cd0f98426acd7bc86588b93f8", size = 840379, upload-time = "2025-05-26T15:17:59.565Z" },
-    { url = "https://files.pythonhosted.org/packages/3a/86/d8f32b0b31a36ee8770a9b1a95321430e364cd0ba4bfebb7348aed2f198d/preshed-3.0.10-cp311-cp311-win_amd64.whl", hash = "sha256:1367c1fd6f44296305315d4e1c3fe3171787d4d01c1008a76bc9466bd79c3249", size = 117655, upload-time = "2025-05-26T15:18:00.836Z" },
+    { url = "https://files.pythonhosted.org/packages/7c/d1/7bc39738388b38ff48cecbb326a9b2bb3f422bb32097be92e010f3162395/preshed-3.0.13-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:5268c0e6fa96f50cdf87f516c2d4b32563c12706ee768e75c00e8d0098acd545", size = 136718, upload-time = "2026-03-23T08:56:23.889Z" },
+    { url = "https://files.pythonhosted.org/packages/f6/65/de465b6801740140c2b5d2db6c312ca7937dcfd0442f1ae7d50dee529544/preshed-3.0.13-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:df642547a1a94079978a0ea8f4593ab4b8d3bd43f767bef0ef64d9a214f8c4c9", size = 137261, upload-time = "2026-03-23T08:56:25.303Z" },
+    { url = "https://files.pythonhosted.org/packages/89/83/478ee078746a4a413c841542caebd2ea74b659475b8bf5f2e3724b6fe655/preshed-3.0.13-cp311-cp311-manylinux2014_aarch64.manylinux_2_17_aarch64.whl", hash = "sha256:09397592d333a77f88454e72b7f1f941b2afaf040b392b9e74898dbc4648cdf5", size = 821010, upload-time = "2026-03-23T08:56:26.455Z" },
+    { url = "https://files.pythonhosted.org/packages/ee/2e/1ac761e973966893cd3a0ad3256360365276e2d1e779e351448981a1156a/preshed-3.0.13-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.whl", hash = "sha256:f8e6fe0620ed0f96a246d46447055c447e071cd8222731a045c235e8a758c918", size = 823096, upload-time = "2026-03-23T08:56:28.126Z" },
+    { url = "https://files.pythonhosted.org/packages/3c/51/7824cfd85dd7fe547888de20228ebd87d9acd3708206d30b82211e382d23/preshed-3.0.13-cp311-cp311-musllinux_1_2_aarch64.whl", hash = "sha256:502f93f49a22788203f02d3067d4ea077a0cca3864de6a792eae12e7ce589e14", size = 1812148, upload-time = "2026-03-23T08:56:29.755Z" },
+    { url = "https://files.pythonhosted.org/packages/34/48/32160a24705d56179de6af838c10a0c735c955dae5f9e4bb344750b79bc2/preshed-3.0.13-cp311-cp311-musllinux_1_2_x86_64.whl", hash = "sha256:acd4d89abeca3678c5d8c89b3cd351314465bc67c7fa053d2644f8513e543386", size = 1881154, upload-time = "2026-03-23T08:56:31.49Z" },
+    { url = "https://files.pythonhosted.org/packages/ed/22/0344b50f8b1ad9e3aac08099c47e1aba91c81602fd117d2673f6606ecae6/preshed-3.0.13-cp311-cp311-win_amd64.whl", hash = "sha256:de87fbabb0f37c3c92d4dd9b94fc82ab73cdab4247cdfbd57ab3926caa983919", size = 122219, upload-time = "2026-03-23T08:56:32.74Z" },
+    { url = "https://files.pythonhosted.org/packages/33/c4/812eeaa568510f396e27edab01100ca71418f032fd7098b107f12e572361/preshed-3.0.13-cp311-cp311-win_arm64.whl", hash = "sha256:5e2753779832e411e93eb727f3d409c0a6b7408e5ce4dd868076d8ece48c7693", size = 109308, upload-time = "2026-03-23T08:56:33.839Z" },
 ]
 
 [[package]]

@@ -946,15 +946,16 @@ pluggy==1.6.0 ; implementation_name == 'cpython' and platform_python_implementat
     --hash=sha256:7dcc130b76258d33b90f61b658791dede3486c3e6bfb003ee5c9bfb396dd22f3 \
     --hash=sha256:e920276dd6813095e9377c0bc5566d94c932c33b27a3e3945d8389c374dd4746
     # via pytest
-preshed==3.0.10 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:1367c1fd6f44296305315d4e1c3fe3171787d4d01c1008a76bc9466bd79c3249 \
-    --hash=sha256:5a5c8e685e941f4ffec97f1fbf32694b8107858891a4bc34107fac981d8296ff \
-    --hash=sha256:9dd1f0a7b7d150e229d073fd4fe94f72610cae992e907cee74687c4695873a98 \
-    --hash=sha256:9fd7b350c280137f324cd447afbf6ba9a849af0e8898850046ac6f34010e08bd \
-    --hash=sha256:b4c29a7bd66985808ad181c9ad05205a6aa7400cd0f98426acd7bc86588b93f8 \
-    --hash=sha256:cb01ea930b96f3301526a2ab26f41347d07555e4378c4144c6b7645074f2ebb0 \
-    --hash=sha256:cf6a5fdc89ad06079aa6ee63621e417d4f4cf2a3d8b63c72728baad35a9ff641 \
-    --hash=sha256:d96c4fe2b41c1cdcc8c4fc1fdb10f922a6095c0430a3ebe361fe62c78902d068
+preshed==3.0.13 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:09397592d333a77f88454e72b7f1f941b2afaf040b392b9e74898dbc4648cdf5 \
+    --hash=sha256:502f93f49a22788203f02d3067d4ea077a0cca3864de6a792eae12e7ce589e14 \
+    --hash=sha256:5268c0e6fa96f50cdf87f516c2d4b32563c12706ee768e75c00e8d0098acd545 \
+    --hash=sha256:5e2753779832e411e93eb727f3d409c0a6b7408e5ce4dd868076d8ece48c7693 \
+    --hash=sha256:acd4d89abeca3678c5d8c89b3cd351314465bc67c7fa053d2644f8513e543386 \
+    --hash=sha256:d75f718bbfd97e992f7827e0fa7faf6a91bdd9c922d5baa4b50d62731396cb89 \
+    --hash=sha256:de87fbabb0f37c3c92d4dd9b94fc82ab73cdab4247cdfbd57ab3926caa983919 \
+    --hash=sha256:df642547a1a94079978a0ea8f4593ab4b8d3bd43f767bef0ef64d9a214f8c4c9 \
+    --hash=sha256:f8e6fe0620ed0f96a246d46447055c447e071cd8222731a045c235e8a758c918
     # via
     #   spacy
     #   thinc
