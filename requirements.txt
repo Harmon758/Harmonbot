@@ -1544,9 +1544,9 @@ typer-slim==0.20.0 ; implementation_name == 'cpython' and platform_python_implem
     # via
     #   spacy
     #   weasel
-typeshed-client==2.8.2 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:4cf886d976c777689cd31889f13abf5bfb7797c82519b07e5969e541380c75ee \
-    --hash=sha256:9d8e29fb74574d87bf9a719f77131dc40f2aeea20e97d25d4a3dc2cc30debd31
+typeshed-client==2.9.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:9383660241a4864fd4af971e533b735bd8c5b3d2f88f7ac279e41699ebe1369c \
+    --hash=sha256:9c2659a4ba11a9d8597d63770416b42c69861189bf861809f6443d329c84be3a
     # via pycroscope
 typing-extensions==4.15.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:0cea48d173cc12fa28ecabc3b837ea3cf6f38c6d1136f85cbaaf598984861466 \
