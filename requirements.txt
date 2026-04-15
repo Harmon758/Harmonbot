@@ -1440,15 +1440,16 @@ sqlalchemy==2.0.44 ; implementation_name == 'cpython' and platform_python_implem
     --hash=sha256:c3678a0fb72c8a6a29422b2732fe423db3ce119c34421b5f9955873eb9b62c1e \
     --hash=sha256:de4387a354ff230bc979b46b2207af841dc8bf29847b6c7dbe60af186d97aefa
     # via harmonbot
-srsly==2.5.1 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:58f0736794ce00a71d62a39cbba1d62ea8d5be4751df956e802d147da20ecad7 \
-    --hash=sha256:7a8269c40859806d71920396d185f4f38dc985cdb6a28d3a326a701e29a5f629 \
-    --hash=sha256:889905900401fefc1032e22b73aecbed8b4251aa363f632b2d1f86fc16f1ad8e \
-    --hash=sha256:ab1b4bf6cf3e29da23dae0493dd1517fb787075206512351421b89b4fc27c77e \
-    --hash=sha256:b96ea5a9a0d0379a79c46d255464a372fb14c30f59a8bc113e4316d131a530ab \
-    --hash=sha256:bf454755f22589df49c25dc799d8af7b47dce3d861dded35baf0f0b6ceab4422 \
-    --hash=sha256:cc0607c8a59013a51dde5c1b4e465558728e9e0a35dcfa73c7cbefa91a0aad50 \
-    --hash=sha256:d5421ba3ab3c790e8b41939c51a1d0f44326bfc052d7a0508860fb79a47aee7f
+srsly==2.5.3 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:0017c7d2a0cd9a4f1bdc00d946b45edcf90bb0e271e8f084c1ce542bf6708c32 \
+    --hash=sha256:08f98dbecbff3a31466c4ae7c833131f59d3655a0ad8ac749e6e2c149e2b0680 \
+    --hash=sha256:21cf09e417d3e4f3fbf7dd337fd6d948c97abd01896b9b4cb80e81cd9778a73a \
+    --hash=sha256:4ca4a068f6e14d84113a02fcb875c6b50a6285a12938c0e7a157eb3a63c50a86 \
+    --hash=sha256:66ebae2c70305987341519ec1a720072a3cb3e4b1d52ac0e9e841f4d02658d3d \
+    --hash=sha256:785a09216ac31570fb301ddb9f61ee73d1f18f8b9561f712dce0b8ac8628bc88 \
+    --hash=sha256:9ffc97e22730ea97b00f7c303ccc60b1305e786afadb2a4a46578dafa4d29da0 \
+    --hash=sha256:e283fa2a8f7350fb9fb70ecdee28d59d39c92f4c7f1cc90a44d6b86db3b3a8b3 \
+    --hash=sha256:f09b551f6c3e334652831ac68c770ee4284741ce0a3895bf1ccf2a1178d66cdd
     # via
     #   confection
     #   spacy

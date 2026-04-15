@@ -2038,18 +2038,19 @@ wheels = [
 
 [[packages]]
 name = "srsly"
-version = "2.5.1"
+version = "2.5.3"
 marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'"
 index = "https://pypi.org/simple"
-sdist = { url = "https://files.pythonhosted.org/packages/b7/e8/eb51b1349f50bac0222398af0942613fdc9d1453ae67cbe4bf9936a1a54b/srsly-2.5.1.tar.gz", upload-time = 2025-01-17T09:26:26Z, size = 466464, hashes = { sha256 = "ab1b4bf6cf3e29da23dae0493dd1517fb787075206512351421b89b4fc27c77e" } }
+sdist = { url = "https://files.pythonhosted.org/packages/2b/db/f794f219a6c788b881252d2536a8c4a97d2bdaadc690391e1cb53d123d71/srsly-2.5.3.tar.gz", upload-time = 2026-03-23T11:56:59Z, size = 490881, hashes = { sha256 = "08f98dbecbff3a31466c4ae7c833131f59d3655a0ad8ac749e6e2c149e2b0680" } }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/df/9c/a248bb49de499fe0990e3cb0fb341c2373d8863ef9a8b5799353cade5731/srsly-2.5.1-cp311-cp311-macosx_10_9_x86_64.whl", upload-time = 2025-01-17T09:25:25Z, size = 635917, hashes = { sha256 = "58f0736794ce00a71d62a39cbba1d62ea8d5be4751df956e802d147da20ecad7" } },
-    { url = "https://files.pythonhosted.org/packages/41/47/1bdaad84502df973ecb8ca658117234cf7fb20e1dec60da71dce82de993f/srsly-2.5.1-cp311-cp311-macosx_11_0_arm64.whl", upload-time = 2025-01-17T09:25:26Z, size = 634374, hashes = { sha256 = "7a8269c40859806d71920396d185f4f38dc985cdb6a28d3a326a701e29a5f629" } },
-    { url = "https://files.pythonhosted.org/packages/e5/2a/d73c71989fcf2a6d1fa518d75322aff4db01a8763f167f8c5e00aac11097/srsly-2.5.1-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", upload-time = 2025-01-17T09:25:29Z, size = 1108390, hashes = { sha256 = "889905900401fefc1032e22b73aecbed8b4251aa363f632b2d1f86fc16f1ad8e" } },
-    { url = "https://files.pythonhosted.org/packages/35/a3/9eda9997a8bd011caed18fdaa5ce606714eb06d8dab587ed0522b3e92ab1/srsly-2.5.1-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", upload-time = 2025-01-17T09:25:31Z, size = 1110712, hashes = { sha256 = "bf454755f22589df49c25dc799d8af7b47dce3d861dded35baf0f0b6ceab4422" } },
-    { url = "https://files.pythonhosted.org/packages/8a/ef/4b50bc05d06349f905b27f824cc23b652098efd4be19aead3af4981df647/srsly-2.5.1-cp311-cp311-musllinux_1_2_aarch64.whl", upload-time = 2025-01-17T09:25:32Z, size = 1081244, hashes = { sha256 = "cc0607c8a59013a51dde5c1b4e465558728e9e0a35dcfa73c7cbefa91a0aad50" } },
-    { url = "https://files.pythonhosted.org/packages/90/af/d4a2512d9a5048d2b18efead39d4c4404bddd4972935bbc68211292a736c/srsly-2.5.1-cp311-cp311-musllinux_1_2_x86_64.whl", upload-time = 2025-01-17T09:25:34Z, size = 1091692, hashes = { sha256 = "d5421ba3ab3c790e8b41939c51a1d0f44326bfc052d7a0508860fb79a47aee7f" } },
-    { url = "https://files.pythonhosted.org/packages/bb/da/657a685f63028dcb00ccdc4ac125ed347c8bff6fa0dab6a9eb3dc45f3223/srsly-2.5.1-cp311-cp311-win_amd64.whl", upload-time = 2025-01-17T09:25:37Z, size = 632627, hashes = { sha256 = "b96ea5a9a0d0379a79c46d255464a372fb14c30f59a8bc113e4316d131a530ab" } },
+    { url = "https://files.pythonhosted.org/packages/9a/36/5d7bb412d52e9cca787f9bfe838b596367189b254e50bf90f234a97184bf/srsly-2.5.3-cp311-cp311-macosx_10_9_x86_64.whl", upload-time = 2026-03-23T11:55:47Z, size = 656760, hashes = { sha256 = "785a09216ac31570fb301ddb9f61ee73d1f18f8b9561f712dce0b8ac8628bc88" } },
+    { url = "https://files.pythonhosted.org/packages/d6/dc/124f008cd2be3e887e972cbdeb17c5aee0f42093eca02c7cfd63bb5daf19/srsly-2.5.3-cp311-cp311-macosx_11_0_arm64.whl", upload-time = 2026-03-23T11:55:48Z, size = 657503, hashes = { sha256 = "0017c7d2a0cd9a4f1bdc00d946b45edcf90bb0e271e8f084c1ce542bf6708c32" } },
+    { url = "https://files.pythonhosted.org/packages/35/8a/2c97244ebab125d55f1bfb7bb94e9572b3e819410dffd6a040eca1112350/srsly-2.5.3-cp311-cp311-manylinux2014_aarch64.manylinux_2_17_aarch64.whl", upload-time = 2026-03-23T11:55:50Z, size = 1139161, hashes = { sha256 = "66ebae2c70305987341519ec1a720072a3cb3e4b1d52ac0e9e841f4d02658d3d" } },
+    { url = "https://files.pythonhosted.org/packages/fc/ea/ecd396188f7591d80b89665f7af9e3ae02e42683daef57033ad7993ad3f9/srsly-2.5.3-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.whl", upload-time = 2026-03-23T11:55:52Z, size = 1142438, hashes = { sha256 = "4ca4a068f6e14d84113a02fcb875c6b50a6285a12938c0e7a157eb3a63c50a86" } },
+    { url = "https://files.pythonhosted.org/packages/9c/65/143e2e143c53d498ad0956f69d0e09189aa7a6e0ee6017758c285ba1ab2d/srsly-2.5.3-cp311-cp311-musllinux_1_2_aarch64.whl", upload-time = 2026-03-23T11:55:53Z, size = 1101783, hashes = { sha256 = "e283fa2a8f7350fb9fb70ecdee28d59d39c92f4c7f1cc90a44d6b86db3b3a8b3" } },
+    { url = "https://files.pythonhosted.org/packages/6b/86/1392a5593de0cd3d08c2d6c071b877c84358a37f63172c4e9cb71706842d/srsly-2.5.3-cp311-cp311-musllinux_1_2_x86_64.whl", upload-time = 2026-03-23T11:55:55Z, size = 1115876, hashes = { sha256 = "9ffc97e22730ea97b00f7c303ccc60b1305e786afadb2a4a46578dafa4d29da0" } },
+    { url = "https://files.pythonhosted.org/packages/d4/a5/6193aa4c08e488821538fcbce2282449e228fd2183ed67d118bb5ccd8b54/srsly-2.5.3-cp311-cp311-win_amd64.whl", upload-time = 2026-03-23T11:55:56Z, size = 651733, hashes = { sha256 = "f09b551f6c3e334652831ac68c770ee4284741ce0a3895bf1ccf2a1178d66cdd" } },
+    { url = "https://files.pythonhosted.org/packages/66/a8/a73181743b6d237026615ca75c3fb3e4780736f1390550a7350d0c7f1149/srsly-2.5.3-cp311-cp311-win_arm64.whl", upload-time = 2026-03-23T11:55:58Z, size = 639124, hashes = { sha256 = "21cf09e417d3e4f3fbf7dd337fd6d948c97abd01896b9b4cb80e81cd9778a73a" } },
 ]
 
 [[packages]]
