@@ -120,17 +120,15 @@ beautifulsoup4==4.14.3 ; implementation_name == 'cpython' and platform_python_im
     # via
     #   harmonbot
     #   markdownify
-blis==1.3.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:1695a87e3fc4c20d9b9140f5238cac0514c411b750e8cdcec5d8320c71f62e99 \
-    --hash=sha256:1bf4267616fb97a3b869cc8d278383faa86882dc8330067421f9bf9c06e6b80c \
-    --hash=sha256:2cf336a810bd0e6ab52e8ba5455c42ff02f6216acb196ffc831cd30ab084127e \
-    --hash=sha256:456833a6006dce2165d68e1ab0aa7678608a9a99a18aa37af7aa0437c972f7f6 \
-    --hash=sha256:45c6f6e801c712592f487f4021c9a85079d6ff8fc487f3d8202212edd4900f8e \
-    --hash=sha256:570113bc81bce8890fa2c067a30f6e6caa82bb3be7de0926d659e986e40f5509 \
-    --hash=sha256:594c2332bcb1a0fdacb5e857a1afaf338d52c05ba24710515cddbf25862787ac \
-    --hash=sha256:75ecaa548589cba2ba75e621e2a8b89888e3f326ef1a27e7a9b1713114467ff2 \
-    --hash=sha256:8072fbb03505444c818810536ad77616a18d97bbde06e8ec69755d917abb7f31 \
-    --hash=sha256:cad91ae2c8a11286b32e80ac7e579d7028f8c0a22afa1e817edddc18051f05b2
+blis==1.3.3 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:034d4560ff3cc43e8aa37e188451b0440e3261d989bb8a42ceee865607715ecd \
+    --hash=sha256:27f82b8633030f8d095d2b412dffa7eb6dbc8ee43813139909a20012e54422ea \
+    --hash=sha256:45866a9027d43b93e8b59980a23c5d7358b6536fc04606286e39fdcfce1101c2 \
+    --hash=sha256:66e6249564f1db22e8af1e0513ff64134041fa7e03c8dd73df74db3f4d8415a7 \
+    --hash=sha256:7260da065958b4e5475f62f44895ef9d673b0f47dcf61b672b22b7dae1a18505 \
+    --hash=sha256:c4ae70629cf302035d268858a10ca4eb6242a01b2dc8d64422f8e6dcb8a8ee74 \
+    --hash=sha256:e10c8d3e892b1dbdff365b9d00e08291876fc336915bf1a5e9f188ed087e1a91 \
+    --hash=sha256:e9327a6ca67de8ae76fe071e8584cc7f3b2e8bfadece4961d40f2826e1cda2df
     # via thinc
 brotli==1.2.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:022426c9e99fd65d9475dce5c195526f04bb8be8907607e27e747893f6ee3e24 \
