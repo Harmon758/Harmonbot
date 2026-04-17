@@ -322,15 +322,16 @@ cycler==0.12.1 ; implementation_name == 'cpython' and platform_python_implementa
     --hash=sha256:85cef7cff222d8644161529808465972e51340599459b8ac3ccbac5a854e0d30 \
     --hash=sha256:88bb128f02ba341da8ef447245a9e138fae777f6a23943da4540077d3601eb1c
     # via matplotlib
-cymem==2.0.11 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:2203bd6525a80d8fd0c94654a263af21c0387ae1d5062cceaebb652bf9bad7bc \
-    --hash=sha256:39b78f2195d20b75c2d465732f6b8e8721c5d4eb012777c2cb89bdb45a043185 \
-    --hash=sha256:3ee54039aad3ef65de82d66c40516bf54586287b46d32c91ea0530c34e8a2745 \
-    --hash=sha256:4c05ef75b5db217be820604e43a47ccbbafea98ab6659d07cea92fa3c864ea58 \
-    --hash=sha256:a8d5381e5793ce531bac0dbc00829c8381f18605bb67e4b61d34f8850463da40 \
-    --hash=sha256:aa54af7314de400634448da1f935b61323da80a49484074688d344fb2036681b \
-    --hash=sha256:efe49a349d4a518be6b6c6b255d4a80f740a341544bde1a807707c058b88d0bd \
-    --hash=sha256:f2b9d3f42d7249ac81802135cad51d707def058001a32f73fc7fbf3de7045ac7
+cymem==2.0.13 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:0dca715e708e545fd1d97693542378a00394b20a37779c1ae2c8bdbb43acef79 \
+    --hash=sha256:1c91a92ae8c7104275ac26bd4d29b08ccd3e7faff5893d3858cb6fadf1bc1588 \
+    --hash=sha256:30c4e75a3a1d809e89106b0b21803eb78e839881aa1f5b9bd27b454bc73afde3 \
+    --hash=sha256:673183466b0ff2e060d97ec5116711d44200b8f7be524323e080d215ee2d44a5 \
+    --hash=sha256:bee2791b3f6fc034ce41268851462bf662ff87e8947e35fb6dd0115b4644a61f \
+    --hash=sha256:c90a6ecba994a15b17a3f45d7ec74d34081df2f73bd1b090e2adc0317e4e01b6 \
+    --hash=sha256:ce821e6ba59148ed17c4567113b8683a6a0be9c9ac86f14e969919121efb61a5 \
+    --hash=sha256:ec99efa03cf8ec11c8906aa4d4cc0c47df393bc9095c9dd64b89b9b43e220b04 \
+    --hash=sha256:f3aee3adf16272bca81c5826eed55ba3c938add6d8c9e273f01c6b829ecfde22
     # via
     #   preshed
     #   spacy
