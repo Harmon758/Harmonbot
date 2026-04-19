@@ -1390,9 +1390,9 @@ sortedcontainers==2.4.0 ; implementation_name == 'cpython' and platform_python_i
     --hash=sha256:25caa5a06cc30b6b83d11423433f65d1f9d76c4c6a0c90e3379eaa43b9bfdb88 \
     --hash=sha256:a163dcaede0f1c021485e957a39245190e74249897e2ae4b2aa38595db237ee0
     # via hypothesis
-soupsieve==2.8 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:0cc76456a30e20f5d7f2e14a98a4ae2ee4e5abdc7c5ea0aafe795f344bc7984c \
-    --hash=sha256:e2dd4a40a628cb5f28f6d4b0db8800b8f581b65bb380b97de22ba5ca8d72572f
+soupsieve==2.8.3 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:3267f1eeea4251fb42728b6dfb746edc9acaffc4a45b27e19450b676586e8349 \
+    --hash=sha256:ed64f2ba4eebeab06cc4962affce381647455978ffc1e36bb79a545b91f45a95
     # via beautifulsoup4
 spacy==3.8.8 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:08b933bd1f0f47f59321fe730a06c645120084719e718960a2e596a3728aea84 \
