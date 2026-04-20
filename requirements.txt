@@ -211,25 +211,49 @@ charset-normalizer==3.4.4 ; implementation_name == 'cpython' and platform_python
 chess==1.11.2 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:a8b43e5678fdb3000695bdaa573117ad683761e5ca38e591c4826eba6d25bb39
     # via harmonbot
-clarifai==11.9.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:4fa95a27345cc106b756e53aa0fc9e85fb2fcc8e990c396c4dff24d2adf482d5 \
-    --hash=sha256:bd3117e89b5fcbb4814101a528276716c552c3ef2b5a37a6f5b81a429ec42c1a
+clarifai==12.4.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:d0f93160e8fb586e0867c1e973eda84d81b543730278406a0d8f96271ae0d4d0 \
+    --hash=sha256:e582663dda8677748bdf0e9510da6a55b823afc853ecd8339d59ce162a46dbb7
     # via
     #   clarifai-protocol
     #   harmonbot
-clarifai-grpc==11.10.1 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:30e7d5d54f3e48ec3507522e477d867bb9f023231a371941ddb9f903f985d87d \
-    --hash=sha256:540e9748d95bfefe816af645d9441578e1cc71662d8296a429b30306a7b12ea9
+clarifai-grpc==12.3.1 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:2be30b81edff2e28e81c01abfab4118454bdd51fc3c2109da972c4219bf7c370 \
+    --hash=sha256:d1f3a83885078be1a3d3c818c1a6b26fffe8a9858046423f5c53fbf6fcd94811
     # via
     #   clarifai
     #   clarifai-protocol
-clarifai-protocol==0.0.33 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:28621d247044c2ed3f7887d836c38be3d4d628f5a65f5e90b44a804c2d4c37c0 \
-    --hash=sha256:365e56d97fd500bb18ca46524f71560e61685ae9fdc10b8366468385dd73516e \
-    --hash=sha256:bfbc97d985f9bded84491927ee4a0bcf378584ad2fba89dd1efab47aa874cb63 \
-    --hash=sha256:cb30df2752647dc8a7fbfa55b9b929be74f983233f46ff8af7bfe1bfa09def3d \
-    --hash=sha256:ec0f554e30937e81705990a3ebaca2c8038319b364da9f44efb381b2aaeb0d1d \
-    --hash=sha256:f2e0684dce532721a85129d85458ecb5fbc69f79dcc03bb9fbd8e5a37b919e9b
+clarifai-protocol==0.0.61 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:08eccffe53a9b58329dc5622c4fe876a5ee5f67ef8fbc26fb29057bb7914be77 \
+    --hash=sha256:0be8b0675cefb50e0b75d7c38261fc0c967ee8367a2816262778360c91358aae \
+    --hash=sha256:18bbb086411a367f7eca2e993074a79ac13fb64c113dcd1df874a8194444d3b1 \
+    --hash=sha256:1d37cc9317ff3f80d5649b211826c65dec84f56664640af4813556edc6fd9e73 \
+    --hash=sha256:1f8ec1ab1145a70b2758c537b3cb52b0908b56f7e034e5afd34ba7631be326c4 \
+    --hash=sha256:206c2ba1764008bf9fb2fd350709602697a9dad7ef34de12080d4868d06f7c06 \
+    --hash=sha256:2673a0d7e1241e75a7e3f87416cc936f42ce9c2110d5620a19460388ffcf432e \
+    --hash=sha256:2dee2af23898a7247c76864b65dc0df031eacdecea2fcf07242e34c2c10888ad \
+    --hash=sha256:2f0efb93874f4c1f3af2ca3238b779e28a2cbf5f3ca3caf61f16b60fc650c1a1 \
+    --hash=sha256:35404807f9ce12390c24a823746c22c87923f2a6be23dd6325c31d8069c0b85e \
+    --hash=sha256:4b0c43cb5b2d8353449049d874a4732d674bab3bf064bda6f48282c9cffd1861 \
+    --hash=sha256:557ceedd30335fd83a820da5a1be4070601ddfd690466d9b2f8f8b97baeab989 \
+    --hash=sha256:5d7475c34a33f6b13759c40ee62af86eedbdf928c6c329e02645829b791598c6 \
+    --hash=sha256:641e8e4801bd48be45a4c692ef67e71181742e938cca5723be68e90323962761 \
+    --hash=sha256:7b737d16c7ec1b5ac5e604eaf0bbff1dfee10e236e16e8b7cb552044c0f750d7 \
+    --hash=sha256:832e36c7ff55a6ab46ee5ff9aeaeb0be43bd325426d612694b54fa491a736e2b \
+    --hash=sha256:8b67a63b52304b62cfe57840063e9eb825586286d9f2d27c6f7a6b9200756b8b \
+    --hash=sha256:8bdd7823a4ea15d0e4b03c95a50411a97f3b36ad1a46c2b5c302d92034e58736 \
+    --hash=sha256:8d8b74eae600973d43d4019dda20096310509b2f06503a224726cb35463a22ba \
+    --hash=sha256:8de615111896cfa951290b7d4cab0665d7b0b3753b415c69d66915ad775a101f \
+    --hash=sha256:97dc9156a2a1ee18499bd5140a496f939c022486540495d3a6fcfbb93a546da1 \
+    --hash=sha256:a7b5f35c451415c66ea88a5089dfbe931aced97003b6242805c1ca53a4bf30c8 \
+    --hash=sha256:a99481372937030f6ac529be7dd56a913b8eec6343b59d2c705bed43c5bffd68 \
+    --hash=sha256:ad6146bd410c1e2a80cde9f6bffb8e769ad8f8501dd6b6f4131c24bc04016b5a \
+    --hash=sha256:b18bb95757cbb64cb658f26c016867cbeb6b388c682b3231f3908b3f97439880 \
+    --hash=sha256:b32165e0fd2bdd93ee0a63bbde6677900ece4b27f172ec70674e4a1d1f17d33d \
+    --hash=sha256:dcd81cff089a359dbc208652613ed6fadae63968978d25f0507a7faaffe54870 \
+    --hash=sha256:de3ecb34bf483ad808ef303cc0f6d4cfdc4ba34cf7241f1f963c12a836e2bb33 \
+    --hash=sha256:f141eb635608e93c7d4478e67a36195619bb3433d91084ea55cec2f665988f8b \
+    --hash=sha256:f1faaab30f4dc0a0e3f45cb15538d32552b303acb9cbe2a0c0e8663691951198
     # via clarifai
 click==8.3.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:9b9f285302c6e3064f4330c05f05b81945b2a39544279343e6e7c5f27a9baddc \
