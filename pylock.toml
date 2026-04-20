@@ -609,11 +609,11 @@ wheels = [{ url = "https://files.pythonhosted.org/packages/92/05/adeb6c495aec4f9
 
 [[packages]]
 name = "google-cloud-core"
-version = "2.5.0"
+version = "2.5.1"
 marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'"
 index = "https://pypi.org/simple"
-sdist = { url = "https://files.pythonhosted.org/packages/a6/03/ef0bc99d0e0faf4fdbe67ac445e18cdaa74824fd93cd069e7bb6548cb52d/google_cloud_core-2.5.0.tar.gz", upload-time = 2025-10-29T23:17:39Z, size = 36027, hashes = { sha256 = "7c1b7ef5c92311717bd05301aa1a91ffbc565673d3b0b4163a52d8413a186963" } }
-wheels = [{ url = "https://files.pythonhosted.org/packages/89/20/bfa472e327c8edee00f04beecc80baeddd2ab33ee0e86fd7654da49d45e9/google_cloud_core-2.5.0-py3-none-any.whl", upload-time = 2025-10-29T23:17:38Z, size = 29469, hashes = { sha256 = "67d977b41ae6c7211ee830c7912e41003ea8194bff15ae7d72fd6f51e57acabc" } }]
+sdist = { url = "https://files.pythonhosted.org/packages/dc/24/6ca08b0a03c7b0c620427503ab00353a4ae806b848b93bcea18b6b76fde6/google_cloud_core-2.5.1.tar.gz", upload-time = 2026-03-30T22:50:08Z, size = 36078, hashes = { sha256 = "3dc94bdec9d05a31d9f355045ed0f369fbc0d8c665076c734f065d729800f811" } }
+wheels = [{ url = "https://files.pythonhosted.org/packages/73/d9/5bb050cb32826466aa9b25f79e2ca2879fe66cb76782d4ed798dd7506151/google_cloud_core-2.5.1-py3-none-any.whl", upload-time = 2026-03-30T22:48:31Z, size = 29452, hashes = { sha256 = "ea62cdf502c20e3e14be8a32c05ed02113d7bef454e40ff3fab6fe1ec9f1f4e7" } }]
 
 [[packages]]
 name = "google-cloud-speech"
