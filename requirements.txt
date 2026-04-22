@@ -235,9 +235,9 @@ clarifai-protocol==0.0.61 ; implementation_name == 'cpython' and platform_python
     --hash=sha256:832e36c7ff55a6ab46ee5ff9aeaeb0be43bd325426d612694b54fa491a736e2b \
     --hash=sha256:de3ecb34bf483ad808ef303cc0f6d4cfdc4ba34cf7241f1f963c12a836e2bb33
     # via clarifai
-click==8.3.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:9b9f285302c6e3064f4330c05f05b81945b2a39544279343e6e7c5f27a9baddc \
-    --hash=sha256:e7b8232224eba16f4ebe410c25ced9f7875cb5f3263ffc93cc3e8da705e229c4
+click==8.3.3 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:398329ad4837b2ff7cbe1dd166a4c0f8900c3ca3a218de04466f38f6497f18a2 \
+    --hash=sha256:a2bf429bb3033c89fa4936ffb35d5cb471e3719e1f3c8a7c3fff0b8314305613
     # via
     #   clarifai
     #   click-option-group
