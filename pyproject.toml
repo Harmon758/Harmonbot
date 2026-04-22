@@ -164,8 +164,6 @@ environments = [
 override-dependencies = [
     # https://github.com/Clarifai/clarifai-python/issues/769
     "psutil >= 7.1.1",
-    "pydantic >= 2.12.2",
-    "pydantic-core >= 2.41.4",
     "ruff >= 0.14.1",
     "uv >= 0.8.22",
 ]
