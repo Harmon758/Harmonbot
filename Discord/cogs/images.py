@@ -10,7 +10,6 @@ from typing import Optional, TYPE_CHECKING
 
 import imgurpython
 
-from units import clarifai
 from units import google
 from utilities import checks
 
@@ -285,6 +284,7 @@ class Images(commands.Cog):
         image_url: Optional[str]  # noqa: UP045 (non-pep604-annotation-optional)
     ):
         """NSFW recognition"""
+        # TODO: Improve name and description
         if image:
             image_url = image.url
         elif not image_url:
@@ -293,15 +293,16 @@ class Images(commands.Cog):
             )
             return
 
-        try:
-            percentage = clarifai.image_nsfw(image_url) * 100
-        except Exception as e:
-            await ctx.embed_reply(
-                f"{ctx.bot.error_emoji} Error: {e}"
-            )
-            return
+        detection = google.cloud.vision.detect_explicit_content(image_url)
 
         await ctx.embed_reply(
-            f"NSFW: {percentage:.2f}%", thumbnail_url = image_url
+            fields = (
+                ("Adult", detection.adult.name.replace("_", " ").title()),
+                ("Medical", detection.medical.name.replace("_", " ").title()),
+                ("Racy", detection.racy.name.replace("_", " ").title()),
+                ("Spoofed", detection.spoof.name.replace("_", " ").title()),
+                ("Violence", detection.violence.name.replace("_", " ").title())
+            ),
+            thumbnail_url = image_url
         )
 
