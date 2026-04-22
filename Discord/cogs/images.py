@@ -6,7 +6,6 @@ from discord.ext import commands
 
 import inspect
 from operator import attrgetter
-import re
 from typing import Optional, TYPE_CHECKING
 
 import imgurpython
@@ -76,10 +75,8 @@ class Images(commands.Cog):
         image: Optional[Attachment],  # noqa: UP045 (non-pep604-annotation-optional)
         image_url: Optional[str]  # noqa: UP045 (non-pep604-annotation-optional)
     ):
-        """
-        Image color density values
-        and the closest W3C color name for each identified color
-        """
+        """Image colors"""
+        # TODO: note dominant colors
         if image:
             image_url = image.url
         elif not image_url:
@@ -88,29 +85,20 @@ class Images(commands.Cog):
             )
             return
 
-        try:
-            colors = clarifai.image_color(image_url)
-        except Exception as e:
-            await ctx.embed_reply(
-                f"{ctx.bot.error_emoji} Error: {e}"
-            )
-            return
+        colors = google.cloud.vision.detect_image_properties(image_url)
 
         fields = [
             (
-                color.raw_hex.upper(),
-                (
-                    f"{color.value * 100:.2f}%\n"
-                    f"{re.sub(r'(?!^)(?=[A-Z])', ' ', color.w3c_name)}\n"
-                    f"({color.w3c_hex.upper()})"
-                )
+                f"({int(color.color.red)}, {int(color.color.green)}, {int(color.color.blue)})",
+                f"{color.pixel_fraction * 100:.2f}%"
+                # TODO: hex, color name?, color preview?
             )
             for color in sorted(
-                colors, key = lambda c: c.value, reverse = True
+                colors, key = lambda c: c.score, reverse = True
             )
         ]
         await ctx.embed_reply(
-            title = "Color Density", fields = fields, thumbnail_url = image_url
+            title = "Colors", fields = fields, thumbnail_url = image_url
         )
 
     # TODO: add as search subcommand
