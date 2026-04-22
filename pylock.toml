@@ -664,6 +664,14 @@ sdist = { url = "https://files.pythonhosted.org/packages/34/81/bd85b100a075a4a1c
 wheels = [{ url = "https://files.pythonhosted.org/packages/89/f9/f32ffce070e56bd455f70953df65ed0ea87d6d35cb3a6b18385a8c31ca9e/google_cloud_translate-3.22.0-py3-none-any.whl", upload-time = 2025-10-20T14:55:24Z, size = 204449, hashes = { sha256 = "d2373212c13442ddbcf5cfcac857671258cc2239489afdf5b9c1ebf587b4e4aa" } }]
 
 [[packages]]
+name = "google-cloud-vision"
+version = "3.13.0"
+marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'"
+index = "https://pypi.org/simple"
+sdist = { url = "https://files.pythonhosted.org/packages/1c/f9/208ae25a03f822fcc7f762198cdedaefdbac4f923f72e5c39d3bdbf2ec60/google_cloud_vision-3.13.0.tar.gz", upload-time = 2026-03-26T22:18:38Z, size = 592075, hashes = { sha256 = "680f668d331858a3340eac41b732903d30dc69ed08020ffd1d5ca32580bdf546" } }
+wheels = [{ url = "https://files.pythonhosted.org/packages/c8/74/775192dc2a930191e821c5cd841d399576ae7bca4db98ee5cc262ac56de0/google_cloud_vision-3.13.0-py3-none-any.whl", upload-time = 2026-03-26T22:13:13Z, size = 543152, hashes = { sha256 = "f6979e93ad60a7e556b152de2857f7d3b9b740afd022cea1c76548ef80c29b87" } }]
+
+[[packages]]
 name = "googleapis-common-protos"
 version = "1.71.0"
 marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'"

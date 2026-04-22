@@ -26,6 +26,7 @@ dependencies = [
     "GitPython",
     "google-api-core[grpc]",
     "google-cloud-translate",
+    "google-cloud-vision",
     "imageio",
     "imgurpython",
     "inflect",

@@ -11,6 +11,7 @@ from typing import Optional, TYPE_CHECKING
 import imgurpython
 
 from units import clarifai
+from units import google
 from utilities import checks
 
 if TYPE_CHECKING:
@@ -276,19 +277,13 @@ class Images(commands.Cog):
             )
             return
 
-        try:
-            concepts = clarifai.image_recognition(image_url)
-        except Exception as e:
-            await ctx.embed_reply(
-                f"{ctx.bot.error_emoji} Error: {e}"
-            )
-            return
+        labels = google.cloud.vision.detect_labels(image_url)
 
         await ctx.embed_reply(
             ", ".join(
-                f"**{concept.name}**: {concept.value * 100:.2f}%"
-                for concept in sorted(
-                    concepts, key = lambda c: c.value, reverse = True
+                f"**{label.description}**: {label.score * 100:.2f}%"
+                for label in sorted(
+                    labels, key = lambda l: l.score, reverse = True
                 )
             ),
             thumbnail_url = image_url

@@ -445,6 +445,7 @@ google-api-core==2.25.1 ; implementation_name == 'cpython' and platform_python_i
     #   google-cloud-core
     #   google-cloud-speech
     #   google-cloud-translate
+    #   google-cloud-vision
     #   harmonbot
 google-auth==2.42.1 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:30178b7a21aa50bffbdc1ffcb34ff770a2f65c712170ecd5446c4bef4dc2b94e \
@@ -454,6 +455,7 @@ google-auth==2.42.1 ; implementation_name == 'cpython' and platform_python_imple
     #   google-cloud-core
     #   google-cloud-speech
     #   google-cloud-translate
+    #   google-cloud-vision
 google-cloud-core==2.5.1 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:3dc94bdec9d05a31d9f355045ed0f369fbc0d8c665076c734f065d729800f811 \
     --hash=sha256:ea62cdf502c20e3e14be8a32c05ed02113d7bef454e40ff3fab6fe1ec9f1f4e7
@@ -465,6 +467,10 @@ google-cloud-speech==2.34.0 ; implementation_name == 'cpython' and platform_pyth
 google-cloud-translate==3.22.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:c9a0e52b8546f0096406289f6be741f90ea41a14c05a98e96d292bfef1ac7e73 \
     --hash=sha256:d2373212c13442ddbcf5cfcac857671258cc2239489afdf5b9c1ebf587b4e4aa
+    # via harmonbot
+google-cloud-vision==3.13.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:680f668d331858a3340eac41b732903d30dc69ed08020ffd1d5ca32580bdf546 \
+    --hash=sha256:f6979e93ad60a7e556b152de2857f7d3b9b740afd022cea1c76548ef80c29b87
     # via harmonbot
 googleapis-common-protos==1.71.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:1aec01e574e29da63c80ba9f7bbf1ccfaacf1da877f23609fe236ca7c72a2e2e \
@@ -509,6 +515,7 @@ grpcio==1.76.0 ; implementation_name == 'cpython' and platform_python_implementa
     #   google-api-core
     #   google-cloud-speech
     #   google-cloud-translate
+    #   google-cloud-vision
     #   googleapis-common-protos
     #   grpc-google-iam-v1
     #   grpcio-status
@@ -1068,6 +1075,7 @@ proto-plus==1.26.1 ; implementation_name == 'cpython' and platform_python_implem
     #   google-api-core
     #   google-cloud-speech
     #   google-cloud-translate
+    #   google-cloud-vision
 protobuf==6.33.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:140303d5c8d2037730c548f8c7b93b20bb1dc301be280c378b82b8894589c954 \
     --hash=sha256:25c9e1963c6734448ea2d308cfa610e692b801304ba0908d7bfa564ac5132995 \
@@ -1082,6 +1090,7 @@ protobuf==6.33.0 ; implementation_name == 'cpython' and platform_python_implemen
     #   google-api-core
     #   google-cloud-speech
     #   google-cloud-translate
+    #   google-cloud-vision
     #   googleapis-common-protos
     #   grpc-google-iam-v1
     #   grpcio-status
