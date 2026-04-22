@@ -416,9 +416,9 @@ frozenlist==1.8.0 ; implementation_name == 'cpython' and platform_python_impleme
     # via
     #   aiohttp
     #   aiosignal
-fsspec==2025.10.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:7c7712353ae7d875407f97715f0e1ffcc21e33d5b24556cb1e090ae9409ec61d \
-    --hash=sha256:b6789427626f068f9a83ca4e8a3cc050850b6c0f71f99ddb4f542b8266a26a59
+fsspec==2026.3.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:1ee6a0e28677557f8c2f994e3eea77db6392b4de9cd1f5d7a9e87a0ae9d01b41 \
+    --hash=sha256:d2ceafaad1b3457968ed14efa28798162f1638dbb5d2a6868a2db002a5ee39a4
     # via
     #   clarifai
     #   huggingface-hub
