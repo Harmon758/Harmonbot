@@ -94,7 +94,7 @@ class Images(commands.Cog):
                 # TODO: hex, color name?, color preview?
             )
             for color in sorted(
-                colors, key = lambda c: c.score, reverse = True
+                colors, key = attrgetter("score"), reverse = True
             )
         ]
         await ctx.embed_reply(
