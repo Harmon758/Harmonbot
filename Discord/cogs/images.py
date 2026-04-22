@@ -5,6 +5,7 @@ from discord import Attachment  # noqa: TC001 (typing-only-first-party-import)
 from discord.ext import commands
 
 import inspect
+from operator import attrgetter
 import re
 from typing import Optional, TYPE_CHECKING
 
@@ -283,7 +284,7 @@ class Images(commands.Cog):
             ", ".join(
                 f"**{label.description}**: {label.score * 100:.2f}%"
                 for label in sorted(
-                    labels, key = lambda l: l.score, reverse = True
+                    labels, key = attrgetter("score"), reverse = True
                 )
             ),
             thumbnail_url = image_url
