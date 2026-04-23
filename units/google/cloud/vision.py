@@ -3,13 +3,17 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+import google.auth
 from google.cloud import vision
 
 if TYPE_CHECKING:
     from collections.abc import MutableSequence
 
 
-client = vision.ImageAnnotatorClient()
+try:
+    client = vision.ImageAnnotatorClient()
+except google.auth.exceptions.DefaultCredentialsError as e:
+    print(f"Failed to initialize Google Cloud Vision Client: {e}")
 
 
 def detect_explicit_content(image_uri: str) -> vision.SafeSearchAnnotation:
