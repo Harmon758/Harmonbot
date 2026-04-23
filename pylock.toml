@@ -936,11 +936,11 @@ wheels = [{ url = "https://files.pythonhosted.org/packages/94/54/e7d793b573f298e
 
 [[packages]]
 name = "markdownify"
-version = "1.2.0"
+version = "1.2.2"
 marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'"
 index = "https://pypi.org/simple"
-sdist = { url = "https://files.pythonhosted.org/packages/83/1b/6f2697b51eaca81f08852fd2734745af15718fea10222a1d40f8a239c4ea/markdownify-1.2.0.tar.gz", upload-time = 2025-08-09T17:44:15Z, size = 18771, hashes = { sha256 = "f6c367c54eb24ee953921804dfe6d6575c5e5b42c643955e7242034435de634c" } }
-wheels = [{ url = "https://files.pythonhosted.org/packages/6a/e2/7af643acb4cae0741dffffaa7f3f7c9e7ab4046724543ba1777c401d821c/markdownify-1.2.0-py3-none-any.whl", upload-time = 2025-08-09T17:44:14Z, size = 15561, hashes = { sha256 = "48e150a1c4993d4d50f282f725c0111bd9eb25645d41fa2f543708fd44161351" } }]
+sdist = { url = "https://files.pythonhosted.org/packages/3f/bc/c8c8eea5335341306b0fa7e1cb33c5e1c8d24ef70ddd684da65f41c49c92/markdownify-1.2.2.tar.gz", upload-time = 2025-11-16T19:21:18Z, size = 18816, hashes = { sha256 = "b274f1b5943180b031b699b199cbaeb1e2ac938b75851849a31fd0c3d6603d09" } }
+wheels = [{ url = "https://files.pythonhosted.org/packages/43/ce/f1e3e9d959db134cedf06825fae8d5b294bd368aacdd0831a3975b7c4d55/markdownify-1.2.2-py3-none-any.whl", upload-time = 2025-11-16T19:21:17Z, size = 15724, hashes = { sha256 = "3f02d3cc52714084d6e589f70397b6fc9f2f3a8531481bf35e8cc39f975e186a" } }]
 
 [[packages]]
 name = "markupsafe"
