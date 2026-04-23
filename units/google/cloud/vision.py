@@ -3,7 +3,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-import google.auth
 from google.cloud import vision
 
 if TYPE_CHECKING:
@@ -13,17 +12,10 @@ if TYPE_CHECKING:
 client: vision.ImageAnnotatorClient | None = None
 
 
-def load_client():
+def detect_explicit_content(image_uri: str) -> vision.SafeSearchAnnotation:
     global client
     if client is None:
-        try:
-            client = vision.ImageAnnotatorClient()
-        except google.auth.exceptions.DefaultCredentialsError as e:
-            print(f"Failed to initialize Google Cloud Vision Client: {e}")
-
-
-def detect_explicit_content(image_uri: str) -> vision.SafeSearchAnnotation:
-    load_client()
+        client = vision.ImageAnnotatorClient()
     image = vision.Image()
     image.source.image_uri = image_uri
     return client.safe_search_detection(image = image).safe_search_annotation
@@ -32,7 +24,9 @@ def detect_explicit_content(image_uri: str) -> vision.SafeSearchAnnotation:
 def detect_image_properties(
     image_uri: str
 ) -> MutableSequence[vision.ColorInfo]:
-    load_client()
+    global client
+    if client is None:
+        client = vision.ImageAnnotatorClient()
     image = vision.Image()
     image.source.image_uri = image_uri
     return client.image_properties(
@@ -41,7 +35,9 @@ def detect_image_properties(
 
 
 def detect_labels(image_uri: str) -> vision.EntityAnnotation:
-    load_client()
+    global client
+    if client is None:
+        client = vision.ImageAnnotatorClient()
     image = vision.Image()
     image.source.image_uri = image_uri
     return client.label_detection(image = image).label_annotations
