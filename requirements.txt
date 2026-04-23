@@ -731,15 +731,16 @@ multidict==6.7.1 ; implementation_name == 'cpython' and platform_python_implemen
     #   aiohttp
     #   wolframalpha
     #   yarl
-murmurhash==1.0.13 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:0f272e15a84a8ae5f8b4bc0a68f9f47be38518ddffc72405791178058e9d019a \
-    --hash=sha256:507148e50929ba1fce36898808573b9f81c763d5676f3fc6e4e832ff56b66992 \
-    --hash=sha256:64d50f6173d266ad165beb8bca6101d824217fc9279f9e9981f4c0245c1e7ee6 \
-    --hash=sha256:737246d41ee00ff74b07b0bd1f0888be304d203ce668e642c86aa64ede30f8b7 \
-    --hash=sha256:83b81e7084b696df3d853f2c78e0c9bda6b285d643f923f1a6fa9ab145d705c5 \
-    --hash=sha256:b20d168370bc3ce82920121b78ab35ae244070a9b18798f4a2e8678fa03bd7e0 \
-    --hash=sha256:cef667d2e83bdceea3bc20c586c491fa442662ace1aea66ff5e3a18bb38268d8 \
-    --hash=sha256:f9423e0b0964ed1013a06c970199538c7ef9ca28c0be54798c0f1473a6591761
+murmurhash==1.0.15 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:3c69b4d3bcd6233782a78907fe10b9b7a796bdc5d28060cf097d067bec280a5d \
+    --hash=sha256:44d211bcc3ec203c47dac06f48ee871093fcbdffa6652a6cc5ea7180306680a8 \
+    --hash=sha256:539d8405885d1d19c005f3a2313b47e8e54b0ee89915eb8dfbb430b194328e6c \
+    --hash=sha256:58e2b27b7847f9e2a6edf10b47a8c8dd70a4705f45dccb7bf76aeadacf56ba01 \
+    --hash=sha256:c4cd739a00f5a4602201b74568ddabae46ec304719d9be752fd8f534a9464b5e \
+    --hash=sha256:e43a69496342ce530bdd670264cb7c8f45490b296e4764c837ce577e3c7ebd53 \
+    --hash=sha256:f32307fb9347680bb4fe1cbef6362fb39bd994f1b59abd8c09ca174e44199081 \
+    --hash=sha256:f3e99a6ee36ef5372df5f138e3d9c801420776d3641a34a49e5c2555f44edba7 \
+    --hash=sha256:f9bf47101354fb1dc4b2e313192566f04ba295c28a37e2f71c692759acc1ba3c
     # via
     #   preshed
     #   spacy
