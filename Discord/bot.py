@@ -34,6 +34,7 @@ import pydealer
 import pyowm
 import requests
 import sentry_sdk
+from sentry_sdk.integrations.asyncio import enable_asyncio_integration
 from sentry_sdk.integrations.sqlalchemy import SqlalchemyIntegration
 import tweepy
 import tweepy.asynchronous
@@ -348,6 +349,8 @@ class Bot(commands.Bot):
             self.print(
                 f"Failed to initialize Google Cloud Translation Service Client: {e}"
             )
+
+        enable_asyncio_integration()  # Enable Sentry asyncio integration
 
         self.twitch_client = twitchio.Client.from_client_credentials(
             client_id = self.TWITCH_CLIENT_ID,
