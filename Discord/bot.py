@@ -34,7 +34,6 @@ import pydealer
 import pyowm
 import requests
 import sentry_sdk
-from sentry_sdk.integrations.httpx import HttpxIntegration
 from sentry_sdk.integrations.sqlalchemy import SqlalchemyIntegration
 import tweepy
 import tweepy.asynchronous
@@ -167,10 +166,9 @@ class Bot(commands.Bot):
         # Sentry
         sentry_sdk.init(
             self.SENTRY_DSN,
-            disabled_integrations = [
-                HttpxIntegration(), SqlalchemyIntegration()
-            ],
+            disabled_integrations = [SqlalchemyIntegration()],
             release = self.version
+            # Use GRPCIntegration?
         )
 
         # External Clients
