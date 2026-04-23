@@ -1312,9 +1312,9 @@ sentry-sdk==2.58.0 ; implementation_name == 'cpython' and platform_python_implem
     --hash=sha256:688d1c704ddecf382ea3326f21a67453d4caa95592d722b7c780a36a9d23109e \
     --hash=sha256:c1144d947352d54e5b7daa63596d9f848adf684989c06c4f5a659f0c85a18f6f
     # via harmonbot
-setuptools==80.9.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:062d34222ad13e0cc312a4c02d73f059e86a4acbfbdea8f8f76b28c99f306922 \
-    --hash=sha256:f36b47402ecde768dbfafc46e8e4207b4360c654f1f3bb84475f0a28628fb19c
+setuptools==82.0.1 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:7d872682c5d01cfde07da7bccc7b65469d3dca203318515ada1de5eda35efbf9 \
+    --hash=sha256:a59e362652f08dcd477c78bb6e7bd9d80a7995bc73ce773050228a348ce2e5bb
     # via
     #   python-aiml
     #   setuptools-scm
