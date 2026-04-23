@@ -10,13 +10,20 @@ if TYPE_CHECKING:
     from collections.abc import MutableSequence
 
 
-try:
-    client = vision.ImageAnnotatorClient()
-except google.auth.exceptions.DefaultCredentialsError as e:
-    print(f"Failed to initialize Google Cloud Vision Client: {e}")
+client: vision.ImageAnnotatorClient | None = None
+
+
+def load_client():
+    global client
+    if client is None:
+        try:
+            client = vision.ImageAnnotatorClient()
+        except google.auth.exceptions.DefaultCredentialsError as e:
+            print(f"Failed to initialize Google Cloud Vision Client: {e}")
 
 
 def detect_explicit_content(image_uri: str) -> vision.SafeSearchAnnotation:
+    load_client()
     image = vision.Image()
     image.source.image_uri = image_uri
     return client.safe_search_detection(image = image).safe_search_annotation
@@ -25,15 +32,16 @@ def detect_explicit_content(image_uri: str) -> vision.SafeSearchAnnotation:
 def detect_image_properties(
     image_uri: str
 ) -> MutableSequence[vision.ColorInfo]:
+    load_client()
     image = vision.Image()
     image.source.image_uri = image_uri
-
     return client.image_properties(
         image = image
     ).image_properties_annotation.dominant_colors.colors
 
 
 def detect_labels(image_uri: str) -> vision.EntityAnnotation:
+    load_client()
     image = vision.Image()
     image.source.image_uri = image_uri
     return client.label_detection(image = image).label_annotations
