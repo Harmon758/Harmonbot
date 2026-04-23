@@ -59,9 +59,9 @@ ast-decompiler==0.8.0 ; implementation_name == 'cpython' and platform_python_imp
     --hash=sha256:bc2449883f153788d89b842967dbe871d6db14f53a178bf7ec601f393fe1e1bb \
     --hash=sha256:daef5ca5c2bcb9ba7cf72a9308c7cd596c092d7201c0bbaf28947c721ce26441
     # via pycroscope
-async-lru==2.0.5 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:481d52ccdd27275f42c43a928b4a50c3bfb2d67af4e78b170e3e0bb39c66e5bb \
-    --hash=sha256:ab95404d8d2605310d345932697371a5f40def0487c03d6d0ad9138de52c9943
+async-lru==2.3.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:89bdb258a0140d7313cf8f4031d816a042202faa61d0ab310a0a538baa1c24b6 \
+    --hash=sha256:eea27b01841909316f2cc739807acea1c623df2be8c5cfad7583286397bb8315
     # via
     #   harmonbot
     #   tweepy
