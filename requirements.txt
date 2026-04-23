@@ -408,9 +408,9 @@ google-cloud-speech==2.34.0 ; implementation_name == 'cpython' and platform_pyth
     --hash=sha256:2a7bffd84f134b9b70c9f11cbb5088c534f92be149d71d9073d0b9dd3a431acf \
     --hash=sha256:cc0c6c0fda9306fee01c998bc207b68f71e0a3247121a5a3a27daabacd3a8c98
     # via speechrecognition
-google-cloud-translate==3.22.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:c9a0e52b8546f0096406289f6be741f90ea41a14c05a98e96d292bfef1ac7e73 \
-    --hash=sha256:d2373212c13442ddbcf5cfcac857671258cc2239489afdf5b9c1ebf587b4e4aa
+google-cloud-translate==3.26.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:5b9f4d2cfdc41fcd357cda47d4d880acb6d720be7f0b8fdf95f2816dc982359d \
+    --hash=sha256:74c4c302ea705daa1d7dda095288fd736bb616f943480db34314cd0cd52cc9dd
     # via harmonbot
 google-cloud-vision==3.13.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:680f668d331858a3340eac41b732903d30dc69ed08020ffd1d5ca32580bdf546 \
