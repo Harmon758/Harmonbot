@@ -24,6 +24,13 @@ updates:
       - "dependency update"
     open-pull-requests-limit: 1000
 
+  - package-ecosystem: "gomod"
+    directory: "/"
+    schedule:
+      interval: "yearly"
+    exclude-paths:
+      - "retired/**"
+
   - package-ecosystem: "pip"
     directory: "/"
     schedule:
