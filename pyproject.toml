@@ -16,7 +16,6 @@ dependencies = [
     "asyncpg",
     "beautifulsoup4[lxml]",
     "chess",
-    "clarifai",
     "cryptography",
     "dice",
     "emoji",
@@ -161,12 +160,6 @@ environments = [
     "implementation_name == 'cpython' and platform_python_implementation == 'CPython'"
     # https://github.com/astral-sh/uv/issues/11151
     # https://github.com/astral-sh/uv/issues/14886
-]
-override-dependencies = [
-    # https://github.com/Clarifai/clarifai-python/issues/769
-    "psutil >= 7.1.1",
-    "ruff >= 0.14.1",
-    "uv >= 0.8.22",
 ]
 
 [tool.uv.sources]

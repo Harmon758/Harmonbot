@@ -32,9 +32,6 @@ updates:
     allow:
       - dependency-type: "all"
     groups:
-      clarifai:
-        patterns:
-          - "clarifai*"
       grpcio:
         patterns:
           - "grpcio*"
