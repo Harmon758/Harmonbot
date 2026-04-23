@@ -419,9 +419,9 @@ google-cloud-vision==3.13.0 ; implementation_name == 'cpython' and platform_pyth
     --hash=sha256:680f668d331858a3340eac41b732903d30dc69ed08020ffd1d5ca32580bdf546 \
     --hash=sha256:f6979e93ad60a7e556b152de2857f7d3b9b740afd022cea1c76548ef80c29b87
     # via harmonbot
-googleapis-common-protos==1.71.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:1aec01e574e29da63c80ba9f7bbf1ccfaacf1da877f23609fe236ca7c72a2e2e \
-    --hash=sha256:59034a1d849dc4d18971997a72ac56246570afdd17f9369a0ff68218d50ab78c
+googleapis-common-protos==1.74.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:57971e4eeeba6aad1163c1f0fc88543f965bb49129b8bb55b2b7b26ecab084f1 \
+    --hash=sha256:702216f78610bb510e3f12ac3cafd281b7ac45cc5d86e90ad87e4d301a3426b5
     # via
     #   google-api-core
     #   grpc-google-iam-v1
