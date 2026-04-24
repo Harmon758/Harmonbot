@@ -1651,11 +1651,11 @@ wheels = [{ name = "pysocks-1.7.1-py3-none-any.whl", url = "https://files.python
 
 [[packages]]
 name = "pyspellchecker"
-version = "0.8.4"
+version = "0.9.0"
 marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'"
 index = "https://pypi.org/simple"
-sdist = { url = "https://files.pythonhosted.org/packages/a8/f4/870865239781117f75f788594c98fc3c65836ad9b93779550f369700187a/pyspellchecker-0.8.4.tar.gz", upload-time = 2025-11-30T00:18:39Z, size = 7238678, hashes = { sha256 = "48cafa76d65c30ce4d81d0831938f25e8f34ede243c1cc6840014b0eb51ad629" } }
-wheels = [{ url = "https://files.pythonhosted.org/packages/8e/79/2a6993dd02c537ae1344a693f20f9b556206a5385c398022fb66cb004b3a/pyspellchecker-0.8.4-py3-none-any.whl", upload-time = 2025-11-30T00:18:37Z, size = 7236997, hashes = { sha256 = "20c53d119568011bbaef68608aceb956b888bcd9d563798f7770721a112b8255" } }]
+sdist = { url = "https://files.pythonhosted.org/packages/b9/70/58443d052adb868fee9fafb26553d482f2cc4d7c5ed5bb46846a7ce62a01/pyspellchecker-0.9.0.tar.gz", upload-time = 2026-03-07T17:14:53Z, size = 7239784, hashes = { sha256 = "eb1a594161c84a4e67df7db1c269a3392a645bd50e4c82e1298892db0cdb0965" } }
+wheels = [{ url = "https://files.pythonhosted.org/packages/11/70/df4b8816f5e1aa8b46fbc2b1d104d8f5bc13ec92fb69310b35bc56ea7260/pyspellchecker-0.9.0-py3-none-any.whl", upload-time = 2026-03-07T17:14:51Z, size = 7237077, hashes = { sha256 = "97eaed776e0854f69aafb723f6962b403099e50c9a1d9c05525c819f4b0f5d54" } }]
 
 [[packages]]
 name = "pytest"
