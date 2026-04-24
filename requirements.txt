@@ -1394,9 +1394,9 @@ spacy-loggers==1.0.5 ; implementation_name == 'cpython' and platform_python_impl
     --hash=sha256:196284c9c446cc0cdb944005384270d775fdeaf4f494d8e269466cfa497ef645 \
     --hash=sha256:d60b0bdbf915a60e516cc2e653baeff946f0cfc461b452d11a4d5458c6fe5f24
     # via spacy
-speechrecognition==3.14.3 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:1859fbb09ae23fa759200f5b0677307f1fb16e2c5c798f4259fcc41dd5399fe6 \
-    --hash=sha256:bdd2000a9897832b33095e33adfa48580787255706092e1346d1c6c36adae0a4
+speechrecognition==3.16.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:045ad40fe255544aea7b1b6182f2b7ba4aa637286f5a1ddb04a75cc808df9718 \
+    --hash=sha256:32100621e13ffa58df3c962f7c9e0f1f092be7be305fa5bd9579581d17b78191
     # via
     #   discord-ext-voice-recv
     #   harmonbot
