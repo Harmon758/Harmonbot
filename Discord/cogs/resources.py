@@ -229,7 +229,7 @@ class Resources(commands.Cog):
             "Aquarius", "Aries", "Cancer", "Capricorn", "Gemini", "Leo",
             "Libra", "Pisces", "Sagittarius", "Scorpio", "Taurus", "Virgo"
         ],
-        day: str = "today", weekly: bool = False, monthly: bool = False
+        weekly: bool = False, monthly: bool = False
     ):
         """
         Show horoscope
@@ -238,9 +238,6 @@ class Resources(commands.Cog):
         ----------
         sign
             Astrological star/sun sign for which to show horoscope
-        day
-            Day for which to show horoscope
-            ("today" (default), "tomorrow", "yesterday", or YYYY-MM-DD)
         weekly
             Whether or not to include weekly horoscope
             (Defaults to False)
@@ -260,7 +257,7 @@ class Resources(commands.Cog):
         # TODO: Cache
         async with ctx.bot.aiohttp_session.get(
             "https://freehoroscopeapi.com/api/v1/get-horoscope/daily",
-            params = {"sign": sign, "day": day}
+            params = {"sign": sign}
         ) as resp:
             data = await resp.json()
 
