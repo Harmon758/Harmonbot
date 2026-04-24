@@ -796,11 +796,11 @@ wheels = [{ name = "jaraco_context-6.0.1-py3-none-any.whl", url = "https://files
 
 [[packages]]
 name = "jaraco-functools"
-version = "4.3.0"
+version = "4.4.0"
 marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'"
 index = "https://pypi.org/simple"
-sdist = { url = "https://files.pythonhosted.org/packages/f7/ed/1aa2d585304ec07262e1a83a9889880701079dde796ac7b1d1826f40c63d/jaraco_functools-4.3.0.tar.gz", upload-time = 2025-08-18T20:05:09Z, size = 19755, hashes = { sha256 = "cfd13ad0dd2c47a3600b439ef72d8615d482cedcff1632930d6f28924d92f294" } }
-wheels = [{ url = "https://files.pythonhosted.org/packages/b4/09/726f168acad366b11e420df31bf1c702a54d373a83f968d94141a8c3fde0/jaraco_functools-4.3.0-py3-none-any.whl", upload-time = 2025-08-18T20:05:08Z, size = 10408, hashes = { sha256 = "227ff8ed6f7b8f62c56deff101545fa7543cf2c8e7b82a7c2116e672f29c26e8" } }]
+sdist = { url = "https://files.pythonhosted.org/packages/0f/27/056e0638a86749374d6f57d0b0db39f29509cce9313cf91bdc0ac4d91084/jaraco_functools-4.4.0.tar.gz", upload-time = 2025-12-21T09:29:43Z, size = 19943, hashes = { sha256 = "da21933b0417b89515562656547a77b4931f98176eb173644c0d35032a33d6bb" } }
+wheels = [{ url = "https://files.pythonhosted.org/packages/fd/c4/813bb09f0985cb21e959f21f2464169eca882656849adf727ac7bb7e1767/jaraco_functools-4.4.0-py3-none-any.whl", upload-time = 2025-12-21T09:29:42Z, size = 10481, hashes = { sha256 = "9eec1e36f45c818d9bf307c8948eb03b2b56cd44087b3cdc989abca1f20b9176" } }]
 
 [[packages]]
 name = "jaraco-logging"
