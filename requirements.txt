@@ -1398,9 +1398,9 @@ speechrecognition==3.14.3 ; implementation_name == 'cpython' and platform_python
     # via
     #   discord-ext-voice-recv
     #   harmonbot
-sphobjinv==2.3.1.3 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:41fc39f6f740a707cfe5b24c1a3a4a6e4ddbdd6429a59bf21f0b5ef1fddf932a \
-    --hash=sha256:a1d51e4cf3d968b9e0d3ed1cbccea0071e5e5795f24a2d7401a4e37d6bd75717
+sphobjinv==2.4 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:35f3239e9a6161c20d60146c16645687d06d43e5875d2bda71010c3ee7fd54bc \
+    --hash=sha256:44d57e7e87e17d8c7b053c853dcc36f80cbf7d1fc152d57634fd7bcae38ca48a
     # via harmonbot
 sqlalchemy==2.0.49 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:32fe6a41ad97302db2931f05bb91abbcc65b5ce4c675cd44b972428dd2947700 \
