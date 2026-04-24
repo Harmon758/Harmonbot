@@ -430,19 +430,16 @@ googleapis-common-protos==1.74.0 ; implementation_name == 'cpython' and platform
     #   google-api-core
     #   grpc-google-iam-v1
     #   grpcio-status
-greenlet==3.2.4 ; (implementation_name == 'cpython' and platform_machine == 'AMD64' and platform_python_implementation == 'CPython') or (implementation_name == 'cpython' and platform_machine == 'WIN32' and platform_python_implementation == 'CPython') or (implementation_name == 'cpython' and platform_machine == 'aarch64' and platform_python_implementation == 'CPython') or (implementation_name == 'cpython' and platform_machine == 'amd64' and platform_python_implementation == 'CPython') or (implementation_name == 'cpython' and platform_machine == 'ppc64le' and platform_python_implementation == 'CPython') or (implementation_name == 'cpython' and platform_machine == 'win32' and platform_python_implementation == 'CPython') or (implementation_name == 'cpython' and platform_machine == 'x86_64' and platform_python_implementation == 'CPython') \
-    --hash=sha256:03c5136e7be905045160b1b9fdca93dd6727b180feeafda6818e6496434ed8c5 \
-    --hash=sha256:0db5594dce18db94f7d1650d7489909b57afde4c580806b8d9203b6e79cdc079 \
-    --hash=sha256:0dca0d95ff849f9a364385f36ab49f50065d76964944638be9691e1832e9f86d \
-    --hash=sha256:1987de92fec508535687fb807a5cea1560f6196285a4cde35c100b8cd632cc52 \
-    --hash=sha256:1ee8fae0519a337f2329cb78bd7a8e128ec0f881073d43f023c7b8d4831d5246 \
-    --hash=sha256:2523e5246274f54fdadbce8494458a2ebdcdbc7b802318466ac5606d3cded1f8 \
-    --hash=sha256:4d1378601b85e2e5171b99be8d2dc85f594c79967599328f95c1dc1a40f1c633 \
-    --hash=sha256:55e9c5affaa6775e2c6b67659f3a71684de4c549b3dd9afca3bc773533d284fa \
-    --hash=sha256:94abf90142c2a18151632371140b3dba4dee031633fe614cb592dbb6c9e17bc3 \
-    --hash=sha256:96378df1de302bc38e99c3a9aa311967b7dc80ced1dcc6f171e99842987882a2 \
-    --hash=sha256:9c40adce87eaa9ddb593ccb0fa6a07caf34015a29bf8d344811665b573138db9 \
-    --hash=sha256:c9c6de1940a7d828635fbd254d69db79e54619f165ee7ce32fda763a9cb6a58c
+greenlet==3.4.0 ; (implementation_name == 'cpython' and platform_machine == 'AMD64' and platform_python_implementation == 'CPython') or (implementation_name == 'cpython' and platform_machine == 'WIN32' and platform_python_implementation == 'CPython') or (implementation_name == 'cpython' and platform_machine == 'aarch64' and platform_python_implementation == 'CPython') or (implementation_name == 'cpython' and platform_machine == 'amd64' and platform_python_implementation == 'CPython') or (implementation_name == 'cpython' and platform_machine == 'ppc64le' and platform_python_implementation == 'CPython') or (implementation_name == 'cpython' and platform_machine == 'win32' and platform_python_implementation == 'CPython') or (implementation_name == 'cpython' and platform_machine == 'x86_64' and platform_python_implementation == 'CPython') \
+    --hash=sha256:04403ac74fe295a361f650818de93be11b5038a78f49ccfb64d3b1be8fbf1267 \
+    --hash=sha256:439fc2f12b9b512d9dfa681c5afe5f6b3232c708d13e6f02c845e0d9f4c2d8c6 \
+    --hash=sha256:5cb614ace7c27571270354e9c9f696554d073f8aa9319079dcba466bbdead711 \
+    --hash=sha256:805bebb4945094acbab757d34d6e1098be6de8966009ab9ca54f06ff492def58 \
+    --hash=sha256:956215d5e355fffa7c021d168728321fd4d31fd730ac609b1653b450f6a4bc71 \
+    --hash=sha256:a70ed1cb0295bee1df57b63bf7f46b4e56a5c93709eea769c1fec1bb23a95875 \
+    --hash=sha256:c660bce1940a1acae5f51f0a064f1bc785d07ea16efcb4bc708090afc4d69e83 \
+    --hash=sha256:ee407d4d1ca9dc632265aee1c8732c4a2d60adff848057cdebfe5fe94eb2c8a2 \
+    --hash=sha256:f50a96b64dafd6169e595a5c56c9146ef80333e67d4476a65a9c55f400fc22ff
     # via sqlalchemy
 grpc-google-iam-v1==0.14.3 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:7a7f697e017a067206a3dfef44e4c634a34d3dee135fe7d7a4613fe3e59217e6 \
