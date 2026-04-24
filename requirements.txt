@@ -85,10 +85,6 @@ attrs==25.4.0 ; implementation_name == 'cpython' and platform_python_implementat
     #   pytype
     #   referencing
     #   sphobjinv
-autocommand==2.2.2 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:710afe251075e038e19e815e25f8155cabe02196cfb545b2185e0d9c8b2b0459 \
-    --hash=sha256:878de9423c5596491167225c2a455043c3130fb5b7286ac83443d45e74955f34
-    # via jaraco-text
 backports-tarfile==1.2.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:77e284d754527b01fb1e6fa8a1afe577858ebe4e9dad8919e34c862cb399bc34 \
     --hash=sha256:d75e02c268746e1b8144c278978b6e98e85de6ad16f8e4b0844a154557eca991
@@ -561,9 +557,9 @@ jaraco-stream==3.0.4 ; implementation_name == 'cpython' and platform_python_impl
     --hash=sha256:41cec12393ab733870b54e3683564b95e68b82017428fcec56324f70e64c47c6 \
     --hash=sha256:e2bc5028e721ed2cc852b96ec9a33f2b7664e9b2dbf87eefbe617d126641934b
     # via irc
-jaraco-text==4.0.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:08de508939b5e681b14cdac2f1f73036cd97f6f8d7b25e96b8911a9a428ca0d1 \
-    --hash=sha256:5b71fecea69ab6f939d4c906c04fee1eda76500d1641117df6ec45b865f10db0
+jaraco-text==4.2.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:034408ef073f72de919124e9934a12acd50d10bd139bea47732620fa964b0144 \
+    --hash=sha256:194e386aa5b15a6616019df87a6b29c00fd3c9c8b0475731b64633ca7afd495b
     # via
     #   irc
     #   jaraco-collections
@@ -1518,7 +1514,12 @@ typer==0.24.2 ; implementation_name == 'cpython' and platform_python_implementat
     --hash=sha256:ec070dcfca1408e85ee203c6365001e818c3b7fffe686fd07ff2d68095ca0480
     # via
     #   spacy
+    #   typer-slim
     #   weasel
+typer-slim==0.24.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:d5d7ee1ee2834d5020c7c616ed5e0d0f29b9a4b1dd283bdebae198ec09778d0e \
+    --hash=sha256:f0ed36127183f52ae6ced2ecb2521789995992c521a46083bfcdbb652d22ad34
+    # via jaraco-text
 typeshed-client==2.8.2 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:4cf886d976c777689cd31889f13abf5bfb7797c82519b07e5969e541380c75ee \
     --hash=sha256:9d8e29fb74574d87bf9a719f77131dc40f2aeea20e97d25d4a3dc2cc30debd31

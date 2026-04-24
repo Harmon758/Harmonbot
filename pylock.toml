@@ -128,14 +128,6 @@ sdist = { url = "https://files.pythonhosted.org/packages/6b/5c/685e6633917e101e5
 wheels = [{ url = "https://files.pythonhosted.org/packages/3a/2a/7cc015f5b9f5db42b7d48157e23356022889fc354a2813c15934b7cb5c0e/attrs-25.4.0-py3-none-any.whl", upload-time = 2025-10-06T13:54:43Z, size = 67615, hashes = { sha256 = "adcf7e2a1fb3b36ac48d97835bb6d8ade15b8dcce26aba8bf1d14847b57a3373" } }]
 
 [[packages]]
-name = "autocommand"
-version = "2.2.2"
-marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'"
-index = "https://pypi.org/simple"
-sdist = { url = "https://files.pythonhosted.org/packages/5b/18/774bddb96bc0dc0a2b8ac2d2a0e686639744378883da0fc3b96a54192d7a/autocommand-2.2.2.tar.gz", upload-time = 2022-11-18T19:15:49Z, size = 22894, hashes = { sha256 = "878de9423c5596491167225c2a455043c3130fb5b7286ac83443d45e74955f34" } }
-wheels = [{ url = "https://files.pythonhosted.org/packages/b5/62/05203c39d21aa3171454a6c5391ea3b582a97bfb1bc1adad25628331a1cd/autocommand-2.2.2-py3-none-any.whl", upload-time = 2022-11-18T19:15:48Z, size = 19377, hashes = { sha256 = "710afe251075e038e19e815e25f8155cabe02196cfb545b2185e0d9c8b2b0459" } }]
-
-[[packages]]
 name = "backports-tarfile"
 version = "1.2.0"
 marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'"
@@ -820,11 +812,11 @@ wheels = [{ name = "jaraco_stream-3.0.4-py3-none-any.whl", url = "https://files.
 
 [[packages]]
 name = "jaraco-text"
-version = "4.0.0"
+version = "4.2.0"
 marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'"
 index = "https://pypi.org/simple"
-sdist = { url = "https://files.pythonhosted.org/packages/4f/00/1b4dbbc5c6dcb87a4278cc229b2b560484bf231bba7922686c5139e5f934/jaraco_text-4.0.0.tar.gz", upload-time = 2024-07-26T18:08:41Z, size = 17009, hashes = { sha256 = "5b71fecea69ab6f939d4c906c04fee1eda76500d1641117df6ec45b865f10db0" } }
-wheels = [{ name = "jaraco_text-4.0.0-py3-none-any.whl", url = "https://files.pythonhosted.org/packages/2f/29/350039bde32fbd7000e2fb81e1c4e42a857b5e77bcbaf6267c806c70ab9a/jaraco.text-4.0.0-py3-none-any.whl", upload-time = 2024-07-26T18:08:39Z, size = 11542, hashes = { sha256 = "08de508939b5e681b14cdac2f1f73036cd97f6f8d7b25e96b8911a9a428ca0d1" } }]
+sdist = { url = "https://files.pythonhosted.org/packages/f2/20/f071dfb40f06fd0395167a40218c10adb7164635f65ebdafe45e0c714935/jaraco_text-4.2.0.tar.gz", upload-time = 2026-02-09T23:30:06Z, size = 20077, hashes = { sha256 = "194e386aa5b15a6616019df87a6b29c00fd3c9c8b0475731b64633ca7afd495b" } }
+wheels = [{ url = "https://files.pythonhosted.org/packages/39/6d/628f347098059957987596123b3992120c673d17e8ce560185b1d6b88a27/jaraco_text-4.2.0-py3-none-any.whl", upload-time = 2026-02-09T23:30:05Z, size = 13267, hashes = { sha256 = "034408ef073f72de919124e9934a12acd50d10bd139bea47732620fa964b0144" } }]
 
 [[packages]]
 name = "jinja2"
@@ -2163,6 +2155,14 @@ marker = "implementation_name == 'cpython' and platform_python_implementation ==
 index = "https://pypi.org/simple"
 sdist = { url = "https://files.pythonhosted.org/packages/83/b8/9ebb531b6c2d377af08ac6746a5df3425b21853a5d2260876919b58a2a4a/typer-0.24.2.tar.gz", upload-time = 2026-04-22T17:45:34Z, size = 119849, hashes = { sha256 = "ec070dcfca1408e85ee203c6365001e818c3b7fffe686fd07ff2d68095ca0480" } }
 wheels = [{ url = "https://files.pythonhosted.org/packages/39/d1/9484b497e0a0410b901c12b8251c3e746e1e863f7d28419ffe06f7892fda/typer-0.24.2-py3-none-any.whl", upload-time = 2026-04-22T17:45:33Z, size = 55977, hashes = { sha256 = "b618bc3d721f9a8d30f3e05565be26416d06e9bcc29d49bc491dc26aba674fa8" } }]
+
+[[packages]]
+name = "typer-slim"
+version = "0.24.0"
+marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'"
+index = "https://pypi.org/simple"
+sdist = { url = "https://files.pythonhosted.org/packages/a7/a7/e6aecc4b4eb59598829a3b5076a93aff291b4fdaa2ded25efc4e1f4d219c/typer_slim-0.24.0.tar.gz", upload-time = 2026-02-16T22:08:51Z, size = 4776, hashes = { sha256 = "f0ed36127183f52ae6ced2ecb2521789995992c521a46083bfcdbb652d22ad34" } }
+wheels = [{ url = "https://files.pythonhosted.org/packages/a7/24/5480c20380dfd18cf33d14784096dca45a24eae6102e91d49a718d3b6855/typer_slim-0.24.0-py3-none-any.whl", upload-time = 2026-02-16T22:08:49Z, size = 3394, hashes = { sha256 = "d5d7ee1ee2834d5020c7c616ed5e0d0f29b9a4b1dd283bdebae198ec09778d0e" } }]
 
 [[packages]]
 name = "typeshed-client"
