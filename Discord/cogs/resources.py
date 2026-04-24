@@ -248,6 +248,7 @@ class Resources(commands.Cog):
             Whether or not to include monthly horoscope
             (Defaults to False)
         """
+        # https://freehoroscopeapi.com
         # https://horoscope-app-api.vercel.app/
         # Alternatives APIs:
         # https://ohmanda.com/api/horoscope/
@@ -258,7 +259,7 @@ class Resources(commands.Cog):
 
         # TODO: Cache
         async with ctx.bot.aiohttp_session.get(
-            "https://horoscope-app-api.vercel.app/api/v1/get-horoscope/daily",
+            "https://freehoroscopeapi.com/api/v1/get-horoscope/daily",
             params = {"sign": sign, "day": day}
         ) as resp:
             data = await resp.json()
@@ -276,7 +277,7 @@ class Resources(commands.Cog):
         if weekly:
             # TODO: Cache
             async with ctx.bot.aiohttp_session.get(
-                "https://horoscope-app-api.vercel.app/api/v1/get-horoscope/weekly",
+                "https://freehoroscopeapi.com/api/v1/get-horoscope/weekly",
                 params = {"sign": sign}
             ) as resp:
                 data = await resp.json()
@@ -286,14 +287,14 @@ class Resources(commands.Cog):
                 discord.Embed(
                     color = ctx.bot.bot_color,
                     title = weekly_data["week"],
-                    description = weekly_data["horoscope_data"]
+                    description = weekly_data["horoscope"]
                 )
             )
 
         if monthly:
             # TODO: Cache
             async with ctx.bot.aiohttp_session.get(
-                "https://horoscope-app-api.vercel.app/api/v1/get-horoscope/monthly",
+                "https://freehoroscopeapi.com/api/v1/get-horoscope/monthly",
                 params = {"sign": sign}
             ) as resp:
                 data = await resp.json()
@@ -303,14 +304,14 @@ class Resources(commands.Cog):
                 discord.Embed(
                     color = ctx.bot.bot_color,
                     title = monthly_data["month"],
-                    description = monthly_data["horoscope_data"]
+                    description = monthly_data["horoscope"]
                 )
             )
 
         await ctx.embed_reply(
             author_name = f"{sign} {emoji.emojize(f':{sign}:')}",
             title = daily_data["date"],
-            description = daily_data["horoscope_data"],
+            description = daily_data["horoscope"],
             footer_text = None,
             embeds = embeds
         )
