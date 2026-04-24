@@ -286,7 +286,7 @@ class Resources(commands.Cog):
             embeds.append(
                 discord.Embed(
                     color = ctx.bot.bot_color,
-                    title = weekly_data["week"],
+                    title = "Weekly",
                     description = weekly_data["horoscope"]
                 )
             )
@@ -303,7 +303,7 @@ class Resources(commands.Cog):
             embeds.append(
                 discord.Embed(
                     color = ctx.bot.bot_color,
-                    title = monthly_data["month"],
+                    title = "Monthly",
                     description = monthly_data["horoscope"]
                 )
             )
