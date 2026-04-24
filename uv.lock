@@ -723,7 +723,7 @@ wheels = [
 
 [[package]]
 name = "google-cloud-translate"
-version = "3.22.0"
+version = "3.26.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "google-api-core", extra = ["grpc"], marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
@@ -734,9 +734,9 @@ dependencies = [
     { name = "proto-plus", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
     { name = "protobuf", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/34/81/bd85b100a075a4a1cdd090dd17ebd54a90400e9e9931e403adcb08fc71b6/google_cloud_translate-3.22.0.tar.gz", hash = "sha256:c9a0e52b8546f0096406289f6be741f90ea41a14c05a98e96d292bfef1ac7e73", size = 266344, upload-time = "2025-10-20T14:57:29.418Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/45/52/3bc1f9b87511eb3b4d28c4d7da65f1f4ecc407df46e56cff0eae43b5d875/google_cloud_translate-3.26.0.tar.gz", hash = "sha256:74c4c302ea705daa1d7dda095288fd736bb616f943480db34314cd0cd52cc9dd", size = 276633, upload-time = "2026-04-10T00:41:26.769Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/89/f9/f32ffce070e56bd455f70953df65ed0ea87d6d35cb3a6b18385a8c31ca9e/google_cloud_translate-3.22.0-py3-none-any.whl", hash = "sha256:d2373212c13442ddbcf5cfcac857671258cc2239489afdf5b9c1ebf587b4e4aa", size = 204449, upload-time = "2025-10-20T14:55:24.817Z" },
+    { url = "https://files.pythonhosted.org/packages/17/c2/50ed19071e57002ee1bb328e3fcfe43d71aafd9ab0b1e4a107d6c4d3c79d/google_cloud_translate-3.26.0-py3-none-any.whl", hash = "sha256:5b9f4d2cfdc41fcd357cda47d4d880acb6d720be7f0b8fdf95f2816dc982359d", size = 210892, upload-time = "2026-04-10T00:41:12.339Z" },
 ]
 
 [[package]]
