@@ -423,7 +423,41 @@ class RSS(commands.Cog):
                 # Print error?
                 await asyncio.sleep(10)
                 # TODO: Add variable for sleep time
-                # TODO: Remove persistently erroring feed or exponentially backoff?
+                if record["last_checked"] < (
+                    datetime.datetime.now(datetime.UTC) -
+                    datetime.timedelta(days = 365)
+                ):
+                    deleted = await self.bot.db.fetch(
+                        """
+                        DELETE FROM rss.feeds
+                        WHERE feed = $1
+                        RETURNING *
+                        """,
+                        record["feed"]
+                    )
+                    for channel_record in deleted:
+                        notice = (
+                            f"<#{channel_record['channel_id']}> is no longer "
+                            f"following <{record['feed']}> as an RSS feed, "
+                            "as the feed has not been accessible since "
+                            f"{record['last_checked'].strftime('%Y-%m-%d')}."
+                        )
+                        self.bot.print(notice)
+                        try:
+                            text_channel = (
+                                self.bot.get_channel(
+                                    channel_record["channel_id"]
+                                ) or (
+                                    await self.bot.fetch_channel(
+                                        channel_record["channel_id"]
+                                    )
+                                )
+                            )
+                            await text_channel.send(notice)
+                        except (discord.Forbidden, discord.NotFound):
+                            await self.bot.last_resort_notices_channel.send(
+                                notice
+                            )
             except discord.DiscordServerError as e:
                 await asyncio.sleep(60)
                 reason = ' ' + e.response.reason if e.response.reason else ""
