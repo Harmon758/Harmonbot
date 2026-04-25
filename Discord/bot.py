@@ -21,6 +21,7 @@ from urllib import parse
 # TODO: use urllib.parse
 
 import aiml
+import aiodns
 import aiohttp
 from aiohttp import web
 import asyncpg
@@ -165,8 +166,21 @@ class Bot(commands.Bot):
         #       "DISCORDBOTS.ORG_API_KEY" or "TOP.GG_API_KEY"
 
         # Sentry
+        def before_send(event, hint):
+            if "exc_info" not in hint:
+                return event
+            exception = hint["exc_info"][1]
+            if (
+                isinstance(exception, OSError) and
+                isinstance(exception.__cause__, aiodns.error.DNSError)
+            ):
+                # Handled by aiohttp
+                return None
+            return event
+
         sentry_sdk.init(
             self.SENTRY_DSN,
+            before_send = before_send,
             disabled_integrations = [SqlalchemyIntegration()],
             release = self.version
             # Use GRPCIntegration?
