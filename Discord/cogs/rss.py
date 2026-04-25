@@ -231,9 +231,11 @@ class RSS(commands.Cog):
     async def check_feeds(self):
         records = await self.bot.db.fetch(
             """
-            SELECT DISTINCT ON (feed) feed, last_checked, ttl, max_age
-            FROM rss.feeds
-            ORDER BY feed, last_checked
+            SELECT * FROM (
+                SELECT DISTINCT ON (feed) feed, last_checked, ttl, max_age
+                FROM rss.feeds
+            ) AS feeds
+            ORDER BY last_checked
             """
         )
 
