@@ -1253,6 +1253,7 @@ class TriviaQuestion:
                 color = ctx.bot.bot_color
             )
         ]
+        countdown_embed_index = len(embeds)
         self.response = await ctx.embed_reply(
             author_name = None,
             title = capwords(record["category"]),
@@ -1272,7 +1273,7 @@ class TriviaQuestion:
         self.accepting_answers = False
 
         embeds = self.response.embeds
-        del embeds[-1]
+        del embeds[countdown_embed_index]
         await ctx.bot.attempt_edit_message(self.response, embeds = embeds)
 
         correct_players = []
