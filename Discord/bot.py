@@ -656,7 +656,7 @@ class Bot(commands.Bot):
                     os.getenv("TOP.GG_API_KEY")
                 ),
                 "commands_url": "https://top.gg/api/v1/projects/@me/commands",
-                "stats_url": f"https://top.gg/api/bots/{self.user.id}/stats",
+                "stats_url": "https://top.gg/api/v1/projects/@me/metrics",
                 "data": {"server_count": len(self.guilds)},
                 "guild_count_name": "server_count"
             },
