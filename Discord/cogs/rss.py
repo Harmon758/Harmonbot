@@ -213,7 +213,12 @@ class RSS(commands.Cog):
     async def feeds(self, ctx):
         '''Show feeds being followed in this channel'''
         records = await ctx.bot.db.fetch(
-            "SELECT feed FROM rss.feeds WHERE channel_id = $1", ctx.channel.id
+            """
+            SELECT feed FROM rss.feeds
+            WHERE channel_id = $1
+            ORDER BY feed
+            """,
+            ctx.channel.id
         )
         paginator = ButtonPaginator(
             ctx,
