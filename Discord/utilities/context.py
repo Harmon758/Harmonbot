@@ -139,6 +139,29 @@ class Context(commands.Context):
 			await self.bot.attempt_delete_message(self.message)
 			return message
 	
+	async def reply_with_layout_view(self, content):
+		layout_view = discord.ui.LayoutView(timeout = 0)
+		if not self.interaction:
+			layout_view.add_item(
+				discord.ui.TextDisplay(
+					f"-# In response to {self.author.mention}:\n"
+					f"-# > {self.message.clean_content}"
+				)
+			)
+		layout_view.add_item(
+			discord.ui.Container(discord.ui.TextDisplay(content))
+		)
+
+		message = await self.send(
+			view = layout_view,
+			allowed_mentions = discord.AllowedMentions.none()
+		)
+		
+		if not self.interaction:
+			await self.bot.attempt_delete_message(self.message)
+		
+		return message
+	
 	def whisper(self, *args, **kwargs):
 		return self.author.send(*args, **kwargs)
 	
