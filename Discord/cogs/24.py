@@ -14,6 +14,9 @@ if TYPE_CHECKING:
     from utilities.context import Context
 
 
+CEK = '\N{COMBINING ENCLOSING KEYCAP}'
+
+
 async def setup(bot):
     await bot.add_cog(TwentyFour())
 
@@ -31,39 +34,38 @@ class TwentyFour(commands.Cog, name = "24"):
         await ctx.defer()
 
         numbers = list(map(str, generate_numbers()))
-        CEK = '\N{COMBINING ENCLOSING KEYCAP}'
-        view = TwentyFourView(ctx.bot, numbers)
+        view = TwentyFourLayoutView(ctx, numbers)
+        response = await ctx.send(
+            view = view, allowed_mentions = discord.AllowedMentions.none()
+        )
         if ctx.interaction:
-            response = await ctx.send(
-                f"{numbers[0]}{CEK}{numbers[1]}{CEK}\n"
-                f"{numbers[2]}{CEK}{numbers[3]}{CEK}",
-                view = view
-            )
             # InteractionMessage token expires after 15 min.
             try:
                 response = await response.fetch()
             except discord.Forbidden:
                 view.timeout = 600
-                response = await response.edit(view = view)
-        else:
-            response = await ctx.embed_reply(
-                f"{numbers[0]}{CEK}{numbers[1]}{CEK}\n"
-                f"{numbers[2]}{CEK}{numbers[3]}{CEK}",
-                footer_text = None,
-                view = view
-            )
+                response = await response.edit(
+                    view = view,
+                    allowed_mentions = discord.AllowedMentions.none()
+                )
         view.message = response
         ctx.bot.views.append(view)
 
         async def incorrect(message, value):
-            response_ctx = await ctx.bot.get_context(message)
             solution = message.content.replace('\\', "")
-            await response_ctx.embed_reply(
+            solution_view = ui.LayoutView(timeout = 0)
+            solution_view.add_item(
+                ui.Container(
+                    ui.TextDisplay(
+                        f"### {message.author.mention}: Incorrect\n"
+                        f"`{solution} = {value}`"
+                    )
+                )
+            )
+            await message.channel.send(
                 reference = response,
-                title = "Incorrect",
-                description = f"`{solution} = {value}`",
-                in_response_to = False,
-                attempt_delete = False
+                view = solution_view,
+                allowed_mentions = discord.AllowedMentions.none()
             )
 
         def check(message):
@@ -80,33 +82,59 @@ class TwentyFour(commands.Cog, name = "24"):
             return True
 
         message = await ctx.bot.wait_for('message', check = check)
-        ctx = await ctx.bot.get_context(message)
         solution = message.content.replace('\\', "")
-        await ctx.embed_reply(
+        solution_view = ui.LayoutView(timeout = 0)
+        solution_view.add_item(
+            ui.Container(
+                ui.TextDisplay(
+                    f"### {message.author.mention}: Correct!\n"
+                    f"`{solution} = 24`"
+                )
+            )
+        )
+        await ctx.send(
             reference = response,
-            title = "Correct!",
-            description = f"`{solution} = 24`",
-            in_response_to = False,
-            attempt_delete = False
+            view = solution_view,
+            allowed_mentions = discord.AllowedMentions.none()
         )
         await view.stop()
 
 
-class TwentyFourView(ui.View):
+class TwentyFourLayoutView(ui.LayoutView):
 
-    def __init__(self, bot, numbers):
+    def __init__(self, ctx, numbers):
         super().__init__(timeout = None)
 
-        self.bot = bot
+        self.bot = ctx.bot
 
-        self.add_item(TwentyFourSubmitSolutionButton(numbers))
+        if not ctx.interaction:
+            self.add_item(
+                ui.TextDisplay(
+                    f"-# In response to {ctx.author.mention}:\n"
+                    f"-# > {ctx.message.clean_content}"
+                )
+            )
+
         self.add_item(
+            ui.Container(
+                ui.TextDisplay(
+                    f"# {numbers[0]}{CEK}   {numbers[1]}{CEK}\n"
+                    f"# {numbers[2]}{CEK}   {numbers[3]}{CEK}",
+                )
+            )
+        )
+
+        action_row = ui.ActionRow()
+        self.submit_solution_button = TwentyFourSubmitSolutionButton(numbers)
+        action_row.add_item(self.submit_solution_button)
+        action_row.add_item(
             ui.Button(
                 style = discord.ButtonStyle.link,
                 emoji = '\N{INFORMATION SOURCE}',
                 url = "https://en.wikipedia.org/wiki/24_(puzzle)"
             )
         )
+        self.add_item(action_row)
 
         self.message = None
 
@@ -114,10 +142,13 @@ class TwentyFourView(ui.View):
         await self.stop()
 
     async def stop(self):
-        self.children[0].disabled = True
+        self.submit_solution_button.disabled = True
 
         if self.message:
-            await self.bot.attempt_edit_message(self.message, view = self)
+            await self.bot.attempt_edit_message(
+                self.message, view = self,
+                allowed_mentions = discord.AllowedMentions.none()
+            )
 
         super().stop()
 
@@ -146,23 +177,22 @@ class TwentyFourSubmitSolutionModal(ui.Modal, title = "Submit Solution"):
         await interaction.response.defer(thinking = True)
 
         solution = self.solution.value.replace('\\', "")
-
         value = check_solution(self.numbers, solution)
-
-        embed = discord.Embed(color = interaction.client.bot_color)
-        embed.set_author(
-            name = interaction.user.display_name,
-            icon_url = interaction.user.display_avatar.url
-        )
+        text = f"### {interaction.user.mention}: "
         if value is False:
-            embed.title = "Invalid"
-            embed.description = f"`{solution}` is an invalid solution"
+            text += "Invalid\n"
+            text += f"`{solution}` is an invalid solution"
         elif value == 24:
-            embed.title = "Correct!"
-            embed.description = f"||`{solution} = 24`||"
+            text += "Correct!\n"
+            text += f"||`{solution} = 24`||"
         else:
-            embed.title = "Incorrect"
-            embed.description = f"`{solution} = {value}`"
+            text += "Incorrect\n"
+            text += f"`{solution} = {value}`"
 
-        await interaction.followup.send(embed = embed)
+        view = ui.LayoutView(timeout = 0)
+        view.add_item(ui.Container(ui.TextDisplay(text)))
+
+        await interaction.followup.send(
+            view = view, allowed_mentions = discord.AllowedMentions.none()
+        )
 
