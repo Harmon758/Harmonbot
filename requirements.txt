@@ -1482,9 +1482,9 @@ tweepy==4.14.0 ; implementation_name == 'cpython' and platform_python_implementa
     --hash=sha256:1f9f1707d6972de6cff6c5fd90dfe6a449cd2e0d70bd40043ffab01e07a06c8c \
     --hash=sha256:db6d3844ccc0c6d27f339f12ba8acc89912a961da513c1ae50fa2be502a56afb
     # via harmonbot
-twitchio==2.4.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:3b0d62794b8320e5a8d11091ed3441217f7933b72720309b6e2c99f080c8a4af \
-    --hash=sha256:c5be40008686705bb2470366c9e268da7b172f5ce13fd311266a369876bd40d3
+twitchio==3.2.2 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:44908f4581dcb85d106248bd5cbcccbd7cbbe6f0bea013085eb632f158d8c0c1 \
+    --hash=sha256:a842fdd7dd9bd03e4d887f9490d42c616d58f9833bcf4ba6b187f77d4148ba7c
     # via harmonbot
 ty==0.0.13 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:00be58d89337c27968a20d58ca553458608c5b634170e2bec82824c2e4cf4d96 \
