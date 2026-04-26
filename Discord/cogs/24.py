@@ -92,11 +92,12 @@ class TwentyFour(commands.Cog, name = "24"):
                 )
             )
         )
-        await ctx.send(
+        solution_message = await ctx.send(
             reference = response,
             view = solution_view,
             allowed_mentions = discord.AllowedMentions.none()
         )
+        await view.add_solver(message.author, solution_message)
         await view.stop()
 
 
@@ -137,6 +138,21 @@ class TwentyFourLayoutView(ui.LayoutView):
         self.add_item(action_row)
 
         self.message = None
+        self.solvers = ""
+
+    async def add_solver(self, solver, solution_message):
+        if self.solvers:
+            self.remove_item(self.children[-1])
+
+        self.solvers += (
+            f"[Solved]({solution_message.jump_url}) by {solver.mention}\n"
+        )
+        self.add_item(ui.Container(ui.TextDisplay(self.solvers)))
+
+        await self.bot.attempt_edit_message(
+            self.message, view = self,
+            allowed_mentions = discord.AllowedMentions.none()
+        )
 
     async def on_timeout(self):
         await self.stop()
@@ -161,7 +177,7 @@ class TwentyFourSubmitSolutionButton(ui.Button):
 
     async def callback(self, interaction):
         await interaction.response.send_modal(
-            TwentyFourSubmitSolutionModal(self.numbers)
+            TwentyFourSubmitSolutionModal(self.view, self.numbers)
         )
 
 
@@ -169,9 +185,10 @@ class TwentyFourSubmitSolutionModal(ui.Modal, title = "Submit Solution"):
 
     solution = ui.TextInput(label = "Solution")
 
-    def __init__(self, numbers):
+    def __init__(self, view, numbers):
         super().__init__()
         self.numbers = numbers
+        self.view = view
 
     async def on_submit(self, interaction):
         await interaction.response.defer(thinking = True)
@@ -192,7 +209,10 @@ class TwentyFourSubmitSolutionModal(ui.Modal, title = "Submit Solution"):
         view = ui.LayoutView(timeout = 0)
         view.add_item(ui.Container(ui.TextDisplay(text)))
 
-        await interaction.followup.send(
+        solution_message = await interaction.followup.send(
             view = view, allowed_mentions = discord.AllowedMentions.none()
         )
+
+        if value == 24:
+            await self.view.add_solver(interaction.user, solution_message)
 
