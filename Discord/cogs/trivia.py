@@ -1198,7 +1198,7 @@ class TriviaQuestion:
     async def start(self, ctx):
         record = await ctx.bot.db.fetchrow(
             """
-            SELECT clues.text, clues.answer, clues.category,
+            SELECT clues.text, clues.answer, clues.category, clues.media,
                    clues.acceptable_answers, games.airdate
             FROM trivia.clues
             TABLESAMPLE BERNOULLI (0.01)
@@ -1231,11 +1231,23 @@ class TriviaQuestion:
             embeds[0].description = None
             await self.bet_message.edit(embeds = embeds)
 
+        image_url = None
+        if record["media"]:
+            image_url = record["media"][0]
         embeds = [
             discord.Embed(
+                url = ctx.message.jump_url
+            ).set_image(
+                url = media
+            )
+            for media in record["media"][1:4]
+        ] + [
+            discord.Embed(
                 description = "Showing answer " + discord.utils.format_dt(
-                    datetime.datetime.now(datetime.UTC) +
-                    datetime.timedelta(seconds = self.seconds),
+                    (
+                        datetime.datetime.now(datetime.UTC) +
+                        datetime.timedelta(seconds = self.seconds)
+                    ),
                     style = 'R'
                 ),
                 color = ctx.bot.bot_color
@@ -1244,7 +1256,9 @@ class TriviaQuestion:
         self.response = await ctx.embed_reply(
             author_name = None,
             title = capwords(record["category"]),
+            title_url = ctx.message.jump_url,
             description = record["text"],
+            image_url = image_url,
             footer_text = "Air Date",
             timestamp = datetime.datetime.combine(
                 record["airdate"], datetime.time(), datetime.UTC
@@ -1258,7 +1272,7 @@ class TriviaQuestion:
         self.accepting_answers = False
 
         embeds = self.response.embeds
-        del embeds[1]
+        del embeds[-1]
         await ctx.bot.attempt_edit_message(self.response, embeds = embeds)
 
         correct_players = []
