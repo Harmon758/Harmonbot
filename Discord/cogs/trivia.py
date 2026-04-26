@@ -1189,6 +1189,7 @@ class TriviaQuestion:
         self.bet_message = None
         self.bets = {}
         self.betting = betting
+        self.countdown_embed_index = -1
         self.override_modal_answers = override_modal_answers
         self.react = react
         self.response = None  # Bot response to command
@@ -1253,7 +1254,7 @@ class TriviaQuestion:
                 color = ctx.bot.bot_color
             )
         ]
-        countdown_embed_index = len(embeds)
+        self.countdown_embed_index = len(embeds)
         self.response = await ctx.embed_reply(
             author_name = None,
             title = capwords(record["category"]),
@@ -1271,10 +1272,6 @@ class TriviaQuestion:
         self.accepting_answers = True
         await asyncio.sleep(self.seconds)
         self.accepting_answers = False
-
-        embeds = self.response.embeds
-        del embeds[countdown_embed_index]
-        await ctx.bot.attempt_edit_message(self.response, embeds = embeds)
 
         correct_players = []
         incorrect_players = []
@@ -1405,7 +1402,9 @@ class TriviaQuestionView(ui.View):
         )
 
     async def on_timeout(self):
-        await self.question.response.edit(view = None)
+        embeds = self.question.response.embeds
+        del embeds[self.question.countdown_embed_index]
+        await self.question.response.edit(embeds = embeds, view = None)
         self.stop()
 
 
