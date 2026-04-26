@@ -52,6 +52,7 @@ connection.execute(
         answer        TEXT,
         value         INT,
         category      TEXT,
+        media         TEXT[],
         daily_double  BOOL DEFAULT FALSE,
         round_number  INT,
         game_id       INT REFERENCES trivia.games (id)
@@ -229,7 +230,22 @@ for a in overall_progress.track(
                     )["clue_id"][0]
                 )
 
-                clue_text = clue_td.find("td", class_ = "clue_text").text
+                clue_text_td = clue_td.find("td", class_ = "clue_text")
+                clue_text = clue_text_td.text
+                clue_media = []
+                for clue_text_a in clue_text_td.find_all('a'):
+                    try:
+                        clue_text_href = clue_text_a["href"]
+                    except KeyError:
+                        print(f"Media link missing in game {game_id}")
+                        continue
+                    if clue_text_href.startswith((
+                        "http://www.j-archive.com/media/",
+                        "https://www.j-archive.com/media/"
+                    )):
+                        clue_media.append(clue_text_href)
+                    else:
+                        print(f"Non-media link found in game {game_id}")
 
                 clue_answer = (
                     clue_td.find("em", class_ = "correct_response").text
@@ -252,16 +268,18 @@ for a in overall_progress.track(
                 connection.execute(
                     """
                     INSERT INTO trivia.clues (
-                        id, text, answer, value, category, daily_double,
+                        id, text, answer, value, category, media, daily_double,
                         round_number, game_id
                     )
                     VALUES (
                         %(id)s, %(text)s, %(answer)s, %(value)s, %(category)s,
-                        %(daily_double)s, %(round_number)s, %(game_id)s
+                        %(media)s, %(daily_double)s, %(round_number)s,
+                        %(game_id)s
                     )
                     ON CONFLICT (id) DO
                     UPDATE SET text = %(text)s, answer = %(answer)s,
                                value = %(value)s, category = %(category)s,
+                               media = %(media)s,
                                daily_double = %(daily_double)s,
                                round_number = %(round_number)s,
                                game_id = %(game_id)s
@@ -269,7 +287,8 @@ for a in overall_progress.track(
                     {
                         "id": clue_id, "text": clue_text,
                         "answer": clue_answer, "value": clue_value,
-                        "category": category, "daily_double": daily_double,
+                        "category": category, "media": clue_media,
+                        "daily_double": daily_double,
                         "round_number": round_number, "game_id": game_id
                     }
                 )
