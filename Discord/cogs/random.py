@@ -245,7 +245,9 @@ class Random(commands.Cog):
     async def random_coin(self, ctx):
         """Flip a coin"""
         # Note: coin command invokes this command
-        await ctx.embed_reply(random.choice(("Heads!", "Tails!")))  # nosec: random  # noqa: S311 (suspicious-non-cryptographic-random-usage)
+        await ctx.reply_with_layout_view(
+            random.choice(("Heads!", "Tails!"))  # nosec: random  # noqa: S311 (suspicious-non-cryptographic-random-usage)
+        )
 
     @commands.command(aliases = ["flip"])
     async def coin(self, ctx):
