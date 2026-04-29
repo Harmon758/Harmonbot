@@ -294,7 +294,7 @@ class Random(commands.Cog):
     async def random_date(self, ctx):
         """Random date"""
         # Note: date command invokes this command
-        await ctx.embed_reply(
+        await ctx.reply_with_layout_view(
             datetime.date.fromordinal(
                 random.randint(1, 365)  # nosec: random  # noqa: S311 (suspicious-non-cryptographic-random-usage)
             ).strftime("%B %d")
