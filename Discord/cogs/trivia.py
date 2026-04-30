@@ -206,9 +206,10 @@ class Trivia(commands.Cog):
                 message.author in trivia_question.answered_through_modal
             ):
                 return
-            trivia_question.responses[message.author] = message.content
             embeds = trivia_question.response.embeds
-            del embeds[2:]
+            if trivia_question.responses:
+                del embeds[-1]
+            trivia_question.responses[message.author] = message.content
             users = self.bot.inflect_engine.join(
                 [user.mention for user in trivia_question.responses]
             )
