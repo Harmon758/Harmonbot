@@ -1267,7 +1267,7 @@ class TriviaQuestion:
                 allowed_mentions = discord.AllowedMentions.none()
             )
 
-        self.view = TriviaQuestionLayoutView(ctx, self, self.seconds)
+        self.view = TriviaQuestionLayoutView(ctx, self)
         self.response = await ctx.send(
             view = self.view, allowed_mentions = discord.AllowedMentions.none()
         )
@@ -1277,6 +1277,13 @@ class TriviaQuestion:
         self.accepting_answers = True
         await asyncio.sleep(self.seconds)
         self.accepting_answers = False
+
+        self.view.remove_item(self.view.countdown_container)
+        self.view.remove_item(self.view.action_row)
+        await self.response.edit(
+            view = self.view, allowed_mentions = discord.AllowedMentions.none()
+        )
+        self.view.stop()
 
         correct_players = []
         incorrect_players = []
@@ -1409,8 +1416,8 @@ class TriviaQuestion:
 
 class TriviaQuestionLayoutView(ui.LayoutView):
 
-    def __init__(self, ctx, question, timeout):
-        super().__init__(timeout = timeout)
+    def __init__(self, ctx, question):
+        super().__init__(timeout = None)
 
         self.question = question
 
@@ -1482,14 +1489,6 @@ class TriviaQuestionLayoutView(ui.LayoutView):
         await interaction.response.send_modal(
             TriviaQuestionAnswerModal(self.question)
         )
-
-    async def on_timeout(self):
-        self.remove_item(self.countdown_container)
-        self.remove_item(self.action_row)
-        await self.question.response.edit(
-            view = self, allowed_mentions = discord.AllowedMentions.none()
-        )
-        self.stop()
 
 
 class TriviaQuestionAnswerModal(ui.Modal, title = "Answer"):
