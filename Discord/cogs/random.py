@@ -347,7 +347,9 @@ class Random(commands.Cog):
     async def random_day(self, ctx):
         """Random day of the week"""
         # Note: day command invokes this command
-        await ctx.embed_reply(random.choice(calendar.day_name))  # nosec: random  # noqa: S311 (suspicious-non-cryptographic-random-usage)
+        await ctx.reply_with_layout_view(
+            random.choice(calendar.day_name)  # nosec: random  # noqa: S311 (suspicious-non-cryptographic-random-usage)
+        )
 
     @commands.command()
     async def day(self, ctx):
