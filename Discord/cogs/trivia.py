@@ -136,7 +136,7 @@ class Trivia(commands.Cog):
             description = "There's already an active trivia question here"
             if question.response:
                 description = f"[{description}]({question.response.jump_url})"
-            await ctx.embed_reply(description)
+            await ctx.reply_with_layout_view(description)
             return
 
         try:
@@ -168,22 +168,24 @@ class Trivia(commands.Cog):
             input_bet = int(message.content)
             bet = min(input_bet, 100)
             if bet <= points:
+                if not trivia_question.bets:
+                    trivia_question.view.add_item(ui.Container())
                 trivia_question.bets[message.author] = bet
-
-                embeds = trivia_question.bet_message.embeds
-                del embeds[1:]
-                embeds.append(
-                    discord.Embed(
-                        description = '\n'.join(
+                trivia_question.view.children[-1].clear_items()
+                trivia_question.view.children[-1].add_item(
+                    ui.TextDisplay(
+                        '\n'.join(
                             f"{player.mention} has bet {bet} "
                             f"{self.bot.inflect_engine.plural('point', bet)} "
                             "(`\N{CURRENCY SIGN}`)"
                             for player, bet in trivia_question.bets.items()
-                        ),
-                        color = self.bot.bot_color
+                        )
                     )
                 )
-                await trivia_question.bet_message.edit(embeds = embeds)
+                await trivia_question.bet_message.edit(
+                    view = trivia_question.view,
+                    allowed_mentions = discord.AllowedMentions.none()
+                )
 
                 if trivia_question.react:
                     if input_bet <= 100:
@@ -193,10 +195,18 @@ class Trivia(commands.Cog):
                     else:
                         await message.add_reaction('\N{HUNDRED POINTS SYMBOL}')
             else:
-                ctx = await self.bot.get_context(message)
-                await ctx.embed_reply(
-                    "You don't have that many points (`\N{CURRENCY SIGN}`) "
-                    "to bet!"
+                await message.channel.send(
+                    reference = message,
+                    allowed_mentions = discord.AllowedMentions.none(),
+                    view = ui.LayoutView().add_item(
+                        ui.Container(
+                            ui.TextDisplay(
+                                f"{message.author.mention}: You don't have "
+                                "that many points (`\N{CURRENCY SIGN}`) to "
+                                "bet!"
+                            )
+                        )
+                    )
                 )
         elif trivia_question.accepting_answers:
             if message.content.startswith(('!', '>', '|')):
@@ -206,9 +216,8 @@ class Trivia(commands.Cog):
                 message.author in trivia_question.answered_through_modal
             ):
                 return
-            embeds = trivia_question.response.embeds
-            if trivia_question.responses:
-                del embeds[-1]
+            if not trivia_question.responses:
+                trivia_question.view.add_item(ui.Container())
             trivia_question.responses[message.author] = message.content
             users = self.bot.inflect_engine.join(
                 [user.mention for user in trivia_question.responses]
@@ -216,14 +225,15 @@ class Trivia(commands.Cog):
             has_declension = self.bot.inflect_engine.plural(
                 'has', len(trivia_question.responses)
             )
-            embeds.append(
-                discord.Embed(
-                    description = f"{users} {has_declension} answered",
-                    color = self.bot.bot_color
-                )
+            trivia_question.view.remove_item(trivia_question.view.action_row)
+            trivia_question.view.children[-1].clear_items()
+            trivia_question.view.children[-1].add_item(
+                ui.TextDisplay(f"{users} {has_declension} answered")
             )
+            trivia_question.view.add_item(trivia_question.view.action_row)
             await self.bot.attempt_edit_message(
-                trivia_question.response, embeds = embeds
+                trivia_question.response, view = trivia_question.view,
+                allowed_mentions = discord.AllowedMentions.none()
             )
 
     @trivia.command(hidden = True, with_app_command = False)
@@ -1190,15 +1200,16 @@ class TriviaQuestion:
         self.bet_message = None
         self.bets = {}
         self.betting = betting
-        self.countdown_embed_index = -1
         self.override_modal_answers = override_modal_answers
         self.react = react
+        self.record = None
         self.response = None  # Bot response to command
         self.responses = {}  # User responses to question
         self.seconds = seconds
+        self.view = None
 
     async def start(self, ctx):
-        record = await ctx.bot.db.fetchrow(
+        self.record = await ctx.bot.db.fetchrow(
             """
             SELECT clues.text, clues.answer, clues.category, clues.media,
                    clues.acceptable_answers, games.airdate
@@ -1214,61 +1225,54 @@ class TriviaQuestion:
         # TODO: Add method of reporting issues with clue?
 
         if self.betting:
-            self.bet_message = await ctx.embed_reply(
-                author_name = None,
-                title = capwords(record["category"]),
-                description = "Showing question " + discord.utils.format_dt(
-                    datetime.datetime.now(datetime.UTC) +
-                    datetime.timedelta(seconds = self.seconds),
-                    style = 'R'
-                ),
-                footer_text = None
+            self.view = ui.LayoutView()
+            if not ctx.interaction:
+                self.view.add_item(
+                    ui.TextDisplay(
+                        f"-# In response to {ctx.author.mention}:\n"
+                        f"-# > {ctx.message.clean_content}"
+                    )
+                )
+            self.view.add_item(
+                ui.Container(
+                    ui.TextDisplay(
+                        f"### {capwords(self.record['category'])}"
+                    )
+                )
             )
+            countdown_container = ui.Container(
+                ui.TextDisplay(
+                    "Showing question " + discord.utils.format_dt(
+                        datetime.datetime.now(datetime.UTC) +
+                        datetime.timedelta(seconds = self.seconds),
+                        style = 'R'
+                    )
+                )
+            )
+            self.view.add_item(countdown_container)
+            self.bet_message = await ctx.send(
+                view = self.view,
+                allowed_mentions = discord.AllowedMentions.none()
+            )
+            if not ctx.interaction:
+                await ctx.bot.attempt_delete_message(ctx.message)
 
             self.accepting_bets = True
             await asyncio.sleep(self.seconds)
             self.accepting_bets = False
 
-            embeds = self.bet_message.embeds
-            embeds[0].description = None
-            await self.bet_message.edit(embeds = embeds)
+            self.view.remove_item(countdown_container)
+            await self.bet_message.edit(
+                view = self.view,
+                allowed_mentions = discord.AllowedMentions.none()
+            )
 
-        image_url = None
-        if record["media"]:
-            image_url = record["media"][0]
-        embeds = [
-            discord.Embed(
-                url = ctx.message.jump_url
-            ).set_image(
-                url = media
-            )
-            for media in record["media"][1:4]
-        ] + [
-            discord.Embed(
-                description = "Showing answer " + discord.utils.format_dt(
-                    (
-                        datetime.datetime.now(datetime.UTC) +
-                        datetime.timedelta(seconds = self.seconds)
-                    ),
-                    style = 'R'
-                ),
-                color = ctx.bot.bot_color
-            )
-        ]
-        self.countdown_embed_index = len(embeds)
-        self.response = await ctx.embed_reply(
-            author_name = None,
-            title = capwords(record["category"]),
-            title_url = ctx.message.jump_url,
-            description = record["text"],
-            image_url = image_url,
-            footer_text = "Air Date",
-            timestamp = datetime.datetime.combine(
-                record["airdate"], datetime.time(), datetime.UTC
-            ),
-            view = TriviaQuestionView(self, self.seconds),
-            embeds = embeds
+        self.view = TriviaQuestionLayoutView(ctx, self, self.seconds)
+        self.response = await ctx.send(
+            view = self.view, allowed_mentions = discord.AllowedMentions.none()
         )
+        if not ctx.interaction and not self.betting:
+            await ctx.bot.attempt_delete_message(ctx.message)
 
         self.accepting_answers = True
         await asyncio.sleep(self.seconds)
@@ -1277,10 +1281,10 @@ class TriviaQuestion:
         correct_players = []
         incorrect_players = []
         for player, response in self.responses.items():
-            if record["acceptable_answers"]:
-                for answer in record["acceptable_answers"]:
+            if self.record["acceptable_answers"]:
+                for answer in self.record["acceptable_answers"]:
                     if check_answer(
-                        clue = record["text"],
+                        clue = self.record["text"],
                         answer = answer,
                         response = response,
                         inflect_engine = ctx.bot.inflect_engine
@@ -1290,21 +1294,15 @@ class TriviaQuestion:
                 else:
                     incorrect_players.append(player)
             elif check_answer(
-                clue = record["text"],
-                answer = record["answer"],
+                clue = self.record["text"],
+                answer = self.record["answer"],
                 response = response,
                 inflect_engine = ctx.bot.inflect_engine
             ):
                 correct_players.append(player)
             else:
                 incorrect_players.append(player)
-        if correct_players:
-            correct_players_output = ctx.bot.inflect_engine.join(
-                [player.display_name for player in correct_players]
-            )
-            correct_players_output += f" {ctx.bot.inflect_engine.plural('was', len(correct_players))} right!"
-        else:
-            correct_players_output = "Nobody got it right!"
+
         for correct_player in correct_players:
             await ctx.bot.db.execute(
                 """
@@ -1328,27 +1326,42 @@ class TriviaQuestion:
                 incorrect_player.id
             )
 
+        view = ui.LayoutView()
         with warnings.catch_warnings():
             warnings.filterwarnings(
                 "ignore", category = MarkupResemblesLocatorWarning
             )
-            answer = BeautifulSoup(
-                html.unescape(record["answer"]),
-                "lxml"
-            ).get_text().replace("\\'", "'")
-
-        description = f"The answer was: `{answer}`\n\n"
-        for player, response in self.responses.items():
-            description += (
-                f"{player.mention} answered:\n"
-                f"> {response}\n\n"
+            view.add_item(
+                ui.Container(
+                    ui.TextDisplay(
+                        f"### [Trivia Answer]({self.response.jump_url})\n" +
+                        '`' + BeautifulSoup(
+                            html.unescape(self.record["answer"]),
+                            "lxml"
+                        ).get_text().replace("\\'", "'") + '`'
+                    )
+                )
             )
-        await ctx.embed_reply(
-            reference = self.response,
-            author_name = None,
-            footer_text = correct_players_output,
-            description = description,
-            in_response_to = False
+        view.add_item(
+            ui.Container(
+                ui.TextDisplay(
+                    "".join(
+                        (
+                            f"-# {player.mention} answered:\n"
+                            f"-# > {response}\n"
+                        )
+                        for player, response in self.responses.items()
+                    ) + '\n' +
+                    (
+                        (
+                            ctx.bot.inflect_engine.join(
+                                [player.mention for player in correct_players]
+                            ) +
+                            f" {ctx.bot.inflect_engine.plural('was', len(correct_players))} right!"
+                        ) if correct_players else "Nobody got it right!"
+                    )
+                )
+            )
         )
 
         if self.betting and self.bets:
@@ -1381,31 +1394,101 @@ class TriviaQuestion:
                     f"{points:,} {points_point_declension} "
                     "(`\N{CURRENCY SIGN}`)"
                 )
-            await ctx.embed_reply(
-                reference = self.bet_message,
-                author_name = None,
-                description = '\n'.join(bets_output),
-                in_response_to = False
+            view.add_item(
+                ui.Container(
+                    ui.TextDisplay(
+                        '\n'.join(bets_output)
+                    )
+                )
             )
 
+        await ctx.send(
+            view = view, allowed_mentions = discord.AllowedMentions.none()
+        )
 
-class TriviaQuestionView(ui.View):
 
-    def __init__(self, question, timeout):
+class TriviaQuestionLayoutView(ui.LayoutView):
+
+    def __init__(self, ctx, question, timeout):
         super().__init__(timeout = timeout)
 
         self.question = question
 
-    @ui.button(style = discord.ButtonStyle.red, label = "Answer")
+        if not ctx.interaction and not question.betting:
+            self.add_item(
+                ui.TextDisplay(
+                    f"-# In response to {ctx.author.mention}:\n"
+                    f"-# > {ctx.message.clean_content}"
+                )
+            )
+
+        container = ui.Container()
+
+        if question.betting:
+            clue_text = (
+                f"### [{capwords(question.record['category'])}]"
+                f"({question.bet_message.jump_url})\n"
+            )
+        else:
+            clue_text = f"### {capwords(question.record['category'])}\n"
+        clue_text += f"{question.record['text']}\n\n"
+
+        air_date_text = (
+            "-# Air Date: " +
+            discord.utils.format_dt(
+                datetime.datetime.combine(
+                    question.record["airdate"], datetime.time(),
+                    datetime.UTC
+                ),
+                style = 'D'
+            )
+        )  # TODO: Fix off by one day - use air time
+
+        if question.record["media"]:
+            container.add_item(ui.TextDisplay(clue_text))
+            container.add_item(
+                ui.MediaGallery(
+                    *(
+                        discord.MediaGalleryItem(media)
+                        for media in question.record["media"][:10]
+                    )
+                )
+            )
+            container.add_item(ui.TextDisplay(air_date_text))
+        else:
+            container.add_item(ui.TextDisplay(clue_text + air_date_text))
+
+        self.add_item(container)
+
+        self.countdown_container = ui.Container(
+            ui.TextDisplay(
+                "Showing answer " + discord.utils.format_dt(
+                    datetime.datetime.now(datetime.UTC) +
+                    datetime.timedelta(seconds = self.question.seconds),
+                    style = 'R'
+                )
+            )
+        )
+        self.add_item(self.countdown_container)
+
+        # Put answer button at bottom
+        self.remove_item(self.action_row)
+        self.add_item(self.action_row)
+
+    action_row = ui.ActionRow()
+
+    @action_row.button(style = discord.ButtonStyle.red, label = "Answer")
     async def answer(self, interaction, button):
         await interaction.response.send_modal(
             TriviaQuestionAnswerModal(self.question)
         )
 
     async def on_timeout(self):
-        embeds = self.question.response.embeds
-        del embeds[self.question.countdown_embed_index]
-        await self.question.response.edit(embeds = embeds, view = None)
+        self.remove_item(self.countdown_container)
+        self.remove_item(self.action_row)
+        await self.question.response.edit(
+            view = self, allowed_mentions = discord.AllowedMentions.none()
+        )
         self.stop()
 
 
