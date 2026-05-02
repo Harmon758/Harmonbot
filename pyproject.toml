@@ -151,6 +151,9 @@ packages = ["units"]
 [tool.setuptools_scm]
 fallback_version = "0.0.0"
 
+[tool.ty.rules]
+unused-type-ignore-comment = "ignore"
+
 [tool.ty.src]
 include = ["units"]
 
