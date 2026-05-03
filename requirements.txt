@@ -1060,9 +1060,9 @@ pycparser==2.23 ; implementation_name == 'cpython' and platform_python_implement
     --hash=sha256:78816d4f24add8f10a06d6f05b4d424ad9e96cfebf68a4ddc99c65c0720d00c2 \
     --hash=sha256:e5c6e8d3fbad53479cab09ac03729e0a9faf2bee3db8208a550daf5af81a5934
     # via cffi
-pycroscope==0.2.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:60560c51ffcac9a050f2d9dea59a78afae546545a750c397354d4c624e662547 \
-    --hash=sha256:9b17a9645843b5c7761ac0be045cbf2fb9761f7694a70185912a0a2cc039435f
+pycroscope==0.4.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:14b40e36f6186dd2eff712c8da91d02eb89a263a257472b49f4c59153ff380fb \
+    --hash=sha256:cb7440b44ed16ed927995c33867cab22503f4bff7efe504964b81fb967183223
 pycryptodomex==3.23.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:02d87b80778c171445d67e23d1caef279bf4b25c3597050ccd2e13970b57fd51 \
     --hash=sha256:06698f957fe1ab229a99ba2defeeae1c09af185baa909a31a5d1f9d42b1aaed6 \
