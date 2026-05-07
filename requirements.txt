@@ -652,9 +652,9 @@ lxml==6.1.0 ; implementation_name == 'cpython' and platform_python_implementatio
     --hash=sha256:f504d861d9f2a8f94020130adac88d66de93841707a23a86244263d1e54682f5 \
     --hash=sha256:fcf3da95e93349e0647d48d4b36a12783105bcc74cb0c416952f9988410846a3
     # via beautifulsoup4
-markdown-it-py==4.0.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:87327c59b172c5011896038353a81343b6754500a08cd7a4973bb48c6d578147 \
-    --hash=sha256:cb0a2b4aa34f932c007117b194e945bd74e0ec24133ceb5bac59009cda1cb9f3
+markdown-it-py==4.1.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:760e3f87b2787c044c5138a5ba107b7c2be26c03b13cc7f8fe42756b65b1df6c \
+    --hash=sha256:d4939a62a2dd0cd9cb80a191a711ba1d39bac8ed5ef9e9966895b0171c01c46d
     # via rich
 markdownify==1.2.2 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:3f02d3cc52714084d6e589f70397b6fc9f2f3a8531481bf35e8cc39f975e186a \
