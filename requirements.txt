@@ -403,9 +403,9 @@ google-auth==2.49.2 ; implementation_name == 'cpython' and platform_python_imple
     #   google-cloud-speech
     #   google-cloud-translate
     #   google-cloud-vision
-google-cloud-core==2.5.1 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:3dc94bdec9d05a31d9f355045ed0f369fbc0d8c665076c734f065d729800f811 \
-    --hash=sha256:ea62cdf502c20e3e14be8a32c05ed02113d7bef454e40ff3fab6fe1ec9f1f4e7
+google-cloud-core==2.6.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:6d63ac8e5eca6d9e4319d0a1e2265fadcd7f1049904378caecfa01cf52dd869e \
+    --hash=sha256:e76149739f90fac1fc6757c09f47eaccb3145b54adbd7759b0f7c4b235f46c83
     # via google-cloud-translate
 google-cloud-speech==2.34.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:2a7bffd84f134b9b70c9f11cbb5088c534f92be149d71d9073d0b9dd3a431acf \
