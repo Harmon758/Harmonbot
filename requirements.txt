@@ -154,9 +154,9 @@ catalogue==2.0.10 ; implementation_name == 'cpython' and platform_python_impleme
     #   spacy
     #   srsly
     #   thinc
-certifi==2025.10.5 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:0f212c2744a9bb6de0c56639a6f68afe01ecd92d91f14ae897c4fe7bbeeef0de \
-    --hash=sha256:47c09d31ccf2acf0be3f701ea53595ee7e0b8fa08801c6624be771df09ae7b43
+certifi==2026.5.20 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:3c52e209ba0a4ad7aebe60436a4ab349c39e1e602e8c134221e546902ad25897 \
+    --hash=sha256:69dea482ab64caa7b9f6aba1c6bf48bb6a5448d1c0f1b17ab42ad8c763a5344d
     # via
     #   httpcore
     #   httpx
