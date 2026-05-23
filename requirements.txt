@@ -627,30 +627,30 @@ librt==0.9.0 ; implementation_name == 'cpython' and platform_python_implementati
     --hash=sha256:f100bfe2acf8a3689af9d0cc660d89f17286c9c795f9f18f7b62dd1a6b247ae6 \
     --hash=sha256:f819e0c6413e259a17a7c0d49f97f405abadd3c2a316a3b46c6440b7dbbedbb1
     # via mypy
-lxml==6.1.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:07f98f5496f96bf724b1e3c933c107f0cbf2745db18c03d2e13a291c3afd2635 \
-    --hash=sha256:0d082495c5fcf426e425a6e28daaba1fcb6d8f854a4ff01effb1f1f381203eb9 \
-    --hash=sha256:183bfb45a493081943be7ea2b5adfc2b611e1cf377cefa8b8a8be404f45ef9a7 \
-    --hash=sha256:19f4164243fc206d12ed3d866e80e74f5bc3627966520da1a5f97e42c32a3f39 \
-    --hash=sha256:23a5dc68e08ed13331d61815c08f260f46b4a60fdd1640bbeb82cf89a9d90289 \
-    --hash=sha256:363e47283bde87051b821826e71dde47f107e08614e1aa312ba0c5711e77738c \
-    --hash=sha256:3ae5d8d5427f3cc317e7950f2da7ad276df0cfa37b8de2f5658959e618ea8512 \
-    --hash=sha256:4642e04449a1e164b5ff71ffd901ddb772dfabf5c9adf1b7be5dffe1212bc037 \
-    --hash=sha256:546b66c0dd1bb8d9fa89d7123e5fa19a8aff3a1f2141eb22df96112afb17b842 \
-    --hash=sha256:5cfa1a34df366d9dc0d5eaf420f4cf2bb1e1bebe1066d1c2fc28c179f8a4004c \
-    --hash=sha256:7da13bb6fbadfafb474e0226a30570a3445cfd47c86296f2446dafbd77079ace \
-    --hash=sha256:857efde87d365706590847b916baff69c0bc9252dc5af030e378c9800c0b10e3 \
-    --hash=sha256:942454ff253da14218f972b23dc72fa4edf6c943f37edd19cd697618b626fac5 \
-    --hash=sha256:976a6b39b1b13e8c354ad8d3f261f3a4ac6609518af91bdb5094760a08f132c4 \
-    --hash=sha256:9c03e048b6ce8e77b09c734e931584894ecd58d08296804ca2d0b184c933ce50 \
-    --hash=sha256:bfd57d8008c4965709a919c3e9a98f76c2c7cb319086b3d26858250620023b13 \
-    --hash=sha256:cec05be8c876f92a5aa07b01d60bbb4d11cfbdd654cad0561c0d7b5c043a61b9 \
-    --hash=sha256:d036ee7b99d5148072ac7c9b847193decdfeac633db350363f7bce4fff108f0e \
-    --hash=sha256:db88156fcf544cdbf0d95588051515cfdfd4c876fc66444eb98bceb5d6db76de \
-    --hash=sha256:e3c4f84b24a1fcba435157d111c4b755099c6ff00a3daee1ad281817de75ed11 \
-    --hash=sha256:f15401d8d3dbf239e23c818afc10c7207f7b95f9a307e092122b6f86dd43209a \
-    --hash=sha256:f504d861d9f2a8f94020130adac88d66de93841707a23a86244263d1e54682f5 \
-    --hash=sha256:fcf3da95e93349e0647d48d4b36a12783105bcc74cb0c416952f9988410846a3
+lxml==6.1.1 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:162af1091cd785f2f27e62d3547ae9bc58ec5c86dd314d67021fd02463708d83 \
+    --hash=sha256:18b73c339ae29b90fd2d06e58ebd555a751bde9cd6bbd36cc0281b9a2c94e9d8 \
+    --hash=sha256:30a89d3ac8faec007453fb541f3f46807eeec88edd5826f6e3fe001752a2c621 \
+    --hash=sha256:31033dc34636ea6b7d5cc11b1ddbda78a14de858ba9d3e1ed4b69a3085bc521e \
+    --hash=sha256:3893c14c4b6ac5b2d54ba8cf03e99fe5104e592de491f19bd6b82756c09f8004 \
+    --hash=sha256:3a12689be69a28ddaa0ab99a5a1137da2afd5f8f16df7b5680b66f616d3eda1d \
+    --hash=sha256:53b7d2b7a10b1c35c0a5e21e9224accf60c1bbfba523990732e521b2b73adef2 \
+    --hash=sha256:5f6994074ebae6ffb04447268e37dc16edc304f9859cf91acb86e0af6c1b395c \
+    --hash=sha256:6b1761fbf9ec984e2e9d9c589ef5f5fd684b7c19f92aadd567a26c5224958db6 \
+    --hash=sha256:752d3bbfe874715ccd0aec7f88d7fc623c0f1fd7aa7b3238a084e017bad2a009 \
+    --hash=sha256:80c2dfadb855da477cf73373ad29a333535dedb9b12bad02c9814c8e2b43bf08 \
+    --hash=sha256:a4bbea04c97f6d78a48e3fbc1cb9116d2780b1b39e03a23f6eb9b603fd61f510 \
+    --hash=sha256:abbefa31eee84842140f67acef1c828e28bba8bbf0c3bc6e5492a9af88152c28 \
+    --hash=sha256:ba96ae44888e0185281e937633a743ea90d5a196c6000f82565ebb0580012d40 \
+    --hash=sha256:c07da4cebf6889f03ebac8d238f62318e29f495de0aa18a51ea14e61ae907e2e \
+    --hash=sha256:d680fbcb768404c601ecb43519ecd8461f6954cb11c06a78962f666832ccfca8 \
+    --hash=sha256:db1d75f6617a49c1c01bc7023713e0ff59ab32c9579ae62a7674c0e34f3b0b0a \
+    --hash=sha256:dcb292aa7fe485ceff7af4f92e46c5af397daec5dff64871a528f0fc47a3cc5b \
+    --hash=sha256:e9308ff8241c532df3f3e570f9a5aeed6c853f888512ba4b75638d7c11c95ef6 \
+    --hash=sha256:ed21202aec73cda4d55d1ce57b389aadb90ffb044e6cd1080b8347efe1b1ec84 \
+    --hash=sha256:f6f0ce10945fab9c4c06ce14e22af9059d1a87493a9af4501a5b0b9187e21cf2 \
+    --hash=sha256:f8844cd288697c6425c9beba919302241e3278871dc6519515e72b04e987abcf \
+    --hash=sha256:ff3f333630ab480244a1bff72043e511a91eb22e7595dead8653ee5612dd8f3d
     # via beautifulsoup4
 markdown-it-py==4.0.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:87327c59b172c5011896038353a81343b6754500a08cd7a4973bb48c6d578147 \
