@@ -14,11 +14,11 @@ wheels = [{ url = "https://files.pythonhosted.org/packages/37/d7/15d67e05b235d1e
 
 [[packages]]
 name = "aiodns"
-version = "3.6.0"
+version = "3.6.1"
 marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'"
 index = "https://pypi.org/simple"
-sdist = { url = "https://files.pythonhosted.org/packages/e6/11/238e97cbf5c1c0f725d590a092e0618dcdc50f44dbd1e2a926fae27e6f06/aiodns-3.6.0.tar.gz", upload-time = 2025-12-05T18:29:57Z, size = 15108, hashes = { sha256 = "9b0ef54339e6687cdbd39a7d73d7de2467cb5c115281da28f2598f058633dac8" } }
-wheels = [{ url = "https://files.pythonhosted.org/packages/dc/ae/10adb8d683bdb800ad6ae1460d2099db7045a67eff13985955a72448e8c1/aiodns-3.6.0-py3-none-any.whl", upload-time = 2025-12-05T18:29:56Z, size = 7971, hashes = { sha256 = "9fa49f812648374d046436a3b96491afb141320cd0b501df83880f034d0b5b85" } }]
+sdist = { url = "https://files.pythonhosted.org/packages/85/2f/9d1ee4f937addda60220f47925dac6c6b3782f6851fd578987284a8d2491/aiodns-3.6.1.tar.gz", upload-time = 2025-12-11T12:53:07Z, size = 15143, hashes = { sha256 = "b0e9ce98718a5b8f7ca8cd16fc393163374bc2412236b91f6c851d066e3324b6" } }
+wheels = [{ url = "https://files.pythonhosted.org/packages/09/e3/9f777774ebe8f664bcd564f9de3936490a16effa82a969372161c9b0fb21/aiodns-3.6.1-py3-none-any.whl", upload-time = 2025-12-11T12:53:06Z, size = 7975, hashes = { sha256 = "46233ccad25f2037903828c5d05b64590eaa756e51d12b4a5616e2defcbc98c7" } }]
 
 [[packages]]
 name = "aiohappyeyeballs"
