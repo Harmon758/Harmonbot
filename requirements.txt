@@ -1508,9 +1508,9 @@ typeguard==4.5.1 ; implementation_name == 'cpython' and platform_python_implemen
     --hash=sha256:44d2bf329d49a244110a090b55f5f91aa82d9a9834ebfd30bcc73651e4a8cc40 \
     --hash=sha256:f6f8ecbbc819c9bc749983cc67c02391e16a9b43b8b27f15dc70ed7c4a007274
     # via inflect
-typer==0.24.2 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:b618bc3d721f9a8d30f3e05565be26416d06e9bcc29d49bc491dc26aba674fa8 \
-    --hash=sha256:ec070dcfca1408e85ee203c6365001e818c3b7fffe686fd07ff2d68095ca0480
+typer==0.26.2 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:39beff72ffbb31978a5b545f677d57edb97c6f980f433b38556deb0af25f094d \
+    --hash=sha256:9b4f19e08fcc9427a822d1ef467b1fe76737a2f65c7926bdeba2337d73569b68
     # via
     #   spacy
     #   typer-slim
