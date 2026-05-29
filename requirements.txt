@@ -5,9 +5,9 @@ aiocache==0.12.3 ; implementation_name == 'cpython' and platform_python_implemen
     --hash=sha256:889086fc24710f431937b87ad3720a289f7fc31c4fd8b68e9f918b9bacd8270d \
     --hash=sha256:f528b27bf4d436b497a1d0d1a8f59a542c153ab1e37c3621713cb376d44c4713
     # via harmonbot
-aiodns==3.6.1 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:46233ccad25f2037903828c5d05b64590eaa756e51d12b4a5616e2defcbc98c7 \
-    --hash=sha256:b0e9ce98718a5b8f7ca8cd16fc393163374bc2412236b91f6c851d066e3324b6
+aiodns==4.0.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:17be26a936ba788c849ba5fd20e0ba69d8c46e6273e846eb5430eae2630ce5b1 \
+    --hash=sha256:a188a75fb8b2b7862ac8f84811a231402fb74f5b4e6f10766dc8a4544b0cf989
     # via
     #   aiohttp
     #   discord-py
@@ -1032,21 +1032,20 @@ pyasn1-modules==0.4.2 ; implementation_name == 'cpython' and platform_python_imp
     --hash=sha256:29253a9207ce32b64c3ac6600edc75368f98473906e8fd1043bd6b5b1de2c14a \
     --hash=sha256:677091de870a80aae844b1ca6134f54652fa2c8c5a52aa396440ac3106e941e6
     # via google-auth
-pycares==4.11.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:0aed0974eab3131d832e7e84a73ddb0dddbc57393cd8c0788d68a759a78c4a7b \
-    --hash=sha256:30d197180af626bb56f17e1fa54640838d7d12ed0f74665a3014f7155435b199 \
-    --hash=sha256:35ff1ec260372c97ed688efd5b3c6e5481f2274dea08f6c4ea864c195a9673c6 \
-    --hash=sha256:3bd81ad69f607803f531ff5cfa1262391fa06e78488c13495cee0f70d02e0287 \
-    --hash=sha256:5d69e2034160e1219665decb8140e439afc7a7afcfd4adff08eb0f6142405c3e \
-    --hash=sha256:7aba9a312a620052133437f2363aae90ae4695ee61cb2ee07cbb9951d4c69ddd \
-    --hash=sha256:c2971af3a4094280f7c24293ff4d361689c175c1ebcbea6b3c1560eaff7cb240 \
-    --hash=sha256:c2af7a9d3afb63da31df1456d38b91555a6c147710a116d5cc70ab1e9f457a4f \
-    --hash=sha256:c863d9003ca0ce7df26429007859afd2a621d3276ed9fef154a9123db9252557 \
-    --hash=sha256:cb711a66246561f1cae51244deef700eef75481a70d99611fd3c8ab5bd69ab49 \
-    --hash=sha256:d5fe089be67bc5927f0c0bd60c082c79f22cf299635ee3ddd370ae2a6e8b4ae0 \
-    --hash=sha256:dc54a21586c096df73f06f9bdf594e8d86d7be84e5d4266358ce81c04c3cc88c \
-    --hash=sha256:f4695153333607e63068580f2979b377b641a03bc36e02813659ffbea2b76fe2 \
-    --hash=sha256:ff3d25883b7865ea34c00084dd22a7be7c58fd3131db6b25c35eafae84398f9d
+pycares==5.0.1 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:433b9a4b5a7e10ef8aef0b957e6cd0bfc1bb5bc730d2729f04e93c91c25979c0 \
+    --hash=sha256:5a3c249c830432631439815f9a818463416f2a8cbdb1e988e78757de9ae75081 \
+    --hash=sha256:5c63fb2498b05e9f5670a1bf3b900c5d09343b3b6d5001a9714d593f9eb54de1 \
+    --hash=sha256:71316f7a87c15a8d32127ff01374dc2c969c37410693cc0cf6532590b7f18e7a \
+    --hash=sha256:7d7c4f5d8b88b586ef2288142b806250020e6490b9f2bd8fd5f634a78fd20fcf \
+    --hash=sha256:9528dc11749e5e098c996475b60f879e1db5a6cb3dd0cdc747530620bb1a8941 \
+    --hash=sha256:a2117dffbb78615bfdb41ad77b17038689e4e01c66f153649e80d268c6228b4f \
+    --hash=sha256:ae9ec2aa3553d33e6220aeb1a05f4853fb83fce4cec3e0dea2dc970338ea47dc \
+    --hash=sha256:c29ca77ff9712e20787201ca8e76ad89384771c0e058a0a4f3dc05afbc4b32de \
+    --hash=sha256:cf2699883b88713670d3f9c0a1e44ac24c70aeace9f8c6aa7f0b9f222d5b08a5 \
+    --hash=sha256:d765afb52d579879f5c4f005763827d3b1eb86b23139e9614e6089c9f98db017 \
+    --hash=sha256:ea0d57ba5add4bfbcc40cbdfa92bbb8a5ef0c4c21881e26c7229d9bdc92a4533 \
+    --hash=sha256:f11424bf5cf6226d0b136ed47daa58434e377c61b62d0100d1de7793f8e34a72
     # via aiodns
 pycnite==2024.7.31 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:5125f1c95aef4a23b9bec3b32fae76873dcd46324fa68e39c10fa852ecdea340 \
