@@ -369,9 +369,9 @@ frozenlist==1.8.0 ; implementation_name == 'cpython' and platform_python_impleme
     # via
     #   aiohttp
     #   aiosignal
-geojson==2.5.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:6e4bb7ace4226a45d9c8c8b1348b3fc43540658359f93c3f7e03efa9f15f658a \
-    --hash=sha256:ccbd13368dd728f4e4f13ffe6aaf725b6e802c692ba0dde628be475040c534ba
+geojson==3.3.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:92e83b9cb378a450b42f1207bb9b2a031f9fc89185f335153c44369b8b8b71fd \
+    --hash=sha256:a2d885187eeaa8b357600b3fcc9d963cb4300d1694196636dbd7eddc82fd0825
     # via pyowm
 gidgethub==5.4.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:522bd3a846a315c3163925a840930c4c9a0d685d5853afe852fd589cb472daf5 \
