@@ -1575,7 +1575,6 @@ urllib3==2.6.3 ; implementation_name == 'cpython' and platform_python_implementa
     # via
     #   requests
     #   sentry-sdk
-    #   vcrpy
     #   yt-dlp
 uv==0.11.19 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:28b0d612a766eb25756dbaa315433b726e93affa467d29a2682cc317547952ba \
@@ -1597,9 +1596,9 @@ uv==0.11.19 ; implementation_name == 'cpython' and platform_python_implementatio
     --hash=sha256:c729f56ffef9b945053412c839695e8a0b13758aa15b7763e95a7dd539a6f522 \
     --hash=sha256:f4aa17ffd719daf37b7a6265efd3ee4922a8ddaabaf0406d2b28c7e5ce2f20ff \
     --hash=sha256:f56f5bf853626a30423052d7ee00bf5cc940a08347d6ee7ede96862d084054a5
-vcrpy==7.0.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:176391ad0425edde1680c5b20738ea3dc7fb942520a48d2993448050986b3a50 \
-    --hash=sha256:55791e26c18daa363435054d8b35bd41a4ac441b6676167635d1b37a71dbe124
+vcrpy==8.0.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:25622ec65c5c007597d417e6867ccb6e6ab0d5f8826e2a03feb5911b3011f8ad \
+    --hash=sha256:3e5aae652bb1e2703e9a32869ebf903ff823420f98f80974aa99ceb7a5fdbb17
 wand==0.6.13 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:e5dda0ac2204a40c29ef5c4cb310770c95d3d05c37b1379e69c94ea79d7d19c0 \
     --hash=sha256:f5013484eaf7a20eb22d1821aaefe60b50cc329722372b5f8565d46d4aaafcca
@@ -1689,9 +1688,7 @@ yarl==1.24.2 ; implementation_name == 'cpython' and platform_python_implementati
     --hash=sha256:d1dd47a22843b212baa8d74f37796815d43bd046b42a0f41e9da433386c3136b \
     --hash=sha256:ec87ccc31bd21db7ad009d8572c127c1000f268517618a4cc09adba3c2a7f21c \
     --hash=sha256:f8fdbcff8b2c7c9284e60c196f693588598ddcee31e11c18e14949ce44519d45
-    # via
-    #   aiohttp
-    #   vcrpy
+    # via aiohttp
 youtube-dl @ https://github.com/ytdl-org/ytdl-nightly/releases/download/2023.12.07/youtube-dl-2023.12.07.tar.gz ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:cbcf0028bb951303170333841e4d3b0dc6fa990b75e120ee701bbce3b5918173
     # via harmonbot

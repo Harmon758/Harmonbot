@@ -2255,11 +2255,11 @@ wheels = [
 
 [[packages]]
 name = "vcrpy"
-version = "7.0.0"
+version = "8.0.0"
 marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'"
 index = "https://pypi.org/simple"
-sdist = { url = "https://files.pythonhosted.org/packages/25/d3/856e06184d4572aada1dd559ddec3bedc46df1f2edc5ab2c91121a2cccdb/vcrpy-7.0.0.tar.gz", upload-time = 2024-12-31T00:07:57Z, size = 85502, hashes = { sha256 = "176391ad0425edde1680c5b20738ea3dc7fb942520a48d2993448050986b3a50" } }
-wheels = [{ url = "https://files.pythonhosted.org/packages/13/5d/1f15b252890c968d42b348d1e9b0aa12d5bf3e776704178ec37cceccdb63/vcrpy-7.0.0-py2.py3-none-any.whl", upload-time = 2024-12-31T00:07:55Z, size = 42321, hashes = { sha256 = "55791e26c18daa363435054d8b35bd41a4ac441b6676167635d1b37a71dbe124" } }]
+sdist = { url = "https://files.pythonhosted.org/packages/f4/a5/f041a00e7a0b2de5b348aa6dbd8217bfc60787c06dfe985a4f83dec924d0/vcrpy-8.0.0.tar.gz", upload-time = 2025-12-03T18:23:10Z, size = 85884, hashes = { sha256 = "25622ec65c5c007597d417e6867ccb6e6ab0d5f8826e2a03feb5911b3011f8ad" } }
+wheels = [{ url = "https://files.pythonhosted.org/packages/d9/08/a66c3156a10ab360986a38a7e5c05ec46a654bae5e2df2b2084cb0563701/vcrpy-8.0.0-py2.py3-none-any.whl", upload-time = 2025-12-03T18:23:09Z, size = 42576, hashes = { sha256 = "3e5aae652bb1e2703e9a32869ebf903ff823420f98f80974aa99ceb7a5fdbb17" } }]
 
 [[packages]]
 name = "wand"
