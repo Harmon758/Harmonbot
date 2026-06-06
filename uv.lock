@@ -2768,15 +2768,18 @@ wheels = [
 
 [[package]]
 name = "tempora"
-version = "5.8.1"
+version = "5.9.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
+    { name = "jaraco-collections", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "jaraco-context", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
     { name = "jaraco-functools", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "more-itertools", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
     { name = "python-dateutil", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/24/64/a255efe5edd367d12b770b3514194efdc1c97e5ed6ce6e8105d834750dfc/tempora-5.8.1.tar.gz", hash = "sha256:abb5d9ec790cc5e4f9431778029ba3e3d9ba9bd50cb306dad824824b2b362dcd", size = 23072, upload-time = "2025-06-21T17:04:14.349Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/5a/e8/20e489ba55092e0d737dc54a5c43424a7762d38f59efce54ed86f4fc51bc/tempora-5.9.0.tar.gz", hash = "sha256:66e6ddee320c38f4b253a7d8039337424c699916451b9271e0ccce770a4e8f62", size = 24490, upload-time = "2026-05-06T00:07:18.308Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/ff/ec/3d106a107646945b65a55a228b871589ee9206e833f5b1cde4a57204c2f8/tempora-5.8.1-py3-none-any.whl", hash = "sha256:6945ec409ca930e5040490931dc0d8f516f2cd9798eb175dc3b3c6a0fc481ea2", size = 14427, upload-time = "2025-06-21T17:04:12.319Z" },
+    { url = "https://files.pythonhosted.org/packages/e3/5e/9326e8ec4418ea59c6c290f4f3209d61f790f0737bfc5afcb588cad3fd9f/tempora-5.9.0-py3-none-any.whl", hash = "sha256:5aa96ab2b8a2be795bd4c78a4299c0196365a91976972f8852b19e1d363ccd29", size = 15394, upload-time = "2026-05-06T00:07:17.302Z" },
 ]
 
 [[package]]
