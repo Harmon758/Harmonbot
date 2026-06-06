@@ -283,14 +283,6 @@ index = "https://pypi.org/simple"
 sdist = { url = "https://files.pythonhosted.org/packages/93/09/7d04d7581ae3bb8b598017941781bceb7959dd1b13e3ebf7b6a2cd843bc9/chess-1.11.2.tar.gz", upload-time = 2025-02-25T19:10:27Z, size = 6131385, hashes = { sha256 = "a8b43e5678fdb3000695bdaa573117ad683761e5ca38e591c4826eba6d25bb39" } }
 
 [[packages]]
-name = "click"
-version = "8.3.3"
-marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'"
-index = "https://pypi.org/simple"
-sdist = { url = "https://files.pythonhosted.org/packages/bb/63/f9e1ea081ce35720d8b92acde70daaedace594dc93b693c869e0d5910718/click-8.3.3.tar.gz", upload-time = 2026-04-22T15:11:27Z, size = 328061, hashes = { sha256 = "398329ad4837b2ff7cbe1dd166a4c0f8900c3ca3a218de04466f38f6497f18a2" } }
-wheels = [{ url = "https://files.pythonhosted.org/packages/ae/44/c1221527f6a71a01ec6fbad7fa78f1d50dfa02217385cf0fa3eec7087d59/click-8.3.3-py3-none-any.whl", upload-time = 2026-04-22T15:11:25Z, size = 110502, hashes = { sha256 = "a2bf429bb3033c89fa4936ffb35d5cb471e3719e1f3c8a7c3fff0b8314305613" } }]
-
-[[packages]]
 name = "cloudpathlib"
 version = "0.23.0"
 marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'"
@@ -2149,11 +2141,11 @@ wheels = [{ url = "https://files.pythonhosted.org/packages/5b/29/74eeb4d3f3ae61c
 
 [[packages]]
 name = "typer"
-version = "0.24.2"
+version = "0.26.7"
 marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'"
 index = "https://pypi.org/simple"
-sdist = { url = "https://files.pythonhosted.org/packages/83/b8/9ebb531b6c2d377af08ac6746a5df3425b21853a5d2260876919b58a2a4a/typer-0.24.2.tar.gz", upload-time = 2026-04-22T17:45:34Z, size = 119849, hashes = { sha256 = "ec070dcfca1408e85ee203c6365001e818c3b7fffe686fd07ff2d68095ca0480" } }
-wheels = [{ url = "https://files.pythonhosted.org/packages/39/d1/9484b497e0a0410b901c12b8251c3e746e1e863f7d28419ffe06f7892fda/typer-0.24.2-py3-none-any.whl", upload-time = 2026-04-22T17:45:33Z, size = 55977, hashes = { sha256 = "b618bc3d721f9a8d30f3e05565be26416d06e9bcc29d49bc491dc26aba674fa8" } }]
+sdist = { url = "https://files.pythonhosted.org/packages/5e/ed/ef06584ccdd5c410df0837951ecd7e15d9a6144ea1bd4c73cecab1a89891/typer-0.26.7.tar.gz", upload-time = 2026-06-03T07:18:06Z, size = 201709, hashes = { sha256 = "e314a34c617e419c091b2830dda3ea1f257134ff593061a8f5b9717ab8dddb3a" } }
+wheels = [{ url = "https://files.pythonhosted.org/packages/24/25/2201973529af2c954de0bb725323c3aaed6d7f0ceee8f550dec9185df013/typer-0.26.7-py3-none-any.whl", upload-time = 2026-06-03T07:18:05Z, size = 122456, hashes = { sha256 = "5c87cfbc5d34491c5346ebf49c23e18d56ccb863268d3a8d592b26087c2f5e58" } }]
 
 [[packages]]
 name = "typer-slim"
