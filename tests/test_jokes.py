@@ -13,6 +13,7 @@ class TestGetDadJoke(unittest.IsolatedAsyncioTestCase):
     async def asyncSetUp(self):
         asyncio.get_running_loop().slow_callback_duration = 1
 
+    @unittest.skip("https://github.com/kevin1024/vcrpy/issues/995")
     @vcr.use_cassette(
         "jokes/get_dad_joke/get_random_dad_joke.yaml",
         record_mode = "none" if os.getenv("CI") else "all"
@@ -20,10 +21,12 @@ class TestGetDadJoke(unittest.IsolatedAsyncioTestCase):
     async def test_get_random_dad_joke(self):
         await get_dad_joke()
 
+    @unittest.skip("https://github.com/kevin1024/vcrpy/issues/995")
     @vcr.use_cassette("jokes/get_dad_joke/get_dad_joke.yaml")
     async def test_get_specific_dad_joke(self):
         await get_dad_joke("2118E69prc")
 
+    @unittest.skip("https://github.com/kevin1024/vcrpy/issues/995")
     @vcr.use_cassette("jokes/get_dad_joke/get_invalid_dad_joke.yaml")
     async def test_get_invalid_dad_joke(self):
         assert isinstance(await get_dad_joke("invalid_id"), DadJokeError)
