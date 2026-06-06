@@ -349,11 +349,11 @@ wheels = [
 
 [[package]]
 name = "cloudpathlib"
-version = "0.23.0"
+version = "0.24.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/f4/18/2ac35d6b3015a0c74e923d94fc69baf8307f7c3233de015d69f99e17afa8/cloudpathlib-0.23.0.tar.gz", hash = "sha256:eb38a34c6b8a048ecfd2b2f60917f7cbad4a105b7c979196450c2f541f4d6b4b", size = 53126, upload-time = "2025-10-07T22:47:56.278Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/06/19/58bc6b5d7d0f81c7209b05445af477e147c486552f96665a5912211839b9/cloudpathlib-0.24.0.tar.gz", hash = "sha256:c521a984e77b47e656fe78e20a7e3e260e0ab45fc69e33ac01094227c979e34a", size = 53600, upload-time = "2026-04-30T00:54:43.265Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/ae/8a/c4bb04426d608be4a3171efa2e233d2c59a5c8937850c10d098e126df18e/cloudpathlib-0.23.0-py3-none-any.whl", hash = "sha256:8520b3b01468fee77de37ab5d50b1b524ea6b4a8731c35d1b7407ac0cd716002", size = 62755, upload-time = "2025-10-07T22:47:54.905Z" },
+    { url = "https://files.pythonhosted.org/packages/c2/5b/ba933f896d9b0b07608d575a8501e2b4e32166b60d84c430a4a7285ebe64/cloudpathlib-0.24.0-py3-none-any.whl", hash = "sha256:b1c51e2d2ec7dc4fed6538991f4aea849d6cf11a7e6b9069f86e461aa1f9b5b4", size = 63214, upload-time = "2026-04-30T00:54:42.06Z" },
 ]
 
 [[package]]
