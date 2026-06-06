@@ -16,6 +16,7 @@ dependencies = [
     "asyncpg",
     "beautifulsoup4[lxml]",
     "chess",
+    "click",  # required by spacy - https://github.com/explosion/spaCy/issues/13971
     "cryptography",
     "dice",
     "emoji",

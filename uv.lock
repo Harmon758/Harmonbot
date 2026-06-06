@@ -336,6 +336,18 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/93/09/7d04d7581ae3bb8b598017941781bceb7959dd1b13e3ebf7b6a2cd843bc9/chess-1.11.2.tar.gz", hash = "sha256:a8b43e5678fdb3000695bdaa573117ad683761e5ca38e591c4826eba6d25bb39", size = 6131385, upload-time = "2025-02-25T19:10:27.328Z" }
 
 [[package]]
+name = "click"
+version = "8.3.3"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "colorama", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython' and sys_platform == 'win32'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/bb/63/f9e1ea081ce35720d8b92acde70daaedace594dc93b693c869e0d5910718/click-8.3.3.tar.gz", hash = "sha256:398329ad4837b2ff7cbe1dd166a4c0f8900c3ca3a218de04466f38f6497f18a2", size = 328061, upload-time = "2026-04-22T15:11:27.506Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/ae/44/c1221527f6a71a01ec6fbad7fa78f1d50dfa02217385cf0fa3eec7087d59/click-8.3.3-py3-none-any.whl", hash = "sha256:a2bf429bb3033c89fa4936ffb35d5cb471e3719e1f3c8a7c3fff0b8314305613", size = 110502, upload-time = "2026-04-22T15:11:25.044Z" },
+]
+
+[[package]]
 name = "cloudpathlib"
 version = "0.23.0"
 source = { registry = "https://pypi.org/simple" }
@@ -837,6 +849,7 @@ dependencies = [
     { name = "asyncpg", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
     { name = "beautifulsoup4", extra = ["lxml"], marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
     { name = "chess", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "click", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
     { name = "cryptography", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
     { name = "dice", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
     { name = "discord-ext-menus", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
@@ -952,6 +965,7 @@ requires-dist = [
     { name = "asyncpg" },
     { name = "beautifulsoup4", extras = ["lxml"] },
     { name = "chess" },
+    { name = "click" },
     { name = "cryptography" },
     { name = "dice" },
     { name = "discord-ext-menus", git = "https://github.com/Rapptz/discord-ext-menus.git?rev=8686b5d" },
