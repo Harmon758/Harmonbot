@@ -3,7 +3,7 @@ name = "Harmonbot"
 dynamic = ["version"]
 requires-python = "==3.11.*"
 dependencies = [
-    "discord-py[speed,voice]",
+    "discord.py[speed,voice]",
     "discord-ext-menus",
     "discord-ext-voice-recv[extras_speech]",
     "twitchio",
