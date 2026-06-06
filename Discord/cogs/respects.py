@@ -151,7 +151,7 @@ class Respects(commands.Cog):
             )
         response += f"Total respects paid so far: {total_respects:,}"
 
-        await ctx.embed_reply(response)
+        await ctx.reply_with_layout_view(response)
 
     @app_commands.command(name = 'f')
     async def slash_f(self, interaction):
