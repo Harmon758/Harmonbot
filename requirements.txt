@@ -1596,9 +1596,9 @@ uv==0.11.19 ; implementation_name == 'cpython' and platform_python_implementatio
     --hash=sha256:c729f56ffef9b945053412c839695e8a0b13758aa15b7763e95a7dd539a6f522 \
     --hash=sha256:f4aa17ffd719daf37b7a6265efd3ee4922a8ddaabaf0406d2b28c7e5ce2f20ff \
     --hash=sha256:f56f5bf853626a30423052d7ee00bf5cc940a08347d6ee7ede96862d084054a5
-vcrpy==8.0.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:25622ec65c5c007597d417e6867ccb6e6ab0d5f8826e2a03feb5911b3011f8ad \
-    --hash=sha256:3e5aae652bb1e2703e9a32869ebf903ff823420f98f80974aa99ceb7a5fdbb17
+vcrpy==8.1.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:e585ca3cd9bb751e402728a00394847561250588eebc047b4d3c8948d5487733 \
+    --hash=sha256:fc4fb6e954c6d082ba6d329c6f3d1228f5b1b1d2836f9022c301b587cfad7378
 wand==0.6.13 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:e5dda0ac2204a40c29ef5c4cb310770c95d3d05c37b1379e69c94ea79d7d19c0 \
     --hash=sha256:f5013484eaf7a20eb22d1821aaefe60b50cc329722372b5f8565d46d4aaafcca
