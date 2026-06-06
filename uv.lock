@@ -2573,14 +2573,14 @@ wheels = [
 
 [[package]]
 name = "smart-open"
-version = "7.6.0"
+version = "7.6.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "wrapt", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/14/33/7a00ac9b4a63afb4279b99a766f6cbe56c443526dcbf5db97b219e21fde9/smart_open-7.6.0.tar.gz", hash = "sha256:44717f46b5ff276fac03b88e5d13d1c416f064f3b7b081381b0fa8889004bd7e", size = 54548, upload-time = "2026-04-13T09:48:04.347Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/c5/65/3ada667d32675399001bf022ad3d9f3989b57101351ebc71d6fbe2384634/smart_open-7.6.1.tar.gz", hash = "sha256:4347996e7ba21db7cd1e059632e0b30395407e4f6c660d2ddffc8f2a9ae5f990", size = 54754, upload-time = "2026-05-09T06:23:37.06Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/de/bc/2761410d0541e975f384bc89f062d716bf119499dd097eb1af33dcd3b1c0/smart_open-7.6.0-py3-none-any.whl", hash = "sha256:2a78f454610a826aa688065b54b4a0a9b12a5599fa61d5190e9bac2df5e5f53f", size = 64591, upload-time = "2026-04-13T09:48:02.687Z" },
+    { url = "https://files.pythonhosted.org/packages/14/78/0f68b93564b8c6b6987a0696c582ba2591a381ab2f733a501909e949f241/smart_open-7.6.1-py3-none-any.whl", hash = "sha256:b4de6aebef023aca91cc9fb372052e1343ba3f152de215bd22391a663e3ddd21", size = 64845, upload-time = "2026-05-09T06:23:35.386Z" },
 ]
 
 [[package]]
