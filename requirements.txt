@@ -321,7 +321,9 @@ discord-ext-voice-recv==0.5.2a179 ; implementation_name == 'cpython' and platfor
     --hash=sha256:6cb8f5ff60c3885020e5ebd879323dc97ebb0745788f3778a14ef31810f848a8 \
     --hash=sha256:f3fa65f2c1591bef2382aa39f3ebc25d6751b405aef5b5d113dfb452640f29fc
     # via harmonbot
-discord-py @ git+https://github.com/Rapptz/discord.py.git@4be15b5616db0a2b2a1b02d8a0702a99a3885ba9 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython'
+discord-py==2.6.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:3248291c31e69fb1c59b091c378b550cb919b3fb2b38139edd5cd6d9b3013f3f \
+    --hash=sha256:8aa0f017524734653e6ddddb7878e1cdf8c3868bd7d1a386c36cd8373e5fba02
     # via
     #   discord-ext-menus
     #   discord-ext-voice-recv
