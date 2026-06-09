@@ -1059,7 +1059,7 @@ class Meta(commands.Cog):
 class AboutLayoutView(ui.LayoutView):
 
     def __init__(self, ctx):
-        super().__init__(timeout = 600)
+        super().__init__(timeout = None)
 
         if not ctx.interaction:
             self.add_item(
@@ -1072,8 +1072,12 @@ class AboutLayoutView(ui.LayoutView):
         self.container = AboutContainer(ctx)
         self.add_item(self.container)
 
-    async def on_timeout(self):
-        await self.stop()
+        ctx.bot.loop.call_later(
+            600, functools.partial(
+                ctx.bot.loop.create_task,
+                self.stop(), name = "Stop AboutLayoutView"
+            )
+        )
 
     async def stop(self):
         self.container.send_server_invite_button.disabled = True
