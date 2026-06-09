@@ -953,7 +953,7 @@ class Bot(commands.Bot):
             await points_cog.add(user = ctx.author)
 
     async def on_interaction(self, interaction):
-        if not interaction.command:
+        if interaction.type is not discord.InteractionType.application_command:
             return
 
         if points_cog := self.get_cog("Points"):
