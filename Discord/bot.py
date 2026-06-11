@@ -953,7 +953,24 @@ class Bot(commands.Bot):
             await points_cog.add(user = ctx.author)
 
     async def on_interaction(self, interaction):
-        if interaction.type is not discord.InteractionType.application_command:
+        if interaction.type is discord.InteractionType.component:
+            key = (
+                interaction.data["component_type"],
+                interaction.data["custom_id"]
+            )
+            item = (
+                self._connection._view_store._views.get(interaction.message.id, {}).get(key) or
+                self._connection._view_store._views.get(None, {}).get(key)
+            )
+            if item and item.view:
+                return
+            await interaction.response.send_message(
+                f"This {discord.ComponentType(interaction.data['component_type']).name.replace('_', ' ')} component has expired",
+                ephemeral = True
+            )
+            # TODO: Disable components of view?
+            return
+        elif interaction.type is not discord.InteractionType.application_command:
             return
 
         if points_cog := self.get_cog("Points"):
