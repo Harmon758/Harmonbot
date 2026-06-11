@@ -441,7 +441,7 @@ class Twitter(commands.Cog):
                 ) as resp:
                     match resp.status:
                         case 200:
-                            feed_text = await resp.text()
+                            feed_content = await resp.read()
                         case 404 if (
                             await nitter.confirm_status_code(handle, 404)
                         ):
@@ -508,8 +508,7 @@ class Twitter(commands.Cog):
                 feed_info = await self.bot.loop.run_in_executor(
                     None,
                     functools.partial(
-                        feedparser.parse,
-                        io.BytesIO(feed_text.encode("UTF-8"))
+                        feedparser.parse, io.BytesIO(feed_content)
                     )
                 )
                 # Necessary to run in executor?
