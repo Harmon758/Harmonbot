@@ -76,6 +76,10 @@ class TestWindDegreesToDirection(unittest.TestCase):
     def test_low_n_output(self, degrees):
         assert wind_degrees_to_direction(degrees) == 'N'
 
+    @given(floats(min_value = 11.25, max_value = 33.75, exclude_min = True))
+    def test_nne_output(self, degrees):
+        assert wind_degrees_to_direction(degrees) == "NNE"
+
     @given(floats(min_value = 33.75, max_value = 56.25, exclude_min = True))
     def test_ne_output(self, degrees):
         assert wind_degrees_to_direction(degrees) == "NE"
