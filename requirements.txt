@@ -90,31 +90,31 @@ backports-tarfile==1.2.0 ; implementation_name == 'cpython' and platform_python_
     --hash=sha256:77e284d754527b01fb1e6fa8a1afe577858ebe4e9dad8919e34c862cb399bc34 \
     --hash=sha256:d75e02c268746e1b8144c278978b6e98e85de6ad16f8e4b0844a154557eca991
     # via jaraco-context
-backports-zstd==1.5.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' and sys_platform != 'android' and sys_platform != 'ios' \
-    --hash=sha256:012d88a9ae08f331e1adc03dfbda4ff2ae7f76ea62455975827b215677a11aec \
-    --hash=sha256:0ca2d4ac4901eada2cfb86fda692e5d4a1e09485d9f2ec5777dc6cd3154b3b46 \
-    --hash=sha256:0fab15e6895bef621041dd82d6306ffa24889257dd902c4b98b88e4260b3465d \
-    --hash=sha256:204f00d62e95aab987c7c019452b2373bdefb17252443765f2ede7f15b6e669a \
-    --hash=sha256:20796211a623ec6e0061cef4d7cca760e9e0a0a951bb30dc9ba89ed4a3fea5e4 \
-    --hash=sha256:264a66137555bb4648f7e64cfc514d820758072684f373269fcdd2e8d4a90306 \
-    --hash=sha256:2c77c0d4c330afd26d2a98f3d689ab922ec3f046014a1614ddcaad437666ac05 \
-    --hash=sha256:2ffde637b6d0082f1c3356657002469cf199c7c12d50d9822a55b13425c778d3 \
-    --hash=sha256:4080bb9c8a51bb2bf8caf8018d78278cd49eb924cb06a54f56a411095e2ac912 \
-    --hash=sha256:5232cd2a58c60da4ceb0e09e42dbc579b92dda4a9301a756af0c738223a23487 \
-    --hash=sha256:572c76832e9a24da4084befa52c23f4c03fede2aa250ae6250cbc5a11b980f69 \
-    --hash=sha256:6172dcdd664ef243e55a35e6b45f1c866767c61043f0ddcd908abd14df662065 \
-    --hash=sha256:663128370bbc2ebcc436b8977bc434a7bf29919d92d91fee05ed6fb0fa807646 \
-    --hash=sha256:6bb2f2d2c07358edeaa251cf804b993e9f0d5d93af8a7ea2414d80ff3c105e95 \
-    --hash=sha256:775ad82d268923639bc924013fc61561df376c148506b241f0f80718b5bb3a2f \
-    --hash=sha256:9410bcbcd3afd787a15a276d68f954d1703788c780faa421183a61d39da8b862 \
-    --hash=sha256:9f4fe3fd82c8c6e8a9fdc5c71f92f9fe2442d02e7f59fddef25a955e189e3f38 \
-    --hash=sha256:a5e622a82eb183b4fbe18032755ce0a15fa9a82f2adb9b621620b91247aaedb7 \
-    --hash=sha256:c01d377c1489cb2230bf6a9ff01c73c42863cc96ee648c49923d4f6d4ea4e2d5 \
-    --hash=sha256:cb89f554abcebcb2c487024e63be8059083775c5fd351fec0cc2dc3e9f528714 \
-    --hash=sha256:cbb7d79f8e43b6e0e17616961e425b9f8b32d9933e1db69242baa6e21f44a978 \
-    --hash=sha256:e7c0372fa036751109604c70a8c87e59faaacc195d519c8cb9e0e527ee2b5478 \
-    --hash=sha256:ea969758af743000d822fc3a69dc9de059bbbb8d07d2f13e06ff49ac63cce74f \
-    --hash=sha256:fbaa5502617dc4f04327c7a2951f0fcdca7aaef93ddf32c15dc8b620208174fa
+backports-zstd==1.6.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' and sys_platform != 'android' and sys_platform != 'ios' \
+    --hash=sha256:0308990ffc998df3c7ed35276bde049728b5c3956203cae40d80893576a41459 \
+    --hash=sha256:068ef3d8c18815a2e3a752f766313e19910e7c50939b956923748d9c04ebcb1b \
+    --hash=sha256:10b61850c4112952e05aa6e6cce8c9a5936fbeadb321e154216705cc76a14afa \
+    --hash=sha256:17efb3d11137de5166dd51eedab9c36ad633402acba386eee8d715213ea47e49 \
+    --hash=sha256:28eef3881164f3c23ce58ed59e4684103bdd279583eb2d299858c9e9b72fde9a \
+    --hash=sha256:2914abea516704bdafb2090acd3f15b5f9debecfabd15b8dd8285b2ad3b92209 \
+    --hash=sha256:3b6713371f8987a1178df93cb36f29eef191f224021e2d656b2f11ce60d26816 \
+    --hash=sha256:481a1e9bd8f419fdc625307aa20234687f99368c75df511ef589693c5fea4c6f \
+    --hash=sha256:7293fefe15f0e5852bdb4ad1e0e26f3cbd4d3e61c19f751ecc4ff34bc1eb237d \
+    --hash=sha256:7d3f64c503af7b60115b97c16feaf75bd191ef2c978d5c0c7725a6682bef63c5 \
+    --hash=sha256:80a7859ffe70bf239d7a2ce15293bdeb5b4280ff7dc326ffab312b0e254dbb24 \
+    --hash=sha256:83391ef5935cc0f329b1abca414ae20ffe40d335fc21a4b5e664f08a74317d5f \
+    --hash=sha256:8c298785e2fadeab82342040f2d9ce764ce500e6da6a6d99a2de514e63580b5a \
+    --hash=sha256:994167ff6551b9c1ce226e0aab16295b98c94507b5701aa60d2c32b7d50796b1 \
+    --hash=sha256:9cb75e33131946fabd6319061df3b8b1d588fe0963183280e9b5f49f7772fc09 \
+    --hash=sha256:ab70eace272d6f122b121c057e436709b50a28abf30d97aab28433c08f4a4095 \
+    --hash=sha256:ae106fe16e36efc60ab098d02478d30aa0e31e1420eb4ecf0116459253bc6361 \
+    --hash=sha256:aeef8563b82ed4af328f98e5041c1b4800d86f68f857ffd1577d4d47dc9aa6cd \
+    --hash=sha256:b0ddbcd2866b8ff1a2836e4b0e4d44788f5b992d83fac75a38cda8f9a2bee079 \
+    --hash=sha256:b81b4cf3d6e0ad7ac92bef248f49fafc954262c5fb0f7e19d6aac497e5a856b2 \
+    --hash=sha256:c4fc41b2df5529cad5ceb230319e82728096d4b353ce8d4df68a2ec37e291bb8 \
+    --hash=sha256:dd085eafa2aac6f883afd28210a3231f717f25409a1e44a39bb7b04c8c5b5646 \
+    --hash=sha256:ece8e7288db5b827ef8c64b2f78519f1a173a8991a625978fce02eccd7654fe9 \
+    --hash=sha256:ef132cfb638e9a86bd5dc07fb4e1cb895bc55bce6bb5e759366e8b160d0747e2
     # via aiohttp
 beautifulsoup4==4.15.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:288e3ca7d54b06f2ac191970bc275c1939cb46d450b255bf6718b04aa37ab4f7 \
