@@ -12,18 +12,15 @@ class TestGetItemID(unittest.IsolatedAsyncioTestCase):
     async def asyncSetUp(self):
         asyncio.get_running_loop().slow_callback_duration = 1
 
-    @unittest.skip("https://github.com/kevin1024/vcrpy/issues/995")
     @vcr.use_cassette("runescape/get_item_id/get_vial_id.yaml")
     async def test_get_vial_id(self):
         assert await get_item_id("vial") == 229
 
-    @unittest.skip("https://github.com/kevin1024/vcrpy/issues/995")
     @vcr.use_cassette("runescape/get_item_id/get_nonexistent_item_id.yaml")
     async def test_get_nonexistent_item_id(self):
         with self.assertRaises(ValueError):
             await get_item_id("nonexistent")
 
-    @unittest.skip("https://github.com/kevin1024/vcrpy/issues/995")
     @vcr.use_cassette("runescape/get_item_id/get_non-item_item_id.yaml")
     async def test_get_non_item_item_id(self):
         with self.assertRaises(ValueError):
@@ -40,12 +37,10 @@ class TestGetGEData(unittest.IsolatedAsyncioTestCase):
     async def asyncSetUp(self):
         asyncio.get_running_loop().slow_callback_duration = 1
 
-    @unittest.skip("https://github.com/kevin1024/vcrpy/issues/995")
     @vcr.use_cassette("runescape/get_ge_data/get_vial_ge_data.yaml")
     async def test_get_vial_ge_data(self):
         assert (await get_ge_data("vial"))["name"] == "Vial"
 
-    @unittest.skip("https://github.com/kevin1024/vcrpy/issues/995")
     @vcr.use_cassette(
         "runescape/get_ge_data/get_nonexistent_item_ge_data.yaml"
     )
@@ -53,7 +48,6 @@ class TestGetGEData(unittest.IsolatedAsyncioTestCase):
         with self.assertRaises(ValueError):
             await get_ge_data("nonexistent")
 
-    @unittest.skip("https://github.com/kevin1024/vcrpy/issues/995")
     @vcr.use_cassette(
         "runescape/get_ge_data/get_untradeable_item_ge_data.yaml"
     )
@@ -72,12 +66,10 @@ class TestGetMonsterData(unittest.IsolatedAsyncioTestCase):
     async def asyncSetUp(self):
         asyncio.get_running_loop().slow_callback_duration = 1
 
-    @unittest.skip("https://github.com/kevin1024/vcrpy/issues/995")
     @vcr.use_cassette("runescape/get_monster_data/get_cow_data.yaml")
     async def test_get_cow_data(self):
         assert (await get_monster_data("cow"))["name"] == "Cow"
 
-    @unittest.skip("https://github.com/kevin1024/vcrpy/issues/995")
     @vcr.use_cassette(
         "runescape/get_monster_data/get_nonexistent_monster_data.yaml"
     )

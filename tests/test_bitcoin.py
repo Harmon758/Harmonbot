@@ -12,7 +12,6 @@ class TestGetSupportedCurrencies(unittest.IsolatedAsyncioTestCase):
     async def asyncSetUp(self):
         asyncio.get_running_loop().slow_callback_duration = 1
 
-    @unittest.skip("https://github.com/kevin1024/vcrpy/issues/995")
     @vcr.use_cassette(
         "bitcoin/get_supported_currencies/get_supported_currencies.yaml"
     )

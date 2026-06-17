@@ -25,19 +25,16 @@ class TestGetGeocodeData(unittest.IsolatedAsyncioTestCase):
     async def asyncSetUp(self):
         asyncio.get_running_loop().slow_callback_duration = 1
 
-    @unittest.skip("https://github.com/kevin1024/vcrpy/issues/995")
     @vcr.use_cassette(
         "location/get_geocode_data/get_fort_yukon_alaska_data.yaml"
     )
     async def test_get_fort_yukon_alaska_data(self):
         await get_geocode_data("Fort Yukon, Alaska")
 
-    @unittest.skip("https://github.com/kevin1024/vcrpy/issues/995")
     @vcr.use_cassette("location/get_geocode_data/get_nyc_data.yaml")
     async def test_get_nyc_data(self):
         await get_geocode_data("New York City")
 
-    @unittest.skip("https://github.com/kevin1024/vcrpy/issues/995")
     @vcr.use_cassette(
         "location/get_geocode_data/get_nonexistent_location_data.yaml"
     )

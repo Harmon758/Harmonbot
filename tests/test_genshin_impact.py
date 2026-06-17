@@ -14,7 +14,6 @@ class TestGetAllCharacters(unittest.IsolatedAsyncioTestCase):
     async def asyncSetUp(self):
         asyncio.get_running_loop().slow_callback_duration = 1
 
-    @unittest.skip("https://github.com/kevin1024/vcrpy/issues/995")
     @vcr.use_cassette(
         "genshin_impact/get_all_characters/get_all_characters.yaml"
     )
@@ -32,7 +31,6 @@ class TestGetCharacter(unittest.IsolatedAsyncioTestCase):
     async def asyncSetUp(self):
         asyncio.get_running_loop().slow_callback_duration = 1
 
-    @unittest.skip("https://github.com/kevin1024/vcrpy/issues/995")
     @vcr.use_cassette("genshin_impact/get_character/get_amber_data.yaml")
     async def test_get_amber_data(self):
         assert (await get_character("Amber")).name == "Amber"
@@ -48,7 +46,6 @@ class TestGetCharacterImages(unittest.IsolatedAsyncioTestCase):
     async def asyncSetUp(self):
         asyncio.get_running_loop().slow_callback_duration = 1
 
-    @unittest.skip("https://github.com/kevin1024/vcrpy/issues/995")
     @vcr.use_cassette(
         "genshin_impact/get_character_images/get_amber_images.yaml"
     )
@@ -66,7 +63,6 @@ class TestGetCharacters(unittest.IsolatedAsyncioTestCase):
     async def asyncSetUp(self):
         asyncio.get_running_loop().slow_callback_duration = 1
 
-    @unittest.skip("https://github.com/kevin1024/vcrpy/issues/995")
     @vcr.use_cassette(
         "genshin_impact/get_characters/get_characters.yaml"
     )
