@@ -309,6 +309,33 @@ cymem==2.0.13 ; implementation_name == 'cpython' and platform_python_implementat
     #   preshed
     #   spacy
     #   thinc
+davey==0.1.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:03549cff00e3de9e55fe52bab98c1c9b39088903a8ae898a546fdc494139b804 \
+    --hash=sha256:13203bd9b4cb464b47ec35851b95f8e9271bce7f0eb21ea42959c867c32dcea2 \
+    --hash=sha256:1788e949f2b51b45dc1c264539c6f115b0c22960bc87ea756146e2dc286bd3f2 \
+    --hash=sha256:1997d4b4a12864b45040480c64a0609e9d3ed565feca9358d436c760b32a95f1 \
+    --hash=sha256:1a14071b7522751a93db5f87977d39a452f07f823b99648fa6bdce8afdcf9a1c \
+    --hash=sha256:1e62fb61da2a1e7e674de69563ddc98cb730addf6abe4afcf1823c229605a4c0 \
+    --hash=sha256:3b69536e36d142d9969c927501ee4909841a7d58764b46fa233dff4329a9c1dc \
+    --hash=sha256:47085ca0954909bf37262891d65e88c767bdd462ebc9e2bef97e6d70a31f285e \
+    --hash=sha256:4a0acd4ae1bd54c25bc2171b17745593bd15b25ffb5351fffb191f5902467f4d \
+    --hash=sha256:52695b5639ccf8155bf051bb13348f162182e60718245fac820a289c9ee88c06 \
+    --hash=sha256:6277da96475f728dff2d90c7a9d715702cd61e525b8430db4157c9bbb4a50a14 \
+    --hash=sha256:6e5d11f1406aa1c670088b3c1c2fe7c34d7d6c0836d00234e45b2afc6975c7c0 \
+    --hash=sha256:6f66ea23b8c7038fbadec793e9ed164eaeaf9e905fe6a5febe91f55daf8dd521 \
+    --hash=sha256:7ca9d3b35edfee0d78bb775187a885c49818ac9a89ac1d94874ec55210a5a2c1 \
+    --hash=sha256:8f0e77dcf0e7138ccaa31c5fdcabfee97186c3c899529a15ca2b69d406584166 \
+    --hash=sha256:96710dfd44a81b58e61dc5a993335245297a252a5f31d62e2c24db0ce98ce0b7 \
+    --hash=sha256:971d9c616aaa3007ad24defc58d7dbfccc444ef269897b15414a4a4eea024494 \
+    --hash=sha256:9a9074f75fb87bea78b7e9a691c97c8f64c5bdb4a4ecb902cc5c1e69d611500c \
+    --hash=sha256:a209b131010a7e485100666dd789f04188960be80084bd30d832a6ae08d51dbe \
+    --hash=sha256:c1edc90e092f3064480e99baa7717cd4236174cef8a0a27e7ec478257276c692 \
+    --hash=sha256:c57bc10a77ff4500fd6279decfe9f36bf80167f3bbdf3b3c4dbed62e9c5b7f06 \
+    --hash=sha256:d9b8f657e008900cd21118def7c8cedbe2f6cdec979447aa42bd44b81d7d312d \
+    --hash=sha256:e255cf7aae082e9fadbc1d5abef7291e5082537c24664c9a02992cd5d5559d88 \
+    --hash=sha256:f6e7c18ea486649b2f6804a4b397eb026f5e9ea0c8d4c804b6147ea8a05a4074 \
+    --hash=sha256:fe57d0f35e3c446191ab88a5c8e605c913a6b1b1503b4fbe2193864ab853570b
+    # via discord-py
 dice==4.0.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:59aa1f7b23846b32a618697534429fec80be3a1087b4f934022dcdb99cf1417f \
     --hash=sha256:7a1bfd68f21abf245f333de89721cd30379b5413c774a9d34a6b4123c526815c
@@ -319,7 +346,7 @@ discord-ext-voice-recv==0.5.2a179 ; implementation_name == 'cpython' and platfor
     --hash=sha256:6cb8f5ff60c3885020e5ebd879323dc97ebb0745788f3778a14ef31810f848a8 \
     --hash=sha256:f3fa65f2c1591bef2382aa39f3ebc25d6751b405aef5b5d113dfb452640f29fc
     # via harmonbot
-discord-py @ git+https://github.com/Rapptz/discord.py.git@005287898393bd13d21e077e8607d5226757820a ; implementation_name == 'cpython' and platform_python_implementation == 'CPython'
+discord-py @ git+https://github.com/Rapptz/discord.py.git@bd37844be7f83abde030b4302cf5da801fccd1a9 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython'
     # via
     #   discord-ext-menus
     #   discord-ext-voice-recv
