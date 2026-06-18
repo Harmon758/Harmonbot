@@ -436,9 +436,9 @@ wheels = [{ url = "https://files.pythonhosted.org/packages/bc/65/d3a9d555cb2baaa
 
 [[packages]]
 name = "discord-py"
-version = "2.7.0a5316+g25a4dbe8"
+version = "2.7.0a5322+gbd329b15"
 marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'"
-vcs = { type = "git", url = "https://github.com/Rapptz/discord.py.git", requested-revision = "25a4dbe", commit-id = "25a4dbe86aa350b7f7cf58ac8279b158e6489dcd" }
+vcs = { type = "git", url = "https://github.com/Rapptz/discord.py.git", requested-revision = "bd329b1", commit-id = "bd329b15159976ca0a5c8da8fe12bd73ee0c23b3" }
 
 [[packages]]
 name = "emoji"
