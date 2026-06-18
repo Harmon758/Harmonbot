@@ -449,6 +449,8 @@ class Discord(commands.Cog):
         D = discord.utils.format_dt(time, style = 'D')
         f = discord.utils.format_dt(time, style = 'f')
         F = discord.utils.format_dt(time, style = 'F')
+        s = discord.utils.format_dt(time, style = 's')
+        S = discord.utils.format_dt(time, style = 'S')
         R = discord.utils.format_dt(time, style = 'R')
         await ctx.embed_reply(
             f"Epoch/POSIX: {time.timestamp()}\n"
@@ -458,6 +460,8 @@ class Discord(commands.Cog):
             f"{D} (`{D}`)\n"
             f"{f} (`{f}`, `{discord.utils.format_dt(time)}`)\n"
             f"{F} (`{F}`)\n"
+            f"{s} (`{s}`)\n"
+            f"{S} (`{S}`)\n"
             f"{R} (`{R}`)"
         )
 
