@@ -507,9 +507,9 @@ httpx==0.28.1 ; implementation_name == 'cpython' and platform_python_implementat
     #   python-telegram-bot
     #   weasel
     #   wolframalpha
-hypothesis==6.148.3 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:bd81221740d8658473060ad900dc831f889f156fdb41210ba2f47cfad10a66ed \
-    --hash=sha256:e7dd193da9800234ec5e1541c1eddde4bddff49b53faf690ba68a0af55a7abb3
+hypothesis==6.148.5 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:63cde596a48cdbbabac0591ea19a1bffa812c30afbe3d948bc2a8ee8ed49a11a \
+    --hash=sha256:bb0c67bff155b8d8cfe8fbc1f1218028f7e2f0ee7f24d8ccc89f4c14ee4e65c0
 idna==3.11 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:771a87f49d9defaf64091e6e6fe9c18d4833f140bd19464795bc32d966ca37ea \
     --hash=sha256:795dafcc9c04ed0c1fb032c2aa73654d8e8c5023a7df64a53f39190ada629902
