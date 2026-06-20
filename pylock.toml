@@ -469,11 +469,9 @@ wheels = [{ url = "https://files.pythonhosted.org/packages/bc/65/d3a9d555cb2baaa
 
 [[packages]]
 name = "discord-py"
-version = "2.7.0"
+version = "2.8.0a5390+g9798e592"
 marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'"
-index = "https://pypi.org/simple"
-sdist = { url = "https://files.pythonhosted.org/packages/3b/6e/8c6ceba65e2c832fd00906bbfa3801c3a175eafc3039b47a7f587978e01f/discord_py-2.7.0.tar.gz", upload-time = 2026-02-27T18:53:17Z, size = 1106358, hashes = { sha256 = "b40a36fd09232c958cef0640c7830f3cdc9b1d476e63355b91728576ac7dd1ba" } }
-wheels = [{ url = "https://files.pythonhosted.org/packages/ba/92/eb023fe59414e179e17e3b20d4708da5248714c2832b4af55b8c0386bedd/discord_py-2.7.0-py3-none-any.whl", upload-time = 2026-02-27T18:53:15Z, size = 1227558, hashes = { sha256 = "6abe8392d8127213b02ef714be41f843dd053775500bb2e7c596abb77e802b9b" } }]
+vcs = { type = "git", url = "https://github.com/Rapptz/discord.py.git", requested-revision = "9798e59", commit-id = "9798e5921abb818c0f020b2e7773fcede26b82b4" }
 
 [[packages]]
 name = "emoji"
