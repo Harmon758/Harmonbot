@@ -954,10 +954,7 @@ class Bot(commands.Bot):
 
     async def on_interaction(self, interaction):
         if interaction.type is discord.InteractionType.component:
-            key = (
-                interaction.data["component_type"],
-                interaction.data["custom_id"]
-            )
+            key = (interaction.data["component_type"], interaction.custom_id)
             item = (
                 self._connection._view_store._views.get(interaction.message.id, {}).get(key) or
                 self._connection._view_store._views.get(None, {}).get(key)
