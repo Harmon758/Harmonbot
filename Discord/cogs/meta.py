@@ -173,7 +173,9 @@ class Meta(commands.Cog):
     @shards.command(aliases = ["recommend"])
     async def recommended(self, ctx):
         """Recommended number of shards to use by Discord API"""
-        count, _ = await ctx.bot.http.get_bot_gateway()
+        count, _gateway_url, _session_start_limit = (
+            await ctx.bot.http.get_bot_gateway()
+        )
         await ctx.embed_reply(count)
 
     @commands.command(aliases = ["typing"], hidden = True)
