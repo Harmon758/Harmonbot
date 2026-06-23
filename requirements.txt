@@ -1369,9 +1369,9 @@ setuptools==80.9.0 ; implementation_name == 'cpython' and platform_python_implem
     #   setuptools-scm
     #   spacy
     #   thinc
-setuptools-scm==9.2.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:6662c9b9497b6c9bf13bead9d7a9084756f68238302c5ed089fb4dbd29d102d7 \
-    --hash=sha256:c551ef54e2270727ee17067881c9687ca2aedf179fa5b8f3fab9e8d73bdc421f
+setuptools-scm==10.1.1 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:4660e6a3b1764ff4b11188de93c26f02396ef294784a75e031e0a5f60c2379fe \
+    --hash=sha256:c9eed4754da1a25016d49c1b3cd09c7c8e65f816b5afb8195bf2ac3c6748f23a
 sgmllib3k==1.0.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:7868fb1c8bfa764c1ac563d3cf369c381d1325d36124933a726f29fcdaa812e9
     # via feedparser
