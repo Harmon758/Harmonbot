@@ -9,7 +9,7 @@ jobs:
     steps:
     - uses: actions/checkout@v7.0.0
     - name: Set up Python
-      uses: actions/setup-python@v6.2.0
+      uses: actions/setup-python@v6.3.0
       with:
         python-version-file: pyproject.toml
         architecture: x64
@@ -27,7 +27,7 @@ jobs:
     steps:
     - uses: actions/checkout@v7.0.0
     - name: Set up Python
-      uses: actions/setup-python@v6.2.0
+      uses: actions/setup-python@v6.3.0
       with:
         python-version-file: pyproject.toml
         architecture: x64
@@ -45,7 +45,7 @@ jobs:
     steps:
     - uses: actions/checkout@v7.0.0
     - name: Set up Python
-      uses: actions/setup-python@v6.2.0
+      uses: actions/setup-python@v6.3.0
       with:
         python-version-file: pyproject.toml
         architecture: x64
@@ -63,7 +63,7 @@ jobs:
     steps:
     - uses: actions/checkout@v7.0.0
     - name: Set up Python
-      uses: actions/setup-python@v6.2.0
+      uses: actions/setup-python@v6.3.0
       with:
         python-version-file: pyproject.toml
         architecture: x64
