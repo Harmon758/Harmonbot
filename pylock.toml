@@ -81,11 +81,11 @@ wheels = [{ url = "https://files.pythonhosted.org/packages/78/b6/6307fbef88d9b5e
 
 [[packages]]
 name = "anyio"
-version = "4.14.0"
+version = "4.14.1"
 marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'"
 index = "https://pypi.org/simple"
-sdist = { url = "https://files.pythonhosted.org/packages/1c/b5/001890774a9552aff22502b8da382593109ce0c95314abaebbb116567545/anyio-4.14.0.tar.gz", upload-time = 2026-06-15T22:00:49Z, size = 253586, hashes = { sha256 = "b47c1f9ccf73e67021df785332508f99379c68fa7d0684e8e3492cb1d4b23f89" } }
-wheels = [{ url = "https://files.pythonhosted.org/packages/ba/16/9826f089383c593cdfc4a6e5aca94d9e91ae1692c57af82c3b2aa5e810f7/anyio-4.14.0-py3-none-any.whl", upload-time = 2026-06-15T22:00:47Z, size = 123506, hashes = { sha256 = "dd9b7a2a9799ed6552fde617b2c5df02b7fdd7d88392fc48101e51bae46164d9" } }]
+sdist = { url = "https://files.pythonhosted.org/packages/3b/72/5562aabb8dd7181e8e860622a38bea08d17842b99ecd4c91f84ac95251b0/anyio-4.14.1.tar.gz", upload-time = 2026-06-24T20:56:06Z, size = 254831, hashes = { sha256 = "8d648a3544c1a700e3ff78615cd679e4c5c3f149904287e73687b2596963629e" } }
+wheels = [{ url = "https://files.pythonhosted.org/packages/b0/7b/90df4a0a816d98d6ea26f559d87836d494a2cf1fcf063be67df50a7bcc30/anyio-4.14.1-py3-none-any.whl", upload-time = 2026-06-24T20:56:04Z, size = 124875, hashes = { sha256 = "4e5533c5b8ff0a24f5d7a176cbe6877129cd183893f66b537f8f227d10527d72" } }]
 
 [[packages]]
 name = "ast-decompiler"
