@@ -441,9 +441,9 @@ google-cloud-translate==3.26.0 ; implementation_name == 'cpython' and platform_p
     --hash=sha256:5b9f4d2cfdc41fcd357cda47d4d880acb6d720be7f0b8fdf95f2816dc982359d \
     --hash=sha256:74c4c302ea705daa1d7dda095288fd736bb616f943480db34314cd0cd52cc9dd
     # via harmonbot
-google-cloud-vision==3.14.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:19af69218923358766acfd655ad63f450d166b149ee8eecaaeb3a0d390c46749 \
-    --hash=sha256:edd7939cab67e9fd43dfbb5d353c3d6c76d33eeda8fc032ba8ff215e5a2990b8
+google-cloud-vision==3.15.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:6293186bb824a986cdf73bcc83ad0e44a1ef26942347b7e01598061619bb66d4 \
+    --hash=sha256:ed2b79ca05a58a929ec112259a9caa698509f6348762a8eced3310e6572a6c70
     # via harmonbot
 googleapis-common-protos==1.74.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:57971e4eeeba6aad1163c1f0fc88543f965bb49129b8bb55b2b7b26ecab084f1 \
