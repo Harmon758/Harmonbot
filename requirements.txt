@@ -1681,20 +1681,20 @@ wordcloud==1.9.6 ; implementation_name == 'cpython' and platform_python_implemen
 wordnik-py3==2.1.2 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:e4a55aeab9d546cb0b76afd6b853a60f96a5553542f89c29b4fcf69dbc237a8b
     # via harmonbot
-wrapt==2.1.2 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:3996a67eecc2c68fd47b4e3c564405a5777367adfd9b8abb58387b63ee83b21e \
-    --hash=sha256:3d7b6fd105f8b24e5bd23ccf41cb1d1099796524bcc6f7fbb8fe576c44befbc9 \
-    --hash=sha256:577dff354e7acd9d411eaf4bfe76b724c89c89c8fc9b7e127ee28c5f7bcb25b6 \
-    --hash=sha256:5a0a0a3a882393095573344075189eb2d566e0fd205a2b6414e9997b1b800a8b \
-    --hash=sha256:64a07a71d2730ba56f11d1a4b91f7817dc79bc134c11516b75d1921a7c6fcda1 \
-    --hash=sha256:767c0dbbe76cae2a60dd2b235ac0c87c9cccf4898aef8062e57bead46b5f6894 \
-    --hash=sha256:866abdbf4612e0b34764922ef8b1c5668867610a718d3053d59e24a5e5fcfc15 \
-    --hash=sha256:96159a0ee2b0277d44201c3b5be479a9979cf154e8c82fa5df49586a8e7679bb \
-    --hash=sha256:98ba61833a77b747901e9012072f038795de7fc77849f1faa965464f3f87ff2d \
-    --hash=sha256:9c691a6bc752c0cc4711cc0c00896fcd0f116abc253609ef64ef930032821842 \
-    --hash=sha256:b89f095fe98bc12107f82a9f7d570dc83a0870291aeb6b1d7a7d35575f55d98a \
-    --hash=sha256:b8fd6fa2b2c4e7621808f8c62e8317f4aae56e59721ad933bac5239d913cf0e8 \
-    --hash=sha256:f3b7d73012ea75aee5844de58c88f44cf62d0d62711e39da5a82824a7c4626a8
+wrapt==2.2.2 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:0788e321027c999bf221b667bd4a54aaefd1a36283749a860ac3eb77daed0302 \
+    --hash=sha256:209112cafd963710a05d199aae431d79a28bc76eb8e6d1bbbb8ad24340722cae \
+    --hash=sha256:4bccea5cdecffa9dd70e343741f0e41e0a16619313d04b72f78bb525162ebcd0 \
+    --hash=sha256:518b0c5e323511ec56a38894802ddd5e1222626484e68efe63f201854ad788e5 \
+    --hash=sha256:5499236ad1dc116012e2a5dd943f3f31af12fce452128e2bbcbd55a7d3d4d14c \
+    --hash=sha256:55b9a899e6fff5444f229d30aa6e9ac92d2216d9d60f33c771b5d76a760d5f8e \
+    --hash=sha256:5bad217350f19ce99ca5b5e71d406765ea86fe541628426772b657375ee1c048 \
+    --hash=sha256:5d0a142f7af07caeb5e5da87493162a7b8efa19ba919e550a746f7446e13fb30 \
+    --hash=sha256:8636809939152be6ae20a6cef0fed9fe60f411b47847d0426a826884b469e971 \
+    --hash=sha256:a2d78c363f97d8bd718ee40432c66395685e9e98528ccaa423c3355d1715a26d \
+    --hash=sha256:d619e1eed9bd4f6ed9f24cd61971aa086fa86505289628d464bcf8a2c2e3f328 \
+    --hash=sha256:e5a5290e4bf2f332fc29ce72ffb9a2fff678aaac047e2e9f5f7165cd7792e099 \
+    --hash=sha256:f1a2ff355ece6a111ca7a20dc86df6659c9205d3fcee674ca34f2a2854fd4e73
     # via
     #   smart-open
     #   vcrpy
