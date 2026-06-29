@@ -433,9 +433,9 @@ google-cloud-core==2.6.0 ; implementation_name == 'cpython' and platform_python_
     --hash=sha256:6d63ac8e5eca6d9e4319d0a1e2265fadcd7f1049904378caecfa01cf52dd869e \
     --hash=sha256:e76149739f90fac1fc6757c09f47eaccb3145b54adbd7759b0f7c4b235f46c83
     # via google-cloud-translate
-google-cloud-speech==2.34.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:2a7bffd84f134b9b70c9f11cbb5088c534f92be149d71d9073d0b9dd3a431acf \
-    --hash=sha256:cc0c6c0fda9306fee01c998bc207b68f71e0a3247121a5a3a27daabacd3a8c98
+google-cloud-speech==2.40.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:7cc0302b3b9ca33d2eae9669da94a44316601a240942895362ac70e765b9f39c \
+    --hash=sha256:e89e688e4ce0b926754038bf992d0d0f065c5f1c3503bb20e6c46d08b63658fc
     # via speechrecognition
 google-cloud-translate==3.27.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:173b1ece3db69b1057e331a1616817912c2d41fee832cc6e1eab7df349fe374c \
