@@ -336,7 +336,7 @@ class Entertainment(commands.Cog):
 	@app_commands.allowed_contexts(
 		guilds = True, dms = False, private_channels = False
 	)
-	async def slash_xckd(
+	async def slash_xkcd(
 		self, interaction, number: Optional[int], query: Optional[str]
 	):
 		"""
