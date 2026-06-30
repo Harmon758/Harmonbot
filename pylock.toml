@@ -89,11 +89,11 @@ wheels = [{ url = "https://files.pythonhosted.org/packages/b0/7b/90df4a0a816d98d
 
 [[packages]]
 name = "async-lru"
-version = "2.2.0"
+version = "2.3.0"
 marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'"
 index = "https://pypi.org/simple"
-sdist = { url = "https://files.pythonhosted.org/packages/05/8a/ca724066c32a53fa75f59e0f21aa822fdaa8a0dffa112d223634e3caabf9/async_lru-2.2.0.tar.gz", upload-time = 2026-02-20T19:11:43Z, size = 14654, hashes = { sha256 = "80abae2a237dbc6c60861d621619af39f0d920aea306de34cb992c879e01370c" } }
-wheels = [{ url = "https://files.pythonhosted.org/packages/13/5c/af990f019b8dd11c5492a6371fe74a5b0276357370030b67254a87329944/async_lru-2.2.0-py3-none-any.whl", upload-time = 2026-02-20T19:11:42Z, size = 7890, hashes = { sha256 = "e2c1cf731eba202b59c5feedaef14ffd9d02ad0037fcda64938699f2c380eafe" } }]
+sdist = { url = "https://files.pythonhosted.org/packages/e8/1f/989ecfef8e64109a489fff357450cb73fa73a865a92bd8c272170a6922c2/async_lru-2.3.0.tar.gz", upload-time = 2026-03-19T01:04:32Z, size = 16332, hashes = { sha256 = "89bdb258a0140d7313cf8f4031d816a042202faa61d0ab310a0a538baa1c24b6" } }
+wheels = [{ url = "https://files.pythonhosted.org/packages/e5/e2/c2e3abf398f80732e58b03be77bde9022550d221dd8781bf586bd4d97cc1/async_lru-2.3.0-py3-none-any.whl", upload-time = 2026-03-19T01:04:30Z, size = 8403, hashes = { sha256 = "eea27b01841909316f2cc739807acea1c623df2be8c5cfad7583286397bb8315" } }]
 
 [[packages]]
 name = "asyncpg"
