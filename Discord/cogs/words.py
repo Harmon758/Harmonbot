@@ -293,6 +293,8 @@ class Words(commands.Cog):
     ):
         '''Translate to English'''
         # TODO: From and to language code options?
+        reference = None
+        mention_author = None
         if not text:
             if ctx.message.reference:
                 referenced_message = (
@@ -302,6 +304,10 @@ class Words(commands.Cog):
                     )
                 )
                 text = referenced_message.content
+                reference = ctx.message.reference
+                mention_author = (
+                    referenced_message.author in ctx.message.mentions
+                )
             else:
                 await ctx.send_help(ctx.command)
                 return
@@ -317,11 +323,8 @@ class Words(commands.Cog):
         await ctx.embed_reply(
             translation.translated_text,
             footer_text = f"Detected Language Code: {translation.detected_language_code}",
-            reference = ctx.message.reference if not text else None,
-            mention_author = (
-                referenced_message.author in ctx.message.mentions
-                if ctx.message.reference and not text else None
-            )
+            reference = reference,
+            mention_author = mention_author
         )
 
     @translate.command(name = "from")
