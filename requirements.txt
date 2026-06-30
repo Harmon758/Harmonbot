@@ -1536,9 +1536,9 @@ typer-slim==0.24.0 ; implementation_name == 'cpython' and platform_python_implem
     --hash=sha256:d5d7ee1ee2834d5020c7c616ed5e0d0f29b9a4b1dd283bdebae198ec09778d0e \
     --hash=sha256:f0ed36127183f52ae6ced2ecb2521789995992c521a46083bfcdbb652d22ad34
     # via jaraco-text
-typeshed-client==2.8.2 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:4cf886d976c777689cd31889f13abf5bfb7797c82519b07e5969e541380c75ee \
-    --hash=sha256:9d8e29fb74574d87bf9a719f77131dc40f2aeea20e97d25d4a3dc2cc30debd31
+typeshed-client==2.12.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:54dcfa25fcff82cedcb1b51c03c1b3c51a614097aab8fe49e4316aff6f79d9c7 \
+    --hash=sha256:da3ef54a0e60c0f45f59006b73a3cb20b1acbf7a784e982476d8193e8828ddf5
     # via pycroscope
 typing-extensions==4.15.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:0cea48d173cc12fa28ecabc3b837ea3cf6f38c6d1136f85cbaaf598984861466 \
