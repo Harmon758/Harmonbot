@@ -29,7 +29,7 @@ def detect_image_properties(
         client = vision.ImageAnnotatorClient()
     image = vision.Image()
     image.source.image_uri = image_uri
-    return client.image_properties(
+    return client.image_properties(  # type: ignore[attribute-error]
         image = image
     ).image_properties_annotation.dominant_colors.colors
 
