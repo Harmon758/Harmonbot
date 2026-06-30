@@ -1087,9 +1087,9 @@ pycountry==24.6.1 ; implementation_name == 'cpython' and platform_python_impleme
     --hash=sha256:b61b3faccea67f87d10c1f2b0fc0be714409e8fcdcc1315613174f6466c10221 \
     --hash=sha256:f1a4fb391cd7214f8eefd39556d740adcc233c778a27f8942c8dca351d6ce06f
     # via harmonbot
-pycparser==2.23 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:78816d4f24add8f10a06d6f05b4d424ad9e96cfebf68a4ddc99c65c0720d00c2 \
-    --hash=sha256:e5c6e8d3fbad53479cab09ac03729e0a9faf2bee3db8208a550daf5af81a5934
+pycparser==3.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:600f49d217304a5902ac3c37e1281c9fe94e4d0489de643a9504c5cdfdfc6b29 \
+    --hash=sha256:b727414169a36b7d524c1c3e31839a521725078d7b2ff038656844266160a992
     # via cffi
 pycroscope==0.2.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:60560c51ffcac9a050f2d9dea59a78afae546545a750c397354d4c624e662547 \
