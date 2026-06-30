@@ -459,11 +459,11 @@ vcs = { type = "git", url = "https://github.com/Rapptz/discord.py.git", requeste
 
 [[packages]]
 name = "emoji"
-version = "2.9.0"
+version = "2.15.0"
 marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'"
 index = "https://pypi.org/simple"
-sdist = { url = "https://files.pythonhosted.org/packages/3e/29/8a183335d6a4bad794aaf6d0ea9116a751c6df471a6b8e8f1e9bb9f00aae/emoji-2.9.0.tar.gz", upload-time = 2023-12-05T14:44:03Z, size = 402629, hashes = { sha256 = "5f4a15b7caa9c67fc11be9d90a822e3fa26aeb4e5b7bd2ded754b394d9c47869" } }
-wheels = [{ url = "https://files.pythonhosted.org/packages/03/40/91d0c9fe5a0b494c0fdbcacda4d203aea39f8293e69c70129389308ca928/emoji-2.9.0-py2.py3-none-any.whl", upload-time = 2023-12-05T14:44:01Z, size = 397471, hashes = { sha256 = "17b0d53e1d9f787307a4c65aa19badb0a1ffdbc89b3a3cd851fc77821cdaced2" } }]
+sdist = { url = "https://files.pythonhosted.org/packages/a2/78/0d2db9382c92a163d7095fc08efff7800880f830a152cfced40161e7638d/emoji-2.15.0.tar.gz", upload-time = 2025-09-21T12:13:02Z, size = 615483, hashes = { sha256 = "eae4ab7d86456a70a00a985125a03263a5eac54cd55e51d7e184b1ed3b6757e4" } }
+wheels = [{ url = "https://files.pythonhosted.org/packages/e1/5e/4b5aaaabddfacfe36ba7768817bd1f71a7a810a43705e531f3ae4c690767/emoji-2.15.0-py3-none-any.whl", upload-time = 2025-09-21T12:13:01Z, size = 608433, hashes = { sha256 = "205296793d66a89d88af4688fa57fd6496732eb48917a87175a023c8138995eb" } }]
 
 [[packages]]
 name = "en-core-web-md"
