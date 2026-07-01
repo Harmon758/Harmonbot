@@ -172,5 +172,5 @@ discord-ext-menus = { git = "https://github.com/Rapptz/discord-ext-menus.git", r
 # https://github.com/explosion/spacy-models/releases/tag/en_core_web_md-3.8.0
 en_core_web_md = { url = "https://github.com/explosion/spacy-models/releases/download/en_core_web_md-3.8.0/en_core_web_md-3.8.0-py3-none-any.whl" }
 # https://github.com/ytdl-org/youtube-dl/issues/31585
-# https://github.com/ytdl-org/ytdl-nightly/releases/tag/2023.12.07
-youtube-dl = { url = "https://github.com/ytdl-org/ytdl-nightly/releases/download/2023.12.07/youtube-dl-2023.12.07.tar.gz" }
+# https://github.com/ytdl-org/ytdl-nightly/releases/tag/2025.11.26
+youtube-dl = { url = "https://github.com/ytdl-org/ytdl-nightly/releases/download/2025.11.26/youtube-dl-2025.11.26.tar.gz" }

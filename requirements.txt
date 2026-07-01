@@ -1710,8 +1710,8 @@ yarl==1.24.2 ; implementation_name == 'cpython' and platform_python_implementati
     --hash=sha256:ec87ccc31bd21db7ad009d8572c127c1000f268517618a4cc09adba3c2a7f21c \
     --hash=sha256:f8fdbcff8b2c7c9284e60c196f693588598ddcee31e11c18e14949ce44519d45
     # via aiohttp
-youtube-dl @ https://github.com/ytdl-org/ytdl-nightly/releases/download/2023.12.07/youtube-dl-2023.12.07.tar.gz ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:cbcf0028bb951303170333841e4d3b0dc6fa990b75e120ee701bbce3b5918173
+youtube-dl @ https://github.com/ytdl-org/ytdl-nightly/releases/download/2025.11.26/youtube-dl-2025.11.26.tar.gz ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:3057800d1a6f18fd63da8f11554ec1c2c1c1fc05307905c6a6d1bca938af65ac
     # via harmonbot
 yt-dlp==2026.6.9 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:442ba4c75724b9496144c8434b617962ee08d0ee7c26ec663848fe9b78d5a3e4 \

@@ -2404,9 +2404,9 @@ wheels = [
 
 [[packages]]
 name = "youtube-dl"
-version = "2023.12.7"
+version = "2025.11.26"
 marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'"
-archive = { url = "https://github.com/ytdl-org/ytdl-nightly/releases/download/2023.12.07/youtube-dl-2023.12.07.tar.gz", hashes = { sha256 = "cbcf0028bb951303170333841e4d3b0dc6fa990b75e120ee701bbce3b5918173" } }
+archive = { url = "https://github.com/ytdl-org/ytdl-nightly/releases/download/2025.11.26/youtube-dl-2025.11.26.tar.gz", hashes = { sha256 = "3057800d1a6f18fd63da8f11554ec1c2c1c1fc05307905c6a6d1bca938af65ac" } }
 
 [[packages]]
 name = "yt-dlp"
