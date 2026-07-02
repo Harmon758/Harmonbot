@@ -806,16 +806,16 @@ mutagen==1.48.1 ; implementation_name == 'cpython' and platform_python_implement
     --hash=sha256:4f077fe87d3fc7fba259aa63d8c026b18382ca6a42ef37c61e16f1b1b5b82fe7 \
     --hash=sha256:8f95637ab9f6f305cec6bd1294e197debe207998e3e068596563c74f86b0a173
     # via yt-dlp
-mypy==2.0.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:1a9e3900ac5c40f1fe813506c7739da6e6f0eab2729067ebd94bfb0bbba53532 \
-    --hash=sha256:29ea6da86c8c5e9addd48fa6e624f467341b3814f54ded871b28980468686dea \
-    --hash=sha256:33f668a37a650df60f7b825c1ac61e6baadd4ac3c89519e929badde58d28edf5 \
-    --hash=sha256:440165501295e523bf1e5d3e411b62b367b901c65610938e75f0e56ba0462461 \
-    --hash=sha256:8578f857b519993d065e5805290b71467ebfae772407a5f57e823755e4fdb850 \
-    --hash=sha256:8a92b2be3146b4fa1f062af7eb05574cbf3e6eb8e1f14704af1075423144e4e5 \
-    --hash=sha256:904baa0124ebbccf0c7ba94f722cf9186ee30478f5e5b11432ffc8929248ee55 \
-    --hash=sha256:c17b7222e9fdfd352e61fb3131da117e55cc465f701ff232f1bd97a02bbad91f \
-    --hash=sha256:cc0a61adea1a5ffc2d47a4dc4bb180d8103f477fc2a90a1cdcbb168c2cc6caff
+mypy==2.1.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:0b1a5260c95aa443083f9ed3592662941951bca3d4ca224a5dc517c38b7cf666 \
+    --hash=sha256:1a293c534adb55271fef24a26da04b855540a8c13cc07bc5917b9fd2c394f2ca \
+    --hash=sha256:3712c20deed54e814eaaa825603bada8ea1c390670a397c95b98405347acc563 \
+    --hash=sha256:7406f4d048e71e576f5356d317e5b0a9e666dfd966bd99f9d14ca06e1a341538 \
+    --hash=sha256:81e76ad12c2d804512e9b13240d1588316531bfba07558286078bfbce9613633 \
+    --hash=sha256:a663814603a5c563fb87a4f96fb473eeb30d1f5a4885afcf44f9db000a366289 \
+    --hash=sha256:a683016b16fe2f572dc04c72be7ee0504ac1605a265d0200f5cea695fb788f41 \
+    --hash=sha256:e0210d626fc8b31ccc90233754c7bc90e1f43205e85d96387f7db1285b55c398 \
+    --hash=sha256:fcaa0e479066e31f7cceb6a3bea39cb22b2ff51a6b2f24f193d19179ba17c389
 mypy-extensions==1.1.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:1be4cccdb0f2482337c4743e60421de3a356cd97508abadd57d47403e94f5505 \
     --hash=sha256:52e68efc3284861e772bbcd66823fde5ae21fd2fdb51c62a211403730b916558
