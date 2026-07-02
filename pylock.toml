@@ -22,11 +22,11 @@ wheels = [{ url = "https://files.pythonhosted.org/packages/7f/70/72e4ab117425ccd
 
 [[packages]]
 name = "aiohappyeyeballs"
-version = "2.6.2"
+version = "2.7.1"
 marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'"
 index = "https://pypi.org/simple"
-sdist = { url = "https://files.pythonhosted.org/packages/33/c6/61a2d7b7572279226bb2e7f61d7a19ca7c90da0329c93fa0d560cbf288d8/aiohappyeyeballs-2.6.2.tar.gz", upload-time = 2026-05-20T15:12:24Z, size = 22591, hashes = { sha256 = "e202810ee718bd01fc6ef49e8ea53d023d5cb6b581076d7925aa499fa55dbe64" } }
-wheels = [{ url = "https://files.pythonhosted.org/packages/5f/fc/a7bf5b6e4e617b45f90f2d9d2a68519c249c81dd4fc2658c7a2a61c4f4b7/aiohappyeyeballs-2.6.2-py3-none-any.whl", upload-time = 2026-05-20T15:12:23Z, size = 15062, hashes = { sha256 = "4708045e2d7a6c6bdf8aafa8ed39649eaf926a4543b54560659129e3365953c4" } }]
+sdist = { url = "https://files.pythonhosted.org/packages/ce/f4/eec0465c2f67b2664688d0240b3212d5196fd89e741df67ddb81f8d35658/aiohappyeyeballs-2.7.1.tar.gz", upload-time = 2026-07-01T17:11:55Z, size = 24757, hashes = { sha256 = "065665c041c42a5938ed220bdcd7230f22527fbec085e1853d2402c8a3615d9d" } }
+wheels = [{ url = "https://files.pythonhosted.org/packages/71/43/1947f06babed6b3f1d7f38b0c767f52df66bfb2bc10b468c4a7de9eceff2/aiohappyeyeballs-2.7.1-py3-none-any.whl", upload-time = 2026-07-01T17:11:54Z, size = 15038, hashes = { sha256 = "9243213661e29250eb41368e5daa826fc017156c3b8a11440826b2e3ed376472" } }]
 
 [[packages]]
 name = "aiohttp"
