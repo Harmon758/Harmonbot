@@ -4,7 +4,7 @@ import operator
 from pyparsing import Forward, Group, Literal, nums, Suppress, Word
 
 
-expression_stack = []
+expression_stack: list[str] = []
 
 def push_first(tokens):
     expression_stack.append(tokens[0])
