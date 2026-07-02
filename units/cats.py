@@ -33,8 +33,8 @@ async def get_random_cat_image(
         ensure_session(aiohttp_session) as aiohttp_session,
         aiohttp_session.get(
             "https://api.thecatapi.com/v1/images/search",
-            params = {"breed_ids": breed["id"]} if breed and (
-                breed := (
+            params = {"breed_ids": breed_data["id"]} if breed and (
+                breed_data := (
                     await get_cat_breeds(aiohttp_session = aiohttp_session)
                 ).get(breed)
             ) else None
