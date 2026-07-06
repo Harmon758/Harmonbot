@@ -719,11 +719,11 @@ wheels = [{ url = "https://files.pythonhosted.org/packages/2a/39/e50c7c3a9830475
 
 [[packages]]
 name = "hypothesis"
-version = "6.150.3"
+version = "6.151.2"
 marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'"
 index = "https://pypi.org/simple"
-sdist = { url = "https://files.pythonhosted.org/packages/86/eb/1b0359b52d2136a7f4b8112e60148ef8b5ba480d450f409ed63e18d4c8d2/hypothesis-6.150.3.tar.gz", upload-time = 2026-01-23T07:53:09Z, size = 475542, hashes = { sha256 = "32c88d4b7df3a8483e69877561b520320bf7779b0709c11869e392025e9279d4" } }
-wheels = [{ url = "https://files.pythonhosted.org/packages/69/6b/c94ca780814aa4e73b52a8d5e9092f0b83f4732a9ecb3d1f8333c93ac131/hypothesis-6.150.3-py3-none-any.whl", upload-time = 2026-01-23T07:53:07Z, size = 542960, hashes = { sha256 = "5577c0f8eff5ac54a8aff1ce32e30c5454167c29360fdabf1bfea0539b1689f9" } }]
+sdist = { url = "https://files.pythonhosted.org/packages/05/13/69648b6f8c41600ce922386f084f5921fef55912dc980ded8ff4948ea626/hypothesis-6.151.2.tar.gz", upload-time = 2026-01-26T06:45:41Z, size = 475491, hashes = { sha256 = "fc91f88a77074b31c7ab871eebab3d2e0210fd3095f1d1ecbd9440c1c6bc06d9" } }
+wheels = [{ url = "https://files.pythonhosted.org/packages/cb/3b/a6b9ecf082dd4d736bb553f7d9ad907a64373f41d0b57eb0be21acf157ee/hypothesis-6.151.2-py3-none-any.whl", upload-time = 2026-01-26T06:45:39Z, size = 542937, hashes = { sha256 = "909d2b5f0dc80640561bb2c3859f3c56a52ed8d1cc589e5e6450362ced8c31a0" } }]
 
 [[packages]]
 name = "idna"
