@@ -892,7 +892,7 @@ numpy==2.3.4 ; implementation_name == 'cpython' and platform_python_implementati
     #   spacy-entity-linker
     #   thinc
     #   wordcloud
-oauthlib==3.2.2 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+oauthlib==3.3.1 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:8139f29aac13e25d502680e9e19963e83f16838d48a0d71c287fe40e7067fbca \
     --hash=sha256:9859c40929662bec5d64f34d01c99e093149682a3f38915dc0655d5a633dd918
     # via
