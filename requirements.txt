@@ -1595,7 +1595,7 @@ tzdata==2025.2 ; implementation_name == 'cpython' and platform_python_implementa
     # via
     #   pandas
     #   psycopg
-unicodedata2==15.1.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+unicodedata2==17.0.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:2af0d0eb7f9837ffcb3a440f51f25d80a2edb3c8eb03d61ba7eb3b5b938bf1cb \
     --hash=sha256:9ad11b8260448a794b928a80018ef91a18f95d938e77431b338b81516f56dbb0 \
     --hash=sha256:a2442a539d1e493486fdbbdf1d08c8f5d4abe51c9b77b7d39df319a96d30abe4 \
