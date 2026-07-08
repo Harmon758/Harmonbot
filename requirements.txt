@@ -1406,9 +1406,9 @@ smart-open==8.0.0 ; implementation_name == 'cpython' and platform_python_impleme
     --hash=sha256:5a2008d60688bd3b33c52e2ef666d3c60cf956e73e215de8c7b242cf56fdd1b2 \
     --hash=sha256:ff4f395c9e86f23e27771dc4ba756ad4bd145f181859a782c50d64168485761b
     # via weasel
-smmap==5.0.2 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:26ea65a03958fa0c8a1c7e8c7a58fdc77221b8910f6be2131affade476898ad5 \
-    --hash=sha256:b30115f0def7d7531d22a0fb6502488d879e75b260a9db4d0819cfb25403af5e
+smmap==5.0.3 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:4d9debb8b99007ae47165abc08670bd74cb74b5227dda7f643eccc4e9eb5642c \
+    --hash=sha256:c106e05d5a61449cf6ba9a1e650227ecfb141590d2a98412103ff35d89fc7b2f
     # via gitdb
 sortedcontainers==2.4.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:25caa5a06cc30b6b83d11423433f65d1f9d76c4c6a0c90e3379eaa43b9bfdb88 \
