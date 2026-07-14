@@ -1486,9 +1486,9 @@ tabulate==0.10.0 ; implementation_name == 'cpython' and platform_python_implemen
     # via
     #   harmonbot
     #   pytype
-tempora==5.9.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:5aa96ab2b8a2be795bd4c78a4299c0196365a91976972f8852b19e1d363ccd29 \
-    --hash=sha256:66e6ddee320c38f4b253a7d8039337424c699916451b9271e0ccce770a4e8f62
+tempora==5.11.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:306f82d8ff59a0ee23dfb9c7751fd8ec7309fb8204d3d06db290e4d123d297bf \
+    --hash=sha256:9375a76c00708079fa63c3c691d373625bc7cab42589772ecb62ebbfe0bdaf7c
     # via
     #   irc
     #   jaraco-logging
