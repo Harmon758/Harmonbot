@@ -584,9 +584,9 @@ jaraco-context==6.1.2 ; implementation_name == 'cpython' and platform_python_imp
     #   jaraco-text
     #   tempora
     #   wolframalpha
-jaraco-functools==4.5.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:3bb5665ea4a020cf78a7040e89154c77edadb3ca74f366479669c5999aa70b03 \
-    --hash=sha256:79ce39246eddbde4b3a03b77ea5f0f7878dc669b166a66cf3fa8e266aa3fa2f4
+jaraco-functools==4.6.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:880c577ec9720b3a052d5bc611fb9f2269b3d87902ef42440df443b88e443280 \
+    --hash=sha256:99e3dc0060c5cbe8fcd1cdb36258e2a65ca40f1566b2033b12abb1bb44dd3c30
     # via
     #   irc
     #   jaraco-text
