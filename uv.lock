@@ -22,7 +22,7 @@ name = "aiodns"
 version = "4.0.4"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "pycares" },
+    { name = "pycares", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/9b/22/a2d928e0e42baad0471d12ec44c71152ac870486e8298dddb2893b888c29/aiodns-4.0.4.tar.gz", hash = "sha256:cb10e0c0d2591636716ad2fe402e977c16d71bdaf76bb8cb49e8a6633596f736", size = 29918, upload-time = "2026-05-20T01:54:15.557Z" }
 wheels = [
@@ -43,14 +43,14 @@ name = "aiohttp"
 version = "3.14.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "aiohappyeyeballs" },
-    { name = "aiosignal" },
-    { name = "attrs" },
-    { name = "frozenlist" },
-    { name = "multidict" },
-    { name = "propcache" },
-    { name = "typing-extensions" },
-    { name = "yarl" },
+    { name = "aiohappyeyeballs", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "aiosignal", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "attrs", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "frozenlist", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "multidict", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "propcache", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "typing-extensions", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "yarl", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/82/78/8ea7308cac6934de8c74a14f3d5f65d1c89287426688be79538d0e5c013d/aiohttp-3.14.1.tar.gz", hash = "sha256:307f2cff90a764d329e77040603fa032db89c5c24fdad50c4c15334cba744035", size = 7955794, upload-time = "2026-06-07T21:09:35.529Z" }
 wheels = [
@@ -76,9 +76,9 @@ wheels = [
 
 [package.optional-dependencies]
 speedups = [
-    { name = "aiodns", marker = "sys_platform != 'android' and sys_platform != 'ios'" },
-    { name = "backports-zstd", marker = "sys_platform != 'android' and sys_platform != 'ios'" },
-    { name = "brotli", marker = "sys_platform != 'android' and sys_platform != 'ios'" },
+    { name = "aiodns", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython' and sys_platform != 'android' and sys_platform != 'ios'" },
+    { name = "backports-zstd", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython' and sys_platform != 'android' and sys_platform != 'ios'" },
+    { name = "brotli", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython' and sys_platform != 'android' and sys_platform != 'ios'" },
 ]
 
 [[package]]
@@ -86,8 +86,8 @@ name = "aiosignal"
 version = "1.4.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "frozenlist" },
-    { name = "typing-extensions" },
+    { name = "frozenlist", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "typing-extensions", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/61/62/06741b579156360248d1ec624842ad0edf697050bbaf7c3e46394e106ad1/aiosignal-1.4.0.tar.gz", hash = "sha256:f47eecd9468083c2029cc99945502cb7708b082c232f9aca65da147157b251c7", size = 25007, upload-time = "2025-07-03T22:54:43.528Z" }
 wheels = [
@@ -117,8 +117,8 @@ name = "anyio"
 version = "4.14.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "idna" },
-    { name = "typing-extensions" },
+    { name = "idna", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "typing-extensions", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/3b/72/5562aabb8dd7181e8e860622a38bea08d17842b99ecd4c91f84ac95251b0/anyio-4.14.1.tar.gz", hash = "sha256:8d648a3544c1a700e3ff78615cd679e4c5c3f149904287e73687b2596963629e", size = 254831, upload-time = "2026-06-24T20:56:06.017Z" }
 wheels = [
@@ -229,8 +229,8 @@ name = "beautifulsoup4"
 version = "4.15.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "soupsieve" },
-    { name = "typing-extensions" },
+    { name = "soupsieve", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "typing-extensions", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/43/65/318323f98dbee45d42dff61d8f047181bc6f2268a9068cfad035a46be5af/beautifulsoup4-4.15.0.tar.gz", hash = "sha256:288e3ca7d54b06f2ac191970bc275c1939cb46d450b255bf6718b04aa37ab4f7", size = 632571, upload-time = "2026-06-07T16:44:20.453Z" }
 wheels = [
@@ -239,7 +239,7 @@ wheels = [
 
 [package.optional-dependencies]
 lxml = [
-    { name = "lxml" },
+    { name = "lxml", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 
 [[package]]
@@ -247,7 +247,7 @@ name = "blis"
 version = "1.3.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "numpy" },
+    { name = "numpy", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/d0/d0/d8cc8c9a4488a787e7fa430f6055e5bd1ddb22c340a751d9e901b82e2efe/blis-1.3.3.tar.gz", hash = "sha256:034d4560ff3cc43e8aa37e188451b0440e3261d989bb8a42ceee865607715ecd", size = 2644873, upload-time = "2025-11-17T12:28:30.511Z" }
 wheels = [
@@ -301,7 +301,7 @@ name = "cffi"
 version = "2.0.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "pycparser" },
+    { name = "pycparser", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/eb/56/b1ba7935a17738ae8453301356628e8147c79dbb825bcbc73dc7401f9846/cffi-2.0.0.tar.gz", hash = "sha256:44d1b5909021139fe36001ae048dbdde8214afa20200eda0f64c068cac5d5529", size = 523588, upload-time = "2025-09-08T23:24:04.541Z" }
 wheels = [
@@ -356,7 +356,7 @@ name = "click"
 version = "8.4.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "colorama", marker = "sys_platform == 'win32'" },
+    { name = "colorama", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython' and sys_platform == 'win32'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/76/d4/81420972a676e8ffea40450d8c8c92943e7218a78fe9b64359836cc9876b/click-8.4.2.tar.gz", hash = "sha256:9a6cea6e60b17ebe0a44c5cc636d94f09bd66142c1cd7d8b4cd731c4917a15f6", size = 338000, upload-time = "2026-06-24T17:45:15.148Z" }
 wheels = [
@@ -395,7 +395,7 @@ name = "contourpy"
 version = "1.3.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "numpy" },
+    { name = "numpy", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/58/01/1253e6698a07380cd31a736d248a3f2a50a7c88779a1813da27503cadc2a/contourpy-1.3.3.tar.gz", hash = "sha256:083e12155b210502d0bca491432bb04d56dc3432f95a979b429f2848c3dbe880", size = 13466174, upload-time = "2025-07-26T12:03:12.549Z" }
 wheels = [
@@ -422,7 +422,7 @@ name = "cryptography"
 version = "49.0.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "cffi" },
+    { name = "cffi", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/1f/99/d1c90d6041656cc6ee229dc99cd67fd0cd5aec3c5f7d72fffc27cc750054/cryptography-49.0.0.tar.gz", hash = "sha256:f89660a348f4f78a92366240a61404e337586ef7f5909a2fef59ca88ef505493", size = 854345, upload-time = "2026-06-12T20:02:30.512Z" }
 wheels = [
@@ -521,7 +521,7 @@ name = "dice"
 version = "4.0.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "pyparsing" },
+    { name = "pyparsing", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/72/3e/a07b66d345678cd277df76fdf51cb4ffc1054492efcd674a7b30f49a80bf/dice-4.0.0.tar.gz", hash = "sha256:7a1bfd68f21abf245f333de89721cd30379b5413c774a9d34a6b4123c526815c", size = 22252, upload-time = "2023-05-18T17:23:34.224Z" }
 wheels = [
@@ -533,7 +533,7 @@ name = "discord-ext-menus"
 version = "1.0.0a32+g8686b5d"
 source = { git = "https://github.com/Rapptz/discord-ext-menus.git?rev=8686b5d#8686b5d1bbc1d3c862292eb436ab630d6e9c9b53" }
 dependencies = [
-    { name = "discord-py" },
+    { name = "discord-py", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 
 [[package]]
@@ -541,7 +541,7 @@ name = "discord-ext-voice-recv"
 version = "0.5.2a179"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "discord-py", extra = ["voice"] },
+    { name = "discord-py", extra = ["voice"], marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/da/4e/f52f69b4854b817b50d5998f1f470e42f966af9ac47cd853736f6c501a3f/discord_ext_voice_recv-0.5.2a179.tar.gz", hash = "sha256:6cb8f5ff60c3885020e5ebd879323dc97ebb0745788f3778a14ef31810f848a8", size = 39805, upload-time = "2025-06-18T04:56:39.876Z" }
 wheels = [
@@ -550,7 +550,7 @@ wheels = [
 
 [package.optional-dependencies]
 extras-speech = [
-    { name = "speechrecognition" },
+    { name = "speechrecognition", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 
 [[package]]
@@ -558,19 +558,19 @@ name = "discord-py"
 version = "2.8.0a5413+g2fbed936"
 source = { git = "https://github.com/Rapptz/discord.py.git?rev=2fbed93#2fbed9362422dad4f7850eb6c5d9b1f8bff7c71a" }
 dependencies = [
-    { name = "aiohttp" },
+    { name = "aiohttp", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 
 [package.optional-dependencies]
 speed = [
-    { name = "aiodns", marker = "sys_platform != 'win32'" },
-    { name = "brotli" },
-    { name = "orjson" },
-    { name = "zstandard" },
+    { name = "aiodns", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython' and sys_platform != 'win32'" },
+    { name = "brotli", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "orjson", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "zstandard", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 voice = [
-    { name = "davey" },
-    { name = "pynacl" },
+    { name = "davey", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "pynacl", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 
 [[package]]
@@ -595,7 +595,7 @@ name = "feedparser"
 version = "6.0.12"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "sgmllib3k" },
+    { name = "sgmllib3k", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/dc/79/db7edb5e77d6dfbc54d7d9df72828be4318275b2e580549ff45a962f6461/feedparser-6.0.12.tar.gz", hash = "sha256:64f76ce90ae3e8ef5d1ede0f8d3b50ce26bcce71dd8ae5e82b1cd2d4a5f94228", size = 286579, upload-time = "2025-09-10T13:33:59.486Z" }
 wheels = [
@@ -658,8 +658,8 @@ name = "gidgethub"
 version = "5.4.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "pyjwt", extra = ["crypto"] },
-    { name = "uritemplate" },
+    { name = "pyjwt", extra = ["crypto"], marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "uritemplate", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/35/d4/6374d7a1d276ec23f5bc71a2571d36824cd121693cc2eaefa04484c02551/gidgethub-5.4.0.tar.gz", hash = "sha256:7470d7723d7c1743471a2d62e79c8752fba12b1c0972e4bad57252338a501dbd", size = 126781, upload-time = "2025-06-03T22:10:53.639Z" }
 wheels = [
@@ -671,7 +671,7 @@ name = "gitdb"
 version = "4.0.11"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "smmap" },
+    { name = "smmap", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/19/0d/bbb5b5ee188dec84647a4664f3e11b06ade2bde568dbd489d9d64adef8ed/gitdb-4.0.11.tar.gz", hash = "sha256:bf5421126136d6d0af55bc1e7c1af1c397a34f5b7bd79e776cd3e89785c2b04b", size = 394469, upload-time = "2023-10-20T07:43:19.146Z" }
 wheels = [
@@ -680,14 +680,14 @@ wheels = [
 
 [[package]]
 name = "gitpython"
-version = "3.1.40"
+version = "3.1.54"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "gitdb" },
+    { name = "gitdb", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/0d/b2/37265877ae607a2cbf9a471f4581dbf5ed13a501b90cb4c773f9ccfff3ea/GitPython-3.1.40.tar.gz", hash = "sha256:22b126e9ffb671fdd0c129796343a02bf67bf2994b35449ffc9321aa755e18a4", size = 200655, upload-time = "2023-10-18T15:28:40.156Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/5e/d5/3da0b92033887033f4c27f2dd109a303c4ca62813c7b3bb2511edb4777de/gitpython-3.1.54.tar.gz", hash = "sha256:53f2085e24a2cda300eed7c3fc5f1559ae289634b725e98acaf4791940247aa0", size = 225076, upload-time = "2026-07-22T04:08:51.403Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/8d/c4/82b858fb6483dfb5e338123c154d19c043305b01726a67d89532b8f8f01b/GitPython-3.1.40-py3-none-any.whl", hash = "sha256:cf14627d5a8049ffbf49915732e5eddbe8134c3bdb9d476e6182b676fc573f8a", size = 190573, upload-time = "2023-10-18T15:28:36.018Z" },
+    { url = "https://files.pythonhosted.org/packages/d1/b9/876f442a28df5c068ca69b0122d5c35e65fd2d2fa9992ea5cb5944ea00a6/gitpython-3.1.54-py3-none-any.whl", hash = "sha256:b90d7b3d9bc0238681d24369130826f0dcdb0ceaa45db67cf1d4ffa4c302dedf", size = 216575, upload-time = "2026-07-22T04:08:50.05Z" },
 ]
 
 [[package]]
@@ -695,11 +695,11 @@ name = "google-api-core"
 version = "2.31.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "google-auth" },
-    { name = "googleapis-common-protos" },
-    { name = "proto-plus" },
-    { name = "protobuf" },
-    { name = "requests" },
+    { name = "google-auth", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "googleapis-common-protos", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "proto-plus", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "protobuf", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "requests", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/c6/22/155cadf1d49272a9cf48f3168c0f3874fa13397297e611a5ea00cd093880/google_api_core-2.31.0.tar.gz", hash = "sha256:2be84ee0f584c48e6bde1b36766e23348b361fb7e55e56135fc76ce1c397f9c2", size = 176492, upload-time = "2026-06-03T14:52:17.257Z" }
 wheels = [
@@ -708,8 +708,8 @@ wheels = [
 
 [package.optional-dependencies]
 grpc = [
-    { name = "grpcio" },
-    { name = "grpcio-status" },
+    { name = "grpcio", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "grpcio-status", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 
 [[package]]
@@ -717,8 +717,8 @@ name = "google-auth"
 version = "2.55.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "cryptography" },
-    { name = "pyasn1-modules" },
+    { name = "cryptography", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "pyasn1-modules", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/a3/6f/f3f4ac177c67bbee8fe8e88f2ab4f36af88c44a096e165c5217accf6e5d3/google_auth-2.55.1.tar.gz", hash = "sha256:fb2d9b730f2c9b8d326ec8d7222f21aef2ead15bf0513793d6442485d87af0a1", size = 349527, upload-time = "2026-06-25T23:39:27.182Z" }
 wheels = [
@@ -730,8 +730,8 @@ name = "google-cloud-core"
 version = "2.6.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "google-api-core" },
-    { name = "google-auth" },
+    { name = "google-api-core", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "google-auth", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/a8/dd/1eef226e470369b26824a505c34482c0b493bc35fe8e0c6b003b5feca21a/google_cloud_core-2.6.0.tar.gz", hash = "sha256:e76149739f90fac1fc6757c09f47eaccb3145b54adbd7759b0f7c4b235f46c83", size = 36001, upload-time = "2026-05-07T08:04:04.124Z" }
 wheels = [
@@ -743,11 +743,11 @@ name = "google-cloud-speech"
 version = "2.34.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "google-api-core", extra = ["grpc"] },
-    { name = "google-auth" },
-    { name = "grpcio" },
-    { name = "proto-plus" },
-    { name = "protobuf" },
+    { name = "google-api-core", extra = ["grpc"], marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "google-auth", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "grpcio", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "proto-plus", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "protobuf", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/b7/c2/500c58a7e3008cb77da01a2f2a8284ac55c808545d18551c62a031ff548d/google_cloud_speech-2.34.0.tar.gz", hash = "sha256:2a7bffd84f134b9b70c9f11cbb5088c534f92be149d71d9073d0b9dd3a431acf", size = 391496, upload-time = "2025-10-20T14:57:17.127Z" }
 wheels = [
@@ -759,13 +759,13 @@ name = "google-cloud-translate"
 version = "3.27.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "google-api-core", extra = ["grpc"] },
-    { name = "google-auth" },
-    { name = "google-cloud-core" },
-    { name = "grpc-google-iam-v1" },
-    { name = "grpcio" },
-    { name = "proto-plus" },
-    { name = "protobuf" },
+    { name = "google-api-core", extra = ["grpc"], marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "google-auth", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "google-cloud-core", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "grpc-google-iam-v1", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "grpcio", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "proto-plus", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "protobuf", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/f8/84/d0c865447e6c950abece00a3489aa888eaebb160b3b6544efea6899732cb/google_cloud_translate-3.27.0.tar.gz", hash = "sha256:2ae78ef1aa8dbb5ec9767a08eabce34fda7bb45a07ba67ae6e0ead8cfd5f95f7", size = 274806, upload-time = "2026-06-22T23:22:40.612Z" }
 wheels = [
@@ -777,11 +777,11 @@ name = "google-cloud-vision"
 version = "3.15.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "google-api-core", extra = ["grpc"] },
-    { name = "google-auth" },
-    { name = "grpcio" },
-    { name = "proto-plus" },
-    { name = "protobuf" },
+    { name = "google-api-core", extra = ["grpc"], marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "google-auth", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "grpcio", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "proto-plus", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "protobuf", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/dc/15/7b24e071fa8ee431ea44663ef3c18351cecae45c6433d25fbc64cdb3836b/google_cloud_vision-3.15.0.tar.gz", hash = "sha256:ed2b79ca05a58a929ec112259a9caa698509f6348762a8eced3310e6572a6c70", size = 589231, upload-time = "2026-06-22T23:22:47.231Z" }
 wheels = [
@@ -793,7 +793,7 @@ name = "googleapis-common-protos"
 version = "1.75.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "protobuf" },
+    { name = "protobuf", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/b5/c8/f439cffde755cffa462bfbb156278fa6f9d09119719af9814b858fd4f81f/googleapis_common_protos-1.75.0.tar.gz", hash = "sha256:53a062ff3c32552fbd62c11fe23768b78e4ddf0494d5e5fd97d3f4689c75fbbd", size = 151035, upload-time = "2026-05-07T08:04:49.423Z" }
 wheels = [
@@ -802,7 +802,7 @@ wheels = [
 
 [package.optional-dependencies]
 grpc = [
-    { name = "grpcio" },
+    { name = "grpcio", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 
 [[package]]
@@ -826,9 +826,9 @@ name = "grpc-google-iam-v1"
 version = "0.14.4"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "googleapis-common-protos", extra = ["grpc"] },
-    { name = "grpcio" },
-    { name = "protobuf" },
+    { name = "googleapis-common-protos", extra = ["grpc"], marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "grpcio", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "protobuf", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/44/4f/d098419ad0bfc06c9ce440575f05aa22d8973b6c276e86ac7890093d3c37/grpc_google_iam_v1-0.14.4.tar.gz", hash = "sha256:392b3796947ed6334e61171d9ab06bf7eb357f554e5fc7556ad7aab6d0e17038", size = 23706, upload-time = "2026-04-01T01:57:49.813Z" }
 wheels = [
@@ -840,7 +840,7 @@ name = "grpcio"
 version = "1.76.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "typing-extensions" },
+    { name = "typing-extensions", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/b6/e0/318c1ce3ae5a17894d5791e87aea147587c9e702f24122cc7a5c8bbaeeb1/grpcio-1.76.0.tar.gz", hash = "sha256:7be78388d6da1a25c0d5ec506523db58b18be22d9c37d8d3a32c08be4987bd73", size = 12785182, upload-time = "2025-10-21T16:23:12.106Z" }
 wheels = [
@@ -861,9 +861,9 @@ name = "grpcio-status"
 version = "1.76.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "googleapis-common-protos" },
-    { name = "grpcio" },
-    { name = "protobuf" },
+    { name = "googleapis-common-protos", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "grpcio", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "protobuf", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/3f/46/e9f19d5be65e8423f886813a2a9d0056ba94757b0c5007aa59aed1a961fa/grpcio_status-1.76.0.tar.gz", hash = "sha256:25fcbfec74c15d1a1cb5da3fab8ee9672852dc16a5a9eeb5baf7d7a9952943cd", size = 13679, upload-time = "2025-10-21T16:28:52.545Z" }
 wheels = [
@@ -883,118 +883,118 @@ wheels = [
 name = "harmonbot"
 source = { editable = "." }
 dependencies = [
-    { name = "aiocache" },
-    { name = "aiohttp", extra = ["speedups"] },
-    { name = "async-lru" },
-    { name = "asyncpg" },
-    { name = "beautifulsoup4", extra = ["lxml"] },
-    { name = "chess" },
-    { name = "click" },
-    { name = "cryptography" },
-    { name = "dice" },
-    { name = "discord-ext-menus" },
-    { name = "discord-ext-voice-recv", extra = ["extras-speech"] },
-    { name = "discord-py", extra = ["speed", "voice"] },
-    { name = "emoji" },
-    { name = "en-core-web-md" },
-    { name = "feedparser" },
-    { name = "gidgethub" },
-    { name = "gitpython" },
-    { name = "google-api-core", extra = ["grpc"] },
-    { name = "google-cloud-translate" },
-    { name = "google-cloud-vision" },
-    { name = "imageio" },
-    { name = "imgurpython" },
-    { name = "inflect" },
-    { name = "irc" },
-    { name = "isodate" },
-    { name = "markdownify" },
-    { name = "matplotlib" },
-    { name = "more-itertools" },
-    { name = "numexpr" },
-    { name = "numpy" },
-    { name = "packaging" },
-    { name = "pandas" },
-    { name = "parsedatetime" },
-    { name = "pillow" },
-    { name = "psutil" },
-    { name = "py-cpuinfo" },
-    { name = "pycountry" },
-    { name = "pycryptodomex" },
-    { name = "pydantic" },
-    { name = "pydealer" },
-    { name = "pyowm" },
-    { name = "pyparsing" },
-    { name = "pyspellchecker" },
-    { name = "python-aiml" },
-    { name = "python-dateutil" },
-    { name = "python-dotenv" },
-    { name = "python-telegram-bot" },
-    { name = "pytz" },
-    { name = "requests", extra = ["socks"] },
-    { name = "scipy" },
-    { name = "seaborn" },
-    { name = "sentry-sdk" },
-    { name = "spacy" },
-    { name = "spacy-entity-linker" },
-    { name = "speechrecognition", extra = ["google-cloud"] },
-    { name = "sphobjinv" },
-    { name = "sympy" },
-    { name = "tabulate" },
-    { name = "treys" },
-    { name = "tweepy", extra = ["async"] },
-    { name = "twitchio" },
-    { name = "typing-extensions" },
-    { name = "unicodedata2" },
-    { name = "wand" },
-    { name = "wolframalpha" },
-    { name = "wordcloud" },
-    { name = "wordnik-py3" },
-    { name = "youtube-dl" },
-    { name = "yt-dlp", extra = ["default"] },
+    { name = "aiocache", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "aiohttp", extra = ["speedups"], marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "async-lru", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "asyncpg", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "beautifulsoup4", extra = ["lxml"], marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "chess", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "click", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "cryptography", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "dice", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "discord-ext-menus", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "discord-ext-voice-recv", extra = ["extras-speech"], marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "discord-py", extra = ["speed", "voice"], marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "emoji", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "en-core-web-md", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "feedparser", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "gidgethub", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "gitpython", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "google-api-core", extra = ["grpc"], marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "google-cloud-translate", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "google-cloud-vision", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "imageio", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "imgurpython", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "inflect", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "irc", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "isodate", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "markdownify", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "matplotlib", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "more-itertools", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "numexpr", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "numpy", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "packaging", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "pandas", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "parsedatetime", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "pillow", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "psutil", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "py-cpuinfo", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "pycountry", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "pycryptodomex", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "pydantic", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "pydealer", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "pyowm", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "pyparsing", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "pyspellchecker", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "python-aiml", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "python-dateutil", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "python-dotenv", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "python-telegram-bot", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "pytz", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "requests", extra = ["socks"], marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "scipy", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "seaborn", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "sentry-sdk", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "spacy", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "spacy-entity-linker", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "speechrecognition", extra = ["google-cloud"], marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "sphobjinv", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "sympy", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "tabulate", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "treys", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "tweepy", extra = ["async"], marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "twitchio", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "typing-extensions", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "unicodedata2", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "wand", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "wolframalpha", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "wordcloud", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "wordnik-py3", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "youtube-dl", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "yt-dlp", extra = ["default"], marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 
 [package.optional-dependencies]
 scripts = [
-    { name = "psycopg", extra = ["binary"] },
-    { name = "rich" },
-    { name = "sqlalchemy" },
+    { name = "psycopg", extra = ["binary"], marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "rich", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "sqlalchemy", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 
 [package.dev-dependencies]
 build = [
-    { name = "setuptools" },
-    { name = "setuptools-scm" },
+    { name = "setuptools", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "setuptools-scm", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 dev = [
-    { name = "harmonbot", extra = ["scripts"] },
-    { name = "hypothesis" },
-    { name = "mypy", extra = ["faster-cache"] },
-    { name = "pycroscope" },
-    { name = "pyrefly" },
-    { name = "pytest" },
-    { name = "pytype" },
-    { name = "ruff" },
-    { name = "setuptools" },
-    { name = "setuptools-scm" },
-    { name = "ty" },
-    { name = "uv" },
-    { name = "vcrpy" },
+    { name = "harmonbot", extra = ["scripts"], marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "hypothesis", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "mypy", extra = ["faster-cache"], marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "pycroscope", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "pyrefly", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "pytest", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "pytype", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "ruff", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "setuptools", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "setuptools-scm", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "ty", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "uv", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "vcrpy", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 lint = [
-    { name = "ruff" },
+    { name = "ruff", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 test = [
-    { name = "hypothesis" },
-    { name = "pytest" },
-    { name = "vcrpy" },
+    { name = "hypothesis", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "pytest", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "vcrpy", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 type-check = [
-    { name = "mypy", extra = ["faster-cache"] },
-    { name = "pycroscope" },
-    { name = "pyrefly" },
-    { name = "pytype" },
-    { name = "ty" },
+    { name = "mypy", extra = ["faster-cache"], marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "pycroscope", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "pyrefly", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "pytype", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "ty", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 
 [package.metadata]
@@ -1113,8 +1113,8 @@ name = "httpcore"
 version = "1.0.9"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "certifi" },
-    { name = "h11" },
+    { name = "certifi", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "h11", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/06/94/82699a10bca87a5556c9c59b5963f2d039dbd239f25bc2a63907a05a14cb/httpcore-1.0.9.tar.gz", hash = "sha256:6e34463af53fd2ab5d807f399a9b45ea31c3dfa2276f15a2c3f00afff6e176e8", size = 85484, upload-time = "2025-04-24T22:06:22.219Z" }
 wheels = [
@@ -1126,10 +1126,10 @@ name = "httpx"
 version = "0.28.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "anyio" },
-    { name = "certifi" },
-    { name = "httpcore" },
-    { name = "idna" },
+    { name = "anyio", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "certifi", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "httpcore", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "idna", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/b1/df/48c586a5fe32a0f01324ee087459e112ebb7224f646c0b5023f5e79e9956/httpx-0.28.1.tar.gz", hash = "sha256:75e98c5f16b0f35b567856f597f06ff2270a374470a5c2392242528e3e3e42fc", size = 141406, upload-time = "2024-12-06T15:37:23.222Z" }
 wheels = [
@@ -1141,7 +1141,7 @@ name = "hypothesis"
 version = "6.151.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "sortedcontainers" },
+    { name = "sortedcontainers", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/e9/aa/0e1aff2de954a1b11acf643519599c3da97d461cf62e312cab266aa9f855/hypothesis-6.151.3.tar.gz", hash = "sha256:31bcd884b0be8f478aa2e52f0f73be03e8f6a9a2c66706fb93410ebaa5c27bcc", size = 475822, upload-time = "2026-01-28T05:37:32.494Z" }
 wheels = [
@@ -1162,8 +1162,8 @@ name = "imageio"
 version = "2.37.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "numpy" },
-    { name = "pillow" },
+    { name = "numpy", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "pillow", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/b1/84/93bcd1300216ea50811cee96873b84a1bebf8d0489ffaf7f2a3756bab866/imageio-2.37.3.tar.gz", hash = "sha256:bbb37efbfc4c400fcd534b367b91fcd66d5da639aaa138034431a1c5e0a41451", size = 389673, upload-time = "2026-03-09T11:31:12.573Z" }
 wheels = [
@@ -1175,7 +1175,7 @@ name = "imgurpython"
 version = "1.1.7"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "requests" },
+    { name = "requests", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/d4/76/514defcb05e6d58ded427f57d736ce6dfe879e0188392385a986e8ef3b7b/imgurpython-1.1.7.tar.gz", hash = "sha256:3ac28501c2f699a78f93a4ab34df7443cebd39a170c9de4adecf0f3852cbdc33", size = 8427, upload-time = "2016-02-14T07:46:25.106Z" }
 
@@ -1193,7 +1193,7 @@ name = "importlab"
 version = "0.8.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "networkx" },
+    { name = "networkx", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/f5/22/ab9494dccf1e237276f98364d53673bc0ab97ebe5cb671e960f18710457d/importlab-0.8.1.tar.gz", hash = "sha256:b3893853b1f6eb027da509c3b40e6787e95dd66b4b66f1b3613aad77556e1465", size = 28856, upload-time = "2023-10-06T22:43:40.944Z" }
 wheels = [
@@ -1214,8 +1214,8 @@ name = "inflect"
 version = "7.5.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "more-itertools" },
-    { name = "typeguard" },
+    { name = "more-itertools", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "typeguard", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/78/c6/943357d44a21fd995723d07ccaddd78023eace03c1846049a2645d4324a3/inflect-7.5.0.tar.gz", hash = "sha256:faf19801c3742ed5a05a8ce388e0d8fe1a07f8d095c82201eb904f5d27ad571f", size = 73751, upload-time = "2024-12-28T17:11:18.897Z" }
 wheels = [
@@ -1236,15 +1236,15 @@ name = "irc"
 version = "20.5.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "importlib-resources" },
-    { name = "jaraco-collections" },
-    { name = "jaraco-functools" },
-    { name = "jaraco-logging" },
-    { name = "jaraco-stream" },
-    { name = "jaraco-text" },
-    { name = "more-itertools" },
-    { name = "pytz" },
-    { name = "tempora" },
+    { name = "importlib-resources", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "jaraco-collections", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "jaraco-functools", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "jaraco-logging", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "jaraco-stream", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "jaraco-text", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "more-itertools", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "pytz", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "tempora", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/0d/c0/5b875df761bfbf51482bab7ddb4b9f9968327bc08801f5ac9599ab451824/irc-20.5.0.tar.gz", hash = "sha256:8ddbfd19f71204ceceba7b7c72724b15b3fa87bab5e81e45a75bef736a1a3c76", size = 92150, upload-time = "2024-07-14T16:51:51.558Z" }
 wheels = [
@@ -1274,7 +1274,7 @@ name = "jaraco-collections"
 version = "5.2.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "jaraco-text" },
+    { name = "jaraco-text", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/fa/d2/751000cf702676dbb78f97728f4d52b029e817e2b3c94088dfe5c70ff46d/jaraco_collections-5.2.1.tar.gz", hash = "sha256:dab81970bad6f0ab53b20745f1b01da37926e4c0fcd425046aa45e0d8efa18ed", size = 19729, upload-time = "2025-06-21T20:03:24.138Z" }
 wheels = [
@@ -1286,7 +1286,7 @@ name = "jaraco-context"
 version = "6.1.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "backports-tarfile" },
+    { name = "backports-tarfile", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/af/50/4763cd07e722bb6285316d390a164bc7e479db9d90daa769f22578f698b4/jaraco_context-6.1.2.tar.gz", hash = "sha256:f1a6c9d391e661cc5b8d39861ff077a7dc24dc23833ccee564b234b81c82dfe3", size = 16801, upload-time = "2026-03-20T22:13:33.922Z" }
 wheels = [
@@ -1298,7 +1298,7 @@ name = "jaraco-functools"
 version = "4.5.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "more-itertools" },
+    { name = "more-itertools", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/36/cf/ea4ef2920830dea3f5ab2ea4da6fb67724e6dca80ee2553788c3607243d0/jaraco_functools-4.5.0.tar.gz", hash = "sha256:3bb5665ea4a020cf78a7040e89154c77edadb3ca74f366479669c5999aa70b03", size = 20272, upload-time = "2026-05-15T21:34:10.025Z" }
 wheels = [
@@ -1310,7 +1310,7 @@ name = "jaraco-logging"
 version = "3.4.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "tempora" },
+    { name = "tempora", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/4a/fb/5164c2249671a2e2d28afaad8f76b30af09e2b08e18f2dd7410aaf9b7b50/jaraco_logging-3.4.0.tar.gz", hash = "sha256:e7d6dc8368477ce69eb1d6ed851d805896a1ca942ce3fd1773580311b0b775fb", size = 10368, upload-time = "2025-06-16T12:52:28.856Z" }
 wheels = [
@@ -1322,7 +1322,7 @@ name = "jaraco-stream"
 version = "3.0.4"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "more-itertools" },
+    { name = "more-itertools", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/14/9a/12deca4d86f6cd37d5e32a0b64e3b3c8ccee5a76813545386c6c44184490/jaraco_stream-3.0.4.tar.gz", hash = "sha256:e2bc5028e721ed2cc852b96ec9a33f2b7664e9b2dbf87eefbe617d126641934b", size = 10744, upload-time = "2024-08-21T20:34:32.702Z" }
 wheels = [
@@ -1334,10 +1334,10 @@ name = "jaraco-text"
 version = "4.2.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "jaraco-context" },
-    { name = "jaraco-functools" },
-    { name = "more-itertools" },
-    { name = "typer-slim" },
+    { name = "jaraco-context", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "jaraco-functools", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "more-itertools", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "typer-slim", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/f2/20/f071dfb40f06fd0395167a40218c10adb7164635f65ebdafe45e0c714935/jaraco_text-4.2.0.tar.gz", hash = "sha256:194e386aa5b15a6616019df87a6b29c00fd3c9c8b0475731b64633ca7afd495b", size = 20077, upload-time = "2026-02-09T23:30:06.845Z" }
 wheels = [
@@ -1349,7 +1349,7 @@ name = "jinja2"
 version = "3.1.6"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "markupsafe" },
+    { name = "markupsafe", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/df/bf/f7da0350254c0ed7c72f3e33cef02e048281fec7ecec5f032d4aac52226b/jinja2-3.1.6.tar.gz", hash = "sha256:0137fb05990d35f1275a587e9aee6d56da821fc83491a0fb838183be43f66d6d", size = 245115, upload-time = "2025-03-05T20:05:02.478Z" }
 wheels = [
@@ -1361,10 +1361,10 @@ name = "jsonschema"
 version = "4.26.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "attrs" },
-    { name = "jsonschema-specifications" },
-    { name = "referencing" },
-    { name = "rpds-py" },
+    { name = "attrs", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "jsonschema-specifications", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "referencing", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "rpds-py", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/b3/fc/e067678238fa451312d4c62bf6e6cf5ec56375422aee02f9cb5f909b3047/jsonschema-4.26.0.tar.gz", hash = "sha256:0c26707e2efad8aa1bfc5b7ce170f3fccc2e4918ff85989ba9ffa9facb2be326", size = 366583, upload-time = "2026-01-07T13:41:07.246Z" }
 wheels = [
@@ -1376,7 +1376,7 @@ name = "jsonschema-specifications"
 version = "2025.9.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "referencing" },
+    { name = "referencing", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/19/74/a633ee74eb36c44aa6d1095e7cc5569bebf04342ee146178e2d36600708b/jsonschema_specifications-2025.9.1.tar.gz", hash = "sha256:b540987f239e745613c7a9176f3edb72b832a4ac465cf02712288397832b5e8d", size = 32855, upload-time = "2025-09-08T01:34:59.186Z" }
 wheels = [
@@ -1416,7 +1416,7 @@ name = "libcst"
 version = "1.8.6"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "pyyaml" },
+    { name = "pyyaml", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/de/cd/337df968b38d94c5aabd3e1b10630f047a2b345f6e1d4456bd9fe7417537/libcst-1.8.6.tar.gz", hash = "sha256:f729c37c9317126da9475bdd06a7208eb52fcbd180a6341648b45a56b4ba708b", size = 891354, upload-time = "2025-11-03T22:33:30.621Z" }
 wheels = [
@@ -1486,7 +1486,7 @@ name = "markdown-it-py"
 version = "4.0.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "mdurl" },
+    { name = "mdurl", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/5b/f5/4ec618ed16cc4f8fb3b701563655a69816155e79e24a17b651541804721d/markdown_it_py-4.0.0.tar.gz", hash = "sha256:cb0a2b4aa34f932c007117b194e945bd74e0ec24133ceb5bac59009cda1cb9f3", size = 73070, upload-time = "2025-08-11T12:57:52.854Z" }
 wheels = [
@@ -1498,8 +1498,8 @@ name = "markdownify"
 version = "1.2.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "beautifulsoup4" },
-    { name = "six" },
+    { name = "beautifulsoup4", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "six", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/92/ab/d1297139c0e2ceb151ae564c8c4f57ac0155d8f1f8b4cbd5d6523c82ea36/markdownify-1.2.3.tar.gz", hash = "sha256:1a176f05522c8a2cb1dd3ab9d307dcdadbed5c26ae717855bfc42b3b6d38d937", size = 18852, upload-time = "2026-06-30T20:27:39.06Z" }
 wheels = [
@@ -1530,15 +1530,15 @@ name = "matplotlib"
 version = "3.11.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "contourpy" },
-    { name = "cycler" },
-    { name = "fonttools" },
-    { name = "kiwisolver" },
-    { name = "numpy" },
-    { name = "packaging" },
-    { name = "pillow" },
-    { name = "pyparsing" },
-    { name = "python-dateutil" },
+    { name = "contourpy", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "cycler", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "fonttools", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "kiwisolver", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "numpy", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "packaging", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "pillow", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "pyparsing", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "python-dateutil", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/1f/24/080c99d223d158d3a8902769269ab6da5b50f7a0e6e072513907e02b7a6c/matplotlib-3.11.0.tar.gz", hash = "sha256:68c0c7be01b30dcca3638934f7f591df73401235cbdbf0d1ab1c71e7db7f8b57", size = 33251176, upload-time = "2026-06-12T02:29:15.508Z" }
 wheels = [
@@ -1654,11 +1654,11 @@ name = "mypy"
 version = "2.1.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "ast-serialize" },
-    { name = "librt" },
-    { name = "mypy-extensions" },
-    { name = "pathspec" },
-    { name = "typing-extensions" },
+    { name = "ast-serialize", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "librt", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "mypy-extensions", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "pathspec", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "typing-extensions", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/82/15/cca9d88503549ed6fedeaa1d448cdddd542ee8a490232d732e278036fbf2/mypy-2.1.0.tar.gz", hash = "sha256:81e76ad12c2d804512e9b13240d1588316531bfba07558286078bfbce9613633", size = 3898359, upload-time = "2026-05-11T18:37:36.237Z" }
 wheels = [
@@ -1674,7 +1674,7 @@ wheels = [
 
 [package.optional-dependencies]
 faster-cache = [
-    { name = "orjson" },
+    { name = "orjson", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 
 [[package]]
@@ -1726,7 +1726,7 @@ name = "numexpr"
 version = "2.14.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "numpy" },
+    { name = "numpy", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/cb/2f/fdba158c9dbe5caca9c3eca3eaffffb251f2fb8674bf8e2d0aed5f38d319/numexpr-2.14.1.tar.gz", hash = "sha256:4be00b1086c7b7a5c32e31558122b7b80243fe098579b170967da83f3152b48b", size = 119400, upload-time = "2025-10-13T16:17:27.351Z" }
 wheels = [
@@ -1812,10 +1812,10 @@ name = "pandas"
 version = "2.3.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "numpy" },
-    { name = "python-dateutil" },
-    { name = "pytz" },
-    { name = "tzdata" },
+    { name = "numpy", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "python-dateutil", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "pytz", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "tzdata", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/33/01/d40b85317f86cf08d853a4f495195c73815fdf205eef3993821720274518/pandas-2.3.3.tar.gz", hash = "sha256:e05e1af93b977f7eafa636d043f9f94c7ee3ac81af99c13508215942e64c993b", size = 4495223, upload-time = "2025-09-29T23:34:51.853Z" }
 wheels = [
@@ -1886,8 +1886,8 @@ name = "preshed"
 version = "3.0.13"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "cymem" },
-    { name = "murmurhash" },
+    { name = "cymem", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "murmurhash", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/43/75/fe6b7bbd0dea530a001b0e24c331b21a0be2786e402abf3c57f5dce43d4b/preshed-3.0.13.tar.gz", hash = "sha256:d75f718bbfd97e992f7827e0fa7faf6a91bdd9c922d5baa4b50d62731396cb89", size = 18338, upload-time = "2026-03-23T08:57:31.378Z" }
 wheels = [
@@ -1932,7 +1932,7 @@ name = "proto-plus"
 version = "1.28.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "protobuf" },
+    { name = "protobuf", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/c9/56/e647b0c675392d2da368da7b6f158f7368b18542fd6f7d7400a2f39de000/proto_plus-1.28.0.tar.gz", hash = "sha256:38e5696342835b08fc116f30a25665b29531cda9d5d5643e9b81fc312385abd9", size = 57221, upload-time = "2026-05-07T08:04:50.811Z" }
 wheels = [
@@ -1975,8 +1975,8 @@ name = "psycopg"
 version = "3.3.4"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "typing-extensions" },
-    { name = "tzdata", marker = "sys_platform == 'win32'" },
+    { name = "typing-extensions", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "tzdata", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython' and sys_platform == 'win32'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/db/2f/cb91e5502ec9de1de6f1b76cfbf69531932725361168bb06963620c77e2e/psycopg-3.3.4.tar.gz", hash = "sha256:e21207764952cff81b6b8bdacad9a3939f2793367fdac2987b3aac36a651b5bc", size = 165799, upload-time = "2026-05-01T23:31:55.179Z" }
 wheels = [
@@ -1985,7 +1985,7 @@ wheels = [
 
 [package.optional-dependencies]
 binary = [
-    { name = "psycopg-binary" },
+    { name = "psycopg-binary", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 
 [[package]]
@@ -2029,7 +2029,7 @@ name = "pyasn1-modules"
 version = "0.4.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "pyasn1" },
+    { name = "pyasn1", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/e9/e6/78ebbb10a8c8e4b61a59249394a4a594c1a7af95593dc933a349c8d00964/pyasn1_modules-0.4.2.tar.gz", hash = "sha256:677091de870a80aae844b1ca6134f54652fa2c8c5a52aa396440ac3106e941e6", size = 307892, upload-time = "2025-03-28T02:41:22.17Z" }
 wheels = [
@@ -2041,7 +2041,7 @@ name = "pycares"
 version = "5.0.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "cffi" },
+    { name = "cffi", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/df/a0/9c823651872e6a0face3f0311de2a40c8bbcb9c8dcb15680bd019ac56ac7/pycares-5.0.1.tar.gz", hash = "sha256:5a3c249c830432631439815f9a818463416f2a8cbdb1e988e78757de9ae75081", size = 652222, upload-time = "2026-01-01T12:37:00.604Z" }
 wheels = [
@@ -2091,8 +2091,8 @@ name = "pycroscope"
 version = "0.4.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "typeshed-client" },
-    { name = "typing-extensions" },
+    { name = "typeshed-client", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "typing-extensions", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/7c/8e/284fdc4027bf9a7c92f8256ff07006a50456ccd2ce5506d040e6ed2f2f1b/pycroscope-0.4.0.tar.gz", hash = "sha256:14b40e36f6186dd2eff712c8da91d02eb89a263a257472b49f4c59153ff380fb", size = 662901, upload-time = "2026-05-02T14:00:43.775Z" }
 wheels = [
@@ -2123,10 +2123,10 @@ name = "pydantic"
 version = "2.13.4"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "annotated-types" },
-    { name = "pydantic-core" },
-    { name = "typing-extensions" },
-    { name = "typing-inspection" },
+    { name = "annotated-types", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "pydantic-core", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "typing-extensions", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "typing-inspection", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/18/a5/b60d21ac674192f8ab0ba4e9fd860690f9b4a6e51ca5df118733b487d8d6/pydantic-2.13.4.tar.gz", hash = "sha256:c40756b57adaa8b1efeeced5c196f3f3b7c435f90e84ea7f443901bec8099ef6", size = 844775, upload-time = "2026-05-06T13:43:05.343Z" }
 wheels = [
@@ -2138,7 +2138,7 @@ name = "pydantic-core"
 version = "2.46.4"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "typing-extensions" },
+    { name = "typing-extensions", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/9d/56/921726b776ace8d8f5db44c4ef961006580d91dc52b803c489fafd1aa249/pydantic_core-2.46.4.tar.gz", hash = "sha256:62f875393d7f270851f20523dd2e29f082bcc82292d66db2b64ea71f64b6e1c1", size = 471464, upload-time = "2026-05-06T13:37:06.98Z" }
 wheels = [
@@ -2182,7 +2182,7 @@ name = "pydot"
 version = "4.0.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "pyparsing" },
+    { name = "pyparsing", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/50/35/b17cb89ff865484c6a20ef46bf9d95a5f07328292578de0b295f4a6beec2/pydot-4.0.1.tar.gz", hash = "sha256:c2148f681c4a33e08bf0e26a9e5f8e4099a82e0e2a068098f32ce86577364ad5", size = 162594, upload-time = "2025-06-17T20:09:56.454Z" }
 wheels = [
@@ -2209,7 +2209,7 @@ wheels = [
 
 [package.optional-dependencies]
 crypto = [
-    { name = "cryptography" },
+    { name = "cryptography", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 
 [[package]]
@@ -2217,7 +2217,7 @@ name = "pynacl"
 version = "1.6.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "cffi" },
+    { name = "cffi", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/d9/9a/4019b524b03a13438637b11538c82781a5eda427394380381af8f04f467a/pynacl-1.6.2.tar.gz", hash = "sha256:018494d6d696ae03c7e656e5e74cdfd8ea1326962cc401bcf018f1ed8436811c", size = 3511692, upload-time = "2026-01-01T17:48:10.851Z" }
 wheels = [
@@ -2240,9 +2240,9 @@ name = "pyowm"
 version = "3.5.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "geojson" },
-    { name = "pysocks" },
-    { name = "requests", extra = ["socks"] },
+    { name = "geojson", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "pysocks", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "requests", extra = ["socks"], marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/3f/bc/4afbc60995ba757b0f6c4d200daa4b544a5100154ffcf169b848d5ef0392/pyowm-3.5.0.tar.gz", hash = "sha256:9a44d6d43941419a73fd9dbe16066ad8a25204ea906774fd5bf5b0ec52d2a1a4", size = 4516427, upload-time = "2025-08-26T22:35:05.292Z" }
 wheels = [
@@ -2297,11 +2297,11 @@ name = "pytest"
 version = "8.4.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "colorama", marker = "sys_platform == 'win32'" },
-    { name = "iniconfig" },
-    { name = "packaging" },
-    { name = "pluggy" },
-    { name = "pygments" },
+    { name = "colorama", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython' and sys_platform == 'win32'" },
+    { name = "iniconfig", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "packaging", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "pluggy", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "pygments", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/a3/5c/00a0e072241553e1a7496d638deababa67c5058571567b92a7eaa258397c/pytest-8.4.2.tar.gz", hash = "sha256:86c0d0b93306b961d58d62a4db4879f27fe25513d4b969df351abdddb3c30e01", size = 1519618, upload-time = "2025-09-04T14:34:22.711Z" }
 wheels = [
@@ -2313,7 +2313,7 @@ name = "python-aiml"
 version = "0.9.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "setuptools" },
+    { name = "setuptools", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/93/fd/c4a380d4f4adedcbeddd4262edc510ef6e01898e0f4b82cb66267a27cc66/python-aiml-0.9.3.zip", hash = "sha256:f6954da1888b529121fe66a8cb1352b383c8ecd31e2bd9442ea46a38824e08c8", size = 2142355, upload-time = "2019-10-22T18:18:42.871Z" }
 
@@ -2322,7 +2322,7 @@ name = "python-dateutil"
 version = "2.9.0.post0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "six" },
+    { name = "six", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/66/c0/0c8b6ad9f17a802ee498c46e004a0eb49bc148f2fd230864601a86dcf6db/python-dateutil-2.9.0.post0.tar.gz", hash = "sha256:37dd54208da7e1cd875388217d5e00ebd4179249f90fb72437e91a35459a0ad3", size = 342432, upload-time = "2024-03-01T18:36:20.211Z" }
 wheels = [
@@ -2343,7 +2343,7 @@ name = "python-telegram-bot"
 version = "22.8"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "httpx" },
+    { name = "httpx", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/ba/77/153517bb1ac1bba670c6fb1dbf09e1fd0730494b1705934e715391413a0d/python_telegram_bot-22.8.tar.gz", hash = "sha256:f9d3847fcb23ee603477e442800b33bb4adf851a73e0619d2050be879decf1ef", size = 1551700, upload-time = "2026-06-12T08:10:29.1Z" }
 wheels = [
@@ -2355,19 +2355,19 @@ name = "pytype"
 version = "2024.10.11"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "attrs" },
-    { name = "immutabledict" },
-    { name = "importlab" },
-    { name = "jinja2" },
-    { name = "libcst" },
-    { name = "msgspec" },
-    { name = "networkx" },
-    { name = "ninja" },
-    { name = "pycnite" },
-    { name = "pydot" },
-    { name = "tabulate" },
-    { name = "toml" },
-    { name = "typing-extensions" },
+    { name = "attrs", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "immutabledict", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "importlab", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "jinja2", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "libcst", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "msgspec", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "networkx", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "ninja", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "pycnite", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "pydot", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "tabulate", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "toml", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "typing-extensions", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/9c/7a/6fd33673f9c7b9e5f4f8107028c323b1c72acc0f909f1b9b3391a31ea604/pytype-2024.10.11.tar.gz", hash = "sha256:ae5ff82f0b07d5ad68d4ec32a3e8de44fad6ed565a821a76aca50a14df382274", size = 2789497, upload-time = "2024-10-11T08:28:46.068Z" }
 wheels = [
@@ -2407,9 +2407,9 @@ name = "referencing"
 version = "0.37.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "attrs" },
-    { name = "rpds-py" },
-    { name = "typing-extensions" },
+    { name = "attrs", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "rpds-py", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "typing-extensions", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/22/f5/df4e9027acead3ecc63e50fe1e36aca1523e1719559c499951bb4b53188f/referencing-0.37.0.tar.gz", hash = "sha256:44aefc3142c5b842538163acb373e24cce6632bd54bdb01b21ad5863489f50d8", size = 78036, upload-time = "2025-10-13T15:30:48.871Z" }
 wheels = [
@@ -2421,10 +2421,10 @@ name = "requests"
 version = "2.34.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "certifi" },
-    { name = "charset-normalizer" },
-    { name = "idna" },
-    { name = "urllib3" },
+    { name = "certifi", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "charset-normalizer", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "idna", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "urllib3", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/ac/c3/e2a2b89f2d3e2179abd6d00ebd70bff6273f37fb3e0cc209f48b39d00cbf/requests-2.34.2.tar.gz", hash = "sha256:f288924cae4e29463698d6d60bc6a4da69c89185ad1e0bcc4104f584e960b9ed", size = 142856, upload-time = "2026-05-14T19:25:27.735Z" }
 wheels = [
@@ -2433,7 +2433,7 @@ wheels = [
 
 [package.optional-dependencies]
 socks = [
-    { name = "pysocks" },
+    { name = "pysocks", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 
 [[package]]
@@ -2441,8 +2441,8 @@ name = "requests-oauthlib"
 version = "1.3.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "oauthlib" },
-    { name = "requests" },
+    { name = "oauthlib", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "requests", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/95/52/531ef197b426646f26b53815a7d2a67cb7a331ef098bb276db26a68ac49f/requests-oauthlib-1.3.1.tar.gz", hash = "sha256:75beac4a47881eeb94d5ea5d6ad31ef88856affe2332b9aafb52c6452ccf0d7a", size = 52027, upload-time = "2022-01-29T18:52:24.037Z" }
 wheels = [
@@ -2454,8 +2454,8 @@ name = "rich"
 version = "15.0.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "markdown-it-py" },
-    { name = "pygments" },
+    { name = "markdown-it-py", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "pygments", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/c0/8f/0722ca900cc807c13a6a0c696dacf35430f72e0ec571c4275d2371fca3e9/rich-15.0.0.tar.gz", hash = "sha256:edd07a4824c6b40189fb7ac9bc4c52536e9780fbbfbddf6f1e2502c31b068c36", size = 230680, upload-time = "2026-04-12T08:24:00.75Z" }
 wheels = [
@@ -2528,7 +2528,7 @@ name = "scipy"
 version = "1.16.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "numpy" },
+    { name = "numpy", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/0a/ca/d8ace4f98322d01abcd52d381134344bf7b431eba7ed8b42bdea5a3c2ac9/scipy-1.16.3.tar.gz", hash = "sha256:01e87659402762f43bd2fee13370553a17ada367d42e7487800bf2916535aecb", size = 30597883, upload-time = "2025-10-28T17:38:54.068Z" }
 wheels = [
@@ -2549,9 +2549,9 @@ name = "seaborn"
 version = "0.13.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "matplotlib" },
-    { name = "numpy" },
-    { name = "pandas" },
+    { name = "matplotlib", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "numpy", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "pandas", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/86/59/a451d7420a77ab0b98f7affa3a1d78a313d2f7281a57afb1a34bae8ab412/seaborn-0.13.2.tar.gz", hash = "sha256:93e60a40988f4d65e9f4885df477e2fdaff6b73a9ded434c1ab356dd57eefff7", size = 1457696, upload-time = "2024-01-25T13:21:52.551Z" }
 wheels = [
@@ -2563,8 +2563,8 @@ name = "sentry-sdk"
 version = "2.64.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "certifi" },
-    { name = "urllib3" },
+    { name = "certifi", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "urllib3", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/60/31/b7341f156a5f6f36f0b4845d6f1c28a2ae4799171dba7007f3a1e9b234b4/sentry_sdk-2.64.0.tar.gz", hash = "sha256:68be2c29e14ae310f8a39e1a79916b6d85c6cb41dcce789d14ff05fe293e4c55", size = 921020, upload-time = "2026-06-30T08:13:47.682Z" }
 wheels = [
@@ -2585,9 +2585,9 @@ name = "setuptools-scm"
 version = "10.2.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "packaging" },
-    { name = "setuptools" },
-    { name = "vcs-versioning" },
+    { name = "packaging", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "setuptools", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "vcs-versioning", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/61/fb/6b22ba201305ec33fa68c1419e984abe1aaee1b236a5e1186cc805738e95/setuptools_scm-10.2.0.tar.gz", hash = "sha256:ec8ea1738b92e42146a46e29a0e9de9ad462744c63cf9778677b95dfd605adde", size = 67319, upload-time = "2026-06-25T05:27:10.243Z" }
 wheels = [
@@ -2623,7 +2623,7 @@ name = "smart-open"
 version = "8.0.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "wrapt" },
+    { name = "wrapt", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/29/3e/79fd5fd2375a8a500b9ec2f6a0762fc1ac33e35582d4a87483a78d19408f/smart_open-8.0.0.tar.gz", hash = "sha256:5a2008d60688bd3b33c52e2ef666d3c60cf956e73e215de8c7b242cf56fdd1b2", size = 61520, upload-time = "2026-06-27T16:28:11.894Z" }
 wheels = [
@@ -2662,25 +2662,25 @@ name = "spacy"
 version = "3.8.14"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "catalogue" },
-    { name = "confection" },
-    { name = "cymem" },
-    { name = "jinja2" },
-    { name = "murmurhash" },
-    { name = "numpy" },
-    { name = "packaging" },
-    { name = "preshed" },
-    { name = "pydantic" },
-    { name = "requests" },
-    { name = "setuptools" },
-    { name = "spacy-legacy" },
-    { name = "spacy-loggers" },
-    { name = "srsly" },
-    { name = "thinc" },
-    { name = "tqdm" },
-    { name = "typer" },
-    { name = "wasabi" },
-    { name = "weasel" },
+    { name = "catalogue", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "confection", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "cymem", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "jinja2", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "murmurhash", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "numpy", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "packaging", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "preshed", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "pydantic", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "requests", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "setuptools", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "spacy-legacy", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "spacy-loggers", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "srsly", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "thinc", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "tqdm", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "typer", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "wasabi", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "weasel", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 wheels = [
     { url = "https://files.pythonhosted.org/packages/a9/8c/0ccf32d9a6b4fd8737bba33d599ddb98934399c1d523f825a4beb4bd1495/spacy-3.8.14-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:8c55cb123c3edfba8c252ce6ae27ffb3d7f60a53ba5e108c3534421586c5fdda", size = 6617470, upload-time = "2026-03-29T10:40:25.572Z" },
@@ -2698,9 +2698,9 @@ name = "spacy-entity-linker"
 version = "1.0.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "numpy" },
-    { name = "spacy" },
-    { name = "tqdm" },
+    { name = "numpy", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "spacy", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "tqdm", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/44/d5/44b674e1b64be313c8c5e5f09d6378e1ab398179186cde3ef43247b911de/spacy-entity-linker-1.0.3.tar.gz", hash = "sha256:a27d181367d40c5e142cdeac23ed3ae6023f6a61d5c5f511f3024836c9ac8ba1", size = 14566, upload-time = "2023-02-03T17:22:04.107Z" }
 
@@ -2727,7 +2727,7 @@ name = "speechrecognition"
 version = "3.14.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "typing-extensions" },
+    { name = "typing-extensions", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/a9/7b/51d8b756aa1066b3f95bcbe3795f382f630ca9d2559ed808dada022141bf/speechrecognition-3.14.3.tar.gz", hash = "sha256:bdd2000a9897832b33095e33adfa48580787255706092e1346d1c6c36adae0a4", size = 32858109, upload-time = "2025-05-12T23:42:29.671Z" }
 wheels = [
@@ -2736,7 +2736,7 @@ wheels = [
 
 [package.optional-dependencies]
 google-cloud = [
-    { name = "google-cloud-speech" },
+    { name = "google-cloud-speech", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 
 [[package]]
@@ -2744,9 +2744,9 @@ name = "sphobjinv"
 version = "2.4"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "attrs" },
-    { name = "certifi" },
-    { name = "jsonschema" },
+    { name = "attrs", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "certifi", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "jsonschema", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/1f/67/19f33eeb4ffff0e2fd39afd4783a6ee38a6d58bcc1ddade779712a7e2e49/sphobjinv-2.4.tar.gz", hash = "sha256:44d57e7e87e17d8c7b053c853dcc36f80cbf7d1fc152d57634fd7bcae38ca48a", size = 249997, upload-time = "2026-03-23T05:04:54.011Z" }
 wheels = [
@@ -2758,8 +2758,8 @@ name = "sqlalchemy"
 version = "2.0.51"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "greenlet", marker = "platform_machine == 'AMD64' or platform_machine == 'WIN32' or platform_machine == 'aarch64' or platform_machine == 'amd64' or platform_machine == 'ppc64le' or platform_machine == 'win32' or platform_machine == 'x86_64'" },
-    { name = "typing-extensions" },
+    { name = "greenlet", marker = "(implementation_name == 'cpython' and platform_machine == 'AMD64' and platform_python_implementation == 'CPython') or (implementation_name == 'cpython' and platform_machine == 'WIN32' and platform_python_implementation == 'CPython') or (implementation_name == 'cpython' and platform_machine == 'aarch64' and platform_python_implementation == 'CPython') or (implementation_name == 'cpython' and platform_machine == 'amd64' and platform_python_implementation == 'CPython') or (implementation_name == 'cpython' and platform_machine == 'ppc64le' and platform_python_implementation == 'CPython') or (implementation_name == 'cpython' and platform_machine == 'win32' and platform_python_implementation == 'CPython') or (implementation_name == 'cpython' and platform_machine == 'x86_64' and platform_python_implementation == 'CPython')" },
+    { name = "typing-extensions", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/02/f1/a7a892f18d4d224e6b26f706531eafccc41e37594d37d304786969ee13cb/sqlalchemy-2.0.51.tar.gz", hash = "sha256:804dccd8a4a6242c4e30ad961e540e18a588f6527202f2d6791b01845d59fdc9", size = 9912201, upload-time = "2026-06-15T15:41:20.012Z" }
 wheels = [
@@ -2778,7 +2778,7 @@ name = "srsly"
 version = "2.5.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "catalogue" },
+    { name = "catalogue", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/2b/db/f794f219a6c788b881252d2536a8c4a97d2bdaadc690391e1cb53d123d71/srsly-2.5.3.tar.gz", hash = "sha256:08f98dbecbff3a31466c4ae7c833131f59d3655a0ad8ac749e6e2c149e2b0680", size = 490881, upload-time = "2026-03-23T11:56:59.865Z" }
 wheels = [
@@ -2797,7 +2797,7 @@ name = "sympy"
 version = "1.12"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "mpmath" },
+    { name = "mpmath", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/e5/57/3485a1a3dff51bfd691962768b14310dae452431754bfc091250be50dd29/sympy-1.12.tar.gz", hash = "sha256:ebf595c8dac3e0fdc4152c51878b498396ec7f30e7a914d6071e674d49420fb8", size = 6722203, upload-time = "2023-05-10T18:23:00.378Z" }
 wheels = [
@@ -2818,11 +2818,11 @@ name = "tempora"
 version = "5.9.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "jaraco-collections" },
-    { name = "jaraco-context" },
-    { name = "jaraco-functools" },
-    { name = "more-itertools" },
-    { name = "python-dateutil" },
+    { name = "jaraco-collections", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "jaraco-context", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "jaraco-functools", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "more-itertools", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "python-dateutil", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/5a/e8/20e489ba55092e0d737dc54a5c43424a7762d38f59efce54ed86f4fc51bc/tempora-5.9.0.tar.gz", hash = "sha256:66e6ddee320c38f4b253a7d8039337424c699916451b9271e0ccce770a4e8f62", size = 24490, upload-time = "2026-05-06T00:07:18.308Z" }
 wheels = [
@@ -2834,18 +2834,18 @@ name = "thinc"
 version = "8.3.13"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "blis" },
-    { name = "catalogue" },
-    { name = "confection" },
-    { name = "cymem" },
-    { name = "murmurhash" },
-    { name = "numpy" },
-    { name = "packaging" },
-    { name = "preshed" },
-    { name = "pydantic" },
-    { name = "setuptools" },
-    { name = "srsly" },
-    { name = "wasabi" },
+    { name = "blis", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "catalogue", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "confection", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "cymem", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "murmurhash", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "numpy", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "packaging", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "preshed", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "pydantic", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "setuptools", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "srsly", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "wasabi", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/13/46/76df95f2c327f9a9cef30c1523bf285627897097163584dcf5f77b2ebce2/thinc-8.3.13.tar.gz", hash = "sha256:68e658549fc1eb3ff92aed5147fcbb9c15d6e9cc0e623b4d0998d16522ffb4f9", size = 194640, upload-time = "2026-03-23T07:22:36.41Z" }
 wheels = [
@@ -2873,7 +2873,7 @@ name = "tqdm"
 version = "4.68.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "colorama", marker = "sys_platform == 'win32'" },
+    { name = "colorama", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython' and sys_platform == 'win32'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/87/d7/0535a28b1f5f24f6612fb3ff1e89fb1a8d160fee0f976e0aa6803862134b/tqdm-4.68.3.tar.gz", hash = "sha256:00dfa48452b6b6cfae3dd9885636c23d3422d1ec97c66d96818cbd5e0821d482", size = 170596, upload-time = "2026-06-17T07:36:52.105Z" }
 wheels = [
@@ -2894,9 +2894,9 @@ name = "tweepy"
 version = "4.14.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "oauthlib" },
-    { name = "requests" },
-    { name = "requests-oauthlib" },
+    { name = "oauthlib", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "requests", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "requests-oauthlib", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/75/1c/0db8c3cf9d31bf63853ff612d201060ae78e6db03468a70e063bef0eda62/tweepy-4.14.0.tar.gz", hash = "sha256:1f9f1707d6972de6cff6c5fd90dfe6a449cd2e0d70bd40043ffab01e07a06c8c", size = 88623, upload-time = "2023-04-24T22:17:22.395Z" }
 wheels = [
@@ -2905,8 +2905,8 @@ wheels = [
 
 [package.optional-dependencies]
 async = [
-    { name = "aiohttp" },
-    { name = "async-lru" },
+    { name = "aiohttp", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "async-lru", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 
 [[package]]
@@ -2914,9 +2914,9 @@ name = "twitchio"
 version = "2.4.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "aiohttp" },
-    { name = "iso8601" },
-    { name = "typing-extensions" },
+    { name = "aiohttp", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "iso8601", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "typing-extensions", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/dd/a1/fd8eb08653614c43dd3cf723ff32b1f502927c235250e07e2b46cb8ab75f/twitchio-2.4.0.tar.gz", hash = "sha256:c5be40008686705bb2470366c9e268da7b172f5ce13fd311266a369876bd40d3", size = 91598, upload-time = "2022-08-09T23:35:36.511Z" }
 wheels = [
@@ -2952,7 +2952,7 @@ name = "typeguard"
 version = "4.5.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "typing-extensions" },
+    { name = "typing-extensions", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/67/1c/dfba5c4633cafc4c701f237d2ba63b416805047fd6d96aab4cfc40969f98/typeguard-4.5.2.tar.gz", hash = "sha256:5a16dcac23502039299c97c8941651bc33d7ea8cc4b2f7d6bbb1b528f6eea423", size = 80240, upload-time = "2026-05-14T12:59:40.857Z" }
 wheels = [
@@ -2964,10 +2964,10 @@ name = "typer"
 version = "0.26.8"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "annotated-doc" },
-    { name = "colorama", marker = "sys_platform == 'win32'" },
-    { name = "rich" },
-    { name = "shellingham" },
+    { name = "annotated-doc", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "colorama", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython' and sys_platform == 'win32'" },
+    { name = "rich", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "shellingham", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/7c/f7/68adc395201b20b872d68e975386832e8005ffeacedd43a1d837a32815be/typer-0.26.8.tar.gz", hash = "sha256:c244a6bd558886fe3f8780efb6bdd28bb9aff005a94eedebaa5cb32926fe2f7e", size = 202097, upload-time = "2026-06-26T09:22:45.705Z" }
 wheels = [
@@ -2979,7 +2979,7 @@ name = "typer-slim"
 version = "0.24.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "typer" },
+    { name = "typer", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/a7/a7/e6aecc4b4eb59598829a3b5076a93aff291b4fdaa2ded25efc4e1f4d219c/typer_slim-0.24.0.tar.gz", hash = "sha256:f0ed36127183f52ae6ced2ecb2521789995992c521a46083bfcdbb652d22ad34", size = 4776, upload-time = "2026-02-16T22:08:51.2Z" }
 wheels = [
@@ -2991,8 +2991,8 @@ name = "typeshed-client"
 version = "2.12.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "importlib-resources" },
-    { name = "typing-extensions" },
+    { name = "importlib-resources", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "typing-extensions", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/54/5d/97d6fa8c204b0d42be931e7a568b306cda43f93ff45f8b47537ee61390de/typeshed_client-2.12.0.tar.gz", hash = "sha256:54dcfa25fcff82cedcb1b51c03c1b3c51a614097aab8fe49e4316aff6f79d9c7", size = 529457, upload-time = "2026-06-02T04:00:51.51Z" }
 wheels = [
@@ -3013,7 +3013,7 @@ name = "typing-inspection"
 version = "0.4.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "typing-extensions" },
+    { name = "typing-extensions", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/55/e3/70399cb7dd41c10ac53367ae42139cf4b1ca5f36bb3dc6c9d33acdb43655/typing_inspection-0.4.2.tar.gz", hash = "sha256:ba561c48a67c5958007083d386c3295464928b01faa735ab8547c5692e87f464", size = 75949, upload-time = "2025-10-01T02:14:41.687Z" }
 wheels = [
@@ -3092,8 +3092,8 @@ name = "vcrpy"
 version = "8.2.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "pyyaml" },
-    { name = "wrapt" },
+    { name = "pyyaml", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "wrapt", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/08/db/08183b845b0040bb877dad2bd7e4e0976fc232bb3476d7ee369c6c4f8b5a/vcrpy-8.2.1.tar.gz", hash = "sha256:d73a6e4eb6dae8148e659764b7a00e68cc51ba29ba9e6a85e1f0790ad96b97df", size = 90511, upload-time = "2026-06-16T13:20:52.906Z" }
 wheels = [
@@ -3105,7 +3105,7 @@ name = "vcs-versioning"
 version = "2.2.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "packaging" },
+    { name = "packaging", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/09/95/c95bb74950763a163defcf4cedf6c5edfca1d623fd5031b76516ece85076/vcs_versioning-2.2.2.tar.gz", hash = "sha256:4ac4ded78720cdb4d0291ae58ace87e1e9201912e1023f3029c6cce5c9152cfb", size = 143135, upload-time = "2026-06-29T13:26:06.901Z" }
 wheels = [
@@ -3126,7 +3126,7 @@ name = "wasabi"
 version = "1.1.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "colorama", marker = "sys_platform == 'win32'" },
+    { name = "colorama", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython' and sys_platform == 'win32'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/ac/f9/054e6e2f1071e963b5e746b48d1e3727470b2a490834d18ad92364929db3/wasabi-1.1.3.tar.gz", hash = "sha256:4bb3008f003809db0c3e28b4daf20906ea871a2bb43f9914197d540f4f2e0878", size = 30391, upload-time = "2024-05-31T16:56:18.99Z" }
 wheels = [
@@ -3138,15 +3138,15 @@ name = "weasel"
 version = "1.0.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "cloudpathlib" },
-    { name = "confection" },
-    { name = "httpx" },
-    { name = "packaging" },
-    { name = "pydantic" },
-    { name = "smart-open" },
-    { name = "srsly" },
-    { name = "typer" },
-    { name = "wasabi" },
+    { name = "cloudpathlib", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "confection", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "httpx", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "packaging", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "pydantic", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "smart-open", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "srsly", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "typer", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "wasabi", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/ce/e5/e272bb9a045105a1fdf4b798d8086f5932a178f4d738f17a74f5c9e0ae9a/weasel-1.0.0.tar.gz", hash = "sha256:7b129b44c90cc543b760532974ca1e4eb30dad2aa2026f57bdce66354ae610fc", size = 38682, upload-time = "2026-03-20T08:10:25.266Z" }
 wheels = [
@@ -3181,11 +3181,11 @@ name = "wolframalpha"
 version = "5.1.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "httpx" },
-    { name = "jaraco-context" },
-    { name = "more-itertools" },
-    { name = "multidict" },
-    { name = "xmltodict" },
+    { name = "httpx", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "jaraco-context", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "more-itertools", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "multidict", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "xmltodict", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/99/04/bdb9fd0da3d142c6b8a6d3ebdab0b919cc212ba68ff4686f6c22060ca26f/wolframalpha-5.1.3.tar.gz", hash = "sha256:56226efeca0f55acec5e17dd2f6537a178d0bf4feec4df0615165e2968bb49b8", size = 13257, upload-time = "2024-06-01T20:19:57.914Z" }
 wheels = [
@@ -3197,9 +3197,9 @@ name = "wordcloud"
 version = "1.9.6"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "matplotlib" },
-    { name = "numpy" },
-    { name = "pillow" },
+    { name = "matplotlib", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "numpy", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "pillow", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/6f/04/a3d3c4b94a35586ddb97c6a3c508913159161cd558b34f315b382b924bf7/wordcloud-1.9.6.tar.gz", hash = "sha256:df17c468ff903bd0aba4f87c6540745d13a4931220dd4937cb363ad85a4771b9", size = 27563741, upload-time = "2026-01-22T02:08:52.976Z" }
 wheels = [
@@ -3253,9 +3253,9 @@ name = "yarl"
 version = "1.24.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "idna" },
-    { name = "multidict" },
-    { name = "propcache" },
+    { name = "idna", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "multidict", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "propcache", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/79/12/1e8f37460ea0f7eb59c221fdaf0ed75e7ac43e97f8093b9c6f411df50a78/yarl-1.24.2.tar.gz", hash = "sha256:9ac374123c6fd7abf64d1fec93962b0bd4ee2c19751755a762a72dd96c0378f8", size = 210798, upload-time = "2026-05-19T21:31:05.599Z" }
 wheels = [
@@ -3296,14 +3296,14 @@ wheels = [
 
 [package.optional-dependencies]
 default = [
-    { name = "brotli", marker = "sys_platform != 'ios'" },
-    { name = "certifi" },
-    { name = "mutagen" },
-    { name = "pycryptodomex" },
-    { name = "requests" },
-    { name = "urllib3" },
-    { name = "websockets" },
-    { name = "yt-dlp-ejs" },
+    { name = "brotli", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython' and sys_platform != 'ios'" },
+    { name = "certifi", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "mutagen", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "pycryptodomex", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "requests", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "urllib3", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "websockets", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
+    { name = "yt-dlp-ejs", marker = "implementation_name == 'cpython' and platform_python_implementation == 'CPython'" },
 ]
 
 [[package]]
