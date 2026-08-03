@@ -370,9 +370,9 @@ emoji==2.15.0 ; implementation_name == 'cpython' and platform_python_implementat
 en-core-web-md @ https://github.com/explosion/spacy-models/releases/download/en_core_web_md-3.8.0/en_core_web_md-3.8.0-py3-none-any.whl ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:5e6329fe3fecedb1d1a02c3ea2172ee0fede6cea6e4aefb6a02d832dba78a310
     # via harmonbot
-feedparser==6.0.12 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:64f76ce90ae3e8ef5d1ede0f8d3b50ce26bcce71dd8ae5e82b1cd2d4a5f94228 \
-    --hash=sha256:6bbff10f5a52662c00a2e3f86a38928c37c48f77b3c511aedcd51de933549324
+feedparser==6.0.14 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:088679b0c4b543ee211a820dd544698c76a402122eae7473c04a43425f283d06 \
+    --hash=sha256:e35e3f760151b0c3b22cac9684155cae186a233e16c49bcbc6c49e91e3131137
     # via harmonbot
 fonttools==4.63.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:063e08bd17bd5a90127a14123de0d6a952dbc847695fd98b63c043d58057f90c \
