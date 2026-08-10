@@ -433,9 +433,9 @@ google-api-core==2.31.0 ; implementation_name == 'cpython' and platform_python_i
     #   google-cloud-translate
     #   google-cloud-vision
     #   harmonbot
-google-auth==2.55.1 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:eada68dfd52b3b81191827601e2a0c3fa12540c818534b630ddc5355769c3995 \
-    --hash=sha256:fb2d9b730f2c9b8d326ec8d7222f21aef2ead15bf0513793d6442485d87af0a1
+google-auth==2.56.3 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:40e229fc901f0a305b553050e5fce562d509bee0435be053abfa91582b51b90c \
+    --hash=sha256:8ec438808f813ad034535000261eed1067475d229d05bbf4216e78c3f2362e53
     # via
     #   google-api-core
     #   google-cloud-core
