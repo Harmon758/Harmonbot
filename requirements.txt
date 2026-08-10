@@ -476,9 +476,9 @@ greenlet==3.5.3 ; (implementation_name == 'cpython' and platform_machine == 'AMD
     --hash=sha256:aca9b4ce85b152b5524ef7d88170efdff80dc0032aa8b75f9aaf7f3479ea95b4 \
     --hash=sha256:ec6f1af59f6b5f3fc9678e2ea062d8377d22ac644f7844cb7a292910cf12ff44
     # via sqlalchemy
-grpc-google-iam-v1==0.14.4 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:392b3796947ed6334e61171d9ab06bf7eb357f554e5fc7556ad7aab6d0e17038 \
-    --hash=sha256:412facc320fcbd94034b4df3d557662051d4d8adfa86e0ddb4dca70a3f739964
+grpc-google-iam-v1==0.14.5 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:07fd3a9fafb586588e771831fbfc8f6597050181d0c3b45e039d18b8fdc1aab5 \
+    --hash=sha256:0f5e680b20aa0a9441e68c769da04d94d70fca4e43751a82d8abb8aa6a7181ca
     # via google-cloud-translate
 grpcio==1.76.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:08caea849a9d3c71a542827d6df9d5a69067b0a1efbea8a855633ff5d9571465 \
