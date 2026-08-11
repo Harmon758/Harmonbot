@@ -1418,15 +1418,37 @@ soupsieve==2.8.4 ; implementation_name == 'cpython' and platform_python_implemen
     --hash=sha256:e121fd02e975c695e4e9e8774a5ee35d74714b59307868dcc5319ad2d9e3328e \
     --hash=sha256:e7e6b0769c8f51ed59acab6e994b00621096cfb1c640a7509295987388fbaf65
     # via beautifulsoup4
-spacy==3.8.14 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:2c228f4c9ae618173334c17adb748d66b574b6594bc3575233e15cd5ad1cb26b \
-    --hash=sha256:3c4e5bc5cdefe39ea139985776a2e8eae05e7ff2bf51ca1bd65247dc45feeb8e \
-    --hash=sha256:6f51d1ce8b1ba30123f6bef6e795c4bc5466608e6e8a015dc828bd21d399aa9c \
-    --hash=sha256:7bece0450cd8ab841cfa8527fcc0ce18c4454f28e3b9fca42a450803a067355b \
-    --hash=sha256:8c55cb123c3edfba8c252ce6ae27ffb3d7f60a53ba5e108c3534421586c5fdda \
-    --hash=sha256:ab6c1ace316338dac334fc93c849994bbd717f9ebf59d2bc4158e978b2f542ee \
-    --hash=sha256:c0c6c9d8771cc3708e309b07310d330fc8443a6bca34f4ff20b0f22751d8faf9 \
-    --hash=sha256:cc5e5f2ed121d57d819d247bb59253dc320a58acbd237b85f86c2aa38cab6bd1
+spacy==3.8.15 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:0262f86956e751ace6e47e530cf9841d66f2354d8cd91cfeeb39eee4c5f2962f \
+    --hash=sha256:1c8a27500b409b472a743c2b0b2af2dff42f4287ace36f2b776e4592d65ab493 \
+    --hash=sha256:2cbd33b0801ed0fed71454cdfaefbabb18b1b854471f7683c5df2f78be00e8cc \
+    --hash=sha256:35060be85c952df84e9095713ba05f8515473e127ad0c6b43cd22a1b42d4cdbc \
+    --hash=sha256:37f370f579c1bb56aa767e6d585672133f37e89c1181ebbd251fd946777f0ef5 \
+    --hash=sha256:39ac175bbf8a8381c41b8e0abbdede3ff29d1f29f3cac42644f5719671e20884 \
+    --hash=sha256:4031de613e8ba666392fef107a06b5144270f0f64b6a61df37faf6a329d61b5a \
+    --hash=sha256:59c1ad50c8d0afe8397a06e28f39f3cebced0cdf53b14607dfca44c9822d7650 \
+    --hash=sha256:6b27d0abf1138644837536705578dc1ea48a693796b283a49202e1dbde0a3b02 \
+    --hash=sha256:7863c35506ec6f7e3fc13836330a4badd723514b9dc067ed79a8b0c593b824b4 \
+    --hash=sha256:81ca434f0a08062fe5d5fd05858196b3c007c755d8b54e2019c071949a93eefe \
+    --hash=sha256:8397a6e76b85d7a1d42b2654ed0bbad053e9100b80f41efcf608a8cf02df76f6 \
+    --hash=sha256:9ad71e9ce6c4e1b984a91bc82b2e4e08df23581f5cc670bbacf29a07a9822d5a \
+    --hash=sha256:9b22d269dfa6aa3c6a000e576b261bee46c277afaf915a3fe1e0a81ad227ee7e \
+    --hash=sha256:aaa70356876c152f0235ff5bc4869f7a45133392ff73aa881113376f7eec0caa \
+    --hash=sha256:b4527b7824e8228f2abed18774b224de7aad9b900d47ff66483abdf16d0c8a5e \
+    --hash=sha256:c8b187654941e417c4cc0378ed7860bf6aad7bbbc370b925994a9cebeb8ca615 \
+    --hash=sha256:c9279132fee6e131b295f5336b8f9e46c16e5ec430e6c58a56fc9ef134cc1f5a \
+    --hash=sha256:c9683078efb96dee8b1a751bc0bfa9271a6604b7257547849b4254f285ce77d9 \
+    --hash=sha256:cb0782680cf930e9ab984a73b2078c981343f77c5c407773c704cbf8c7df13c0 \
+    --hash=sha256:ce66d75279ee84b749eea058ff3ea79a31adf0ff53f887943dced258ceb6ce2a \
+    --hash=sha256:d41166f5f763ff3a3e085d4314b6cf34cf1cd2bf0845aaafa1acc266e9a46ef7 \
+    --hash=sha256:d5806db3034618ef426e360dd8519283dc08f5be1690ce5bc3bb2c628f86215f \
+    --hash=sha256:e1aaf79b42c0e8c5dd4801b474c22a61fc68edb347fd3a6e09d5cba7e1aed5db \
+    --hash=sha256:e7ca79280762f1de0a7a5c1ce8ccfe1f54b772e8761ea7d9408e535427592749 \
+    --hash=sha256:f04bc083600ff688fe500a736dd4d8ac3d06527f7808c2d7932d4174d8f3b751 \
+    --hash=sha256:f1c0f054365fdfd95cfe96acbb4c5c1dbefb787905e4e63013eda54d3c815050 \
+    --hash=sha256:f5714a76826756cea2257d35524233ebe49c6f70b6510b224e46036a4a341a79 \
+    --hash=sha256:fa9df68fc8887c0a6440b84d1d307980e594d99b45f19a37d733e58caa9a6682 \
+    --hash=sha256:ff1a616862d6c07a9e7ae13b911005f89c064ce884ec31784f8032adb3f86829
     # via
     #   harmonbot
     #   spacy-entity-linker
