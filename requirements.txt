@@ -522,9 +522,9 @@ httpx==0.28.1 ; implementation_name == 'cpython' and platform_python_implementat
 hypothesis==6.151.3 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:31bcd884b0be8f478aa2e52f0f73be03e8f6a9a2c66706fb93410ebaa5c27bcc \
     --hash=sha256:879a4b3dec37678fd1bd3a060aaaf3eedc2aab5543d9a85e5f2a04a6445683c6
-idna==3.18 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:7f952cbe720b688055e3f87de14f5c3e5fdaa8bc3928985c4077ca689de849a2 \
-    --hash=sha256:ffb385a7e039654cef1ab9ef32c6fafe283c0c0467bba1d9029738ce4a14a848
+idna==3.19 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:5e0811a4383b21dc5838069f801c4fb62113b7447663d2530d2bd6e77b49bf15 \
+    --hash=sha256:815e7be7a7806d54abb586dc943addc79e8b2ee16915059658cbeff4b1b43bf4
     # via
     #   anyio
     #   httpx
