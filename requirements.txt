@@ -227,9 +227,9 @@ click==8.4.2 ; implementation_name == 'cpython' and platform_python_implementati
     --hash=sha256:9a6cea6e60b17ebe0a44c5cc636d94f09bd66142c1cd7d8b4cd731c4917a15f6 \
     --hash=sha256:e6f9f66136c816745b9d65817da91d61d957fb16e02e4dcd0552553c5a197b76
     # via harmonbot
-cloudpathlib==0.24.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:b1c51e2d2ec7dc4fed6538991f4aea849d6cf11a7e6b9069f86e461aa1f9b5b4 \
-    --hash=sha256:c521a984e77b47e656fe78e20a7e3e260e0ab45fc69e33ac01094227c979e34a
+cloudpathlib==0.25.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:63612e17778c5e3a51b472def8d785d0aaaf347486d6b6786dc7be627556d4c6 \
+    --hash=sha256:8faef3ed3a0dd71d134e8617b4fdc5ce56a12a6b485c080cfe80106e5f1d1f5d
     # via weasel
 colorama==0.4.6 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' and sys_platform == 'win32' \
     --hash=sha256:08695f5cb7ed6e0531a20572697297273c47b8cae5a63ffc6d6ed5c201be6e44 \
