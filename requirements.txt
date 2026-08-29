@@ -1015,9 +1015,9 @@ propcache==0.5.2 ; implementation_name == 'cpython' and platform_python_implemen
     # via
     #   aiohttp
     #   yarl
-proto-plus==1.28.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:38e5696342835b08fc116f30a25665b29531cda9d5d5643e9b81fc312385abd9 \
-    --hash=sha256:a630604310899e73c59ec302e5765c058d412b2f090b9c79c8822589f14955b8
+proto-plus==1.28.4 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:4b01341272f8a348db3f003b6143109f83ab43091019d5181b3fcdf500ab32aa \
+    --hash=sha256:5ff7ecad828e032a491fcb86947801768e32237f99dd049b649965b892ae9a63
     # via
     #   google-api-core
     #   google-cloud-speech
