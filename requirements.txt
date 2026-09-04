@@ -1023,15 +1023,15 @@ proto-plus==1.28.0 ; implementation_name == 'cpython' and platform_python_implem
     #   google-cloud-speech
     #   google-cloud-translate
     #   google-cloud-vision
-protobuf==6.33.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:140303d5c8d2037730c548f8c7b93b20bb1dc301be280c378b82b8894589c954 \
-    --hash=sha256:25c9e1963c6734448ea2d308cfa610e692b801304ba0908d7bfa564ac5132995 \
-    --hash=sha256:35be49fd3f4fefa4e6e2aacc35e8b837d6703c37a2168a55ac21e9b1bc7559ef \
-    --hash=sha256:905b07a65f1a4b72412314082c7dbfae91a9e8b68a0cc1577515f8df58ecf455 \
-    --hash=sha256:9a031d10f703f03768f2743a1c403af050b6ae1f3480e9c140f39c45f81b13ee \
-    --hash=sha256:d6101ded078042a8f17959eccd9236fb7a9ca20d3b0098bbcb91533a5680d035 \
-    --hash=sha256:e0697ece353e6239b90ee43a9231318302ad8353c70e6e45499fa52396debf90 \
-    --hash=sha256:e0a1715e4f27355afd9570f3ea369735afc853a6c3951a6afe1f80d8569ad298
+protobuf==7.36.1 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:0b53ce95272aad50ad25d7ff03373743209822e8ba42ea7fad27d2bee1547d00 \
+    --hash=sha256:39c518c05586c016d7874ff6079ee115bcec1ea5fbb1d177fbf7867ef4c67e44 \
+    --hash=sha256:3cf2ee25d006cee57294a1196ea43b37feb78e0dcd1e8af5c1aeddb777655aca \
+    --hash=sha256:43d3d37b1eb24c113b9b7d02008cac44e423f00b611b7781ae998d7623972969 \
+    --hash=sha256:51139351435d9b43d88a55eaa49fb6f737fbb478fb0cbf2cf694d1a04a9d3363 \
+    --hash=sha256:7d951e46b3f963d6c264c367c437921de9d5aedd9c3f9612b9077736b4e3ad5c \
+    --hash=sha256:97198b77e369a0abd8e262b8f6c7266c55ddb796a3a12c76d7b8881188ed83aa \
+    --hash=sha256:d0f6470f0ce2b84e3feaea2d4b816378b37ba4d4aa08a274305373de93e2d524
     # via
     #   google-api-core
     #   google-cloud-speech
