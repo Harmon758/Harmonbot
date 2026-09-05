@@ -1615,26 +1615,26 @@ urllib3==2.7.0 ; implementation_name == 'cpython' and platform_python_implementa
     #   requests
     #   sentry-sdk
     #   yt-dlp
-uv==0.11.28 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:041e4b80bebc58d7142ac9394370cacd73185fd8d066d6675d14707d83408f6d \
-    --hash=sha256:185416a5316df8c5442b47178349f1f27fc1034468670ac1fb499eae3b25bd68 \
-    --hash=sha256:2e91eb8a0b00d5f4427195fc818bcaa4d8bb4fccb79f4e973e74802419ab06ca \
-    --hash=sha256:3fcfda468448093f4d5961ca8c068b0aeec2d02f7226d58ee8513321a929fe4f \
-    --hash=sha256:47e3f12fe6f5c80a01639d8df36efde7bdddfc3bbc52250df623547d8d393105 \
-    --hash=sha256:49fe42df9f42056037473f3876adec1615709b57d3470ed39178ff420f3afb9f \
-    --hash=sha256:692edef9cf1d2dd69bb9d9fc01f281a82610547900ce227a3cb269cdf988b5ce \
-    --hash=sha256:6b3d0ea11e83b373a2166b82dd0864f5677fbadf98db64541ab2e59c42968905 \
-    --hash=sha256:6f7ce6f6015a3e857bc6a663514afa62856b669ee5c1bd120e4c58ac2ef5513d \
-    --hash=sha256:8c60294e3be4fa203a04015fc02ac8a31d936e86fde06dcb43c7f8f22661dfff \
-    --hash=sha256:a4a9fe246cb2882532277f5d5e5bd8a59462981462a2f98426f35ecfca82460e \
-    --hash=sha256:ae5bbdb6150adcd625f5fa720b04abf2014247d878d1035f19751bb0e7274543 \
-    --hash=sha256:bb11d94cb848ff58af79e0bb5e4037cd324d27dbe2dabb7746db698b724a9a20 \
-    --hash=sha256:d01c7c665511c047f350e587b8b6557c96b61b2eddafbcd8964f0cc2f5b9afbe \
-    --hash=sha256:df86cfd135542a833e9f84708b3b8dbaa987a3b9db85b267062db49ab639d242 \
-    --hash=sha256:e94560995737c50525d586da553521fbafe9ef06641e7d885db4b270f53ee84d \
-    --hash=sha256:e9eb317b1cdb249887df77ac232d8a9448f26858b2399f9f2949c6a7b9bedf88 \
-    --hash=sha256:f4fcf2c8d9f1444b900e6b8dbbb828825fb76eca01acd18aeaa5c90240408cda \
-    --hash=sha256:fab3c31007a611866475824a666f5a721bf0c9335db806355a97fcfba2a6bbb7
+uv==0.12.9 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:00ff9f34c04055ebc3e1599ee459f5ae0d42c17cd6a1d8d029f0389e64a1419c \
+    --hash=sha256:0af988f800778913d36f9bf6905eb21c917dccc403bb364ad739bfd383acf491 \
+    --hash=sha256:0cb7e8a732d81f25d364de8d6ac69f4d00d56b581918ac242eeaeffb53977588 \
+    --hash=sha256:2d4a1d4c067f9e2edf703e181a71db8fc9d7af5fcdbd0053103d0a1260e04ce6 \
+    --hash=sha256:31fddf25d756a51fe33f7831ff697a122628dd3121c37c435c39c678428f937b \
+    --hash=sha256:445c572202243229043abaeab2fecb1b3691477c71c79feb07f638ce34febd39 \
+    --hash=sha256:55b8920edb2a29eeef31e246fb60d2145985e17f51ad14b26643575b82759302 \
+    --hash=sha256:5badfd805fd88bf99b4b4f044f6e8f762f1892cab27477f4427bb473e93dd049 \
+    --hash=sha256:5f9325495fa0bf3e71e6b09f72e68b0d4a000067888b48a659536a8c7191a112 \
+    --hash=sha256:871e884c3329f69c12bb7426edb9e727745c3bb2db6d9e0538ce0e1bdfb64916 \
+    --hash=sha256:97062b2160a97fcfa45f10bbbe02a9c6ba4f5a50cf4e02c0f2babb80b47c1ea8 \
+    --hash=sha256:bbdcb9db8b44d80e3fcebc4205604d52ea145404efb179958560bb2a0157743a \
+    --hash=sha256:c0f7e2b46e4c503f9497c0f41bba3570aa233685db814cd011225118f2d72b6a \
+    --hash=sha256:cafa85338ce1d27b7caa4aadc83ab21f350e2cd2185462fbb10a232b6e93152e \
+    --hash=sha256:cce6e716df290b7f4a31f76ef39866e1dc006e947520a660459dea00b5d55234 \
+    --hash=sha256:ce4ad780d3cefe5a8f965f3ddf942c01e71aa37e36f4fc431e72e4ee8ce5f378 \
+    --hash=sha256:cfb512d0e284e9fc42c3bbe9b701f430083fca23dbb67a20daeea897fb793069 \
+    --hash=sha256:f4ab95475562884fc8e72fbbf0c3da0e025d3bb25e7348544cd02b19bf77f3e1 \
+    --hash=sha256:f639f8415f08918fb4ba2022bfd94d039e01c6c1eca28583125d439f7bd635fb
 vcrpy==8.2.1 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:7ce58c9e2792b246f79d6f4b3e9660676cc6f853be17e1547305b4437ab1ff85 \
     --hash=sha256:d73a6e4eb6dae8148e659764b7a00e68cc51ba29ba9e6a85e1f0790ad96b97df
