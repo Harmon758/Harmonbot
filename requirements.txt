@@ -1638,9 +1638,9 @@ uv==0.11.28 ; implementation_name == 'cpython' and platform_python_implementatio
 vcrpy==8.2.1 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:7ce58c9e2792b246f79d6f4b3e9660676cc6f853be17e1547305b4437ab1ff85 \
     --hash=sha256:d73a6e4eb6dae8148e659764b7a00e68cc51ba29ba9e6a85e1f0790ad96b97df
-vcs-versioning==2.2.2 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:4ac4ded78720cdb4d0291ae58ace87e1e9201912e1023f3029c6cce5c9152cfb \
-    --hash=sha256:fe7fb216f8780a5516e7864a9333aacb1b70015b087a9be3918da76ef2760808
+vcs-versioning==2.3.4 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:076afa0e12a42a23faba92bcb62cb016c1ce38051ceee1f302de1e2676a68bbc \
+    --hash=sha256:f3443da15a34a32755b04324e33c6166add300c7661f45902225190c9337f711
     # via setuptools-scm
 wand==0.7.2 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:0387fd08848d00cadd1d885fcb19a17dd4250df2029e5338b6b668b7fed64b5b \
