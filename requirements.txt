@@ -1374,9 +1374,9 @@ seaborn==0.13.2 ; implementation_name == 'cpython' and platform_python_implement
     --hash=sha256:636f8336facf092165e27924f223d3c62ca560b1f2bb5dff7ab7fad265361987 \
     --hash=sha256:93e60a40988f4d65e9f4885df477e2fdaff6b73a9ded434c1ab356dd57eefff7
     # via harmonbot
-sentry-sdk==2.64.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:68be2c29e14ae310f8a39e1a79916b6d85c6cb41dcce789d14ff05fe293e4c55 \
-    --hash=sha256:715ea91ca860a819e8d8a50a7bde3a80d0df3b4ed7b6660a20fb9a2d084188f1
+sentry-sdk==2.69.1 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:2d2556d9a14db548982b914cbed2a2dc07b6e55d941a620752f89a2afccfd78d \
+    --hash=sha256:f9284b417540b0784b994fa021eb6f1e30ae1cce593d83541274d03c93966eff
     # via harmonbot
 setuptools==80.9.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:062d34222ad13e0cc312a4c02d73f059e86a4acbfbdea8f8f76b28c99f306922 \
