@@ -1209,16 +1209,19 @@ pyparsing==3.2.5 ; implementation_name == 'cpython' and platform_python_implemen
     #   harmonbot
     #   matplotlib
     #   pydot
-pyrefly==0.40.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:0332491f3521ca228f1e2f0bbfbe9b5a65835c5d53887649e65638c1262dbe53 \
-    --hash=sha256:1003592ecc0bc605fc060480c5b061b5d34f4f919c391c12f239a51c8865a061 \
-    --hash=sha256:13d2d67184fd8044d687dff04ad78ec5b845644ccd83505ec67ef61997a82f06 \
-    --hash=sha256:28097f49497cf75818d428a080f69e70a7673ea1aab1fc6d796b333f1822e0e3 \
-    --hash=sha256:35b5439994b3a760f986067743c8c5fde09acd1c1bc46dbc9b092b58a4711d4a \
-    --hash=sha256:925073c6f823445d41b3e4ba6eaf62b28acaa444e1a5dc66ebbe1a9d134251a0 \
-    --hash=sha256:ac856cb7af6b2c3f43bdd684579b4bb122adf66fb98908cddd7b36c0b905b040 \
-    --hash=sha256:d6550055d73fbb921437f246d99397b0ae5c794ca81e0c328e60e164ef32e7ce \
-    --hash=sha256:de3ff4fdb4adb5d2aeb3752811d8da2ae76f8431fed6ae84693fd7a51acc3cfd
+pyrefly==1.3.1 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:0a2a7dfed824fb066aa8a7c8d856c152b98e998fb84b954d5f892fb9834c0bd1 \
+    --hash=sha256:1ed85e2b957a78e93353125d890ce3668ce450e49b74025a15c87b6e8ec7f3d1 \
+    --hash=sha256:3506b1252e9f5d755d0693c5a46d46b85579d36534f6e22a41eb8e098d0dde90 \
+    --hash=sha256:37a1a1fb41e7190fe3964a877875dd809d6ee2887809e2c3d6e5f25a69805bfd \
+    --hash=sha256:39d5a17c1ad655e5f93a6e8e0be90b8db28c6015fe07d6ed4e054891c9e14ef8 \
+    --hash=sha256:45b7650bc651a5a784701f2fb4f579da9a421c4d1b5fd91f9048f4529e46093c \
+    --hash=sha256:4c24e7d99df9237916c33be23714219a7c8eaf22bad2ac0c3e1d45adcf7df8fb \
+    --hash=sha256:a78eed1c53f37807f0e2997be8edbe833b91eb9915f2cb553a1bdcd599e7105c \
+    --hash=sha256:ad57f38bc73679c14a5f62995a2bd3bc43649b7270c858487e2eab78a6f95362 \
+    --hash=sha256:b774f1dfac82867fc16fe2175d80a630e2a72a6835d5b7e492568d6bfb6b05e7 \
+    --hash=sha256:c61e9dcf888beb81ca0e0c60ea4442640fdcf2f1f65bfe3d9f5d89b85516eb03 \
+    --hash=sha256:ea0d0349f1bc80fe8e00a7b3640e40db7486398b685f87b9bd5d2207063668f0
 pysocks==1.7.1 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:2725bd0a9925919b9b51739eea5f9e2bae91e83288108a9ad338b2e3a4435ee5 \
     --hash=sha256:3f8804571ebe159c380ac6de37643bb4685970655d3bba243530d6558b799aa0
