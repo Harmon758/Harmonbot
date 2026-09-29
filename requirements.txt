@@ -412,9 +412,9 @@ geojson==2.5.0 ; implementation_name == 'cpython' and platform_python_implementa
     --hash=sha256:6e4bb7ace4226a45d9c8c8b1348b3fc43540658359f93c3f7e03efa9f15f658a \
     --hash=sha256:ccbd13368dd728f4e4f13ffe6aaf725b6e802c692ba0dde628be475040c534ba
     # via pyowm
-gidgethub==5.4.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
-    --hash=sha256:522bd3a846a315c3163925a840930c4c9a0d685d5853afe852fd589cb472daf5 \
-    --hash=sha256:7470d7723d7c1743471a2d62e79c8752fba12b1c0972e4bad57252338a501dbd
+gidgethub==6.0.0 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
+    --hash=sha256:236f53c5e1967bdf9e6963d94c0915757577332680c6f3df469648424ad91419 \
+    --hash=sha256:4e6ef8acdb45571222ea6f7ec90ec8ca93df847391daac9502562780f1988369
     # via harmonbot
 gitdb==4.0.11 ; implementation_name == 'cpython' and platform_python_implementation == 'CPython' \
     --hash=sha256:81a3407ddd2ee8df444cbacea00e2d038e40150acfa3001696fe0dcf1d3adfa4 \
